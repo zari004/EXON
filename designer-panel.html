@@ -1231,17 +1231,9 @@ function clearToken(){
 updateCounts();
 renderDashboard();
 
-// Sync holat
-if(localStorage.getItem('gh_token')){
-  setSyncStatus('ok', "Token mavjud — sinxronlashga tayyor");
-} else {
-  setSyncStatus('', "Mahalliy rejim · ⚙ tugmasini bosib sozlang");
-}
-
-// Sahifa yuklanganda avtomatik yuklash (agar token bo'lsa)
-if(localStorage.getItem('gh_token')){
-  syncLoad();
-}
+// Sahifa yuklanganda HAR DOIM avtomatik yukla (ommaviy repo — token shart emas)
+setSyncStatus('load', "Yuklanmoqda...");
+syncLoad();
 </script>
 </body>
 </html>
