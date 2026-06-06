@@ -237,12 +237,95 @@ button,input,textarea,select{font-family:'Syne',sans-serif;font-size:14px}
 /* ── HOVER ROW ACTIONS ── */
 .table-row:not(:hover) .row-actions{visibility:hidden}
 .table-row:hover .row-actions{visibility:visible}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — MOBIL & TABLET
+══════════════════════════════════════ */
+@media(max-width:900px){
+  :root{--sidebar:0px;--topbar:56px}
+  .sidebar{
+    transform:translateX(-100%);width:260px;transition:transform .25s;
+    box-shadow:4px 0 24px rgba(0,0,0,.5);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .topbar{left:0}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .dash-grid{grid-template-columns:1fr}
+  .designers-grid{grid-template-columns:1fr}
+  .detail-stats-row{grid-template-columns:1fr 1fr}
+  .detail-hero{flex-wrap:wrap;gap:14px}
+  .detail-contacts{flex-direction:column;gap:8px}
+  .form-grid{grid-template-columns:1fr}
+  .form-grid-3{grid-template-columns:1fr 1fr}
+  .cat-select{grid-template-columns:1fr 1fr 1fr}
+  .report-header{flex-direction:column;gap:8px}
+  .report-controls{flex-wrap:wrap}
+  .modal{padding:20px;max-width:100%;margin:10px}
+  .table-row:not(:hover) .row-actions{visibility:visible}
+  .row-actions{opacity:1!important;visibility:visible!important}
+  .burger{display:flex}
+  .topbar-title{margin-left:44px}
+}
+@media(max-width:500px){
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .panel{padding:16px}
+  .detail-stats-row{grid-template-columns:1fr 1fr}
+  .form-grid-3{grid-template-columns:1fr}
+  .d-card-stats{grid-template-columns:1fr 1fr}
+  .filter-bar{gap:6px}
+  .tab-btn{padding:4px 8px;font-size:10px}
+  .modal{margin:6px}
+}
+
+/* ── BURGER BUTTON ── */
+.burger{
+  display:none;position:fixed;top:14px;left:14px;z-index:80;
+  width:32px;height:32px;background:var(--panel);border:1px solid var(--border);
+  border-radius:6px;align-items:center;justify-content:center;
+  flex-direction:column;gap:5px;cursor:pointer;
+}
+.burger span{width:16px;height:1.5px;background:var(--muted);display:block;transition:.2s}
+.sidebar-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:55;
+}
+.sidebar-overlay.show{display:block}
+
+/* ── SYNC PANEL ── */
+.sync-bar{
+  position:fixed;bottom:0;left:var(--sidebar);right:0;
+  background:var(--panel);border-top:1px solid var(--border);
+  padding:10px 24px;display:flex;align-items:center;gap:10px;
+  z-index:40;font-family:'JetBrains Mono',monospace;font-size:11px;
+}
+@media(max-width:900px){.sync-bar{left:0}}
+.sync-status{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--muted2);flex-shrink:0}
+.sync-dot.ok{background:var(--success);animation:pulseDot 2s infinite}
+.sync-dot.err{background:var(--error)}
+.sync-dot.load{background:var(--warning);animation:pulseDot .6s infinite}
+.sync-actions{margin-left:auto;display:flex;gap:8px}
+.main{padding-bottom:56px}
+
+/* ── SETTINGS MODAL ── */
+.settings-note{
+  background:rgba(181,245,66,.06);border:1px solid rgba(181,245,66,.15);
+  border-radius:6px;padding:12px 14px;font-size:11px;
+  color:rgba(181,245,66,.7);font-family:'JetBrains Mono',monospace;
+  line-height:1.6;margin-bottom:16px;
+}
 </style>
 </head>
 <body>
 
+<!-- BURGER -->
+<div class="burger" id="burger" onclick="toggleSidebar()">
+  <span></span><span></span><span></span>
+</div>
+<div class="sidebar-overlay" id="soverlay" onclick="toggleSidebar()"></div>
+
 <!-- SIDEBAR -->
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div class="logo-mark">Z</div>
     <div>
@@ -252,16 +335,16 @@ button,input,textarea,select{font-family:'Syne',sans-serif;font-size:14px}
   </div>
   <div class="sidebar-section">
     <div class="sidebar-label">Boshqaruv</div>
-    <button class="nav-item active" onclick="showPanel('dashboard')">
+    <button class="nav-item active" onclick="showPanel('dashboard');closeSidebar()">
       <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
       Asosiy sahifa
     </button>
-    <button class="nav-item" onclick="showPanel('designers')">
+    <button class="nav-item" onclick="showPanel('designers');closeSidebar()">
       <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><path d="M1 14c0-3 2-5 5-5s5 2 5 5"/><circle cx="13" cy="6" r="2"/><path d="M11 14c0-2 .9-3 2-3"/></svg>
       Dizaynerlar
       <span class="nav-count" id="nav-count-d">0</span>
     </button>
-    <button class="nav-item" onclick="showPanel('projects')">
+    <button class="nav-item" onclick="showPanel('projects');closeSidebar()">
       <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M5 6h6M5 9h6M5 12h4"/></svg>
       Loyihalar
       <span class="nav-count" id="nav-count-p">0</span>
@@ -280,7 +363,21 @@ button,input,textarea,select{font-family:'Syne',sans-serif;font-size:14px}
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-title" id="topbar-title">Asosiy sahifa</div>
-  <div class="topbar-right" id="topbar-right"></div>
+  <div class="topbar-right" id="topbar-right">
+    <button class="btn btn-ghost btn-xs" onclick="openSettings()" title="Sinxronizatsiya sozlamalari" style="font-size:16px;padding:4px 10px">⚙</button>
+  </div>
+</div>
+
+<!-- SYNC BAR -->
+<div class="sync-bar" id="sync-bar">
+  <div class="sync-status">
+    <span class="sync-dot" id="sync-dot"></span>
+    <span id="sync-msg">Mahalliy rejim</span>
+  </div>
+  <div class="sync-actions">
+    <button class="btn btn-ghost btn-xs" onclick="syncLoad()" id="btn-load">↓ Yuklash</button>
+    <button class="btn btn-primary btn-xs" onclick="syncSave()" id="btn-save">↑ Saqlash</button>
+  </div>
 </div>
 
 <!-- MAIN -->
@@ -961,9 +1058,190 @@ function toast(msg){
   setTimeout(()=>{el.style.animation='toastOut .25s ease forwards';setTimeout(()=>el.remove(),250);},2500);
 }
 
+// ═══════════════════════════════════════════════
+// BURGER / SIDEBAR (MOBIL)
+// ═══════════════════════════════════════════════
+function toggleSidebar(){
+  const s=document.getElementById('sidebar');
+  const o=document.getElementById('soverlay');
+  s.classList.toggle('open');
+  o.classList.toggle('show');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('soverlay').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════
+// GITHUB SYNC
+// Saqlash joyi: github.com/zari004/designers → data.json
+// ═══════════════════════════════════════════════
+const REPO_OWNER = 'zari004';
+const REPO_NAME  = 'designers';
+const DATA_FILE  = 'data.json';
+
+function getSyncCfg(){
+  return {
+    token: localStorage.getItem('gh_token')||'',
+    enabled: !!localStorage.getItem('gh_token'),
+  };
+}
+
+function setSyncStatus(state, msg){
+  const dot = document.getElementById('sync-dot');
+  const txt = document.getElementById('sync-msg');
+  dot.className = 'sync-dot ' + (state==='ok'?'ok':state==='err'?'err':state==='load'?'load':'');
+  txt.textContent = msg;
+}
+
+async function syncSave(){
+  const cfg = getSyncCfg();
+  if(!cfg.enabled){ openSettings(); return; }
+  setSyncStatus('load', "Saqlanmoqda...");
+  document.getElementById('btn-save').disabled=true;
+  try{
+    const data = {designers, projects, savedAt: new Date().toISOString()};
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+
+    // SHA olish (update uchun kerak)
+    let sha = '';
+    try{
+      const r = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE}`,
+        {headers:{Authorization:`Bearer ${cfg.token}`,Accept:'application/vnd.github+json'}});
+      if(r.ok){ const j=await r.json(); sha=j.sha||''; }
+    }catch(e){}
+
+    const body = {message:`Ma'lumotlar yangilandi — ${new Date().toLocaleString('uz')}`, content};
+    if(sha) body.sha = sha;
+
+    const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE}`,{
+      method:'PUT',
+      headers:{Authorization:`Bearer ${cfg.token}`,'Content-Type':'application/json',Accept:'application/vnd.github+json'},
+      body: JSON.stringify(body),
+    });
+    if(!res.ok){ const e=await res.json(); throw new Error(e.message||res.status); }
+    setSyncStatus('ok', `Saqlandi · ${new Date().toLocaleTimeString('uz')}`);
+    localStorage.setItem('gh_sha', (await res.json()).content?.sha||sha);
+    toast("✓ GitHub'ga saqlandi");
+  }catch(e){
+    setSyncStatus('err', 'Saqlashda xatolik: '+e.message);
+    toast('Xatolik: '+e.message);
+  }
+  document.getElementById('btn-save').disabled=false;
+}
+
+async function syncLoad(){
+  const cfg = getSyncCfg();
+  setSyncStatus('load', "Yuklanmoqda...");
+  document.getElementById('btn-load').disabled=true;
+  try{
+    const headers = {Accept:'application/vnd.github+json'};
+    if(cfg.token) headers.Authorization = `Bearer ${cfg.token}`;
+
+    const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE}`,{headers});
+    if(!res.ok){ if(res.status===404){ setSyncStatus('','Ma\'lumot topilmadi'); return; } throw new Error('HTTP '+res.status); }
+    const j = await res.json();
+    const decoded = decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))));
+    const data = JSON.parse(decoded);
+    if(data.designers) designers=[...data.designers];
+    if(data.projects)  projects=[...data.projects];
+    // ID counter'larni yangilash
+    nextDId = Math.max(1,...designers.map(d=>d.id))+1;
+    nextPId = Math.max(1,...projects.map(p=>p.id))+1;
+    setSyncStatus('ok', `Yuklandi · ${new Date(data.savedAt).toLocaleString('uz')}`);
+    // Joriy panel'ni qayta render qilish
+    const active = document.querySelector('.panel.active')?.id?.replace('panel-','');
+    if(active==='dashboard') renderDashboard();
+    else if(active==='designers') renderDesigners();
+    else if(active==='projects') renderProjects();
+    updateCounts();
+    toast("✓ Ma'lumotlar yuklandi");
+  }catch(e){
+    setSyncStatus('err', 'Xatolik: '+e.message);
+    toast('Xatolik: '+e.message);
+  }
+  document.getElementById('btn-load').disabled=false;
+}
+
+// ═══════════════════════════════════════════════
+// SETTINGS MODAL
+// ═══════════════════════════════════════════════
+function openSettings(){
+  const token = localStorage.getItem('gh_token')||'';
+  document.getElementById('modal-title-text').textContent = 'Sinxronizatsiya sozlamalari';
+  document.getElementById('modal-body').innerHTML=`
+    <div class="settings-note">
+      📡 Ma'lumotlar <strong>github.com/zari004/designers</strong> repodagi
+      <strong>data.json</strong> fayliga saqlanadi.<br/>
+      Ixtiyoriy qurilmadan "Yuklash" tugmasini bossangiz — oxirgi saqlangan ma'lumot keladi.<br/>
+      Token faqat shu qurilmada saqlanadi (localStorage).
+    </div>
+    <div class="form-group">
+      <label class="form-label">GitHub Personal Access Token
+        <small><a href="https://github.com/settings/tokens/new?scopes=repo&description=designers-panel" target="_blank" style="color:var(--accent2)">↗ Yaratish</a></small>
+      </label>
+      <input class="form-input" id="s-token" type="password"
+        value="${token}" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+        style="font-family:'JetBrains Mono',monospace;letter-spacing:1px"/>
+      <div class="form-hint">Scope: <strong>repo</strong> → Contents read/write</div>
+    </div>
+    <div class="form-group" style="margin-top:4px">
+      <label class="form-label">Repo ma'lumotlari</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <input class="form-input" value="${REPO_OWNER}/${REPO_NAME}" readonly
+          style="color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:12px"/>
+        <input class="form-input" value="${DATA_FILE}" readonly
+          style="color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:12px"/>
+      </div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px;margin-bottom:16px;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;line-height:1.8">
+      <div style="color:var(--text);font-weight:600;margin-bottom:6px">Qanday ishlaydi:</div>
+      1. Token kiriting → Saqlash<br/>
+      2. <strong>↑ Saqlash</strong> — ma'lumotlarni GitHub'ga yuklaydi<br/>
+      3. Boshqa qurilmada saytni oching → <strong>↓ Yuklash</strong><br/>
+      4. Token o'sha qurilmada ham bir marta kiritilishi kerak
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" onclick="clearToken()">Tokenni o'chirish</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Bekor</button>
+      <button class="btn btn-primary" onclick="saveToken()">Saqlash</button>
+    </div>`;
+  document.getElementById('modal').style.display='flex';
+}
+
+function saveToken(){
+  const t = document.getElementById('s-token').value.trim();
+  if(!t){ clearToken(); return; }
+  localStorage.setItem('gh_token', t);
+  closeModal();
+  setSyncStatus('ok', "Token saqlandi — tayyor");
+  toast("✓ Token saqlandi");
+}
+
+function clearToken(){
+  localStorage.removeItem('gh_token');
+  closeModal();
+  setSyncStatus('', "Mahalliy rejim");
+  toast("Token o'chirildi");
+}
+
+// ═══════════════════════════════════════════════
 // INIT
+// ═══════════════════════════════════════════════
 updateCounts();
 renderDashboard();
+
+// Sync holat
+if(localStorage.getItem('gh_token')){
+  setSyncStatus('ok', "Token mavjud — sinxronlashga tayyor");
+} else {
+  setSyncStatus('', "Mahalliy rejim · ⚙ tugmasini bosib sozlang");
+}
+
+// Sahifa yuklanganda avtomatik yuklash (agar token bo'lsa)
+if(localStorage.getItem('gh_token')){
+  syncLoad();
+}
 </script>
 </body>
 </html>
