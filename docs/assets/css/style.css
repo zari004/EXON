@@ -1,7 +1,7 @@
 /* ==========================================================================
    EXON — Design tokens
    Palitra: grafit kulrang (fon) · oq (matn) · yashil (urg'u)
-   Mavzu: faqat dark — bu ataylab qilingan tanlov, light versiya yo'q.
+   Ikkita mavzu: dark (standart) va light — [data-theme="light"] orqali.
    ========================================================================== */
 :root{
   /* fon qatlamlari — sof qora emas, yashil tomonga biroz og'gan grafit */
@@ -9,6 +9,11 @@
   --bg-2:      #101413;
   --surface:   #161B19;
   --surface-2: #1D2422;
+  /* rgb-triplet variantlari — rgba() ichida alpha bilan ishlatish uchun */
+  --bg-rgb:        12,15,14;
+  --bg-2-rgb:      16,20,19;
+  --surface-rgb:   22,27,25;
+  --surface-2-rgb: 29,36,34;
 
   /* chegaralar */
   --line:      #232B28;
@@ -33,6 +38,31 @@
   --nav-h: 76px;
   --wrap: 1280px;
   --ease: cubic-bezier(.22,.68,.28,1);
+}
+
+/* ── LIGHT MAVZU — xuddi shu o'zgaruvchilar, teskari qiymatlar bilan ── */
+:root[data-theme="light"]{
+  --bg:        #F6F9F7;
+  --bg-2:      #EFF4F1;
+  --surface:   #FFFFFF;
+  --surface-2: #E7EEE9;
+  --bg-rgb:        246,249,247;
+  --bg-2-rgb:      239,244,241;
+  --surface-rgb:   255,255,255;
+  --surface-2-rgb: 231,238,233;
+
+  --line:      #DCE6E0;
+  --line-2:    #C7D3CC;
+
+  --white:     #10151A;
+  --gray:      #4B564F;
+  --gray-dim:  #7C877F;
+
+  --green:      #0A9D57;
+  --green-hi:   #0BD16C;
+  --green-deep: #00753A;
+  --green-ink:  #04120A;
+  --green-rgb:  10,157,87;
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -78,7 +108,7 @@ ol,ul{list-style:none}
   border-bottom:1px solid transparent;
 }
 .nav.is-scrolled{
-  background:rgba(12,15,14,.82);
+  background:rgba(var(--bg-rgb),.82);
   backdrop-filter:blur(16px);
   -webkit-backdrop-filter:blur(16px);
   border-bottom-color:var(--line);
@@ -120,6 +150,20 @@ ol,ul{list-style:none}
 }
 .lang__btn:hover{color:var(--white)}
 .lang__btn.is-active{background:var(--surface-2);color:var(--white)}
+
+/* ── dark/light almashtiruvchi ── */
+.theme-toggle{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;flex-shrink:0;border-radius:50%;
+  background:var(--surface);border:1px solid var(--line-2);
+  color:var(--gray);cursor:pointer;
+  transition:color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+}
+.theme-toggle:hover{color:var(--white);border-color:var(--line)}
+.theme-toggle svg{width:17px;height:17px}
+.theme-toggle__moon{display:none}
+[data-theme="light"] .theme-toggle__sun{display:none}
+[data-theme="light"] .theme-toggle__moon{display:block}
 
 /* ==========================================================================
    TUGMALAR
@@ -468,7 +512,7 @@ ol,ul{list-style:none}
   .nav__menu{
     position:fixed;inset:var(--nav-h) 0 auto 0;
     flex-direction:column;justify-content:flex-start;gap:0;
-    background:rgba(12,15,14,.97);
+    background:rgba(var(--bg-rgb),.97);
     backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
     border-bottom:1px solid var(--line);
     padding:8px clamp(18px,3.4vw,40px) 20px;
