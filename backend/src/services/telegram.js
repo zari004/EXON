@@ -3,7 +3,7 @@ let bot = null;
 // Initialize bot if token is provided
 if (process.env.TELEGRAM_BOT_TOKEN) {
   try {
-    const TelegramBot = require('node-telegram-bot-api');
+    const { TelegramBot } = require('node-telegram-bot-api');
     bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN);
     console.log('✅ Telegram bot initialized');
   } catch (err) {
