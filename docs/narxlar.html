@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=9" />
+<link rel="stylesheet" href="assets/css/style.css?v=10" />
 <style>
 /* ════════════════════════════════════════════════════════════════════════════
    NARXLAR — pricing sahifasi
@@ -353,96 +353,9 @@
     </p>
   </div>
 
-  <!-- PRICING RO'YXATI -->
+  <!-- PRICING RO'YXATI — admin paneldan dinamik yuklanadi -->
   <div class="pricing-grid" id="pricing-list">
-
-    <!-- PLAN 1: AUDIY (S-1) -->
-    <div class="price-card">
-      <span class="price-card__badge">YANGI BOSHLOVCHILAR</span>
-      <h2 class="price-card__name">Audit & Rejasi</h2>
-      <p class="price-card__desc">Bepul audit + tafsil yo'l xaritasi</p>
-      <div class="price-card__price">
-        <span class="price-card__amount">Bepul</span>
-      </div>
-      <p class="price-card__period">Faqat taqdim qilish</p>
-      <ul class="price-card__features">
-        <li class="feature-item">12 nuqtali do'kon tahlili</li>
-        <li class="feature-item">Raqamli hisobot PDF</li>
-        <li class="feature-item">30 daqiqa konsultatsiya</li>
-        <li class="feature-item">Yana xizmatlarga 10% chegirma</li>
-      </ul>
-      <div class="price-card__cta">
-        <button class="price-btn price-btn--primary" onclick="goToAudit()">Bepul Olish</button>
-      </div>
-    </div>
-
-    <!-- PLAN 2: UPAKOVKA (S-2) -->
-    <div class="price-card is-featured">
-      <span class="price-card__badge feature">SOTIB TURGAN SELLER'LAR</span>
-      <h2 class="price-card__name">Upakovka Pro</h2>
-      <p class="price-card__desc">Kartochka, foto, matn, SEO — hammasini qilmiz</p>
-      <div class="price-card__price">
-        <span class="price-card__amount">2,500</span>
-        <span class="price-card__currency">$</span>
-      </div>
-      <p class="price-card__period">Har 5 ta SKU uchun</p>
-      <ul class="price-card__features">
-        <li class="feature-item">Professional foto 360° (10+ bur)</li>
-        <li class="feature-item">Infografika (2 dizayn varyanti)</li>
-        <li class="feature-item">SEO matn (UZ + RU)</li>
-        <li class="feature-item">3 marketpleys uchun optimallashtirish</li>
-        <li class="feature-item">2 hafta ichida tayyor</li>
-      </ul>
-      <div class="price-card__cta">
-        <button class="price-btn price-btn--primary" onclick="goToConsultation()">Konsultatsiya</button>
-      </div>
-    </div>
-
-    <!-- PLAN 3: REKLAMA (S-3) -->
-    <div class="price-card">
-      <span class="price-card__badge">BREND & DISTRIBYUTOR</span>
-      <h2 class="price-card__name">Reklama + Boshqaruv</h2>
-      <p class="price-card__desc">Kunlik kampaniya boshqaruvi, optimizatsiya</p>
-      <div class="price-card__price">
-        <span class="price-card__amount">3,000</span>
-        <span class="price-card__currency">$/oy</span>
-      </div>
-      <p class="price-card__period">Reklama hajmi 30k+ dan</p>
-      <ul class="price-card__features">
-        <li class="feature-item">Kalit so'z tahlili va tanlash</li>
-        <li class="feature-item">Kunlik kampaniya optimizatsiyasi</li>
-        <li class="feature-item">AB-testlar va variantlar</li>
-        <li class="feature-item">Haftalik hisobotlar</li>
-        <li class="feature-item">Aniq ROAS + ROI tracking</li>
-      </ul>
-      <div class="price-card__cta">
-        <button class="price-btn price-btn--secondary" onclick="goToConsultation()">Batafsil</button>
-      </div>
-    </div>
-
-    <!-- PLAN 4: SCALING (S-4) -->
-    <div class="price-card">
-      <span class="price-card__badge">ISHLAB CHIQARUVCHI</span>
-      <h2 class="price-card__name">Full Scaling</h2>
-      <p class="price-card__desc">Kartochka + Reklama + Analitika + Qayta urinish</p>
-      <div class="price-card__price">
-        <span class="price-card__amount">6,500</span>
-        <span class="price-card__currency">$/oy</span>
-      </div>
-      <p class="price-card__period">Dedikatsiya xizmat</p>
-      <ul class="price-card__features">
-        <li class="feature-item">Kartochka fotografi va matn</li>
-        <li class="feature-item">3 ta til (UZ, RU, EN)</li>
-        <li class="feature-item">Reklama + 24/7 boshqaruv</li>
-        <li class="feature-item">Dedikatsiya akkaunt menedzheri</li>
-        <li class="feature-item">Kunlik KPI tracking</li>
-        <li class="feature-item">6 oylik garantiya +2x ROI</li>
-      </ul>
-      <div class="price-card__cta">
-        <button class="price-btn price-btn--primary" onclick="goToConsultation()">Batafsil</button>
-      </div>
-    </div>
-
+    <p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Yuklanmoqda...</p>
   </div>
 
   <!-- FAQ -->
@@ -480,6 +393,7 @@
 
 </main>
 
+<script src="assets/js/api-base.js"></script>
 <script>
 // Nav scroll blur
 (function() {
@@ -515,12 +429,52 @@
 })();
 
 function goToAudit() {
-  window.location.href = '/audit.html';
+  window.location.href = 'audit.html';
 }
 
 function goToConsultation() {
   alert('Konsultatsiya bron qilish tizimi tayyorasida... 😊 Hozir @exon_admin ga yozing!');
 }
+
+// Narxlarni admin panel bazasidan yuklash
+(function () {
+  function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+  function renderPlan(p) {
+    const featuresHtml = (p.features || []).map(function (f) {
+      return '<li class="feature-item">' + esc(f) + '</li>';
+    }).join('');
+    const badgeCls = p.featured ? 'price-card__badge feature' : 'price-card__badge';
+    const cardCls = p.featured ? 'price-card is-featured' : 'price-card';
+    const btnCls = p.ctaType === 'primary' ? 'price-btn price-btn--primary' : 'price-btn price-btn--secondary';
+    const onClick = /audit/i.test(p.ctaLabel) ? 'goToAudit()' : 'goToConsultation()';
+    return '<div class="' + cardCls + '">' +
+      (p.badge ? '<span class="' + badgeCls + '">' + esc(p.badge) + '</span>' : '') +
+      '<h2 class="price-card__name">' + esc(p.name) + '</h2>' +
+      '<p class="price-card__desc">' + esc(p.desc) + '</p>' +
+      '<div class="price-card__price"><span class="price-card__amount">' + esc(p.amount) + '</span>' +
+      (p.currency ? '<span class="price-card__currency">' + esc(p.currency) + '</span>' : '') + '</div>' +
+      '<p class="price-card__period">' + esc(p.period) + '</p>' +
+      '<ul class="price-card__features">' + featuresHtml + '</ul>' +
+      '<div class="price-card__cta"><button class="' + btnCls + '" onclick="' + onClick + '">' + esc(p.ctaLabel) + '</button></div>' +
+      '</div>';
+  }
+
+  fetch(window.EXON_API_BASE + '/api/pricing')
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      const list = document.getElementById('pricing-list');
+      if (!data.success || !data.pricing.length) {
+        list.innerHTML = '<p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Hozircha paketlar yo\'q.</p>';
+        return;
+      }
+      list.innerHTML = data.pricing.map(renderPlan).join('');
+    })
+    .catch(function () {
+      document.getElementById('pricing-list').innerHTML =
+        '<p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Narxlarni yuklab bo\'lmadi. Birozdan so\'ng qayta urinib ko\'ring.</p>';
+    });
+})();
 </script>
 
 </body>

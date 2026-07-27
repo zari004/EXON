@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=9" />
+<link rel="stylesheet" href="assets/css/style.css?v=10" />
 <style>
 /* ════════════════════════════════════════════════════════════════════════════
    KEYSLAR — case studies sahifasi
@@ -83,6 +83,15 @@
   background: rgba(22, 27, 25, .5);
   backdrop-filter: blur(8px);
   transition: all .3s cubic-bezier(.22,.68,.28,1);
+  overflow: hidden;
+}
+
+.key-card__img {
+  width: calc(100% + clamp(48px,8vw,64px));
+  margin: calc(-1 * clamp(24px,4vw,32px)) calc(-1 * clamp(24px,4vw,32px)) 20px;
+  height: 160px;
+  object-fit: cover;
+  display: block;
 }
 
 .key-card:hover {
@@ -276,145 +285,9 @@
     </p>
   </div>
 
-  <!-- KEYSLAR RO'YXATI -->
+  <!-- KEYSLAR RO'YXATI — admin paneldan dinamik yuklanadi -->
   <div class="keyslar__grid" id="keyslar-list">
-
-    <!-- KEY 1: ELEKTRONIKA -->
-    <article class="key-card">
-      <div class="key-card__tag">📱 Elektronika</div>
-      <h2 class="key-card__title">Smartfon Aksessuarlari</h2>
-      <p class="key-card__desc">
-        Chop etilgan aksessuarlar uchun Uzum'da kartochka optimallashtirish va reklama kampaniyasi.
-      </p>
-      <div class="key-card__metrics">
-        <div class="key-metric">
-          <div class="key-metric__value">+340%</div>
-          <div class="key-metric__label">Trafik</div>
-        </div>
-        <div class="key-metric">
-          <div class="key-metric__value">+218%</div>
-          <div class="key-metric__label">Buyurtma</div>
-        </div>
-      </div>
-      <div class="key-card__markets">
-        <span class="market-badge market-badge--uzum">🛍 Uzum</span>
-      </div>
-    </article>
-
-    <!-- KEY 2: UY BUYUMLARI -->
-    <article class="key-card">
-      <div class="key-card__tag">🏠 Uy Buyumlari</div>
-      <h2 class="key-card__title">Oshxona Janglari</h2>
-      <p class="key-card__desc">
-        Vileda, Grohe uchun Wildberries'da brend pozitsiyasi tuzatish va reklama ROI +45%.
-      </p>
-      <div class="key-card__metrics">
-        <div class="key-metric">
-          <div class="key-metric__value">+156%</div>
-          <div class="key-metric__label">Positisya</div>
-        </div>
-        <div class="key-metric">
-          <div class="key-metric__value">3:1</div>
-          <div class="key-metric__label">ROI</div>
-        </div>
-      </div>
-      <div class="key-card__markets">
-        <span class="market-badge market-badge--wb">📦 Wildberries</span>
-      </div>
-    </article>
-
-    <!-- KEY 3: BOLALAR MAHSULOTLARI -->
-    <article class="key-card">
-      <div class="key-card__tag">👶 Bolalar</div>
-      <h2 class="key-card__title">Bolalar Paltolari</h2>
-      <p class="key-card__desc">
-        Fanlar paltochasi — 3 ta tilsiz kartochka dan boshlab, professional reklama bilan +420% buyurtma.
-      </p>
-      <div class="key-card__metrics">
-        <div class="key-metric">
-          <div class="key-metric__value">+420%</div>
-          <div class="key-metric__label">Buyurtma</div>
-        </div>
-        <div class="key-metric">
-          <div class="key-metric__value">2.8x</div>
-          <div class="key-metric__label">Konversiya</div>
-        </div>
-      </div>
-      <div class="key-card__markets">
-        <span class="market-badge market-badge--uzum">🛍 Uzum</span>
-        <span class="market-badge market-badge--wb">📦 Wildberries</span>
-      </div>
-    </article>
-
-    <!-- KEY 4: KOSMETIKA -->
-    <article class="key-card">
-      <div class="key-card__tag">💄 Kosmetika</div>
-      <h2 class="key-card__title">Organikal Kremlar</h2>
-      <p class="key-card__desc">
-        Yosh brend — Yandex Market'da 0 dan 50+ reklama qilingan mahsulot, 8 oyda +$180k oborot.
-      </p>
-      <div class="key-card__metrics">
-        <div class="key-metric">
-          <div class="key-metric__value">$180k</div>
-          <div class="key-metric__label">Oborot</div>
-        </div>
-        <div class="key-metric">
-          <div class="key-metric__value">8.2%</div>
-          <div class="key-metric__label">ROAS</div>
-        </div>
-      </div>
-      <div class="key-card__markets">
-        <span class="market-badge market-badge--yandex">🔴 Yandex</span>
-      </div>
-    </article>
-
-    <!-- KEY 5: MAHSULOT BRENDLARI -->
-    <article class="key-card">
-      <div class="key-card__tag">🌿 Brend</div>
-      <h2 class="key-card__title">Mahsulot Brendining Scalelash</h2>
-      <p class="key-card__desc">
-        O'z brendi — 3 ta marketpleys, 12 ta SKU, unifikatsiya va pozitsiya tuzatish, aylik +$45k.
-      </p>
-      <div class="key-card__metrics">
-        <div class="key-metric">
-          <div class="key-metric__value">+$45k</div>
-          <div class="key-metric__label">Oylik</div>
-        </div>
-        <div class="key-metric">
-          <div class="key-metric__value">18%</div>
-          <div class="key-metric__label">Hajm O'shishi</div>
-        </div>
-      </div>
-      <div class="key-card__markets">
-        <span class="market-badge market-badge--uzum">🛍 Uzum</span>
-        <span class="market-badge market-badge--wb">📦 Wildberries</span>
-        <span class="market-badge market-badge--yandex">🔴 Yandex</span>
-      </div>
-    </article>
-
-    <!-- KEY 6: NOLLDAN BALANISH -->
-    <article class="key-card">
-      <div class="key-card__tag">🚀 Startup</div>
-      <h2 class="key-card__title">Boshdan Boshla — Oy'da $35k</h2>
-      <p class="key-card__desc">
-        Yangi do'kon — kartochka, reklama, boshqaruv hammasiga. 6 oyda istiqomiy o'sish va 3 ta tilga.
-      </p>
-      <div class="key-card__metrics">
-        <div class="key-metric">
-          <div class="key-metric__value">$35k</div>
-          <div class="key-metric__label">6-Oy Oborot</div>
-        </div>
-        <div class="key-metric">
-          <div class="key-metric__value">39%</div>
-          <div class="key-metric__label">Mom Foyda</div>
-        </div>
-      </div>
-      <div class="key-card__markets">
-        <span class="market-badge market-badge--uzum">🛍 Uzum</span>
-        <span class="market-badge market-badge--yandex">🔴 Yandex</span>
-      </div>
-    </article>
-
+    <p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Yuklanmoqda...</p>
   </div>
 
   <!-- CTA -->
@@ -428,6 +301,7 @@
 
 </main>
 
+<script src="assets/js/api-base.js"></script>
 <script>
 // Nav scroll blur
 (function() {
@@ -460,6 +334,50 @@
       setMenu(false);
     }
   });
+})();
+
+// Keyslarni admin panel bazasidan yuklash
+(function () {
+  const MARKET_INFO = {
+    uzum: { icon: '🛍', label: 'Uzum', cls: 'market-badge--uzum' },
+    wb: { icon: '📦', label: 'Wildberries', cls: 'market-badge--wb' },
+    yandex: { icon: '🔴', label: 'Yandex', cls: 'market-badge--yandex' }
+  };
+
+  function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+  function renderCase(c) {
+    const marketsHtml = (c.markets || []).map(function (m) {
+      const info = MARKET_INFO[m];
+      return info ? '<span class="market-badge ' + info.cls + '">' + info.icon + ' ' + info.label + '</span>' : '';
+    }).join('');
+    return '<article class="key-card">' +
+      (c.image ? '<img class="key-card__img" src="' + c.image + '" alt="" />' : '') +
+      '<div class="key-card__tag">' + esc(c.tag) + '</div>' +
+      '<h2 class="key-card__title">' + esc(c.title) + '</h2>' +
+      '<p class="key-card__desc">' + esc(c.desc) + '</p>' +
+      '<div class="key-card__metrics">' +
+      '<div class="key-metric"><div class="key-metric__value">' + esc(c.metric1.value) + '</div><div class="key-metric__label">' + esc(c.metric1.label) + '</div></div>' +
+      '<div class="key-metric"><div class="key-metric__value">' + esc(c.metric2.value) + '</div><div class="key-metric__label">' + esc(c.metric2.label) + '</div></div>' +
+      '</div>' +
+      '<div class="key-card__markets">' + marketsHtml + '</div>' +
+      '</article>';
+  }
+
+  fetch(window.EXON_API_BASE + '/api/cases')
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      const list = document.getElementById('keyslar-list');
+      if (!data.success || !data.cases.length) {
+        list.innerHTML = '<p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Hozircha keyslar yo\'q.</p>';
+        return;
+      }
+      list.innerHTML = data.cases.map(renderCase).join('');
+    })
+    .catch(function () {
+      document.getElementById('keyslar-list').innerHTML =
+        '<p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Keyslarni yuklab bo\'lmadi. Birozdan so\'ng qayta urinib ko\'ring.</p>';
+    });
 })();
 </script>
 

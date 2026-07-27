@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=9" />
+<link rel="stylesheet" href="assets/css/style.css?v=10" />
 <style>
 /* ════════════════════════════════════════════════════════════════════════════
    BLOG — maqolalar sahifasi
@@ -84,6 +84,15 @@
   backdrop-filter: blur(8px);
   transition: all .3s cubic-bezier(.22,.68,.28,1);
   cursor: pointer;
+  overflow: hidden;
+}
+
+.article-card__img {
+  width: calc(100% + clamp(48px,8vw,64px));
+  margin: calc(-1 * clamp(24px,4vw,32px)) calc(-1 * clamp(24px,4vw,32px)) 20px;
+  height: 150px;
+  object-fit: cover;
+  display: block;
 }
 
 .article-card:hover {
@@ -232,91 +241,14 @@
     </p>
   </div>
 
-  <!-- ARTICLES -->
+  <!-- ARTICLES — admin paneldan dinamik yuklanadi -->
   <div class="blog__grid" id="blog-list">
-
-    <!-- ARTICLE 1 -->
-    <article class="article-card">
-      <span class="article-card__tag">SEO</span>
-      <h2 class="article-card__title">Uzum'da Kalit So'zlar — 2025 Qo'llanmasi</h2>
-      <p class="article-card__desc">
-        Qidiruvda rost chiqish uchun kalit so'zlarni qanday tanlash, aylantirish va test qilish?
-      </p>
-      <div class="article-card__meta">
-        <div class="article-card__date">📅 25 jul</div>
-        <div class="article-card__read">5 min</div>
-      </div>
-    </article>
-
-    <!-- ARTICLE 2 -->
-    <article class="article-card">
-      <span class="article-card__tag">REKLAMA</span>
-      <h2 class="article-card__title">Wildberries'da Reklama — Budjet Taqsimoti</h2>
-      <p class="article-card__desc">
-        CPA, CPC, ROAS — hamma metrika nima va qanday o'lchash kerak?
-      </p>
-      <div class="article-card__meta">
-        <div class="article-card__date">📅 22 jul</div>
-        <div class="article-card__read">8 min</div>
-      </div>
-    </article>
-
-    <!-- ARTICLE 3 -->
-    <article class="article-card">
-      <span class="article-card__tag">KARTOCHKA</span>
-      <h2 class="article-card__title">Rasmni Optimallashtirish — Konversiya +40%</h2>
-      <p class="article-card__desc">
-        Professional foto usullari, RGB ranglar, tasvir nisbati — hammasi bir yerda.
-      </p>
-      <div class="article-card__meta">
-        <div class="article-card__date">📅 18 jul</div>
-        <div class="article-card__read">6 min</div>
-      </div>
-    </article>
-
-    <!-- ARTICLE 4 -->
-    <article class="article-card">
-      <span class="article-card__tag">BIZNES</span>
-      <h2 class="article-card__title">3 Marketpleys vs 1 — Qaysi Tanlash?</h2>
-      <p class="article-card__desc">
-        Siz yangi boshlovchi ekanligiz yoki masshtabichgan — har segment uchun roka.
-      </p>
-      <div class="article-card__meta">
-        <div class="article-card__date">📅 15 jul</div>
-        <div class="article-card__read">7 min</div>
-      </div>
-    </article>
-
-    <!-- ARTICLE 5 -->
-    <article class="article-card">
-      <span class="article-card__tag">ANALITIKA</span>
-      <h2 class="article-card__title">Yandex Market — Analitika Panel Naqib</h2>
-      <p class="article-card__desc">
-        Qaysi raqamlar asosiy va qaysi ularni kuzatish mumkin — har satrda tavsifi.
-      </p>
-      <div class="article-card__meta">
-        <div class="article-card__date">📅 12 jul</div>
-        <div class="article-card__read">9 min</div>
-      </div>
-    </article>
-
-    <!-- ARTICLE 6 -->
-    <article class="article-card">
-      <span class="article-card__tag">MARKETING</span>
-      <h2 class="article-card__title">Brend Pozisiyasini Qanday Tuzatish?</h2>
-      <p class="article-card__desc">
-        Qo'lini va reklama strategiyasini xelsa uyg'unlashtirish — kompleks usul.
-      </p>
-      <div class="article-card__meta">
-        <div class="article-card__date">📅 10 jul</div>
-        <div class="article-card__read">6 min</div>
-      </div>
-    </article>
-
+    <p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Yuklanmoqda...</p>
   </div>
 
 </main>
 
+<script src="assets/js/api-base.js"></script>
 <script>
 // Nav scroll blur
 (function() {
@@ -349,13 +281,41 @@
       setMenu(false);
     }
   });
+})();
 
-  // Article cards — click to read (TODO: individual article pages)
-  document.querySelectorAll('.article-card').forEach(card => {
-    card.addEventListener('click', () => {
-      alert('Maqola sahifasi tayyorasida... 📖');
+// Maqolalarni admin panel bazasidan yuklash
+(function () {
+  function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+  function renderPost(p) {
+    return '<article class="article-card">' +
+      (p.image ? '<img class="article-card__img" src="' + p.image + '" alt="" />' : '') +
+      '<span class="article-card__tag">' + esc(p.tag) + '</span>' +
+      '<h2 class="article-card__title">' + esc(p.title) + '</h2>' +
+      '<p class="article-card__desc">' + esc(p.desc) + '</p>' +
+      '<div class="article-card__meta">' +
+      '<div class="article-card__date">📅 ' + esc(p.date) + '</div>' +
+      '<div class="article-card__read">' + esc(p.readTime) + '</div>' +
+      '</div></article>';
+  }
+
+  fetch(window.EXON_API_BASE + '/api/posts')
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      const list = document.getElementById('blog-list');
+      if (!data.success || !data.posts.length) {
+        list.innerHTML = '<p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Hozircha maqolalar yo\'q.</p>';
+        return;
+      }
+      list.innerHTML = data.posts.map(renderPost).join('');
+      document.querySelectorAll('.article-card').forEach(function (card) {
+        card.addEventListener('click', function () { alert('Maqola sahifasi tayyorlanmoqda... 📖'); });
+      });
+    })
+    .catch(function () {
+      document.getElementById('blog-list').innerHTML =
+        '<p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Maqolalarni yuklab bo\'lmadi. Birozdan so\'ng qayta urinib ko\'ring.</p>';
     });
-  });
 })();
 </script>
 

@@ -11,6 +11,7 @@ Node.js + Express + SQLite backend for EXON marketplace audit and lead scoring s
 
 2. **Configure environment**
    - Copy `.env.example` to `.env`
+   - Set `ADMIN_PASSWORD` (used to log into `docs/admin.html`)
    - Set `TELEGRAM_BOT_TOKEN` (get from @BotFather on Telegram)
    - Set `TELEGRAM_ADMIN_ID` (your Telegram user ID)
 
@@ -52,6 +53,18 @@ Retrieve previous audit by email.
 
 ### GET `/api/audit/stats`
 Get aggregate statistics (total leads, by segment, average score).
+
+### Admin panel (`docs/admin.html`)
+Password-gated content management for the public site:
+- `POST /api/admin/login` — exchange `ADMIN_PASSWORD` for a bearer token (12h TTL, in-memory)
+- `GET/POST/PUT/DELETE /api/cases` — Keyslar (case studies); GET is public, mutations require the token
+- `GET/POST/PUT/DELETE /api/posts` — Blog articles; same auth pattern
+- `GET/POST/PUT/DELETE /api/pricing` — Pricing plans; same auth pattern
+- `GET /api/admin/stats` — audit leads dashboard (total, by segment, recent submissions)
+
+Images are uploaded as resized base64 JPEG (client-side canvas resize, ~640px max
+dimension) and stored directly in the `image` column — no separate file storage,
+so it survives redeploys without needing a persistent volume.
 
 ## Scoring System
 
@@ -112,12 +125,17 @@ const result = await response.json();
 backend/
 ├── src/
 │   ├── index.js           # Main server
-│   ├── db.js              # Database setup
+│   ├── db.js              # Database setup (leads, cases, posts, pricing)
 │   ├── routes/
-│   │   └── audit.js       # Audit endpoints
+│   │   ├── audit.js       # Audit endpoints
+│   │   ├── admin.js       # Login + dashboard stats
+│   │   ├── cases.js       # Keyslar CRUD
+│   │   ├── posts.js       # Blog CRUD
+│   │   └── pricing.js     # Narxlar CRUD
 │   └── services/
 │       ├── scoring.js     # 24-point scoring logic
-│       └── telegram.js    # Telegram bot integration
+│       ├── telegram.js    # Telegram bot integration
+│       └── auth.js        # Admin token issue/verify
 ├── data/
 │   └── exon.db            # SQLite database
 ├── .env                   # Configuration (secrets)

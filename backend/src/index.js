@@ -5,6 +5,10 @@ const bodyParser = require('body-parser');
 
 const db = require('./db');
 const auditRoutes = require('./routes/audit');
+const adminRoutes = require('./routes/admin');
+const casesRoutes = require('./routes/cases');
+const postsRoutes = require('./routes/posts');
+const pricingRoutes = require('./routes/pricing');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,25 +22,32 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// limit oshirilgan — admin paneldan base64 rasm yuklanadi
+app.use(bodyParser.json({ limit: '6mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '6mb' }));
 
 // ════════════════════════════════════════════════════════════════════════════
 // DATABASE INITIALIZATION
 // ════════════════════════════════════════════════════════════════════════════
 
-db.init().then(() => {
-  console.log('✅ Database initialized');
-}).catch(err => {
-  console.error('❌ Database error:', err);
-  process.exit(1);
-});
+db.init()
+  .then(() => db.seed())
+  .then(() => {
+    console.log('✅ Database initialized');
+  }).catch(err => {
+    console.error('❌ Database error:', err);
+    process.exit(1);
+  });
 
 // ════════════════════════════════════════════════════════════════════════════
 // ROUTES
 // ════════════════════════════════════════════════════════════════════════════
 
 app.use('/api/audit', auditRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/cases', casesRoutes);
+app.use('/api/posts', postsRoutes);
+app.use('/api/pricing', pricingRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
