@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=9" />
+<link rel="stylesheet" href="assets/css/style.css?v=10" />
 
 <!-- Animatsiya faqat JS ishlaganda yoqiladi. Aks holda kontent darhol
      ko'rinadi — sayt hech qachon bo'sh ekran ko'rsatmaydi. -->
@@ -180,63 +180,197 @@
   </div>
 </section>
 
-<!-- ══════════ XIZMATLAR ══════════ -->
-<section id="xizmatlar" style="padding: 80px 0; text-align: center; background: rgba(11,209,108,.03);">
-  <div style="max-width: 1280px; margin: 0 auto; padding: 0 40px;">
-    <h2 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 12px;">Xizmatlar</h2>
-    <p style="font-size: 16px; color: #98A29D; margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto;">
-      Audit, Upakovka, Reklama, O'sish — har do'kon uchun to'liq paket.
-    </p>
-    <a href="narxlar.html" class="btn btn--primary" style="display: inline-flex;">Narxlarni Ko'ring</a>
+<!-- ══════════ XIZMATLAR — 4 ta ikonkali karta ══════════ -->
+<section id="xizmatlar" class="tsec">
+  <div class="tsec__inner">
+    <div class="tsec__head reveal">
+      <div>
+        <span class="tsec__kicker">Xizmatlar</span>
+        <h2 class="tsec__title">To'liq marketpleys paketi</h2>
+        <p class="tsec__desc">Audit'dan boshlab, barqaror o'sishgacha — har bosqichni biz olamiz.</p>
+      </div>
+      <a class="tsec__link" href="narxlar.html">
+        Narxlarni ko'ring
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <div class="svc-grid">
+      <article class="svc-card reveal" style="--rd:.05s">
+        <div class="svc-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="M20 20l-4.8-4.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="svc-card__title">Audit</h3>
+        <p class="svc-card__desc">Do'koningizni 12 nuqta bo'yicha tekshiramiz va o'sish nuqtalarini topamiz.</p>
+      </article>
+      <article class="svc-card reveal" style="--rd:.12s">
+        <div class="svc-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 8l8-4 8 4-8 4-8-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 8v8l8 4 8-4V8M12 12v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="svc-card__title">Upakovka</h3>
+        <p class="svc-card__desc">Kartochka, professional foto, infografika va ikki tilda SEO matn.</p>
+      </article>
+      <article class="svc-card reveal" style="--rd:.19s">
+        <div class="svc-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 11l7-7 3 3-7 7-3-3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13 7l4-4 4 4-4 4M8 16l-4 4M11 14l-2 6-3-1-1-3 6-2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="svc-card__title">Reklama</h3>
+        <p class="svc-card__desc">Trafik, qidiruvdagi pozitsiya va reklama samaradorligini o'stiramiz.</p>
+      </article>
+      <article class="svc-card reveal" style="--rd:.26s">
+        <div class="svc-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 17l5-5 4 4 7-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 8h5v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="svc-card__title">O'sish</h3>
+        <p class="svc-card__desc">Oborot va konversiya barqaror o'sadi — har oy raqamli hisobot bilan.</p>
+      </article>
+    </div>
   </div>
 </section>
 
-<!-- ══════════ KEYSLAR ══════════ -->
-<section id="keyslar" style="padding: 80px 0; text-align: center;">
-  <div style="max-width: 1280px; margin: 0 auto; padding: 0 40px;">
-    <h2 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 12px;">50+ Do'konning Keyslar</h2>
-    <p style="font-size: 16px; color: #98A29D; margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto;">
-      Elektronika dan kosmetikagacha — hamma nishada 300%+ o'sish.
-    </p>
-    <a href="keyslar.html" class="btn btn--primary" style="display: inline-flex;">Keyslarni O'qing</a>
+<!-- ══════════ KEYSLAR — statistik kartalar ══════════ -->
+<section id="keyslar" class="tsec tsec--wash">
+  <div class="tsec__inner">
+    <div class="tsec__head reveal">
+      <div>
+        <span class="tsec__kicker">Keyslar</span>
+        <h2 class="tsec__title">50+ do'konning natijalari</h2>
+        <p class="tsec__desc">Elektronika dan kosmetikagacha — 100 000+ buyurtmada tasdiqlangan.</p>
+      </div>
+      <a class="tsec__link" href="keyslar.html">
+        Barcha keyslar
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <div class="case-grid">
+      <article class="case-card reveal" style="--rd:.05s">
+        <span class="case-card__tag">📱 Elektronika</span>
+        <h3 class="case-card__title">Smartfon Aksessuarlari</h3>
+        <div class="case-card__stats">
+          <div><b>+340%</b><span>Trafik</span></div>
+          <div><b>+218%</b><span>Buyurtma</span></div>
+        </div>
+        <span class="case-card__market">Uzum</span>
+      </article>
+      <article class="case-card reveal" style="--rd:.12s">
+        <span class="case-card__tag">🏠 Uy buyumlari</span>
+        <h3 class="case-card__title">Oshxona Janglari</h3>
+        <div class="case-card__stats">
+          <div><b>+156%</b><span>Pozitsiya</span></div>
+          <div><b>3:1</b><span>ROI</span></div>
+        </div>
+        <span class="case-card__market">Wildberries</span>
+      </article>
+      <article class="case-card reveal" style="--rd:.19s">
+        <span class="case-card__tag">👶 Bolalar</span>
+        <h3 class="case-card__title">Bolalar Paltolari</h3>
+        <div class="case-card__stats">
+          <div><b>+420%</b><span>Buyurtma</span></div>
+          <div><b>2.8x</b><span>Konversiya</span></div>
+        </div>
+        <span class="case-card__market">Uzum</span>
+      </article>
+    </div>
   </div>
 </section>
 
-<!-- ══════════ NARXLAR ══════════ -->
-<section id="narxlar" style="padding: 80px 0; text-align: center; background: rgba(11,209,108,.02);">
-  <div style="max-width: 1280px; margin: 0 auto; padding: 0 40px;">
-    <h2 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 12px;">Shaffof Narx</h2>
-    <p style="font-size: 16px; color: #98A29D; margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto;">
-      S-1 dan S-4 segmentgacha — 4 ta tayyorlangan paket.
-    </p>
-    <a href="narxlar.html" class="btn btn--primary" style="display: inline-flex;">Paketlarni Tekshiring</a>
+<!-- ══════════ NARXLAR — 2 ta taomil taqqoslash ══════════ -->
+<section id="narxlar" class="tsec">
+  <div class="tsec__inner">
+    <div class="tsec__head reveal">
+      <div>
+        <span class="tsec__kicker">Narxlar</span>
+        <h2 class="tsec__title">Shaffof, segmentga mos narx</h2>
+        <p class="tsec__desc">S-1 dan S-4 gacha — 4 ta tayyor paket. Eng ommaboplari:</p>
+      </div>
+      <a class="tsec__link" href="narxlar.html">
+        Barcha 4 ta paket
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <div class="price-teaser">
+      <article class="price-mini reveal" style="--rd:.05s">
+        <span class="price-mini__badge">Yangi boshlovchilar</span>
+        <h3 class="price-mini__name">Audit &amp; Rejasi</h3>
+        <div class="price-mini__amount">Bepul</div>
+        <p class="price-mini__desc">Bepul audit + tafsilotli yo'l xaritasi</p>
+      </article>
+      <article class="price-mini price-mini--hi reveal" style="--rd:.12s">
+        <span class="price-mini__badge price-mini__badge--hi">Eng mashhur</span>
+        <h3 class="price-mini__name">Upakovka Pro</h3>
+        <div class="price-mini__amount">$2,500 <small>/ 5 SKU</small></div>
+        <p class="price-mini__desc">Kartochka, foto, matn, SEO — hammasi</p>
+      </article>
+    </div>
   </div>
 </section>
 
-<!-- ══════════ JARAYON ══════════ -->
-<section id="jarayon" style="padding: 80px 0; text-align: center;">
-  <div style="max-width: 1280px; margin: 0 auto; padding: 0 40px;">
-    <h2 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 12px;">Ishlashtirish Jarayoni</h2>
-    <p style="font-size: 16px; color: #98A29D; margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto;">
-      4 bosqich, 30-90 kun. Audit dan oxirgi buyurtmagacha.
-    </p>
-    <a href="jarayon.html" class="btn btn--primary" style="display: inline-flex;">Jarayonni Bilib Oling</a>
+<!-- ══════════ JARAYON — gorizontal bosqichlar chizig'i ══════════ -->
+<section id="jarayon" class="tsec tsec--wash">
+  <div class="tsec__inner">
+    <div class="tsec__head reveal">
+      <div>
+        <span class="tsec__kicker">Jarayon</span>
+        <h2 class="tsec__title">30–90 kunlik yo'l xaritasi</h2>
+        <p class="tsec__desc">Auditdan birinchi natijagacha — 4 aniq bosqich.</p>
+      </div>
+      <a class="tsec__link" href="jarayon.html">
+        To'liq jarayon
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <ol class="proc-line reveal">
+      <li class="proc-line__item" style="--rd:.05s"><span class="proc-line__n">01</span><h3>Audit va Tahlil</h3></li>
+      <li class="proc-line__item" style="--rd:.12s"><span class="proc-line__n">02</span><h3>Strategiya va Rejalash</h3></li>
+      <li class="proc-line__item" style="--rd:.19s"><span class="proc-line__n">03</span><h3>Amalga Oshirish</h3></li>
+      <li class="proc-line__item" style="--rd:.26s"><span class="proc-line__n">04</span><h3>Kuzatish va ROAS</h3></li>
+    </ol>
   </div>
 </section>
 
-<!-- ══════════ BLOG ══════════ -->
-<section id="blog" style="padding: 80px 0; text-align: center; background: rgba(11,209,108,.03);">
-  <div style="max-width: 1280px; margin: 0 auto; padding: 0 40px;">
-    <h2 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 12px;">Blog va Qo'llanmalar</h2>
-    <p style="font-size: 16px; color: #98A29D; margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto;">
-      50+ qo'llanma — SEO, reklama, kartochka, analitika.
-    </p>
-    <a href="blog.html" class="btn btn--primary" style="display: inline-flex;">Blog'ga O'tish</a>
+<!-- ══════════ BLOG — gradient-thumb kartalar ══════════ -->
+<section id="blog" class="tsec">
+  <div class="tsec__inner">
+    <div class="tsec__head reveal">
+      <div>
+        <span class="tsec__kicker">Blog</span>
+        <h2 class="tsec__title">Qo'llanma va tajribalar</h2>
+        <p class="tsec__desc">50+ maqola — SEO, reklama, kartochka, analitika.</p>
+      </div>
+      <a class="tsec__link" href="blog.html">
+        Blog'ga o'tish
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <div class="post-grid">
+      <article class="post-card reveal" style="--rd:.05s">
+        <div class="post-card__thumb post-card__thumb--1" aria-hidden="true"></div>
+        <span class="post-card__tag">SEO</span>
+        <h3 class="post-card__title">Uzum'da Kalit So'zlar — 2025 Qo'llanmasi</h3>
+        <div class="post-card__meta"><span>25 iyul</span><span>5 min</span></div>
+      </article>
+      <article class="post-card reveal" style="--rd:.12s">
+        <div class="post-card__thumb post-card__thumb--2" aria-hidden="true"></div>
+        <span class="post-card__tag">REKLAMA</span>
+        <h3 class="post-card__title">Wildberries'da Reklama — Budjet Taqsimoti</h3>
+        <div class="post-card__meta"><span>22 iyul</span><span>8 min</span></div>
+      </article>
+      <article class="post-card reveal" style="--rd:.19s">
+        <div class="post-card__thumb post-card__thumb--3" aria-hidden="true"></div>
+        <span class="post-card__tag">KARTOCHKA</span>
+        <h3 class="post-card__title">Rasmni Optimallashtirish — Konversiya +40%</h3>
+        <div class="post-card__meta"><span>18 iyul</span><span>6 min</span></div>
+      </article>
+    </div>
   </div>
 </section>
 
 </main>
 
-<script src="assets/js/main.js?v=3"></script>
+<script src="assets/js/main.js?v=4"></script>
 </body>
 </html>
