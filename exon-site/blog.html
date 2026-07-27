@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Blog — EXON Marketpleys Qo'llanmasi va Maslahatlar</title>
+<meta name="description" content="Uzum, Wildberries, Yandex Market'da savdoni rivojlantirish uchun — 50+ qo'llanma, maslahat va strategiya." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/style.css?v=9" />
+<style>
+/* ════════════════════════════════════════════════════════════════════════════
+   BLOG — maqolalar sahifasi
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.blog {
+  min-height: 100svh;
+  padding: calc(var(--nav-h) + clamp(26px,4.6vh,62px)) 0 clamp(40px,8vh,80px);
+  position: relative;
+  overflow: hidden;
+}
+
+.blog::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(ellipse 75% 55% at calc(50% - 12px) calc(30%), rgba(11,209,108,.05), transparent 70%);
+  filter: blur(24px);
+}
+
+.blog__head {
+  width: 100%;
+  max-width: var(--wrap);
+  margin: 0 auto clamp(48px,7vh,72px);
+  padding: 0 clamp(18px,3.4vw,40px);
+  text-align: center;
+}
+
+.blog__kicker {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 12px;
+}
+
+.blog__title {
+  font-size: clamp(2rem,5vw,3.2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.blog__desc {
+  font-size: 16px;
+  color: var(--gray);
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ── GRID ── */
+.blog__grid {
+  width: 100%;
+  max-width: var(--wrap);
+  margin: clamp(48px,7vh,72px) auto 0;
+  padding: 0 clamp(18px,3.4vw,40px);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: clamp(20px, 3.2vw, 32px);
+}
+
+/* ── ARTICLE CARD ── */
+.article-card {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px,4vw,32px);
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: rgba(22, 27, 25, .5);
+  backdrop-filter: blur(8px);
+  transition: all .3s cubic-bezier(.22,.68,.28,1);
+  cursor: pointer;
+}
+
+.article-card:hover {
+  border-color: rgba(11, 209, 108, .4);
+  background: rgba(22, 27, 25, .8);
+  transform: translateY(-4px);
+}
+
+.article-card__tag {
+  display: inline-flex;
+  width: fit-content;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--green);
+  padding: 6px 10px;
+  background: rgba(11, 209, 108, .1);
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.article-card__title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  line-height: 1.3;
+  color: var(--white);
+}
+
+.article-card__desc {
+  font-size: 14px;
+  color: var(--gray);
+  margin-bottom: 16px;
+  flex-grow: 1;
+  line-height: 1.55;
+}
+
+.article-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--gray-dim);
+}
+
+.article-card__date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.article-card__read {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  color: var(--green);
+  font-weight: 500;
+}
+
+/* ── SEARCH/FILTER ── */
+.blog-filter {
+  width: 100%;
+  max-width: var(--wrap);
+  margin: clamp(24px,4vh,40px) auto 0;
+  padding: 0 clamp(18px,3.4vw,40px);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 8px 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--gray);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s cubic-bezier(.22,.68,.28,1);
+}
+
+.filter-btn:hover,
+.filter-btn.is-active {
+  background: linear-gradient(140deg, var(--green-hi) 0%, var(--green) 52%, #1FA36C 100%);
+  color: var(--green-ink);
+  border-color: var(--green);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .blog__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .blog__title {
+    font-size: 1.8rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#blog-list">Blog maqolalariga o'tish</a>
+
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a class="logo" href="/" aria-label="EXON — bosh sahifa">
+      <img class="logo__img" src="assets/img/logo-exon.png" width="560" height="138" alt="EXON" />
+    </a>
+    <nav class="nav__menu" id="navMenu" aria-label="Asosiy menyu">
+      <a href="/#xizmatlar">Xizmatlar</a>
+      <a href="/#keyslar">Keyslar</a>
+      <a href="/#narxlar">Narxlar</a>
+      <a href="/#jarayon">Jarayon</a>
+      <a href="/#blog">Blog</a>
+    </nav>
+    <div class="nav__right">
+      <div class="lang" role="group" aria-label="Til tanlash">
+        <button class="lang__btn is-active" type="button" aria-pressed="true">UZ</button>
+        <button class="lang__btn" type="button" aria-pressed="false">RU</button>
+      </div>
+      <a class="btn btn--pill" href="/">
+        Bosh sahifa
+        <span class="btn__plus" aria-hidden="true">←</span>
+      </a>
+      <button class="burger" id="burger" type="button" aria-label="Menyuni ochish" aria-expanded="false" aria-controls="navMenu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="blog">
+
+  <!-- SARLAVHA -->
+  <div class="blog__head">
+    <div class="blog__kicker">50+ QOLLANMA</div>
+    <h1 class="blog__title">Blog va Qo'llanmalar</h1>
+    <p class="blog__desc">
+      Marketpleys o'stirish uchun — tahlil, strategiya, SEO va reklama bo'yicha maslahatlar.
+    </p>
+  </div>
+
+  <!-- ARTICLES -->
+  <div class="blog__grid" id="blog-list">
+
+    <!-- ARTICLE 1 -->
+    <article class="article-card">
+      <span class="article-card__tag">SEO</span>
+      <h2 class="article-card__title">Uzum'da Kalit So'zlar — 2025 Qo'llanmasi</h2>
+      <p class="article-card__desc">
+        Qidiruvda rost chiqish uchun kalit so'zlarni qanday tanlash, aylantirish va test qilish?
+      </p>
+      <div class="article-card__meta">
+        <div class="article-card__date">📅 25 jul</div>
+        <div class="article-card__read">5 min</div>
+      </div>
+    </article>
+
+    <!-- ARTICLE 2 -->
+    <article class="article-card">
+      <span class="article-card__tag">REKLAMA</span>
+      <h2 class="article-card__title">Wildberries'da Reklama — Budjet Taqsimoti</h2>
+      <p class="article-card__desc">
+        CPA, CPC, ROAS — hamma metrika nima va qanday o'lchash kerak?
+      </p>
+      <div class="article-card__meta">
+        <div class="article-card__date">📅 22 jul</div>
+        <div class="article-card__read">8 min</div>
+      </div>
+    </article>
+
+    <!-- ARTICLE 3 -->
+    <article class="article-card">
+      <span class="article-card__tag">KARTOCHKA</span>
+      <h2 class="article-card__title">Rasmni Optimallashtirish — Konversiya +40%</h2>
+      <p class="article-card__desc">
+        Professional foto usullari, RGB ranglar, tasvir nisbati — hammasi bir yerda.
+      </p>
+      <div class="article-card__meta">
+        <div class="article-card__date">📅 18 jul</div>
+        <div class="article-card__read">6 min</div>
+      </div>
+    </article>
+
+    <!-- ARTICLE 4 -->
+    <article class="article-card">
+      <span class="article-card__tag">BIZNES</span>
+      <h2 class="article-card__title">3 Marketpleys vs 1 — Qaysi Tanlash?</h2>
+      <p class="article-card__desc">
+        Siz yangi boshlovchi ekanligiz yoki masshtabichgan — har segment uchun roka.
+      </p>
+      <div class="article-card__meta">
+        <div class="article-card__date">📅 15 jul</div>
+        <div class="article-card__read">7 min</div>
+      </div>
+    </article>
+
+    <!-- ARTICLE 5 -->
+    <article class="article-card">
+      <span class="article-card__tag">ANALITIKA</span>
+      <h2 class="article-card__title">Yandex Market — Analitika Panel Naqib</h2>
+      <p class="article-card__desc">
+        Qaysi raqamlar asosiy va qaysi ularni kuzatish mumkin — har satrda tavsifi.
+      </p>
+      <div class="article-card__meta">
+        <div class="article-card__date">📅 12 jul</div>
+        <div class="article-card__read">9 min</div>
+      </div>
+    </article>
+
+    <!-- ARTICLE 6 -->
+    <article class="article-card">
+      <span class="article-card__tag">MARKETING</span>
+      <h2 class="article-card__title">Brend Pozisiyasini Qanday Tuzatish?</h2>
+      <p class="article-card__desc">
+        Qo'lini va reklama strategiyasini xelsa uyg'unlashtirish — kompleks usul.
+      </p>
+      <div class="article-card__meta">
+        <div class="article-card__date">📅 10 jul</div>
+        <div class="article-card__read">6 min</div>
+      </div>
+    </article>
+
+  </div>
+
+</main>
+
+<script>
+// Nav scroll blur
+(function() {
+  const nav = document.getElementById('nav');
+  function onScroll() {
+    nav.classList.toggle('is-scrolled', window.scrollY > 12);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Burger menu
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('navMenu');
+
+  function setMenu(open) {
+    menu.classList.toggle('is-open', open);
+    burger.setAttribute('aria-expanded', String(open));
+  }
+
+  burger.addEventListener('click', () => {
+    setMenu(burger.getAttribute('aria-expanded') !== 'true');
+  });
+
+  menu.addEventListener('click', (e) => {
+    if (e.target.tagName === 'A') setMenu(false);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+      setMenu(false);
+    }
+  });
+
+  // Article cards — click to read (TODO: individual article pages)
+  document.querySelectorAll('.article-card').forEach(card => {
+    card.addEventListener('click', () => {
+      alert('Maqola sahifasi tayyorasida... 📖');
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

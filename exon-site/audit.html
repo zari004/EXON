@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bepul Audit — EXON Marketpleys Ekspertlari</title>
+<meta name="description" content="Do'koningizni 3 bosqichda bepul tekshiring. Audit, kartochka yoki reklama — 9+9+6 ball, yozma hisobot 3 kunda." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/style.css?v=9" />
+<style>
+/* ════════════════════════════════════════════════════════════════════════════
+   AUDIT — forma sahifasi
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.audit {
+  min-height: 100svh;
+  padding: calc(var(--nav-h) + clamp(26px,4.6vh,62px)) 0 clamp(40px,8vh,80px);
+  position: relative;
+  overflow: hidden;
+}
+
+.audit::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(ellipse 68% 60% at calc(50% + 24px) calc(28%), rgba(11,209,108,.08), transparent 68%);
+  filter: blur(20px);
+}
+
+.audit__inner {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 clamp(18px,3.4vw,40px);
+}
+
+.audit__head {
+  margin-bottom: clamp(32px,5vh,48px);
+  text-align: center;
+}
+
+.audit__kicker {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 12px;
+}
+
+.audit__title {
+  font-size: clamp(1.8rem,4.2vw,2.6rem);
+  font-weight: 600;
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+
+.audit__desc {
+  font-size: 16px;
+  color: var(--gray);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ── PROGRESS BAR ── */
+.progress {
+  height: 4px;
+  background: var(--surface);
+  border-radius: 999px;
+  margin: clamp(24px,3.6vh,40px) 0;
+  overflow: hidden;
+}
+
+.progress__bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green-deep), var(--green), var(--green-hi));
+  border-radius: 999px;
+  transition: width .4s cubic-bezier(.22,.68,.28,1);
+}
+
+/* ── BOSQICHLAR ── */
+.steps-wrapper {
+  display: none;
+}
+
+.steps-wrapper.is-active {
+  display: block;
+  animation: fadeIn .3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.step-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.step-title__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(11,209,108,.12);
+  color: var(--green);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* ── SAVOL BLO'KI ── */
+.qblock {
+  margin-bottom: 28px;
+}
+
+.qblock__label {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--white);
+}
+
+.qblock__hint {
+  font-size: 13px;
+  color: var(--gray-dim);
+  margin-bottom: 10px;
+  font-weight: 300;
+}
+
+.qblock__options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.qblock__option {
+  position: relative;
+}
+
+.qblock__option input[type="radio"],
+.qblock__option input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.qblock__option label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  cursor: pointer;
+  transition: all .2s cubic-bezier(.22,.68,.28,1);
+  font-size: 14.5px;
+  font-weight: 400;
+}
+
+.qblock__option input[type="radio"]:checked + label,
+.qblock__option input[type="checkbox"]:checked + label {
+  background: rgba(11,209,108,.15);
+  border-color: var(--green-deep);
+  color: var(--white);
+}
+
+.qblock__option label:hover {
+  border-color: var(--line);
+  background: var(--surface-2);
+}
+
+.qblock__option input[type="radio"]:focus-visible + label,
+.qblock__option input[type="checkbox"]:focus-visible + label {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.qblock__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  position: relative;
+}
+
+.qblock__option input[type="radio"]:checked + label .qblock__icon {
+  border-color: var(--green);
+  background: var(--green);
+}
+
+.qblock__option input[type="radio"]:checked + label .qblock__icon::after {
+  content: '';
+  width: 4px;
+  height: 4px;
+  background: var(--green-ink);
+  border-radius: 50%;
+}
+
+/* ── INPUT MAYDONCHALARI ── */
+.qblock__input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  color: var(--white);
+  font-size: 15px;
+  transition: border-color .2s cubic-bezier(.22,.68,.28,1);
+}
+
+.qblock__input:focus {
+  outline: none;
+  border-color: var(--green-deep);
+  box-shadow: 0 0 0 4px rgba(11,209,108,.09);
+}
+
+.qblock__input::placeholder {
+  color: var(--gray-dim);
+}
+
+/* ── NAVIGATION ── */
+.form-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 40px;
+}
+
+.form-nav__btn {
+  flex: 1;
+  padding: 0 20px;
+  height: 48px;
+  border: 0;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all .2s cubic-bezier(.22,.68,.28,1);
+}
+
+.form-nav__prev {
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  color: var(--white);
+}
+
+.form-nav__prev:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--line);
+}
+
+.form-nav__prev:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.form-nav__next {
+  background: linear-gradient(140deg, var(--green-hi) 0%, var(--green) 52%, #1FA36C 100%);
+  color: var(--green-ink);
+}
+
+.form-nav__next:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 26px -8px rgba(53,193,133,.65);
+}
+
+.form-nav__next:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* ── NATIJALARI ── */
+.result {
+  display: none;
+  text-align: center;
+}
+
+.result.is-active {
+  display: block;
+  animation: fadeIn .4s ease-out;
+}
+
+.result__score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(11,209,108,.2), rgba(53,193,133,.1));
+  border: 2px solid rgba(11,209,108,.3);
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--green);
+  margin: 32px auto 24px;
+}
+
+.result__segment {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.result__segment.seg-a {
+  color: var(--green-hi);
+}
+
+.result__segment.seg-b {
+  color: var(--green);
+}
+
+.result__segment.seg-c {
+  color: var(--gray);
+}
+
+.result__desc {
+  font-size: 16px;
+  color: var(--gray);
+  margin-bottom: 32px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.result__action {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.result__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  height: 48px;
+  border-radius: 8px;
+  border: 0;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all .2s cubic-bezier(.22,.68,.28,1);
+}
+
+.result__btn--primary {
+  background: linear-gradient(140deg, var(--green-hi) 0%, var(--green) 52%, #1FA36C 100%);
+  color: var(--green-ink);
+}
+
+.result__btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 26px -8px rgba(53,193,133,.65);
+}
+
+.result__btn--secondary {
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  color: var(--white);
+}
+
+.result__btn--secondary:hover {
+  background: var(--surface-2);
+  border-color: var(--line);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .audit__title {
+    font-size: clamp(1.4rem,3.5vw,2rem);
+  }
+
+  .form-nav {
+    flex-direction: column;
+  }
+
+  .form-nav__btn {
+    width: 100%;
+  }
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#audit-form">Forma maydoniga o'tish</a>
+
+<!-- NAV MUVOZANATLANADI MAIN-DAN -->
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a class="logo" href="/" aria-label="EXON — bosh sahifa">
+      <img class="logo__img" src="assets/img/logo-exon.png" width="560" height="138" alt="EXON" />
+    </a>
+    <nav class="nav__menu" id="navMenu" aria-label="Asosiy menyu">
+      <a href="/#xizmatlar">Xizmatlar</a>
+      <a href="/#keyslar">Keyslar</a>
+      <a href="/#narxlar">Narxlar</a>
+      <a href="/#jarayon">Jarayon</a>
+      <a href="/#blog">Blog</a>
+    </nav>
+    <div class="nav__right">
+      <div class="lang" role="group" aria-label="Til tanlash">
+        <button class="lang__btn is-active" type="button" aria-pressed="true">UZ</button>
+        <button class="lang__btn" type="button" aria-pressed="false">RU</button>
+      </div>
+      <a class="btn btn--pill" href="/">
+        Bosh sahifa
+        <span class="btn__plus" aria-hidden="true">←</span>
+      </a>
+      <button class="burger" id="burger" type="button" aria-label="Menyuni ochish" aria-expanded="false" aria-controls="navMenu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="audit" id="audit-form">
+  <div class="audit__inner">
+    <!-- SARLAVHA -->
+    <div class="audit__head">
+      <div class="audit__kicker">3 BOSQICH, 12 SAVOL</div>
+      <h1 class="audit__title">Audit Formasi</h1>
+      <p class="audit__desc">
+        Do'koningizni 3 bosqichda tekshiramiz: audit, kartochka yoki reklama.
+        Yozma hisobot 3 ish kunida.
+      </p>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress">
+      <div class="progress__bar" id="progressBar" style="width: 0%"></div>
+    </div>
+
+    <!-- FORMA -->
+    <form id="auditForm" novalidate>
+
+      <!-- ──── BOSQICH 1: AUDIT (9 BALL) ──── -->
+      <div class="steps-wrapper is-active" id="step1">
+        <div class="step-title">
+          <span class="step-title__num">1</span>
+          <span>Audit — Do'kon tahlili</span>
+        </div>
+
+        <!-- Q1: Do'kon yoshi -->
+        <div class="qblock">
+          <label class="qblock__label">Do'kon qancha vaqtdan faoldir?</label>
+          <div class="qblock__options">
+            <div class="qblock__option">
+              <input type="radio" name="q1" value="3" id="q1_a" />
+              <label for="q1_a">
+                <span class="qblock__icon"></span>
+                <span>0–3 oy (yangi)</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q1" value="2" id="q1_b" />
+              <label for="q1_b">
+                <span class="qblock__icon"></span>
+                <span>3–12 oy</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q1" value="1" id="q1_c" />
+              <label for="q1_c">
+                <span class="qblock__icon"></span>
+                <span>1+ yil</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q2: Ortib chiqish yo'nalishi -->
+        <div class="qblock">
+          <label class="qblock__label">Asosiy muammo nima?</label>
+          <div class="qblock__options">
+            <div class="qblock__option">
+              <input type="radio" name="q2" value="3" id="q2_a" />
+              <label for="q2_a">
+                <span class="qblock__icon"></span>
+                <span>Trafikni ko'paytirish kerak</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q2" value="2" id="q2_b" />
+              <label for="q2_b">
+                <span class="qblock__icon"></span>
+                <span>Konversiya past</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q2" value="1" id="q2_c" />
+              <label for="q2_c">
+                <span class="qblock__icon"></span>
+                <span>Reklama xarajati yuqori</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q3: Ortib chiqish samaradorligi -->
+        <div class="qblock">
+          <label class="qblock__label">Hozir necha oyning ROI'ni aniqlaysiz?</label>
+          <div class="qblock__options">
+            <div class="qblock__option">
+              <input type="radio" name="q3" value="3" id="q3_a" />
+              <label for="q3_a">
+                <span class="qblock__icon"></span>
+                <span>Bilmayman, hisoblash qiyin</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q3" value="2" id="q3_b" />
+              <label for="q3_b">
+                <span class="qblock__icon"></span>
+                <span>Qisman o'lchayman</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q3" value="1" id="q3_c" />
+              <label for="q3_c">
+                <span class="qblock__icon"></span>
+                <span>Har oyni aniq bilan bilamiz</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ──── BOSQICH 2: KARTOCHKA VA REKLAMA (9 BALL) ──── -->
+      <div class="steps-wrapper" id="step2">
+        <div class="step-title">
+          <span class="step-title__num">2</span>
+          <span>Kartochka va Reklama</span>
+        </div>
+
+        <!-- Q4: Kartochka sifati -->
+        <div class="qblock">
+          <label class="qblock__label">Kartochka qanday?</label>
+          <div class="qblock__options">
+            <div class="qblock__option">
+              <input type="radio" name="q4" value="3" id="q4_a" />
+              <label for="q4_a">
+                <span class="qblock__icon"></span>
+                <span>Arzon foto, narigi matn yo'q</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q4" value="2" id="q4_b" />
+              <label for="q4_b">
+                <span class="qblock__icon"></span>
+                <span>Oddiy foto, asosiy ma'lumot bor</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q4" value="1" id="q4_c" />
+              <label for="q4_c">
+                <span class="qblock__icon"></span>
+                <span>Professional foto va to'liq matn</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q5: Reklama kampaniyasi -->
+        <div class="qblock">
+          <label class="qblock__label">Reklama qanday boshqariladi?</label>
+          <div class="qblock__options">
+            <div class="qblock__option">
+              <input type="radio" name="q5" value="3" id="q5_a" />
+              <label for="q5_a">
+                <span class="qblock__icon"></span>
+                <span>Manual, taxtimda o'zgartiriladi</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q5" value="2" id="q5_b" />
+              <label for="q5_b">
+                <span class="qblock__icon"></span>
+                <span>Bazan optimallashtirish qilamiz</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q5" value="1" id="q5_c" />
+              <label for="q5_c">
+                <span class="qblock__icon"></span>
+                <span>Avtomatik sistema yoki xizmat</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q6: SEO foydalanish -->
+        <div class="qblock">
+          <label class="qblock__label">SEO qanday qo'llaniladi?</label>
+          <div class="qblock__options">
+            <div class="qblock__option">
+              <input type="radio" name="q6" value="3" id="q6_a" />
+              <label for="q6_a">
+                <span class="qblock__icon"></span>
+                <span>Bilmayman, nima bu?</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q6" value="2" id="q6_b" />
+              <label for="q6_b">
+                <span class="qblock__icon"></span>
+                <span>Kalit so'zlarni o'rnatapmiz</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q6" value="1" id="q6_c" />
+              <label for="q6_c">
+                <span class="qblock__icon"></span>
+                <span>Kompleks SEO strategiyasini ishlattik</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ──── BOSQICH 3: ANALITIKA VA MAQSADLAR (6 BALL) ──── -->
+      <div class="steps-wrapper" id="step3">
+        <div class="step-title">
+          <span class="step-title__num">3</span>
+          <span>Analitika va Maqsadlar</span>
+        </div>
+
+        <!-- Q7: Analitika qayta ko'riklar -->
+        <div class="qblock">
+          <label class="qblock__label">Analitika qanday tekshiriladi?</label>
+          <div class="qblock__options">
+            <div class="qblock__option">
+              <input type="radio" name="q7" value="3" id="q7_a" />
+              <label for="q7_a">
+                <span class="qblock__icon"></span>
+                <span>Hech qachon ko'rilmaydi</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q7" value="2" id="q7_b" />
+              <label for="q7_b">
+                <span class="qblock__icon"></span>
+                <span>Oyiga bir marta</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q7" value="1" id="q7_c" />
+              <label for="q7_c">
+                <span class="qblock__icon"></span>
+                <span>Haftalik yoki kunlik</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q8: Buyurtma vaziati -->
+        <div class="qblock">
+          <label class="qblock__label">Oylik buyurtma soni qancha?</label>
+          <div class="qblock__options">
+            <div class="qblock__option">
+              <input type="radio" name="q8" value="2" id="q8_a" />
+              <label for="q8_a">
+                <span class="qblock__icon"></span>
+                <span>0–100</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q8" value="3" id="q8_b" />
+              <label for="q8_b">
+                <span class="qblock__icon"></span>
+                <span>100–500</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q8" value="1" id="q8_c" />
+              <label for="q8_c">
+                <span class="qblock__icon"></span>
+                <span>500+</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q9: Davomi majburiyati -->
+        <div class="qblock">
+          <label class="qblock__label">Keyingi 3 oyda o'stirish maqsadi qancha?</label>
+          <div class="qblock__options">
+            <div class="qblock__option">
+              <input type="radio" name="q9" value="1" id="q9_a" />
+              <label for="q9_a">
+                <span class="qblock__icon"></span>
+                <span>Biroz ko'payish (10-20%)</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q9" value="2" id="q9_b" />
+              <label for="q9_b">
+                <span class="qblock__icon"></span>
+                <span>Sezilarli (30-50%)</span>
+              </label>
+            </div>
+            <div class="qblock__option">
+              <input type="radio" name="q9" value="3" id="q9_c" />
+              <label for="q9_c">
+                <span class="qblock__icon"></span>
+                <span>Tezkor (2x yoki ato'z)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mahfiy email (natijalari uchun) -->
+        <div class="qblock">
+          <label class="qblock__label" for="email">Hisob email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="qblock__input"
+            placeholder="sizning@email.uz"
+            required
+          />
+          <p class="qblock__hint">Yozma hisobot shu email'ga yuboriladi (Telegram ham)</p>
+        </div>
+      </div>
+
+      <!-- NAV TUGMALAR -->
+      <div class="form-nav">
+        <button type="button" class="form-nav__btn form-nav__prev" id="prevBtn" disabled>Orqaga</button>
+        <button type="button" class="form-nav__btn form-nav__next" id="nextBtn">Keyingi</button>
+      </div>
+
+    </form>
+
+    <!-- NATIJALARI EKRANI -->
+    <div class="result" id="resultScreen">
+      <div>
+        <h2 style="font-size: 24px; margin-bottom: 8px;">Audit natijalari</h2>
+        <p style="color: var(--gray); margin-bottom: 24px;">Siz qanday kategoriyada ekaningizni bilamiz</p>
+      </div>
+
+      <div class="result__score" id="resultScore">0</div>
+
+      <div class="result__segment" id="resultSegment">Segment nomi</div>
+
+      <p class="result__desc" id="resultDesc">
+        Tavsif yoziladi
+      </p>
+
+      <div class="result__action">
+        <button class="result__btn result__btn--primary" onclick="startConsultation()">
+          Konsultatsiya olish
+        </button>
+        <button class="result__btn result__btn--secondary" onclick="goHome()">
+          Bosh sahifaga</button>
+      </div>
+
+      <p style="font-size: 13px; color: var(--gray-dim); margin-top: 24px;">
+        Hisoboti 3 ish kunida email'ga yuboriladi
+      </p>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function() {
+  'use strict';
+
+  const form = document.getElementById('auditForm');
+  const steps = ['step1', 'step2', 'step3'];
+  const resultScreen = document.getElementById('resultScreen');
+  const progressBar = document.getElementById('progressBar');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  let currentStep = 0;
+
+  // Segment definitsiyalari — 24 ball asosida
+  const segments = [
+    {
+      min: 12, max: 24,
+      name: 'A — Tezkor O\'sish',
+      class: 'seg-a',
+      desc: 'Siz o\'sishga tayyorsiz. 15 daqiqada konsultatsiya, javob 1 kunda. Hoziroq yozgan hisobotni bering, keyin marketing plan qilamiz.'
+    },
+    {
+      min: 7, max: 11,
+      name: 'B — Rivojlanish Seziladi',
+      class: 'seg-b',
+      desc: 'Do\'koningiz rivojlanmoqda, ammo samaradorlik yo\'q. Audit hisoboti 3 kunda, keyin maktab qilamiz. 4 soat ichida aloqaga chiqamiz.'
+    },
+    {
+      min: 0, max: 6,
+      name: 'C — Asosdan Tuzing',
+      class: 'seg-c',
+      desc: 'Boshdan-ocha xizmat kerak. Audit + SEO + reklama — kompleks paket. Aloqa orqali (Telegram) tushuntirish qilamiz, audioni yuboring.'
+    }
+  ];
+
+  function updateProgress() {
+    const progress = ((currentStep + 1) / steps.length) * 100;
+    progressBar.style.width = progress + '%';
+  }
+
+  function showStep(index) {
+    steps.forEach((step, i) => {
+      const el = document.getElementById(step);
+      el.classList.toggle('is-active', i === index);
+    });
+    prevBtn.disabled = index === 0;
+    nextBtn.textContent = index === steps.length - 1 ? 'Hisobotni yuborish' : 'Keyingi';
+    updateProgress();
+  }
+
+  function calculateScore() {
+    let total = 0;
+    ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9'].forEach(q => {
+      const checked = form.querySelector(`input[name="${q}"]:checked`);
+      if (checked) {
+        total += parseInt(checked.value, 10);
+      }
+    });
+    return total;
+  }
+
+  function getSegment(score) {
+    for (const seg of segments) {
+      if (score >= seg.min && score <= seg.max) return seg;
+    }
+    return segments[2]; // default C
+  }
+
+  function showResults() {
+    const score = calculateScore();
+    const segment = getSegment(score);
+    const email = form.email.value.trim();
+
+    document.getElementById('resultScore').textContent = score;
+    document.getElementById('resultSegment').textContent = segment.name;
+    document.getElementById('resultSegment').className = 'result__segment ' + segment.class;
+    document.getElementById('resultDesc').textContent = segment.desc;
+
+    // TODO: POST /api/audit bilan server'ga yuborish
+    // Hozircha console-ga yozamiz
+    console.log({
+      score,
+      segment: segment.name,
+      email,
+      answers: {
+        q1: form.q1.value,
+        q2: form.q2.value,
+        q3: form.q3.value,
+        q4: form.q4.value,
+        q5: form.q5.value,
+        q6: form.q6.value,
+        q7: form.q7.value,
+        q8: form.q8.value,
+        q9: form.q9.value
+      }
+    });
+
+    form.style.display = 'none';
+    resultScreen.classList.add('is-active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  nextBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+
+    // Joriy bosqichni tekshir
+    const currentStepEl = document.getElementById(steps[currentStep]);
+    const questions = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9'];
+    let allChecked = true;
+
+    // Bu bosqichdagi savollarni aniqlang
+    let questionsInStep = [];
+    if (currentStep === 0) questionsInStep = ['q1', 'q2', 'q3'];
+    else if (currentStep === 1) questionsInStep = ['q4', 'q5', 'q6'];
+    else if (currentStep === 2) questionsInStep = ['q7', 'q8', 'q9'];
+
+    // Har bir savol uchun javob tekshiring
+    questionsInStep.forEach(q => {
+      const checked = form.querySelector(`input[name="${q}"]:checked`);
+      if (!checked) allChecked = false;
+    });
+
+    // Oxirgi bosqichda email ham kerak
+    if (currentStep === 2) {
+      const email = form.email.value.trim();
+      if (!email || !email.includes('@')) {
+        alert('Email manzilni to\'g\'ri kiriting');
+        return;
+      }
+    }
+
+    if (!allChecked) {
+      alert('Iltimos, barcha savollarni javob bering');
+      return;
+    }
+
+    if (currentStep === steps.length - 1) {
+      showResults();
+    } else {
+      currentStep++;
+      showStep(currentStep);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  prevBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (currentStep > 0) {
+      currentStep--;
+      showStep(currentStep);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  showStep(0);
+})();
+
+function startConsultation() {
+  // TODO: Calendly yoki konsultatsiya bron qilingan sahifasiga o'tish
+  alert('Konsultatsiya bron qilish tizimi tez orada...😊');
+}
+
+function goHome() {
+  window.location.href = '/';
+}
+
+// Nav scroll blur
+(function() {
+  const nav = document.getElementById('nav');
+  function onScroll() {
+    nav.classList.toggle('is-scrolled', window.scrollY > 12);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Burger menu
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('navMenu');
+
+  function setMenu(open) {
+    menu.classList.toggle('is-open', open);
+    burger.setAttribute('aria-expanded', String(open));
+  }
+
+  burger.addEventListener('click', () => {
+    setMenu(burger.getAttribute('aria-expanded') !== 'true');
+  });
+
+  menu.addEventListener('click', (e) => {
+    if (e.target.tagName === 'A') setMenu(false);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+      setMenu(false);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
