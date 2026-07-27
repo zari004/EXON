@@ -864,7 +864,10 @@
 
     try {
       // POST to backend API
-      const response = await fetch('http://localhost:3000/api/audit', {
+      const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3000'
+        : 'https://exon-backend-production.up.railway.app';
+      const response = await fetch(API_BASE + '/api/audit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
