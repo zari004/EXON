@@ -7,7 +7,7 @@ const toPublic = (row) => ({
   id: row.id,
   tag: row.tag,
   title: row.title,
-  desc: row.desc,
+  desc: row.description,
   date: row.date_label,
   readTime: row.read_time,
   image: row.image,
@@ -32,7 +32,7 @@ router.post('/', auth.requireAuth, async (req, res) => {
       return res.status(400).json({ success: false, error: 'tag, title, desc majburiy' });
     }
     const result = await db.run(
-      `INSERT INTO posts (tag,title,desc,date_label,read_time,image,sort_order) VALUES (?,?,?,?,?,?,?)`,
+      `INSERT INTO posts (tag,title,description,date_label,read_time,image,sort_order) VALUES (?,?,?,?,?,?,?)`,
       [tag, title, desc, date || '', readTime || '', image || null, sortOrder || 0]
     );
     const row = await db.get('SELECT * FROM posts WHERE id = ?', [result.id]);
@@ -50,9 +50,9 @@ router.put('/:id', auth.requireAuth, async (req, res) => {
     if (!existing) return res.status(404).json({ success: false, error: 'Maqola topilmadi' });
 
     await db.run(
-      `UPDATE posts SET tag=?, title=?, desc=?, date_label=?, read_time=?, image=?, sort_order=? WHERE id=?`,
+      `UPDATE posts SET tag=?, title=?, description=?, date_label=?, read_time=?, image=?, sort_order=? WHERE id=?`,
       [
-        tag ?? existing.tag, title ?? existing.title, desc ?? existing.desc,
+        tag ?? existing.tag, title ?? existing.title, desc ?? existing.description,
         date ?? existing.date_label, readTime ?? existing.read_time,
         image !== undefined ? image : existing.image,
         sortOrder ?? existing.sort_order,

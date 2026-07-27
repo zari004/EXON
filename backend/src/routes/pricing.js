@@ -8,7 +8,7 @@ const toPublic = (row) => ({
   badge: row.badge,
   featured: !!row.featured,
   name: row.name,
-  desc: row.desc,
+  desc: row.description,
   amount: row.amount,
   currency: row.currency,
   period: row.period,
@@ -36,7 +36,7 @@ router.post('/', auth.requireAuth, async (req, res) => {
       return res.status(400).json({ success: false, error: 'name, amount majburiy' });
     }
     const result = await db.run(
-      `INSERT INTO pricing (badge,featured,name,desc,amount,currency,period,features,cta_label,cta_type,sort_order)
+      `INSERT INTO pricing (badge,featured,name,description,amount,currency,period,features,cta_label,cta_type,sort_order)
        VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
       [badge || '', featured ? 1 : 0, name, desc || '', amount, currency || '', period || '',
         JSON.stringify(features || []), ctaLabel || 'Batafsil', ctaType || 'secondary', sortOrder || 0]
@@ -56,11 +56,11 @@ router.put('/:id', auth.requireAuth, async (req, res) => {
     if (!existing) return res.status(404).json({ success: false, error: 'Paket topilmadi' });
 
     await db.run(
-      `UPDATE pricing SET badge=?, featured=?, name=?, desc=?, amount=?, currency=?, period=?, features=?, cta_label=?, cta_type=?, sort_order=?
+      `UPDATE pricing SET badge=?, featured=?, name=?, description=?, amount=?, currency=?, period=?, features=?, cta_label=?, cta_type=?, sort_order=?
        WHERE id=?`,
       [
         badge ?? existing.badge, featured !== undefined ? (featured ? 1 : 0) : existing.featured,
-        name ?? existing.name, desc ?? existing.desc, amount ?? existing.amount,
+        name ?? existing.name, desc ?? existing.description, amount ?? existing.amount,
         currency ?? existing.currency, period ?? existing.period,
         features ? JSON.stringify(features) : existing.features,
         ctaLabel ?? existing.cta_label, ctaType ?? existing.cta_type,

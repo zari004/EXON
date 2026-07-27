@@ -1,6 +1,6 @@
 # EXON Backend API
 
-Node.js + Express + SQLite backend for EXON marketplace audit and lead scoring system.
+Node.js + Express + Supabase (Postgres) backend for EXON marketplace audit and lead scoring system.
 
 ## Setup
 
@@ -11,6 +11,7 @@ Node.js + Express + SQLite backend for EXON marketplace audit and lead scoring s
 
 2. **Configure environment**
    - Copy `.env.example` to `.env`
+   - Set `DATABASE_URL` (Supabase Dashboard → Project Settings → Database → Connection string → URI)
    - Set `ADMIN_PASSWORD` (used to log into `docs/admin.html`)
    - Set `TELEGRAM_BOT_TOKEN` (get from @BotFather on Telegram)
    - Set `TELEGRAM_ADMIN_ID` (your Telegram user ID)
@@ -82,14 +83,10 @@ so it survives redeploys without needing a persistent volume.
 
 ## Database
 
-SQLite database stores:
-- Lead email and score
-- Individual question answers (q1-q9)
-- Timestamp and segment assignment
-- Telegram notification status
-- Consultation booking status
-
-Located at: `./data/exon.db`
+Supabase Postgres stores four tables: `leads` (audit submissions), `cases`
+(Keyslar), `posts` (Blog), `pricing` (Narxlar plans). Connected via the `pg`
+package using `DATABASE_URL`. Tables and seed data are created automatically
+on server start (`db.init()` + `db.seed()`), idempotent — safe to restart.
 
 ## Telegram Integration
 
@@ -136,24 +133,21 @@ backend/
 │       ├── scoring.js     # 24-point scoring logic
 │       ├── telegram.js    # Telegram bot integration
 │       └── auth.js        # Admin token issue/verify
-├── data/
-│   └── exon.db            # SQLite database
 ├── .env                   # Configuration (secrets)
 └── package.json
 ```
 
 ## Deployment
 
-### Heroku
-```bash
-git push heroku main
-```
+**Render.com** (recommended — free tier, no card required):
+1. New Web Service → connect GitHub repo `zari004/EXON`
+2. Root Directory: `backend`
+3. Build Command: `npm install`, Start Command: `npm start`
+4. Add environment variables: `DATABASE_URL`, `ADMIN_PASSWORD`, `FRONTEND_URL`, `NODE_ENV=production`
 
-### Railway.app
-Connect GitHub repo and deploy
-
-### AWS / DigitalOcean
-Use any Node.js hosting with environment variables set.
+Database lives on **Supabase** (separate free Postgres), so Render's lack of a
+persistent disk on the free tier doesn't matter — no data is stored on the
+Render instance itself.
 
 ## Next Steps
 

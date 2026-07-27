@@ -7,7 +7,7 @@ const toPublic = (row) => ({
   id: row.id,
   tag: row.tag,
   title: row.title,
-  desc: row.desc,
+  desc: row.description,
   metric1: { value: row.metric1_value, label: row.metric1_label },
   metric2: { value: row.metric2_value, label: row.metric2_label },
   markets: JSON.parse(row.markets || '[]'),
@@ -33,7 +33,7 @@ router.post('/', auth.requireAuth, async (req, res) => {
       return res.status(400).json({ success: false, error: 'tag, title, desc majburiy' });
     }
     const result = await db.run(
-      `INSERT INTO cases (tag,title,desc,metric1_value,metric1_label,metric2_value,metric2_label,markets,image,sort_order)
+      `INSERT INTO cases (tag,title,description,metric1_value,metric1_label,metric2_value,metric2_label,markets,image,sort_order)
        VALUES (?,?,?,?,?,?,?,?,?,?)`,
       [tag, title, desc, metric1?.value || '', metric1?.label || '', metric2?.value || '', metric2?.label || '',
         JSON.stringify(markets || []), image || null, sortOrder || 0]
@@ -53,10 +53,10 @@ router.put('/:id', auth.requireAuth, async (req, res) => {
     if (!existing) return res.status(404).json({ success: false, error: 'Case topilmadi' });
 
     await db.run(
-      `UPDATE cases SET tag=?, title=?, desc=?, metric1_value=?, metric1_label=?, metric2_value=?, metric2_label=?, markets=?, image=?, sort_order=?
+      `UPDATE cases SET tag=?, title=?, description=?, metric1_value=?, metric1_label=?, metric2_value=?, metric2_label=?, markets=?, image=?, sort_order=?
        WHERE id=?`,
       [
-        tag ?? existing.tag, title ?? existing.title, desc ?? existing.desc,
+        tag ?? existing.tag, title ?? existing.title, desc ?? existing.description,
         metric1?.value ?? existing.metric1_value, metric1?.label ?? existing.metric1_label,
         metric2?.value ?? existing.metric2_value, metric2?.label ?? existing.metric2_label,
         markets ? JSON.stringify(markets) : existing.markets,

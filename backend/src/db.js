@@ -1,142 +1,115 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-const fs = require('fs');
+const { Pool } = require('pg');
 
-const dbPath = path.join(__dirname, '../data/exon.db');
-
-// Ensure data directory exists
-const dataDir = path.dirname(dbPath);
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
-
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) console.error('Database connection error:', err);
-  else console.log('📊 Connected to SQLite database');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
 
-// Run query with promise
-const run = (sql, params = []) => {
-  return new Promise((resolve, reject) => {
-    db.run(sql, params, function(err) {
-      if (err) reject(err);
-      else resolve({ id: this.lastID, changes: this.changes });
-    });
-  });
+pool.on('connect', () => console.log('📊 Connected to Supabase Postgres'));
+pool.on('error', (err) => console.error('Database pool error:', err.message));
+
+// "?" placeholderlarni Postgres'ning "$1,$2..." formatiga aylantiradi
+const toPgSql = (sql) => {
+  let i = 0;
+  return sql.replace(/\?/g, () => `$${++i}`);
 };
 
-// Get single row
-const get = (sql, params = []) => {
-  return new Promise((resolve, reject) => {
-    db.get(sql, params, (err, row) => {
-      if (err) reject(err);
-      else resolve(row);
-    });
-  });
+// INSERT so'rovlariga avtomatik "RETURNING id" qo'shadi — sqlite'ning
+// this.lastID o'rniga, chaqiruvchi kod o'zgarishsiz qoladi.
+const run = async (sql, params = []) => {
+  let query = toPgSql(sql);
+  if (/^\s*insert/i.test(query) && !/returning/i.test(query)) {
+    query += ' RETURNING id';
+  }
+  const result = await pool.query(query, params);
+  return { id: result.rows[0] ? result.rows[0].id : null, changes: result.rowCount };
 };
 
-// Get all rows
-const all = (sql, params = []) => {
-  return new Promise((resolve, reject) => {
-    db.all(sql, params, (err, rows) => {
-      if (err) reject(err);
-      else resolve(rows || []);
-    });
-  });
+const get = async (sql, params = []) => {
+  const result = await pool.query(toPgSql(sql), params);
+  return result.rows[0];
 };
 
-// Initialize database schema
+const all = async (sql, params = []) => {
+  const result = await pool.query(toPgSql(sql), params);
+  return result.rows || [];
+};
+
+// Jadval sxemasi — "desc" PostgreSQL'da band so'z bo'lgani uchun
+// "description" nomi ishlatiladi (API javoblarida hamon "desc" sifatida chiqadi).
 const init = async () => {
-  return new Promise((resolve, reject) => {
-    db.serialize(() => {
-      // Leads table
-      db.run(`
-        CREATE TABLE IF NOT EXISTS leads (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          email TEXT NOT NULL,
-          score INTEGER NOT NULL,
-          segment TEXT NOT NULL,
-          q1 INTEGER,
-          q2 INTEGER,
-          q3 INTEGER,
-          q4 INTEGER,
-          q5 INTEGER,
-          q6 INTEGER,
-          q7 INTEGER,
-          q8 INTEGER,
-          q9 INTEGER,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          telegram_sent BOOLEAN DEFAULT 0,
-          consultation_booked BOOLEAN DEFAULT 0
-        )
-      `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS leads (
+      id SERIAL PRIMARY KEY,
+      email TEXT NOT NULL,
+      score INTEGER NOT NULL,
+      segment TEXT NOT NULL,
+      q1 INTEGER, q2 INTEGER, q3 INTEGER,
+      q4 INTEGER, q5 INTEGER, q6 INTEGER,
+      q7 INTEGER, q8 INTEGER, q9 INTEGER,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW(),
+      telegram_sent INTEGER DEFAULT 0,
+      consultation_booked INTEGER DEFAULT 0
+    )
+  `);
 
-      // Keyslar (case studies)
-      db.run(`
-        CREATE TABLE IF NOT EXISTS cases (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          tag TEXT NOT NULL,
-          title TEXT NOT NULL,
-          desc TEXT NOT NULL,
-          metric1_value TEXT,
-          metric1_label TEXT,
-          metric2_value TEXT,
-          metric2_label TEXT,
-          markets TEXT DEFAULT '[]',
-          image TEXT,
-          sort_order INTEGER DEFAULT 0,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-      `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS cases (
+      id SERIAL PRIMARY KEY,
+      tag TEXT NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      metric1_value TEXT,
+      metric1_label TEXT,
+      metric2_value TEXT,
+      metric2_label TEXT,
+      markets TEXT DEFAULT '[]',
+      image TEXT,
+      sort_order INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
 
-      // Blog maqolalari
-      db.run(`
-        CREATE TABLE IF NOT EXISTS posts (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          tag TEXT NOT NULL,
-          title TEXT NOT NULL,
-          desc TEXT NOT NULL,
-          date_label TEXT,
-          read_time TEXT,
-          image TEXT,
-          sort_order INTEGER DEFAULT 0,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-      `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS posts (
+      id SERIAL PRIMARY KEY,
+      tag TEXT NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      date_label TEXT,
+      read_time TEXT,
+      image TEXT,
+      sort_order INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
 
-      // Narxlar paketlari
-      db.run(`
-        CREATE TABLE IF NOT EXISTS pricing (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          badge TEXT,
-          featured INTEGER DEFAULT 0,
-          name TEXT NOT NULL,
-          desc TEXT,
-          amount TEXT NOT NULL,
-          currency TEXT,
-          period TEXT,
-          features TEXT DEFAULT '[]',
-          cta_label TEXT DEFAULT 'Batafsil',
-          cta_type TEXT DEFAULT 'secondary',
-          sort_order INTEGER DEFAULT 0,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-      `, (err) => {
-        if (err) reject(err);
-        else {
-          console.log('✅ Barcha jadvallar tayyor');
-          resolve();
-        }
-      });
-    });
-  });
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS pricing (
+      id SERIAL PRIMARY KEY,
+      badge TEXT,
+      featured INTEGER DEFAULT 0,
+      name TEXT NOT NULL,
+      description TEXT,
+      amount TEXT NOT NULL,
+      currency TEXT,
+      period TEXT,
+      features TEXT DEFAULT '[]',
+      cta_label TEXT DEFAULT 'Batafsil',
+      cta_type TEXT DEFAULT 'secondary',
+      sort_order INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+
+  console.log('✅ Barcha jadvallar tayyor');
 };
 
 // Agar jadval bo'sh bo'lsa — saytdagi joriy statik kontent bilan urug'lantirish
 const seed = async () => {
   const caseCount = await get('SELECT COUNT(*) as c FROM cases');
-  if (caseCount.c === 0) {
+  if (Number(caseCount.c) === 0) {
     const cases = [
       ['📱 Elektronika', 'Smartfon Aksessuarlari', "Chop etilgan aksessuarlar uchun Uzum'da kartochka optimallashtirish va reklama kampaniyasi.", '+340%', 'Trafik', '+218%', 'Buyurtma', '["uzum"]'],
       ['🏠 Uy Buyumlari', 'Oshxona Janglari', "Vileda, Grohe uchun Wildberries'da brend pozitsiyasi tuzatish va reklama ROI +45%.", '+156%', 'Pozitsiya', '3:1', 'ROI', '["wb"]'],
@@ -148,7 +121,7 @@ const seed = async () => {
     for (let i = 0; i < cases.length; i++) {
       const [tag, title, desc, m1v, m1l, m2v, m2l, markets] = cases[i];
       await run(
-        `INSERT INTO cases (tag,title,desc,metric1_value,metric1_label,metric2_value,metric2_label,markets,sort_order) VALUES (?,?,?,?,?,?,?,?,?)`,
+        `INSERT INTO cases (tag,title,description,metric1_value,metric1_label,metric2_value,metric2_label,markets,sort_order) VALUES (?,?,?,?,?,?,?,?,?)`,
         [tag, title, desc, m1v, m1l, m2v, m2l, markets, i]
       );
     }
@@ -156,7 +129,7 @@ const seed = async () => {
   }
 
   const postCount = await get('SELECT COUNT(*) as c FROM posts');
-  if (postCount.c === 0) {
+  if (Number(postCount.c) === 0) {
     const posts = [
       ['SEO', "Uzum'da Kalit So'zlar — 2025 Qo'llanmasi", "Qidiruvda rost chiqish uchun kalit so'zlarni qanday tanlash, aylantirish va test qilish?", '25 iyul', '5 min'],
       ['REKLAMA', "Wildberries'da Reklama — Budjet Taqsimoti", 'CPA, CPC, ROAS — hamma metrika nima va qanday o\'lchash kerak?', '22 iyul', '8 min'],
@@ -168,7 +141,7 @@ const seed = async () => {
     for (let i = 0; i < posts.length; i++) {
       const [tag, title, desc, date, read] = posts[i];
       await run(
-        `INSERT INTO posts (tag,title,desc,date_label,read_time,sort_order) VALUES (?,?,?,?,?,?)`,
+        `INSERT INTO posts (tag,title,description,date_label,read_time,sort_order) VALUES (?,?,?,?,?,?)`,
         [tag, title, desc, date, read, i]
       );
     }
@@ -176,7 +149,7 @@ const seed = async () => {
   }
 
   const pricingCount = await get('SELECT COUNT(*) as c FROM pricing');
-  if (pricingCount.c === 0) {
+  if (Number(pricingCount.c) === 0) {
     const plans = [
       {
         badge: 'YANGI BOSHLOVCHILAR', featured: 0, name: 'Audit & Rejasi',
@@ -206,7 +179,7 @@ const seed = async () => {
     for (let i = 0; i < plans.length; i++) {
       const p = plans[i];
       await run(
-        `INSERT INTO pricing (badge,featured,name,desc,amount,currency,period,features,cta_label,cta_type,sort_order) VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+        `INSERT INTO pricing (badge,featured,name,description,amount,currency,period,features,cta_label,cta_type,sort_order) VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
         [p.badge, p.featured, p.name, p.desc, p.amount, p.currency, p.period, JSON.stringify(p.features), p.cta_label, p.cta_type, i]
       );
     }
@@ -215,7 +188,7 @@ const seed = async () => {
 };
 
 module.exports = {
-  db,
+  pool,
   run,
   get,
   all,
