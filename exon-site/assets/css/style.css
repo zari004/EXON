@@ -172,16 +172,41 @@ ol,ul{list-style:none}
   isolation:isolate;
 }
 
-/* markazdagi yumshoq yorug'lik */
+/* markazdagi yumshoq yorug'lik — haraklanuvchi gradient */
 .hero__glow{
   position:absolute;z-index:-2;
-  top:-14%;left:50%;transform:translateX(-50%);
-  width:min(1180px,135vw);aspect-ratio:1/.72;
+  top:-20%;left:50%;transform:translateX(-50%);
+  width:min(1280px,150vw);aspect-ratio:1/.65;
   background:
-    radial-gradient(ellipse 46% 40% at 50% 34%, rgba(53,193,133,.10), transparent 68%),
-    radial-gradient(ellipse 62% 52% at 50% 30%, rgba(150,168,160,.075), transparent 72%);
-  filter:blur(14px);
+    radial-gradient(ellipse 48% 42% at calc(50% + 8px) calc(34% - 4px), rgba(11,209,108,.16), transparent 65%),
+    radial-gradient(ellipse 65% 55% at calc(45% - 6px) calc(28% + 3px), rgba(11,209,108,.09), transparent 72%),
+    radial-gradient(ellipse 78% 70% at calc(38% + 12px) calc(48% - 2px), rgba(53,193,133,.06), transparent 78%);
+  filter:blur(18px);
   pointer-events:none;
+  animation:glowShift 14s cubic-bezier(.4,.0,.6,1) infinite;
+}
+@keyframes glowShift{
+  0%{
+    background:
+      radial-gradient(ellipse 48% 42% at calc(50% + 8px) calc(34% - 4px), rgba(11,209,108,.16), transparent 65%),
+      radial-gradient(ellipse 65% 55% at calc(45% - 6px) calc(28% + 3px), rgba(11,209,108,.09), transparent 72%),
+      radial-gradient(ellipse 78% 70% at calc(38% + 12px) calc(48% - 2px), rgba(53,193,133,.06), transparent 78%);
+    filter:blur(18px);
+  }
+  50%{
+    background:
+      radial-gradient(ellipse 50% 44% at calc(48% - 12px) calc(36% + 6px), rgba(11,209,108,.18), transparent 63%),
+      radial-gradient(ellipse 68% 58% at calc(52% + 8px) calc(32% - 4px), rgba(11,209,108,.1), transparent 70%),
+      radial-gradient(ellipse 75% 68% at calc(42% - 10px) calc(50% + 3px), rgba(53,193,133,.065), transparent 76%);
+    filter:blur(20px);
+  }
+  100%{
+    background:
+      radial-gradient(ellipse 48% 42% at calc(50% + 8px) calc(34% - 4px), rgba(11,209,108,.16), transparent 65%),
+      radial-gradient(ellipse 65% 55% at calc(45% - 6px) calc(28% + 3px), rgba(11,209,108,.09), transparent 72%),
+      radial-gradient(ellipse 78% 70% at calc(38% + 12px) calc(48% - 2px), rgba(53,193,133,.06), transparent 78%);
+    filter:blur(18px);
+  }
 }
 /* pastdagi vinyetka */
 .hero::after{
@@ -218,6 +243,7 @@ ol,ul{list-style:none}
 .hero__title{
   margin:clamp(20px,3vh,30px) 0 0;
   font-size:clamp(2.3rem,5.9vw,4.6rem);
+  position:relative;z-index:1;
   font-weight:600;
   line-height:1.045;
   letter-spacing:-.038em;
@@ -274,18 +300,29 @@ ol,ul{list-style:none}
   max-width:1440px;
   margin:clamp(16px,2.8vh,38px) auto 0;
   aspect-ratio:1200/460;
+  overflow:visible;
 }
-.curve__svg{display:block;width:100%;height:100%;overflow:visible}
+.curve__svg{
+  display:block;width:100%;height:100%;
+  overflow:visible;background:transparent;
+}
 
 .js .curve__line{
   stroke-dasharray:var(--len,1600);
   stroke-dashoffset:var(--len,1600);
 }
-.is-ready .curve__line{
-  transition:stroke-dashoffset 2.1s var(--ease) .35s;
+/* SVG birinchi ekranda ko'rinadi (animatsiyon yo'q),
+   keyin JS boshlasa animatsiya ishga tushaadi */
+.curve__line{
+  stroke-dasharray:var(--len,1600);
   stroke-dashoffset:0;
 }
-.js .curve__drops line{opacity:0}
+.is-ready .curve__line{
+  stroke-dashoffset:0;
+  transition:stroke-dashoffset 2.1s var(--ease) .35s;
+}
+
+.curve__drops line{opacity:0}
 .is-ready .curve__drops line{
   animation:fadeIn .6s var(--ease) forwards;
 }
@@ -372,7 +409,14 @@ ol,ul{list-style:none}
 }
 @keyframes riseIn{to{opacity:1;transform:translateY(0)}}
 
-/* hero matn bloklari */
+/* hero matn bloklari — birinchi ekranda ko'rinadi, keyin animatsiya boshlasa yog'miladi */
+.badge,
+.hero__title .hero__line,
+.hero__lede,
+.capture,
+.capture__hint{
+  opacity:1;transform:translateY(0);
+}
 .js .badge,
 .js .hero__title .hero__line,
 .js .hero__lede,

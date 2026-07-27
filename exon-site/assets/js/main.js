@@ -4,13 +4,13 @@
 (function () {
   'use strict';
 
-  /* ── 1. Egri chiziq uzunligini o'lchash ──────────────────────────────
-     Chizilish animatsiyasi uchun stroke-dasharray aniq uzunlikka teng
-     bo'lishi kerak. Qo'lda taxmin qilish o'rniga o'lchab olamiz.        */
+  /* ── 1. Egri chiziq uzunligini hisoblash ────────────────────────────
+     Bezier egri chiziqlari uchun approx uzunlik: 1400-1600px ning o'rtasi.
+     Animatsiya CSS'da static dasharray bilan qilinadi.                   */
   var line = document.getElementById('curveLine');
-  if (line && typeof line.getTotalLength === 'function') {
-    var len = Math.ceil(line.getTotalLength());
-    line.style.setProperty('--len', len);
+  if (line) {
+    /* M 96 312 dan C 958 80, 1010 50, 1104 18 gacha — ~1520 approx */
+    line.style.setProperty('--len', '1520');
   }
 
   /* ── 2. Kirish animatsiyasini ishga tushirish ─────────────────────── */

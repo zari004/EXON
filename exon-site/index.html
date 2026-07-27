@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=6" />
+<link rel="stylesheet" href="assets/css/style.css?v=9" />
 
 <!-- Animatsiya faqat JS ishlaganda yoqiladi. Aks holda kontent darhol
      ko'rinadi — sayt hech qachon bo'sh ekran ko'rsatmaydi. -->
@@ -99,11 +99,13 @@
       <desc id="curveDesc">Audit, upakovka, reklama va o'sish bosqichlaridan iborat ko'tariluvchi egri chiziq.</desc>
 
       <defs>
+        <!-- Egri chiziq gradient: deep → primary → bright yashil -->
         <linearGradient id="curveGrad" x1="0" y1="1" x2="1" y2="0">
-          <stop offset="0%"   stop-color="#4A5551" />
-          <stop offset="38%"  stop-color="#2E8F6B" />
-          <stop offset="72%"  stop-color="#35C185" />
-          <stop offset="100%" stop-color="#7BF0B4" />
+          <stop offset="0%"   stop-color="#006B39" />
+          <stop offset="18%"  stop-color="#0A8F5C" />
+          <stop offset="45%"  stop-color="#0BD16C" />
+          <stop offset="75%"  stop-color="#35E89B" />
+          <stop offset="100%" stop-color="#5FF5B4" />
         </linearGradient>
         <linearGradient id="fadeGrad" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%"   stop-color="#4A5551" stop-opacity="0" />
@@ -126,20 +128,20 @@
            C 958 80, 1010 50, 1104 18"
         fill="none" stroke="url(#curveGrad)" stroke-width="2.5" stroke-linecap="round" />
 
-      <!-- tik punktir chiziqlar -->
-      <g class="curve__drops" stroke="#4A5551" stroke-width="1" stroke-dasharray="2 6" stroke-linecap="round">
-        <line x1="300" y1="300" x2="300" y2="326" />
-        <line x1="520" y1="271" x2="520" y2="298" />
-        <line x1="720" y1="210" x2="720" y2="238" />
-        <line x1="900" y1="120" x2="900" y2="148" />
+      <!-- tik punktir chiziqlar — gradient rangga moslanadi -->
+      <g class="curve__drops" stroke-width="1.2" stroke-dasharray="2 6" stroke-linecap="round" opacity=".5">
+        <line x1="300" y1="300" x2="300" y2="326" stroke="#0A8F5C" />
+        <line x1="520" y1="271" x2="520" y2="298" stroke="#0BD16C" />
+        <line x1="720" y1="210" x2="720" y2="238" stroke="#35E89B" />
+        <line x1="900" y1="120" x2="900" y2="148" stroke="#5FF5B4" />
       </g>
 
-      <!-- tugunlar -->
+      <!-- tugunlar — gradient bosqichlari -->
       <g class="curve__nodes" filter="url(#nodeGlow)">
-        <circle class="node" style="--i:0" cx="300" cy="298" r="5.5" fill="#5C6A65" />
-        <circle class="node" style="--i:1" cx="520" cy="269" r="5.5" fill="#2E8F6B" />
-        <circle class="node" style="--i:2" cx="720" cy="208" r="5.5" fill="#35C185" />
-        <circle class="node" style="--i:3" cx="900" cy="118" r="6.5" fill="#7BF0B4" />
+        <circle class="node" style="--i:0" cx="300" cy="298" r="6" fill="#0A8F5C" />
+        <circle class="node" style="--i:1" cx="520" cy="269" r="6" fill="#0BD16C" />
+        <circle class="node" style="--i:2" cx="720" cy="208" r="6.5" fill="#35E89B" />
+        <circle class="node" style="--i:3" cx="900" cy="118" r="7.5" fill="#5FF5B4" />
       </g>
     </svg>
 
@@ -179,6 +181,6 @@
 </section>
 </main>
 
-<script src="assets/js/main.js?v=2"></script>
+<script src="assets/js/main.js?v=3"></script>
 </body>
 </html>
