@@ -845,38 +845,61 @@
     return segments[2]; // default C
   }
 
-  function showResults() {
-    const score = calculateScore();
-    const segment = getSegment(score);
+  async function showResults() {
     const email = form.email.value.trim();
 
-    document.getElementById('resultScore').textContent = score;
-    document.getElementById('resultSegment').textContent = segment.name;
-    document.getElementById('resultSegment').className = 'result__segment ' + segment.class;
-    document.getElementById('resultDesc').textContent = segment.desc;
+    // Prepare data for API
+    const data = {
+      email: email,
+      q1: parseInt(form.q1.value),
+      q2: parseInt(form.q2.value),
+      q3: parseInt(form.q3.value),
+      q4: parseInt(form.q4.value),
+      q5: parseInt(form.q5.value),
+      q6: parseInt(form.q6.value),
+      q7: parseInt(form.q7.value),
+      q8: parseInt(form.q8.value),
+      q9: parseInt(form.q9.value)
+    };
 
-    // TODO: POST /api/audit bilan server'ga yuborish
-    // Hozircha console-ga yozamiz
-    console.log({
-      score,
-      segment: segment.name,
-      email,
-      answers: {
-        q1: form.q1.value,
-        q2: form.q2.value,
-        q3: form.q3.value,
-        q4: form.q4.value,
-        q5: form.q5.value,
-        q6: form.q6.value,
-        q7: form.q7.value,
-        q8: form.q8.value,
-        q9: form.q9.value
+    try {
+      // POST to backend API
+      const response = await fetch('http://localhost:3000/api/audit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        throw new Error('API error: ' + response.status);
       }
-    });
 
-    form.style.display = 'none';
-    resultScreen.classList.add('is-active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to process audit');
+      }
+
+      // Display results
+      document.getElementById('resultScore').textContent = result.score;
+      document.getElementById('resultSegment').textContent = result.segmentName;
+
+      // Set segment class based on segment code
+      const segmentClass = result.segment === 'A' ? 'seg-a' :
+                           result.segment === 'B' ? 'seg-b' : 'seg-c';
+      document.getElementById('resultSegment').className = 'result__segment ' + segmentClass;
+      document.getElementById('resultDesc').textContent = result.description;
+
+      form.style.display = 'none';
+      resultScreen.classList.add('is-active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      console.log('✅ Audit submitted:', result);
+
+    } catch (error) {
+      console.error('❌ Error:', error.message);
+      alert('Error: ' + error.message + '\n\nMake sure backend API is running on http://localhost:3000');
+    }
   }
 
   nextBtn.addEventListener('click', function(e) {
