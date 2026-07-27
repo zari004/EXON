@@ -91,14 +91,9 @@
       return;
     }
 
-    say('Qabul qilindi. Keyingi qadamda bir nechta savol beramiz.', 'ok');
+    say('Qabul qilindi. Auditga o\'tkazilyapti...', 'ok');
 
-    // TODO — keyingi bosqich hali qurilmagan.
-    // /audit sahifasi tayyor bo'lganda quyidagi qator yoqiladi: havola URL
-    // orqali uzatiladi, shunda foydalanuvchi uni qayta kiritmaydi.
-    //   window.location.href = 'audit.html?store=' + encodeURIComponent(value);
-    // Skoring server tomonida hisoblanadi (POST /api/audit) — brauzerda emas.
-    form.dataset.pendingStore = value;
+    window.location.href = 'audit.html?store=' + encodeURIComponent(value);
   });
 
   input.addEventListener('input', function () {
