@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EXON — Marketpleysda savdongizni tizimli o'stiramiz</title>
+<meta name="description" content="Uzum, Wildberries va Yandex Market'da do'kon boshqaruvi: audit, kartochka upakovkasi, infografika, reklama va analitika. 50+ do'kon, 100 000+ buyurtma." />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="EXON — Marketpleysda savdongizni tizimli o'stiramiz" />
+<meta property="og:description" content="Do'koningizni 12 nuqta bo'yicha bepul tekshiramiz va 3 ish kunida yozma hisobot beramiz." />
+<meta property="og:locale" content="uz_UZ" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/style.css?v=6" />
+
+<!-- Animatsiya faqat JS ishlaganda yoqiladi. Aks holda kontent darhol
+     ko'rinadi — sayt hech qachon bo'sh ekran ko'rsatmaydi. -->
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+<a class="skip" href="#hero-title">Asosiy kontentga o'tish</a>
+
+<!-- ══════════ NAV ══════════ -->
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a class="logo" href="/" aria-label="EXON — bosh sahifa">
+      <img class="logo__img" src="assets/img/logo-exon.png" width="560" height="138" alt="EXON" />
+    </a>
+
+    <nav class="nav__menu" id="navMenu" aria-label="Asosiy menyu">
+      <a href="#xizmatlar">Xizmatlar</a>
+      <a href="#keyslar">Keyslar</a>
+      <a href="#narxlar">Narxlar</a>
+      <a href="#jarayon">Jarayon</a>
+      <a href="#blog">Blog</a>
+    </nav>
+
+    <div class="nav__right">
+      <div class="lang" role="group" aria-label="Til tanlash">
+        <button class="lang__btn is-active" type="button" aria-pressed="true">UZ</button>
+        <button class="lang__btn" type="button" aria-pressed="false">RU</button>
+      </div>
+      <a class="btn btn--pill" href="#audit">
+        Bepul audit
+        <span class="btn__plus" aria-hidden="true">+</span>
+      </a>
+      <button class="burger" id="burger" type="button" aria-label="Menyuni ochish" aria-expanded="false" aria-controls="navMenu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════ HERO ══════════ -->
+<main>
+<section class="hero">
+  <div class="hero__glow" aria-hidden="true"></div>
+  <div class="hero__grain" aria-hidden="true"></div>
+
+  <div class="hero__top">
+    <p class="badge">
+      <span class="badge__dot" aria-hidden="true"></span>
+      Marketpleys ekspertlari
+    </p>
+
+    <h1 class="hero__title" id="hero-title">
+      <span class="hero__line">Marketpleysda savdongizni</span>
+      <span class="hero__line hero__line--2">tizimli o'stiramiz</span>
+    </h1>
+
+    <p class="hero__lede">
+      Uzum, Wildberries va Yandex Market — kartochkadan reklamagacha butun jarayonni biz olamiz.
+    </p>
+
+    <form class="capture" id="auditForm" novalidate>
+      <label class="capture__label" for="storeUrl">Do'koningiz havolasi</label>
+      <input
+        class="capture__input"
+        id="storeUrl"
+        name="store"
+        type="text"
+        inputmode="url"
+        placeholder="Do'koningiz havolasi"
+        autocomplete="url"
+      />
+      <button class="btn btn--primary" type="submit">Bepul audit olish</button>
+    </form>
+    <p class="capture__hint" id="captureHint">3 ish kunida 12 nuqta bo'yicha yozma hisobot. Majburiyatsiz.</p>
+  </div>
+
+  <!-- ── O'SISH EGRI CHIZIG'I ── -->
+  <div class="curve" id="curve">
+    <svg class="curve__svg" viewBox="0 0 1200 460" preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby="curveTitle curveDesc">
+      <title id="curveTitle">Marketpleysda o'sish bosqichlari</title>
+      <desc id="curveDesc">Audit, upakovka, reklama va o'sish bosqichlaridan iborat ko'tariluvchi egri chiziq.</desc>
+
+      <defs>
+        <linearGradient id="curveGrad" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0%"   stop-color="#4A5551" />
+          <stop offset="38%"  stop-color="#2E8F6B" />
+          <stop offset="72%"  stop-color="#35C185" />
+          <stop offset="100%" stop-color="#7BF0B4" />
+        </linearGradient>
+        <linearGradient id="fadeGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stop-color="#4A5551" stop-opacity="0" />
+          <stop offset="18%"  stop-color="#4A5551" stop-opacity=".55" />
+          <stop offset="100%" stop-color="#4A5551" stop-opacity=".55" />
+        </linearGradient>
+        <filter id="nodeGlow" x="-160%" y="-160%" width="420%" height="420%">
+          <feGaussianBlur stdDeviation="7" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+
+      <!-- asosiy chiziq -->
+      <path class="curve__line" id="curveLine"
+        d="M 96 312
+           C 200 308, 250 303, 300 298
+           C 400 289, 452 282, 520 269
+           C 610 251, 662 234, 720 208
+           C 790 177, 850 151, 900 118
+           C 958 80, 1010 50, 1104 18"
+        fill="none" stroke="url(#curveGrad)" stroke-width="2.5" stroke-linecap="round" />
+
+      <!-- tik punktir chiziqlar -->
+      <g class="curve__drops" stroke="#4A5551" stroke-width="1" stroke-dasharray="2 6" stroke-linecap="round">
+        <line x1="300" y1="300" x2="300" y2="326" />
+        <line x1="520" y1="271" x2="520" y2="298" />
+        <line x1="720" y1="210" x2="720" y2="238" />
+        <line x1="900" y1="120" x2="900" y2="148" />
+      </g>
+
+      <!-- tugunlar -->
+      <g class="curve__nodes" filter="url(#nodeGlow)">
+        <circle class="node" style="--i:0" cx="300" cy="298" r="5.5" fill="#5C6A65" />
+        <circle class="node" style="--i:1" cx="520" cy="269" r="5.5" fill="#2E8F6B" />
+        <circle class="node" style="--i:2" cx="720" cy="208" r="5.5" fill="#35C185" />
+        <circle class="node" style="--i:3" cx="900" cy="118" r="6.5" fill="#7BF0B4" />
+      </g>
+    </svg>
+
+    <!-- bosqich izohlari -->
+    <ol class="steps">
+      <li class="step" style="--i:0">
+        <span class="step__n">01</span>
+        <h2 class="step__t">Audit</h2>
+        <p class="step__d">Do'koningizni 12 nuqta bo'yicha tekshiramiz va o'sish nuqtalarini topamiz.</p>
+      </li>
+      <li class="step" style="--i:1">
+        <span class="step__n">02</span>
+        <h2 class="step__t">Upakovka</h2>
+        <p class="step__d">Kartochka, professional foto, infografika va ikki tilda SEO matn.</p>
+      </li>
+      <li class="step" style="--i:2">
+        <span class="step__n">03</span>
+        <h2 class="step__t">Reklama</h2>
+        <p class="step__d">Trafik, qidiruvdagi pozitsiya va reklama samaradorligini o'stiramiz.</p>
+      </li>
+      <li class="step" style="--i:3">
+        <span class="step__n">04</span>
+        <h2 class="step__t">O'sish</h2>
+        <p class="step__d">Oborot va konversiya barqaror o'sadi — har oy raqamli hisobot bilan.</p>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ishonch lentasi -->
+  <div class="proof">
+    <p class="proof__label">Bizga ishonishdi</p>
+    <ul class="proof__list">
+      <li>HP</li><li>Lenovo</li><li>Panasonic</li><li>Grohe</li>
+      <li>Frosch</li><li>Vileda</li><li>Deerma</li><li>Lovular</li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<script src="assets/js/main.js?v=2"></script>
+</body>
+</html>

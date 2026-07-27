@@ -1,0 +1,484 @@
+/* ==========================================================================
+   EXON — Design tokens
+   Palitra: grafit kulrang (fon) · oq (matn) · yashil (urg'u)
+   Mavzu: faqat dark — bu ataylab qilingan tanlov, light versiya yo'q.
+   ========================================================================== */
+:root{
+  /* fon qatlamlari — sof qora emas, yashil tomonga biroz og'gan grafit */
+  --bg:        #0C0F0E;
+  --bg-2:      #101413;
+  --surface:   #161B19;
+  --surface-2: #1D2422;
+
+  /* chegaralar */
+  --line:      #232B28;
+  --line-2:    #2F3A36;
+
+  /* matn */
+  --white:     #F1F5F2;
+  --gray:      #98A29D;
+  --gray-dim:  #6B7571;
+
+  /* urg'u — logotipdagi "on" gradientidan olingan yagona rangli aksent.
+     Logotipning haqiqiy qiymatlari: yuqorisi #00A94A, pastki uchi #00FF77. */
+  --green:      #0BD16C;
+  --green-hi:   #4CF79C;
+  --green-deep: #00A24A;
+  --green-ink:  #04120A;
+  --green-rgb:  11,209,108;
+
+  --font-display: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+
+  --nav-h: 76px;
+  --wrap: 1280px;
+  --ease: cubic-bezier(.22,.68,.28,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--bg);
+  color:var(--white);
+  font-family:var(--font-display);
+  font-size:16px;
+  font-weight:400;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+ol,ul{list-style:none}
+
+:focus-visible{
+  outline:2px solid var(--green);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+.skip{
+  position:absolute;top:-100px;left:16px;z-index:200;
+  background:var(--green);color:var(--green-ink);
+  padding:10px 16px;border-radius:8px;font-weight:600;font-size:14px;
+}
+.skip:focus{top:16px}
+
+/* ==========================================================================
+   NAV
+   ========================================================================== */
+.nav{
+  position:fixed;inset:0 0 auto 0;z-index:100;
+  height:var(--nav-h);
+  display:flex;align-items:center;
+  transition:background .35s var(--ease), border-color .35s var(--ease);
+  border-bottom:1px solid transparent;
+}
+.nav.is-scrolled{
+  background:rgba(12,15,14,.82);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom-color:var(--line);
+}
+.nav__inner{
+  width:100%;max-width:var(--wrap);margin:0 auto;
+  padding:0 clamp(18px,3.4vw,40px);
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:24px;
+}
+
+.logo{display:flex;align-items:center;height:40px}
+.logo__img{
+  height:100%;width:auto;max-height:40px;
+  filter:brightness(1) contrast(1.05);
+}
+
+.nav__menu{display:flex;justify-content:center;gap:clamp(18px,2.4vw,34px)}
+.nav__menu a{
+  font-size:14.5px;font-weight:400;color:var(--gray);
+  padding:6px 0;position:relative;
+  transition:color .22s var(--ease);
+}
+.nav__menu a::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:var(--green);transform:scaleX(0);transform-origin:left;
+  transition:transform .28s var(--ease);
+}
+.nav__menu a:hover{color:var(--white)}
+.nav__menu a:hover::after{transform:scaleX(1)}
+
+.nav__right{display:flex;align-items:center;gap:12px}
+
+.lang{display:flex;gap:2px;padding:3px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+.lang__btn{
+  background:none;border:0;cursor:pointer;
+  font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.06em;
+  color:var(--gray-dim);padding:4px 9px;border-radius:999px;
+  transition:color .2s var(--ease), background .2s var(--ease);
+}
+.lang__btn:hover{color:var(--white)}
+.lang__btn.is-active{background:var(--surface-2);color:var(--white)}
+
+/* ==========================================================================
+   TUGMALAR
+   ========================================================================== */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border:0;cursor:pointer;white-space:nowrap;
+  font-weight:600;letter-spacing:-.01em;
+  transition:transform .2s var(--ease), box-shadow .28s var(--ease), background .28s var(--ease);
+}
+.btn--pill{
+  font-size:14px;padding:9px 8px 9px 18px;border-radius:999px;
+  background:var(--surface);border:1px solid var(--line-2);color:var(--white);
+}
+.btn--pill .btn__plus{
+  display:grid;place-items:center;width:24px;height:24px;border-radius:50%;
+  background:linear-gradient(150deg,var(--green-hi),var(--green));
+  color:var(--green-ink);font-size:15px;font-weight:600;line-height:1;
+  transition:transform .3s var(--ease);
+}
+.btn--pill:hover{border-color:var(--green-deep);background:var(--surface-2)}
+.btn--pill:hover .btn__plus{transform:rotate(90deg)}
+
+.btn--primary{
+  font-size:15px;padding:0 26px;height:48px;border-radius:999px;
+  background:linear-gradient(140deg,var(--green-hi) 0%,var(--green) 52%,#1FA36C 100%);
+  color:var(--green-ink);
+  box-shadow:0 6px 26px -8px rgba(53,193,133,.65);
+}
+.btn--primary:hover{transform:translateY(-1px);box-shadow:0 10px 32px -8px rgba(53,193,133,.8)}
+.btn--primary:active{transform:translateY(0)}
+
+.burger{display:none;background:none;border:0;cursor:pointer;width:38px;height:38px;
+  border-radius:9px;border:1px solid var(--line-2);
+  flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.burger span{display:block;width:16px;height:1.5px;background:var(--white);border-radius:2px;
+  transition:transform .3s var(--ease), opacity .2s var(--ease)}
+.burger[aria-expanded="true"] span:first-child{transform:translateY(3.25px) rotate(45deg)}
+.burger[aria-expanded="true"] span:last-child{transform:translateY(-3.25px) rotate(-45deg)}
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+.hero{
+  position:relative;
+  min-height:100svh;
+  padding:calc(var(--nav-h) + clamp(26px,4.6vh,62px)) 0 0;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  isolation:isolate;
+}
+
+/* markazdagi yumshoq yorug'lik */
+.hero__glow{
+  position:absolute;z-index:-2;
+  top:-14%;left:50%;transform:translateX(-50%);
+  width:min(1180px,135vw);aspect-ratio:1/.72;
+  background:
+    radial-gradient(ellipse 46% 40% at 50% 34%, rgba(53,193,133,.10), transparent 68%),
+    radial-gradient(ellipse 62% 52% at 50% 30%, rgba(150,168,160,.075), transparent 72%);
+  filter:blur(14px);
+  pointer-events:none;
+}
+/* pastdagi vinyetka */
+.hero::after{
+  content:"";position:absolute;z-index:-2;inset:auto 0 0 0;height:42%;
+  background:linear-gradient(to top,var(--bg) 12%,transparent);
+  pointer-events:none;
+}
+/* nozik don (grain) */
+.hero__grain{
+  position:absolute;z-index:-1;inset:0;opacity:.055;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hero__top{
+  width:100%;max-width:var(--wrap);margin:0 auto;
+  padding:0 clamp(18px,3.4vw,40px);
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+}
+
+/* ── badge ── */
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 15px 6px 11px;border-radius:999px;
+  background:var(--surface);border:1px solid var(--line-2);
+  font-family:var(--font-mono);font-size:11.5px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--gray);
+}
+.badge__dot{
+  width:6px;height:6px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 0 3px rgba(53,193,133,.16);
+}
+
+/* ── sarlavha ── */
+.hero__title{
+  margin:clamp(20px,3vh,30px) 0 0;
+  font-size:clamp(2.3rem,5.9vw,4.6rem);
+  font-weight:600;
+  line-height:1.045;
+  letter-spacing:-.038em;
+  /* qatorlar HTML'da qo'lda ajratilgan, shuning uchun max-width kerak emas —
+     u qo'shimcha, kutilmagan uzilishlarni keltirib chiqaradi */
+}
+.hero__line{display:block}
+.hero__line--2{color:var(--gray)}
+
+.hero__lede{
+  margin:clamp(16px,2.4vh,24px) 0 0;
+  max-width:52ch;
+  font-size:clamp(.95rem,1.35vw,1.075rem);
+  font-weight:300;
+  color:var(--gray);
+}
+
+/* ── inline capture ── */
+.capture{
+  margin:clamp(24px,3.6vh,36px) 0 0;
+  width:min(560px,100%);
+  display:flex;align-items:center;gap:8px;
+  padding:6px 6px 6px 8px;
+  background:var(--surface);
+  border:1px solid var(--line-2);
+  border-radius:999px;
+  transition:border-color .3s var(--ease), box-shadow .3s var(--ease);
+}
+.capture:focus-within{
+  border-color:var(--green-deep);
+  box-shadow:0 0 0 4px rgba(53,193,133,.09);
+}
+.capture__label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.capture__input{
+  flex:1;min-width:0;background:none;border:0;outline:none;
+  padding:0 10px;height:48px;
+  font-size:15px;font-weight:300;color:var(--white);
+}
+.capture__input::placeholder{color:var(--gray-dim)}
+.capture__hint{
+  margin:14px 0 0;
+  font-size:13px;font-weight:300;color:var(--gray-dim);
+}
+.capture__hint.is-error{color:#F2896F}
+.capture__hint.is-ok{color:var(--green)}
+
+/* ==========================================================================
+   O'SISH EGRI CHIZIG'I
+   ========================================================================== */
+.curve{
+  position:relative;
+  container-type:inline-size;
+  width:100%;
+  max-width:1440px;
+  margin:clamp(16px,2.8vh,38px) auto 0;
+  aspect-ratio:1200/460;
+}
+.curve__svg{display:block;width:100%;height:100%;overflow:visible}
+
+.js .curve__line{
+  stroke-dasharray:var(--len,1600);
+  stroke-dashoffset:var(--len,1600);
+}
+.is-ready .curve__line{
+  transition:stroke-dashoffset 2.1s var(--ease) .35s;
+  stroke-dashoffset:0;
+}
+.js .curve__drops line{opacity:0}
+.is-ready .curve__drops line{
+  animation:fadeIn .6s var(--ease) forwards;
+}
+.is-ready .curve__drops line:nth-child(1){animation-delay:.95s}
+.is-ready .curve__drops line:nth-child(2){animation-delay:1.2s}
+.is-ready .curve__drops line:nth-child(3){animation-delay:1.45s}
+.is-ready .curve__drops line:nth-child(4){animation-delay:1.7s}
+
+.node{transform-box:fill-box;transform-origin:center}
+.js .node{opacity:0;transform:scale(.2)}
+.is-ready .node{
+  animation:pop .55s var(--ease) forwards;
+  animation-delay:calc(.85s + var(--i) * .25s);
+}
+
+/* ── bosqichlar: egri chiziq ostiga joylashadi ── */
+.steps{position:absolute;inset:0;pointer-events:none}
+.step{
+  position:absolute;
+  width:17%;
+  text-align:center;
+  pointer-events:auto;
+}
+.js .step{opacity:0;transform:translateY(14px)}
+.is-ready .step{
+  animation:riseIn .7s var(--ease) forwards;
+  animation-delay:calc(1.05s + var(--i) * .25s);
+}
+/* har bir bosqich o'z tuguni ostida — foizlar 1200x460 koordinatalaridan olingan */
+.step:nth-child(1){left:16.50%;top:73.0%}
+.step:nth-child(2){left:34.83%;top:66.9%}
+.step:nth-child(3){left:51.50%;top:53.9%}
+.step:nth-child(4){left:66.50%;top:34.3%}
+
+.step__n{
+  display:block;
+  font-family:var(--font-mono);
+  font-size:clamp(9px,.85cqw,12px);
+  font-weight:500;letter-spacing:.16em;
+  color:var(--green);
+  margin-bottom:.35em;
+}
+.step__t{
+  font-size:clamp(15px,1.85cqw,26px);
+  font-weight:600;letter-spacing:-.025em;line-height:1.15;
+  margin-bottom:.34em;
+}
+.step__d{
+  font-size:clamp(10px,1.02cqw,14px);
+  font-weight:300;line-height:1.5;color:var(--gray);
+}
+
+/* ==========================================================================
+   ISHONCH LENTASI
+   ========================================================================== */
+.proof{
+  width:100%;max-width:var(--wrap);margin:auto auto 0;
+  padding:clamp(20px,3vh,36px) clamp(18px,3.4vw,40px) clamp(22px,3.6vh,42px);
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+}
+.proof__label{
+  font-family:var(--font-mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--gray-dim);
+}
+.proof__list{
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:clamp(20px,3.4vw,46px);
+}
+.proof__list li{
+  font-size:clamp(14px,1.5vw,18px);font-weight:500;letter-spacing:.02em;
+  color:var(--gray-dim);
+  transition:color .25s var(--ease);
+}
+.proof__list li:hover{color:var(--gray)}
+
+/* ==========================================================================
+   ANIMATSIYALAR
+   ========================================================================== */
+@keyframes fadeIn{to{opacity:1}}
+@keyframes pop{
+  0%  {opacity:0;transform:scale(.2)}
+  62% {opacity:1;transform:scale(1.32)}
+  100%{opacity:1;transform:scale(1)}
+}
+@keyframes riseIn{to{opacity:1;transform:translateY(0)}}
+
+/* hero matn bloklari */
+.js .badge,
+.js .hero__title .hero__line,
+.js .hero__lede,
+.js .capture,
+.js .capture__hint{
+  opacity:0;transform:translateY(16px);
+}
+.is-ready .badge,
+.is-ready .hero__title .hero__line,
+.is-ready .hero__lede,
+.is-ready .capture,
+.is-ready .capture__hint{
+  animation:riseIn .85s var(--ease) forwards;
+}
+.is-ready .badge{animation-delay:.05s}
+.is-ready .hero__title .hero__line:nth-child(1){animation-delay:.15s}
+.is-ready .hero__title .hero__line:nth-child(2){animation-delay:.25s}
+.is-ready .hero__lede{animation-delay:.36s}
+.is-ready .capture{animation-delay:.46s}
+.is-ready .capture__hint{animation-delay:.54s}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+/* Past bo'yli ekranlar (odatiy noutbuk: 1280x800 → ~700px ko'rinish balandligi).
+   Hero bir ekranga sig'ishi kerak — aks holda egri chiziq va bosqichlar
+   birinchi ko'rinishda umuman ko'rinmaydi. */
+@media (min-width:881px) and (max-height:960px){
+  .hero{padding-top:calc(var(--nav-h) + clamp(14px,2.2vh,30px))}
+  .hero__title{font-size:clamp(2rem,4.7vw,3.6rem)}
+  .hero__lede{margin-top:clamp(10px,1.5vh,16px);font-size:clamp(.9rem,1.2vw,1rem)}
+  .capture{margin-top:clamp(14px,2.2vh,24px)}
+  .capture__hint{margin-top:10px}
+  .curve{margin-top:clamp(6px,1.2vh,18px);aspect-ratio:1200/415}
+  .proof{padding-top:clamp(12px,1.8vh,22px);padding-bottom:clamp(16px,2.4vh,28px);gap:12px}
+}
+/* Tor ekranlarda bosqich bloklari kengayadi — izohlar saqlanib qoladi,
+   chunki ular sarlavhadan kam qimmatli emas. */
+@media (max-width:1180px){
+  .step{width:20%}
+  .step:nth-child(1){left:15.0%}
+  .step:nth-child(2){left:33.3%}
+  .step:nth-child(3){left:50.0%}
+  .step:nth-child(4){left:65.0%}
+}
+
+@media (max-width:880px){
+  .nav__menu{
+    position:fixed;inset:var(--nav-h) 0 auto 0;
+    flex-direction:column;justify-content:flex-start;gap:0;
+    background:rgba(12,15,14,.97);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--line);
+    padding:8px clamp(18px,3.4vw,40px) 20px;
+    transform:translateY(-12px);opacity:0;visibility:hidden;
+    transition:opacity .28s var(--ease), transform .28s var(--ease), visibility .28s;
+  }
+  .nav__menu.is-open{transform:translateY(0);opacity:1;visibility:visible}
+  .nav__menu a{padding:13px 0;font-size:16px;color:var(--white);border-bottom:1px solid var(--line)}
+  .nav__menu a::after{display:none}
+  .burger{display:flex}
+  .lang{display:none}
+
+  /* Egri chiziqsiz kontent past bo'ladi — 100svh majburlansa, ostida
+     katta bo'sh maydon qoladi. Shuning uchun balandlik erkin qo'yiladi. */
+  .hero{min-height:auto;padding-bottom:clamp(24px,4vh,44px)}
+  .proof{margin-top:0}
+
+  /* egri chiziq mobil ekranga sig'maydi — bosqichlar raqamli ro'yxatga aylanadi */
+  .curve{aspect-ratio:auto;margin-top:clamp(30px,5vh,44px)}
+  .curve__svg{display:none}
+  .steps{position:static;display:grid;grid-template-columns:repeat(2,1fr);gap:22px 18px;
+    padding:0 clamp(18px,3.4vw,40px);max-width:var(--wrap);margin:0 auto}
+  .step{position:static;width:auto;text-align:left}
+  .step__d{display:block}
+  .step__t{font-size:18px}
+  .step__n{font-size:10px}
+  .step__d{font-size:13px}
+  .curve__drops{display:none}
+}
+
+@media (max-width:560px){
+  .hero__title{font-size:clamp(2.05rem,9vw,2.8rem);max-width:14ch}
+  .capture{
+    flex-direction:column;gap:10px;border-radius:20px;padding:10px;
+  }
+  .capture__input{width:100%;height:44px;text-align:center}
+  .capture .btn--primary{width:100%}
+  .steps{grid-template-columns:1fr;gap:18px}
+  .curve__svg{height:96px}
+  .proof__list{gap:16px 22px}
+  .proof__list li{font-size:14px}
+}
+
+/* ==========================================================================
+   HARAKATNI KAMAYTIRISH
+   ========================================================================== */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-delay:0ms !important;
+    transition-duration:.01ms !important;
+  }
+  .badge,.hero__title .hero__line,.hero__lede,.capture,.capture__hint,
+  .step,.node,.curve__drops line{opacity:1;transform:none}
+  .curve__line{stroke-dashoffset:0}
+}
