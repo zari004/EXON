@@ -33,6 +33,43 @@ body{background:var(--bg)}
 }
 .login-error{color:#F2896F;font-size:13px;margin-top:10px;min-height:16px}
 
+/* ── LOGIN TABS ── */
+.login-tabs{display:flex;gap:4px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+.login-tab{flex:1;padding:8px 0;border:0;background:none;color:var(--gray);font-size:14px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.login-tab.is-active{color:var(--white);border-bottom-color:var(--green)}
+.login-form{display:none}
+.login-form.is-active{display:block}
+.login-box .field-sep{margin:10px 0;font-size:12px;color:var(--gray-dim);text-align:center}
+
+/* ── PENDING SCREEN ── */
+.pending-screen{
+  min-height:100vh;display:none;align-items:center;justify-content:center;padding:20px;
+}
+.pending-screen.is-active{display:flex}
+.pending-box{
+  width:100%;max-width:360px;padding:36px 32px;border-radius:16px;
+  background:var(--surface);border:1px solid var(--line-2);text-align:center;
+}
+.pending-icon{font-size:42px;margin-bottom:16px}
+.pending-box h2{font-size:18px;font-weight:600;margin-bottom:10px}
+.pending-box p{font-size:14px;color:var(--gray);line-height:1.6;margin-bottom:24px}
+.pending-back{
+  background:none;border:1px solid var(--line-2);border-radius:8px;
+  color:var(--gray);padding:10px 20px;font-size:14px;cursor:pointer;
+}
+.pending-back:hover{color:var(--white);border-color:var(--line)}
+
+/* ── USERS TABLE ── */
+.user-status{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.user-status.pending{background:rgba(255,180,0,.15);color:#FFB400}
+.user-status.approved{background:rgba(11,209,108,.15);color:var(--green)}
+.user-status.rejected{background:rgba(242,137,111,.15);color:#F2896F}
+.role-label{font-size:12px;color:var(--gray-dim)}
+.btn-approve{background:rgba(11,209,108,.15);border:1px solid rgba(11,209,108,.3);color:var(--green);padding:5px 12px;border-radius:6px;font-size:12.5px;cursor:pointer}
+.btn-approve:hover{background:rgba(11,209,108,.25)}
+.btn-reject{background:rgba(242,137,111,.12);border:1px solid rgba(242,137,111,.3);color:#F2896F;padding:5px 12px;border-radius:6px;font-size:12.5px;cursor:pointer}
+.btn-reject:hover{background:rgba(242,137,111,.2)}
+
 /* ── SHELL ── */
 .admin-app{display:none}
 .admin-app.is-active{display:block}
@@ -159,13 +196,50 @@ body{background:var(--bg)}
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
     <h1>EXON Admin</h1>
-    <p>Keyslar, blog va narxlarni boshqarish paneli.</p>
-    <form id="loginForm">
-      <input type="password" id="passwordInput" placeholder="Parol" autocomplete="current-password" required />
-      <button type="submit" id="loginSubmitBtn">Kirish</button>
-      <div class="login-error" id="loginError"></div>
-      <div class="login-error" id="loginHint" style="color:var(--gray-dim)"></div>
-    </form>
+
+    <div class="login-tabs">
+      <button class="login-tab is-active" id="tabKirish" onclick="switchAuthTab('kirish')">Kirish</button>
+      <button class="login-tab" id="tabRoyxat" onclick="switchAuthTab('royxat')">Ro'yxatdan o'tish</button>
+    </div>
+
+    <!-- KIRISH FORMASI -->
+    <div class="login-form is-active" id="formKirish">
+      <form id="loginForm">
+        <input type="email" id="loginEmail" placeholder="Email" autocomplete="email" required />
+        <input type="password" id="loginPassword" placeholder="Parol" autocomplete="current-password" required />
+        <button type="submit" id="loginSubmitBtn">Kirish</button>
+        <div class="login-error" id="loginError"></div>
+        <div class="login-error" id="loginHint" style="color:var(--gray-dim)"></div>
+      </form>
+    </div>
+
+    <!-- RO'YXATDAN O'TISH FORMASI -->
+    <div class="login-form" id="formRoyxat">
+      <form id="registerForm">
+        <input type="text" id="regName" placeholder="To'liq ismingiz" autocomplete="name" required />
+        <input type="email" id="regEmail" placeholder="Email" autocomplete="email" required />
+        <input type="password" id="regPassword" placeholder="Parol (kamida 6 belgi)" autocomplete="new-password" required />
+        <select id="regRole" style="width:100%;height:46px;padding:0 14px;border-radius:8px;background:var(--bg-2);border:1px solid var(--line-2);color:var(--white);font-size:15px;margin-bottom:14px">
+          <option value="menejer_oddiy">Menejer</option>
+          <option value="menejer_bosh">Bosh menejer</option>
+          <option value="dizayner_oddiy">Dizayner</option>
+          <option value="dizayner_bosh">Bosh dizayner</option>
+          <option value="seo">SEO mutaxassis</option>
+        </select>
+        <button type="submit" id="registerSubmitBtn">Ro'yxatdan o'tish</button>
+        <div class="login-error" id="registerError"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ KUTISH EKRANI ══════════ -->
+<div class="pending-screen" id="pendingScreen">
+  <div class="pending-box">
+    <div class="pending-icon">✅</div>
+    <h2>So'rovingiz yuborildi</h2>
+    <p>Ma'lumotlaringiz administratorlarga yuborildi.<br>Ular tasdiqlagandan so'ng tizimga kirishingiz mumkin.</p>
+    <button class="pending-back" onclick="showAuthScreen()">← Kirish sahifasiga qaytish</button>
   </div>
 </div>
 
@@ -181,6 +255,7 @@ body{background:var(--bg)}
     <button class="admin-tab" data-tab="cases">Keyslar</button>
     <button class="admin-tab" data-tab="posts">Blog</button>
     <button class="admin-tab" data-tab="pricing">Narxlar</button>
+    <button class="admin-tab superadmin-tab" data-tab="users" style="display:none">Foydalanuvchilar</button>
   </div>
 
   <!-- DASHBOARD -->
@@ -218,6 +293,12 @@ body{background:var(--bg)}
       <button class="btn-add" onclick="openPricingForm()">+ Yangi paket</button>
     </div>
     <div class="item-list" id="pricingList"></div>
+  </section>
+
+  <!-- FOYDALANUVCHILAR (superadmin) -->
+  <section class="admin-panel" id="panel-users">
+    <div class="panel-head"><h2>Foydalanuvchilar</h2></div>
+    <div id="usersList"></div>
   </section>
 </div>
 
@@ -329,6 +410,8 @@ body{background:var(--bg)}
   'use strict';
   const API = window.EXON_API_BASE;
   let TOKEN = localStorage.getItem('exon_admin_token') || '';
+  let USER_ROLE = localStorage.getItem('exon_admin_role') || '';
+  let USER_NAME = localStorage.getItem('exon_admin_name') || '';
 
   const authHeaders = () => ({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TOKEN });
 
@@ -342,37 +425,60 @@ body{background:var(--bg)}
     return data;
   }
 
-  // ── AUTH ──
+  // ── EKRANLAR ──
   function showApp() {
     document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('pendingScreen').classList.remove('is-active');
     document.getElementById('adminApp').classList.add('is-active');
+    // Superadmin bo'lsa — Foydalanuvchilar tabini ko'rsat
+    var superTabs = document.querySelectorAll('.superadmin-tab');
+    superTabs.forEach(function (t) { t.style.display = USER_ROLE === 'superadmin' ? '' : 'none'; });
     loadDashboard(); loadCases(); loadPosts(); loadPricing();
+    if (USER_ROLE === 'superadmin') loadUsers();
   }
-  function showLogin() {
+  function showAuthScreen() {
     document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('pendingScreen').classList.remove('is-active');
+    document.getElementById('adminApp').classList.remove('is-active');
+  }
+  function showPending() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('pendingScreen').classList.add('is-active');
     document.getElementById('adminApp').classList.remove('is-active');
   }
   function logout() {
-    TOKEN = ''; localStorage.removeItem('exon_admin_token'); showLogin();
+    TOKEN = ''; USER_ROLE = ''; USER_NAME = '';
+    localStorage.removeItem('exon_admin_token');
+    localStorage.removeItem('exon_admin_role');
+    localStorage.removeItem('exon_admin_name');
+    showAuthScreen();
   }
   document.getElementById('logoutBtn').addEventListener('click', function () {
     apiFetch('/api/admin/logout', { method: 'POST' }).catch(function(){}).then(logout);
   });
 
+  // ── AUTH TABS ──
+  window.switchAuthTab = function (tab) {
+    document.getElementById('tabKirish').classList.toggle('is-active', tab === 'kirish');
+    document.getElementById('tabRoyxat').classList.toggle('is-active', tab === 'royxat');
+    document.getElementById('formKirish').classList.toggle('is-active', tab === 'kirish');
+    document.getElementById('formRoyxat').classList.toggle('is-active', tab === 'royxat');
+    document.getElementById('loginError').textContent = '';
+    document.getElementById('registerError').textContent = '';
+  };
+
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
-  // Render'ning bepul konteyneri uyg'onish boshida (0-15s) ulanishni butunlay
-  // rad etishi mumkin — bu haqiqiy xato emas, shuning uchun bir necha marta
-  // qayta uriniladi. Faqat tarmoq xatolarida qayta urinadi, parol xato
-  // bo'lsa (server javob bergan holatda) darhol to'xtaydi.
-  async function loginWithRetry(pass, hintEl, maxAttempts) {
+  // Render uyg'onish boshida (0-15s) so'rovni butunlay rad etishi mumkin —
+  // shuning uchun bir necha marta qayta uriniladi.
+  async function loginWithRetry(email, password, hintEl, maxAttempts) {
     for (var attempt = 1; attempt <= maxAttempts; attempt++) {
       const controller = new AbortController();
       const abortTimer = setTimeout(function () { controller.abort(); }, 20000);
       try {
-        const res = await fetch(API + '/api/admin/login', {
+        const res = await fetch(API + '/api/auth/login', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: pass }),
+          body: JSON.stringify({ email: email, password: password }),
           signal: controller.signal
         });
         clearTimeout(abortTimer);
@@ -388,24 +494,32 @@ body{background:var(--bg)}
 
   document.getElementById('loginForm').addEventListener('submit', async function (e) {
     e.preventDefault();
-    const pass = document.getElementById('passwordInput').value;
-    const errEl = document.getElementById('loginError');
-    const hintEl = document.getElementById('loginHint');
-    const btn = document.getElementById('loginSubmitBtn');
+    var email = document.getElementById('loginEmail').value.trim();
+    var pass = document.getElementById('loginPassword').value;
+    var errEl = document.getElementById('loginError');
+    var hintEl = document.getElementById('loginHint');
+    var btn = document.getElementById('loginSubmitBtn');
     errEl.textContent = '';
     btn.disabled = true;
     btn.textContent = 'Kirilmoqda...';
     hintEl.textContent = '';
     try {
-      const data = await loginWithRetry(pass, hintEl, 6);
-      if (!data.success) { errEl.textContent = data.error || "Parol noto'g'ri"; return; }
+      var data = await loginWithRetry(email, pass, hintEl, 6);
+      if (!data.success) {
+        errEl.textContent = data.error || "Email yoki parol noto'g'ri";
+        return;
+      }
       TOKEN = data.token;
+      USER_ROLE = data.role || 'menejer_oddiy';
+      USER_NAME = data.name || '';
       localStorage.setItem('exon_admin_token', TOKEN);
+      localStorage.setItem('exon_admin_role', USER_ROLE);
+      localStorage.setItem('exon_admin_name', USER_NAME);
       showApp();
     } catch (err) {
       errEl.textContent = err.name === 'AbortError'
         ? "Server javob bermadi. Birozdan so'ng qayta urinib ko'ring."
-        : 'Serverga ulanib bo\'lmadi: ' + err.message;
+        : "Serverga ulanib bo'lmadi: " + err.message;
     } finally {
       hintEl.textContent = '';
       btn.disabled = false;
@@ -413,13 +527,52 @@ body{background:var(--bg)}
     }
   });
 
+  document.getElementById('registerForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var errEl = document.getElementById('registerError');
+    var btn = document.getElementById('registerSubmitBtn');
+    errEl.textContent = '';
+    btn.disabled = true;
+    btn.textContent = "Yuborilmoqda...";
+    try {
+      var body = {
+        name: document.getElementById('regName').value.trim(),
+        email: document.getElementById('regEmail').value.trim(),
+        password: document.getElementById('regPassword').value,
+        role: document.getElementById('regRole').value
+      };
+      var res = await fetch(API + '/api/auth/register', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      var data = await res.json();
+      if (!data.success) { errEl.textContent = data.error || 'Xatolik yuz berdi'; return; }
+      document.getElementById('registerForm').reset();
+      showPending();
+    } catch (err) {
+      errEl.textContent = "Serverga ulanib bo'lmadi: " + err.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Ro'yxatdan o'tish";
+    }
+  });
+
   if (TOKEN) {
     fetch(API + '/api/admin/me', { headers: authHeaders() })
       .then(function (r) { return r.json(); })
-      .then(function (d) { d.success ? showApp() : showLogin(); })
-      .catch(showLogin);
+      .then(function (d) {
+        if (d.success) {
+          USER_ROLE = d.role || USER_ROLE;
+          USER_NAME = d.name || USER_NAME;
+          localStorage.setItem('exon_admin_role', USER_ROLE);
+          showApp();
+        } else {
+          showAuthScreen();
+        }
+      })
+      .catch(showAuthScreen);
   } else {
-    showLogin();
+    showAuthScreen();
   }
 
   // ── TABS ──
@@ -709,6 +862,59 @@ body{background:var(--bg)}
   window.deletePricing = async function (id) {
     if (!confirm("Bu paketni o'chirishni tasdiqlaysizmi?")) return;
     try { await apiFetch('/api/pricing/' + id, { method: 'DELETE' }); loadPricing(); }
+    catch (err) { alert(err.message); }
+  };
+
+  // ══════════════════════════════════════════════════════════
+  // FOYDALANUVCHILAR (superadmin)
+  // ══════════════════════════════════════════════════════════
+  var ROLE_NAMES = {
+    superadmin: 'Superadmin',
+    seo: 'SEO mutaxassis',
+    menejer_bosh: 'Bosh menejer',
+    menejer_oddiy: 'Menejer',
+    dizayner_bosh: 'Bosh dizayner',
+    dizayner_oddiy: 'Dizayner'
+  };
+
+  async function loadUsers() {
+    try {
+      var data = await apiFetch('/api/admin/users');
+      var list = document.getElementById('usersList');
+      var users = data.users || [];
+      if (!users.length) {
+        list.innerHTML = '<div class="empty-state">Hali ro\'yxatdan o\'tgan foydalanuvchilar yo\'q</div>';
+        return;
+      }
+      list.innerHTML = '<div class="item-list">' + users.map(function (u) {
+        var statusLabel = u.status === 'pending' ? "Kutmoqda" : u.status === 'approved' ? "Tasdiqlangan" : "Rad etilgan";
+        var actions = u.status === 'pending'
+          ? '<button class="btn-approve" onclick="approveUser(' + u.id + ')">Tasdiqlash</button>' +
+            '<button class="btn-reject" onclick="rejectUser(' + u.id + ')" style="margin-left:6px">Rad etish</button>'
+          : u.status === 'approved'
+            ? '<button class="btn-reject" onclick="rejectUser(' + u.id + ')">Bloklash</button>'
+            : '<button class="btn-approve" onclick="approveUser(' + u.id + ')">Tiklash</button>';
+        return '<div class="item-row">' +
+          '<div class="item-row__thumb" style="font-size:18px">👤</div>' +
+          '<div class="item-row__body">' +
+            '<div class="item-row__title">' + esc(u.name) + '</div>' +
+            '<div class="item-row__meta">' + esc(u.email) + ' · <span class="role-label">' + (ROLE_NAMES[u.role] || u.role) + '</span></div>' +
+          '</div>' +
+          '<div class="item-row__actions" style="align-items:center;gap:8px">' +
+            '<span class="user-status ' + u.status + '">' + statusLabel + '</span>' +
+            actions +
+          '</div></div>';
+      }).join('') + '</div>';
+    } catch (err) { console.error(err); }
+  }
+
+  window.approveUser = async function (id) {
+    try { await apiFetch('/api/admin/users/' + id + '/approve', { method: 'POST' }); loadUsers(); }
+    catch (err) { alert(err.message); }
+  };
+
+  window.rejectUser = async function (id) {
+    try { await apiFetch('/api/admin/users/' + id + '/reject', { method: 'POST' }); loadUsers(); }
     catch (err) { alert(err.message); }
   };
 })();

@@ -30,10 +30,48 @@ router.post('/logout', auth.requireAuth, (req, res) => {
 });
 
 /**
- * GET /api/admin/me — token hali amal qiladimi tekshirish
+ * GET /api/admin/me — token hali amal qiladimi tekshirish, role qaytaradi
  */
 router.get('/me', auth.requireAuth, (req, res) => {
-  res.json({ success: true });
+  res.json({ success: true, role: req.user.role, name: req.user.name, email: req.user.email });
+});
+
+/**
+ * GET /api/admin/users — barcha foydalanuvchilar ro'yxati (superadmin)
+ */
+router.get('/users', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
+  try {
+    const users = await db.all(
+      'SELECT id, name, email, role, status, created_at FROM admin_users ORDER BY created_at DESC'
+    );
+    res.json({ success: true, users });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * POST /api/admin/users/:id/approve — foydalanuvchini tasdiqlash (superadmin)
+ */
+router.post('/users/:id/approve', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
+  try {
+    await db.run('UPDATE admin_users SET status = ? WHERE id = ?', ['approved', req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * POST /api/admin/users/:id/reject — foydalanuvchini rad etish (superadmin)
+ */
+router.post('/users/:id/reject', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
+  try {
+    await db.run('UPDATE admin_users SET status = ? WHERE id = ?', ['rejected', req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 /**
