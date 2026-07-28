@@ -358,6 +358,33 @@ body{background:var(--bg)}
     apiFetch('/api/admin/logout', { method: 'POST' }).catch(function(){}).then(logout);
   });
 
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  // Render'ning bepul konteyneri uyg'onish boshida (0-15s) ulanishni butunlay
+  // rad etishi mumkin — bu haqiqiy xato emas, shuning uchun bir necha marta
+  // qayta uriniladi. Faqat tarmoq xatolarida qayta urinadi, parol xato
+  // bo'lsa (server javob bergan holatda) darhol to'xtaydi.
+  async function loginWithRetry(pass, hintEl, maxAttempts) {
+    for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+      const controller = new AbortController();
+      const abortTimer = setTimeout(function () { controller.abort(); }, 20000);
+      try {
+        const res = await fetch(API + '/api/admin/login', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pass }),
+          signal: controller.signal
+        });
+        clearTimeout(abortTimer);
+        return await res.json();
+      } catch (err) {
+        clearTimeout(abortTimer);
+        if (attempt === maxAttempts) throw err;
+        hintEl.textContent = "Server uyg'onmoqda (" + attempt + '/' + maxAttempts + ')...';
+        await wait(4000);
+      }
+    }
+  }
+
   document.getElementById('loginForm').addEventListener('submit', async function (e) {
     e.preventDefault();
     const pass = document.getElementById('passwordInput').value;
@@ -367,29 +394,18 @@ body{background:var(--bg)}
     errEl.textContent = '';
     btn.disabled = true;
     btn.textContent = 'Kirilmoqda...';
-    const wakeupTimer = setTimeout(function () {
-      hintEl.textContent = "Server uyg'onmoqda, bu birinchi so'rovda 30-50 soniya vaqt olishi mumkin...";
-    }, 3000);
-    const controller = new AbortController();
-    const abortTimer = setTimeout(function () { controller.abort(); }, 60000);
+    hintEl.textContent = '';
     try {
-      const res = await fetch(API + '/api/admin/login', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: pass }),
-        signal: controller.signal
-      });
-      const data = await res.json();
+      const data = await loginWithRetry(pass, hintEl, 6);
       if (!data.success) { errEl.textContent = data.error || "Parol noto'g'ri"; return; }
       TOKEN = data.token;
       localStorage.setItem('exon_admin_token', TOKEN);
       showApp();
     } catch (err) {
       errEl.textContent = err.name === 'AbortError'
-        ? 'Server 60 soniyada javob bermadi. Birozdan so\'ng qayta urinib ko\'ring.'
+        ? "Server javob bermadi. Birozdan so'ng qayta urinib ko'ring."
         : 'Serverga ulanib bo\'lmadi: ' + err.message;
     } finally {
-      clearTimeout(wakeupTimer);
-      clearTimeout(abortTimer);
       hintEl.textContent = '';
       btn.disabled = false;
       btn.textContent = 'Kirish';
