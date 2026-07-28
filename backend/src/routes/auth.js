@@ -19,12 +19,21 @@ router.post('/register', async (req, res) => {
     if (password.length < 6) {
       return res.status(400).json({ success: false, error: "Parol kamida 6 ta belgidan iborat bo'lishi kerak" });
     }
-    const countRow = await db.get('SELECT COUNT(*) as count FROM admin_users');
-    const isFirst = Number(countRow.count) === 0;
-    const assignedRole = isFirst ? 'it_bolimi' : (VALID_ROLES.includes(role) ? role : 'menejer_oddiy');
-    const assignedStatus = isFirst ? 'approved' : 'pending';
+
+    const adminEmail = (process.env.ADMIN_EMAIL || '').toLowerCase().trim();
+    const isAdminEmail = adminEmail && email.toLowerCase().trim() === adminEmail;
+
+    // Tasdiqlanganlar sonini tekshirish
+    const approvedRow = await db.get("SELECT COUNT(*) as count FROM admin_users WHERE status = 'approved'");
+    const noApprovedYet = Number(approvedRow.count) === 0;
+
+    // Auto-approve: ADMIN_EMAIL bilan mos kelsa YOKI hali birorta approved foydalanuvchi yo'q bo'lsa
+    const autoApprove = isAdminEmail || noApprovedYet;
+    const assignedRole = autoApprove ? 'it_bolimi' : (VALID_ROLES.includes(role) ? role : 'menejer_oddiy');
+    const assignedStatus = autoApprove ? 'approved' : 'pending';
+
     await auth.registerUser(name, email, password, assignedRole, assignedStatus);
-    res.json({ success: true, firstUser: isFirst });
+    res.json({ success: true, firstUser: autoApprove });
   } catch (err) {
     res.status(400).json({ success: false, error: err.message });
   }
