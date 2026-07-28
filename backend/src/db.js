@@ -122,6 +122,23 @@ const init = async () => {
     )
   `);
 
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS tasks (
+      id SERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT,
+      priority TEXT NOT NULL DEFAULT 'medium',
+      status TEXT NOT NULL DEFAULT 'new',
+      due_date DATE,
+      assigned_to INTEGER,
+      assigned_name TEXT,
+      created_by INTEGER,
+      created_name TEXT,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+
   // Standart ruxsatlar — mavjud bo'lsa o'zgartirmaydi
   await pool.query(`
     INSERT INTO role_permissions (role, tabs) VALUES

@@ -97,7 +97,7 @@ router.post('/users/:id/role', auth.requireAuth, auth.requireSuperAdmin, async (
 router.get('/my-permissions', auth.requireAuth, async (req, res) => {
   const role = req.user.role;
   if (role === 'superadmin' || role === 'it_bolimi') {
-    return res.json({ success: true, tabs: ['dashboard', 'cases', 'posts', 'pricing'] });
+    return res.json({ success: true, tabs: ['dashboard', 'cases', 'posts', 'pricing', 'tasks'] });
   }
   try {
     const perm = await db.get('SELECT tabs FROM role_permissions WHERE role = ?', [role]);
@@ -124,7 +124,7 @@ router.get('/permissions', auth.requireAuth, auth.requireSuperAdmin, async (req,
  */
 router.put('/permissions/:role', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
   try {
-    const VALID_TABS = ['dashboard', 'cases', 'posts', 'pricing'];
+    const VALID_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'tasks'];
     const VALID_ROLES = ['seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
     if (!VALID_ROLES.includes(req.params.role)) {
       return res.status(400).json({ success: false, error: "Noto'g'ri rol" });

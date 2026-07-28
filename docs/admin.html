@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex, nofollow" />
 <title>Admin — EXON</title>
-<link rel="stylesheet" href="assets/css/style.css?v=12" />
+<link rel="stylesheet" href="assets/css/style.css?v=13" />
 <style>
 body{
   background:
@@ -101,6 +101,48 @@ body{
 .btn-approve:hover{background:rgba(11,209,108,.25)}
 .btn-reject{background:rgba(242,137,111,.12);border:1px solid rgba(242,137,111,.3);color:#F2896F;padding:5px 12px;border-radius:6px;font-size:12.5px;cursor:pointer}
 .btn-reject:hover{background:rgba(242,137,111,.2)}
+
+/* ── KANBAN BOARD ── */
+.kanban-board{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+@media(max-width:1000px){.kanban-board{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.kanban-board{grid-template-columns:1fr}}
+
+.kanban-col{background:var(--surface);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;min-height:160px}
+.kanban-col__head{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--line)}
+.kanban-col__title{font-size:11.5px;font-weight:600;color:var(--gray-dim);text-transform:uppercase;letter-spacing:.06em}
+.kanban-col__count{background:rgba(var(--surface-2-rgb),.8);color:var(--gray);font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;min-width:20px;text-align:center}
+.kanban-col[data-status="in_progress"] .kanban-col__title{color:#60A5FA}
+.kanban-col[data-status="review"] .kanban-col__title{color:#F5A623}
+.kanban-col[data-status="done"] .kanban-col__title{color:var(--green-hi)}
+
+.kanban-col__cards{flex:1;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:80px;transition:background .15s}
+.kanban-col__cards.drag-over{background:rgba(var(--green-rgb),.07);border-radius:0 0 14px 14px}
+.kanban-empty{text-align:center;padding:24px 10px;color:var(--gray-dim);font-size:12px}
+
+.task-card{
+  background:linear-gradient(145deg,var(--bg),rgba(var(--surface-rgb),.4));
+  border:1px solid var(--line-2);border-radius:10px;padding:12px 13px;
+  cursor:grab;user-select:none;
+  transition:transform .15s,box-shadow .15s,opacity .15s;
+}
+[data-theme="light"] .task-card{background:#fff}
+.task-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.22);border-color:var(--line)}
+[data-theme="light"] .task-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.1)}
+.task-card.is-dragging{opacity:.35;cursor:grabbing}
+.task-card__title{font-size:13.5px;font-weight:600;margin-bottom:5px;line-height:1.35}
+.task-card__desc{font-size:12px;color:var(--gray);margin-bottom:7px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.task-card__meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.task-priority{display:inline-flex;align-items:center;padding:2px 7px;border-radius:999px;font-size:10.5px;font-weight:600}
+.task-priority.low{background:rgba(152,162,157,.12);color:var(--gray)}
+.task-priority.medium{background:rgba(245,166,35,.12);color:#F5A623}
+.task-priority.high{background:rgba(242,137,111,.15);color:#F2896F}
+.task-priority.urgent{background:rgba(220,38,38,.15);color:#EF4444}
+.task-due{font-size:11px;color:var(--gray-dim)}
+.task-due.is-overdue{color:#F2896F}
+.task-assignee{margin-left:auto;font-size:11px;color:var(--gray-dim);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.task-card__footer{display:flex;align-items:center;justify-content:flex-end;margin-top:8px;padding-top:7px;border-top:1px solid var(--line)}
+.task-card__del{background:none;border:0;color:var(--gray);cursor:pointer;padding:2px 4px;display:flex;align-items:center;opacity:.45;transition:opacity .15s,color .15s;border-radius:4px}
+.task-card__del:hover{opacity:1;color:#F2896F}
 
 /* ── SIDEBAR LAYOUT ── */
 .admin-app{display:none}
@@ -421,6 +463,10 @@ body{
         <svg viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z" stroke="currentColor" stroke-width="1.7"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg>
         <span>Narxlar</span>
       </button>
+      <button class="sidebar-item" data-tab="tasks">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Vazifalar</span>
+      </button>
       <div class="sidebar-divider"></div>
       <button class="sidebar-item superadmin-tab" data-tab="users" style="display:none">
         <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.7"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
@@ -506,6 +552,44 @@ body{
     <div class="panel-head"><h2 id="permTitle">Ruxsatlar sozlamalari</h2></div>
     <p id="permDesc" style="color:var(--gray);font-size:13.5px;margin-bottom:20px">Har bir rol uchun qaysi bo'limlar ko'rinishini belgilang.</p>
     <div id="permContent"></div>
+  </section>
+
+  <!-- VAZIFALAR (Kanban) -->
+  <section class="admin-panel" id="panel-tasks">
+    <div class="panel-head">
+      <h2>Vazifalar</h2>
+      <button class="btn-add" id="btnAddTask" onclick="openTaskModal()" style="display:none">+ Vazifa qo'shish</button>
+    </div>
+    <div class="kanban-board">
+      <div class="kanban-col" data-status="new">
+        <div class="kanban-col__head">
+          <span class="kanban-col__title">Yangi</span>
+          <span class="kanban-col__count" id="kcount-new">0</span>
+        </div>
+        <div class="kanban-col__cards" id="kcol-new"></div>
+      </div>
+      <div class="kanban-col" data-status="in_progress">
+        <div class="kanban-col__head">
+          <span class="kanban-col__title">Jarayonda</span>
+          <span class="kanban-col__count" id="kcount-in_progress">0</span>
+        </div>
+        <div class="kanban-col__cards" id="kcol-in_progress"></div>
+      </div>
+      <div class="kanban-col" data-status="review">
+        <div class="kanban-col__head">
+          <span class="kanban-col__title">Ko'rib chiqishda</span>
+          <span class="kanban-col__count" id="kcount-review">0</span>
+        </div>
+        <div class="kanban-col__cards" id="kcol-review"></div>
+      </div>
+      <div class="kanban-col" data-status="done">
+        <div class="kanban-col__head">
+          <span class="kanban-col__title">Bajarildi</span>
+          <span class="kanban-col__count" id="kcount-done">0</span>
+        </div>
+        <div class="kanban-col__cards" id="kcol-done"></div>
+      </div>
+    </div>
   </section>
   </main><!-- /admin-content -->
 </div><!-- /admin-app -->
@@ -607,6 +691,49 @@ body{
       <div class="modal-actions">
         <button type="button" class="modal-cancel" onclick="closeModal('pricingModal')">Bekor qilish</button>
         <button type="submit" class="modal-save">Saqlash</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: TASK FORM ══════════ -->
+<div class="modal-overlay" id="taskModal">
+  <div class="modal-box">
+    <h3>Yangi vazifa</h3>
+    <form id="taskForm" onsubmit="submitTaskForm(event)">
+      <div class="field">
+        <label>Sarlavha *</label>
+        <input type="text" id="taskTitle" placeholder="Vazifa sarlavhasi" required />
+      </div>
+      <div class="field">
+        <label>Tavsif</label>
+        <textarea id="taskDesc" rows="3" placeholder="Qo'shimcha ma'lumot..." style="resize:vertical;min-height:72px"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field" style="margin-bottom:0">
+          <label>Muhimlik</label>
+          <select id="taskPriority">
+            <option value="low">Kam</option>
+            <option value="medium" selected>O'rtacha</option>
+            <option value="high">Yuqori</option>
+            <option value="urgent">Shoshilinch</option>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Muddat</label>
+          <input type="date" id="taskDue" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Tayinlash (xodim)</label>
+        <select id="taskAssignee">
+          <option value="">Tayinlanmagan</option>
+        </select>
+      </div>
+      <div class="form-msg" id="taskFormMsg"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-cancel" onclick="closeModal('taskModal')">Bekor qilish</button>
+        <button type="submit" class="modal-save">Qo'shish</button>
       </div>
     </form>
   </div>
@@ -1092,7 +1219,7 @@ body{
     try {
       var data = await apiFetch('/api/admin/my-permissions');
       var allowed = data.tabs || ['dashboard'];
-      ['dashboard', 'cases', 'posts', 'pricing'].forEach(function (tab) {
+      ['dashboard', 'cases', 'posts', 'pricing', 'tasks'].forEach(function (tab) {
         var btn = document.querySelector('.sidebar-item[data-tab="' + tab + '"]');
         var panel = document.getElementById('panel-' + tab);
         var visible = allowed.indexOf(tab) !== -1;
@@ -1266,6 +1393,7 @@ body{
       document.querySelectorAll('.admin-panel').forEach(function (p) { p.classList.remove('is-active'); });
       tab.classList.add('is-active');
       document.getElementById('panel-' + tab.dataset.tab).classList.add('is-active');
+      if (tab.dataset.tab === 'tasks') loadTasks();
       // Mobil: sideberni yop
       document.getElementById('adminSidebar').classList.remove('is-open');
       document.getElementById('sidebarBackdrop').classList.remove('is-open');
@@ -1665,6 +1793,178 @@ body{
   window.rejectUser = async function (id) {
     try { await apiFetch('/api/admin/users/' + id + '/reject', { method: 'POST' }); loadUsers(); }
     catch (err) { alert(err.message); }
+  };
+
+  // ══════════════════════════════════════════════════════════
+  // TASKS (Kanban board)
+  // ══════════════════════════════════════════════════════════
+  var draggedTaskId = null;
+  var draggedFromStatus = null;
+  var PRIORITY_LABEL = { low: 'Kam', medium: "O'rtacha", high: 'Yuqori', urgent: 'Shoshilinch' };
+
+  function escHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function fmtDate(d) {
+    if (!d) return '';
+    var dt = new Date(d);
+    return dt.toLocaleDateString('uz-UZ', { day: '2-digit', month: 'short' });
+  }
+
+  function isOverdue(due, status) {
+    if (!due || status === 'done') return false;
+    return new Date(due) < new Date();
+  }
+
+  function taskCardHTML(t, canManage) {
+    var overdue = isOverdue(t.due_date, t.status);
+    return '<div class="task-card" draggable="true" data-id="' + t.id + '" data-status="' + t.status + '">' +
+      '<div class="task-card__title">' + escHtml(t.title) + '</div>' +
+      (t.description ? '<div class="task-card__desc">' + escHtml(t.description) + '</div>' : '') +
+      '<div class="task-card__meta">' +
+        '<span class="task-priority ' + (t.priority || 'medium') + '">' + (PRIORITY_LABEL[t.priority] || t.priority) + '</span>' +
+        (t.due_date ? '<span class="task-due' + (overdue ? ' is-overdue' : '') + '">📅 ' + fmtDate(t.due_date) + '</span>' : '') +
+        (canManage && t.assigned_name ? '<span class="task-assignee">👤 ' + escHtml(t.assigned_name) + '</span>' : '') +
+      '</div>' +
+      (canManage
+        ? '<div class="task-card__footer">' +
+            '<button class="task-card__del" onclick="deleteTask(' + t.id + ')" title="O\'chirish">' +
+              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            '</button>' +
+          '</div>'
+        : '') +
+    '</div>';
+  }
+
+  async function loadTasks() {
+    var canManage = (USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi');
+    var addBtn = document.getElementById('btnAddTask');
+    if (addBtn) addBtn.style.display = canManage ? '' : 'none';
+
+    var statuses = ['new', 'in_progress', 'review', 'done'];
+    statuses.forEach(function (s) {
+      document.getElementById('kcol-' + s).innerHTML = '<div class="kanban-empty">Yuklanmoqda...</div>';
+      document.getElementById('kcount-' + s).textContent = '0';
+    });
+
+    try {
+      var data = await apiFetch('/api/tasks');
+      var tasks = data.tasks || [];
+      var grouped = {};
+      statuses.forEach(function (s) { grouped[s] = []; });
+      tasks.forEach(function (t) { if (grouped[t.status]) grouped[t.status].push(t); });
+
+      statuses.forEach(function (s) {
+        var col = document.getElementById('kcol-' + s);
+        var cnt = document.getElementById('kcount-' + s);
+        var items = grouped[s];
+        cnt.textContent = items.length;
+        col.innerHTML = items.length
+          ? items.map(function (t) { return taskCardHTML(t, canManage); }).join('')
+          : '<div class="kanban-empty">Vazifa yo\'q</div>';
+      });
+
+      setupKanbanDrag();
+    } catch (err) {
+      statuses.forEach(function (s) {
+        document.getElementById('kcol-' + s).innerHTML = '<div class="kanban-empty" style="color:#F2896F">Yuklashda xato</div>';
+      });
+    }
+  }
+
+  function setupKanbanDrag() {
+    document.querySelectorAll('#panel-tasks .task-card').forEach(function (card) {
+      card.addEventListener('dragstart', function (e) {
+        draggedTaskId = card.dataset.id;
+        draggedFromStatus = card.dataset.status;
+        e.dataTransfer.effectAllowed = 'move';
+        setTimeout(function () { card.classList.add('is-dragging'); }, 0);
+      });
+      card.addEventListener('dragend', function () {
+        card.classList.remove('is-dragging');
+        document.querySelectorAll('.kanban-col__cards').forEach(function (c) { c.classList.remove('drag-over'); });
+      });
+    });
+
+    document.querySelectorAll('#panel-tasks .kanban-col__cards').forEach(function (zone) {
+      zone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        zone.classList.add('drag-over');
+      });
+      zone.addEventListener('dragleave', function () { zone.classList.remove('drag-over'); });
+      zone.addEventListener('drop', async function (e) {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        var newStatus = zone.parentElement.dataset.status;
+        if (!draggedTaskId || newStatus === draggedFromStatus) return;
+        try {
+          await apiFetch('/api/tasks/' + draggedTaskId + '/status', { method: 'PATCH', body: JSON.stringify({ status: newStatus }) });
+          await loadTasks();
+        } catch (err) { alert(err.message || 'Xato'); }
+      });
+    });
+  }
+
+  window.deleteTask = async function (id) {
+    if (!confirm("Vazifani o'chirishni tasdiqlaysizmi?")) return;
+    try {
+      await apiFetch('/api/tasks/' + id, { method: 'DELETE' });
+      await loadTasks();
+    } catch (err) { alert(err.message || 'Xato'); }
+  };
+
+  window.openTaskModal = async function () {
+    var sel = document.getElementById('taskAssignee');
+    sel.innerHTML = '<option value="">Tayinlanmagan</option>';
+    try {
+      var data = await apiFetch('/api/admin/users');
+      (data.users || []).filter(function (u) { return u.status === 'approved'; }).forEach(function (u) {
+        var opt = document.createElement('option');
+        opt.value = u.id;
+        opt.textContent = u.name + ' — ' + u.role;
+        opt.dataset.name = u.name;
+        sel.appendChild(opt);
+      });
+    } catch (e) {}
+    document.getElementById('taskTitle').value = '';
+    document.getElementById('taskDesc').value = '';
+    document.getElementById('taskPriority').value = 'medium';
+    document.getElementById('taskDue').value = '';
+    document.getElementById('taskFormMsg').textContent = '';
+    document.getElementById('taskModal').classList.add('is-active');
+  };
+
+  window.submitTaskForm = async function (e) {
+    e.preventDefault();
+    var msg = document.getElementById('taskFormMsg');
+    var btn = e.target.querySelector('[type=submit]');
+    var sel = document.getElementById('taskAssignee');
+    var assigneeOpt = sel.options[sel.selectedIndex];
+    btn.disabled = true; btn.textContent = 'Saqlanmoqda...';
+    msg.textContent = '';
+    try {
+      await apiFetch('/api/tasks', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: document.getElementById('taskTitle').value,
+          description: document.getElementById('taskDesc').value || null,
+          priority: document.getElementById('taskPriority').value,
+          due_date: document.getElementById('taskDue').value || null,
+          assigned_to: sel.value ? Number(sel.value) : null,
+          assigned_name: sel.value ? assigneeOpt.dataset.name : null
+        })
+      });
+      document.getElementById('taskModal').classList.remove('is-active');
+      await loadTasks();
+    } catch (err) {
+      msg.textContent = err.message || 'Xato yuz berdi';
+      msg.className = 'form-msg error';
+    } finally {
+      btn.disabled = false; btn.textContent = "Qo'shish";
+    }
   };
 })();
 </script>
