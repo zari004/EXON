@@ -6,6 +6,13 @@
 <meta name="robots" content="noindex, nofollow" />
 <title>Admin — EXON</title>
 <link rel="stylesheet" href="assets/css/style.css?v=13" />
+<link rel="manifest" href="/manifest.json" />
+<link rel="apple-touch-icon" href="assets/img/icon.svg" />
+<meta name="theme-color" content="#0BD16C" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="EXON Admin" />
 <style>
 body{
   background:
@@ -1967,6 +1974,13 @@ body{
     }
   };
 })();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    });
+  }
 </script>
 </body>
 </html>

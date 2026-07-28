@@ -1,0 +1,41 @@
+{
+  "name": "EXON — Marketpleys Ekspertlari",
+  "short_name": "EXON",
+  "description": "Uzum, Wildberries va Yandex Market'da do'kon boshqaruvi: audit, kartochka, reklama va analitika.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0A1510",
+  "theme_color": "#0BD16C",
+  "lang": "uz",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "assets/img/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/img/logo-exon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Bepul Audit",
+      "short_name": "Audit",
+      "url": "/audit.html",
+      "icons": [{ "src": "assets/img/icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Admin Panel",
+      "short_name": "Admin",
+      "url": "/admin.html",
+      "icons": [{ "src": "assets/img/icon.svg", "sizes": "any" }]
+    }
+  ]
+}

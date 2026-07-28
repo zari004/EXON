@@ -145,6 +145,15 @@ ol,ul{list-style:none}
 
 .nav__right{display:flex;align-items:center;gap:12px}
 
+.pwa-install{
+  display:none;align-items:center;gap:6px;
+  background:rgba(var(--green-rgb),.1);border:1px solid rgba(var(--green-rgb),.3);
+  color:var(--green-hi);padding:7px 14px 7px 11px;border-radius:999px;
+  font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;
+  transition:background .2s,border-color .2s,transform .2s;
+}
+.pwa-install:hover{background:rgba(var(--green-rgb),.18);border-color:rgba(var(--green-rgb),.55);transform:translateY(-1px)}
+
 .lang{display:flex;gap:2px;padding:3px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
 .lang__btn{
   background:none;border:0;cursor:pointer;
