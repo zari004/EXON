@@ -45,6 +45,34 @@ router.post('/', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
   }
 });
 
+// PUT /api/tasks/:id — to'liq yangilash (tahrirlash)
+router.put('/:id', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
+  try {
+    const { title, description, priority, status, due_date, assigned_to, assigned_name } = req.body;
+    const VALID_STATUS = ['new', 'in_progress', 'review', 'done'];
+    if (!title || !title.trim()) {
+      return res.status(400).json({ success: false, error: 'Sarlavha talab qilinadi' });
+    }
+    if (status && !VALID_STATUS.includes(status)) {
+      return res.status(400).json({ success: false, error: "Noto'g'ri status" });
+    }
+    await db.run(
+      `UPDATE tasks SET title=?, description=?, priority=?, status=COALESCE(?,status),
+       due_date=?, assigned_to=?, assigned_name=?, updated_at=NOW() WHERE id=?`,
+      [
+        title.trim(), description || null, priority || 'medium',
+        status || null, due_date || null,
+        assigned_to ? Number(assigned_to) : null,
+        assigned_name || null,
+        req.params.id
+      ]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // PATCH /api/tasks/:id/status — statusni o'zgartirish (drag-drop)
 router.patch('/:id/status', auth.requireAuth, async (req, res) => {
   try {
