@@ -16,12 +16,14 @@ const login = (password) => {
 
 // Email + parol orqali kirish (superadmin yoki ro'yxatdagi foydalanuvchi)
 const loginByEmail = async (email, password) => {
-  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminEmail = process.env.ADMIN_EMAIL;   // ixtiyoriy: sozlangan bo'lsa aniq email tekshiriladi
   const adminPassword = process.env.ADMIN_PASSWORD;
 
-  // Superadmin tekshiruvi
-  if (adminEmail && email === adminEmail) {
-    if (!adminPassword || password !== adminPassword) return { error: "Parol noto'g'ri" };
+  // Superadmin tekshiruvi:
+  // - ADMIN_EMAIL sozlangan bo'lsa: faqat shu email + ADMIN_PASSWORD
+  // - ADMIN_EMAIL sozlanmagan bo'lsa: istalgan email + ADMIN_PASSWORD (legacy/migration)
+  const isSuperAdminAttempt = adminEmail ? email === adminEmail : true;
+  if (isSuperAdminAttempt && adminPassword && password === adminPassword) {
     const token = crypto.randomBytes(32).toString('hex');
     tokens.set(token, { expiresAt: Date.now() + TOKEN_TTL_MS, role: 'superadmin', userId: null, email, name: 'Admin' });
     return { token, role: 'superadmin', name: 'Admin' };
