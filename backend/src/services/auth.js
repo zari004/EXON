@@ -44,13 +44,13 @@ const loginByEmail = async (email, password) => {
 };
 
 // Yangi foydalanuvchi ro'yxatdan o'tishi
-const registerUser = async (name, email, password, role) => {
+const registerUser = async (name, email, password, role, status = 'pending') => {
   const existing = await db.get('SELECT id FROM admin_users WHERE email = ?', [email]);
   if (existing) throw new Error("Bu email allaqachon ro'yxatdan o'tgan");
   const hash = await bcrypt.hash(password, 10);
   await db.run(
     'INSERT INTO admin_users (name, email, password_hash, role, status) VALUES (?, ?, ?, ?, ?)',
-    [name, email, hash, role, 'pending']
+    [name, email, hash, role, status]
   );
 };
 
@@ -73,8 +73,8 @@ const requireAuth = (req, res, next) => {
 };
 
 const requireSuperAdmin = (req, res, next) => {
-  if (req.user && req.user.role === 'superadmin') return next();
-  res.status(403).json({ success: false, error: 'Bu amalni faqat superadmin bajarishi mumkin' });
+  if (req.user && (req.user.role === 'superadmin' || req.user.role === 'it_bolimi')) return next();
+  res.status(403).json({ success: false, error: "Bu amalni faqat IT bo'limi yoki superadmin bajarishi mumkin" });
 };
 
 module.exports = { login, loginByEmail, registerUser, verify, logout, requireAuth, requireSuperAdmin };

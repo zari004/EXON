@@ -75,6 +75,70 @@ router.post('/users/:id/reject', auth.requireAuth, auth.requireSuperAdmin, async
 });
 
 /**
+ * POST /api/admin/users/:id/role — foydalanuvchi rolini o'zgartirish (IT bo'limi / superadmin)
+ */
+router.post('/users/:id/role', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
+  try {
+    const { role } = req.body;
+    const VALID = ['it_bolimi', 'seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
+    if (!VALID.includes(role)) {
+      return res.status(400).json({ success: false, error: "Noto'g'ri rol" });
+    }
+    await db.run('UPDATE admin_users SET role = ? WHERE id = ?', [role, req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * GET /api/admin/my-permissions — joriy foydalanuvchi ko'ra oladigan tablar
+ */
+router.get('/my-permissions', auth.requireAuth, async (req, res) => {
+  const role = req.user.role;
+  if (role === 'superadmin' || role === 'it_bolimi') {
+    return res.json({ success: true, tabs: ['dashboard', 'cases', 'posts', 'pricing'] });
+  }
+  try {
+    const perm = await db.get('SELECT tabs FROM role_permissions WHERE role = ?', [role]);
+    res.json({ success: true, tabs: perm ? JSON.parse(perm.tabs) : ['dashboard'] });
+  } catch (err) {
+    res.json({ success: true, tabs: ['dashboard'] });
+  }
+});
+
+/**
+ * GET /api/admin/permissions — barcha rol ruxsatlari (IT bo'limi / superadmin)
+ */
+router.get('/permissions', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
+  try {
+    const rows = await db.all('SELECT role, tabs FROM role_permissions ORDER BY role');
+    res.json({ success: true, permissions: rows.map(function(r) { return { role: r.role, tabs: JSON.parse(r.tabs) }; }) });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * PUT /api/admin/permissions/:role — rol uchun ruxsatlarni yangilash (IT bo'limi / superadmin)
+ */
+router.put('/permissions/:role', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
+  try {
+    const VALID_TABS = ['dashboard', 'cases', 'posts', 'pricing'];
+    const VALID_ROLES = ['seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
+    if (!VALID_ROLES.includes(req.params.role)) {
+      return res.status(400).json({ success: false, error: "Noto'g'ri rol" });
+    }
+    const tabs = (req.body.tabs || []).filter(function(t) { return VALID_TABS.includes(t); });
+    await db.run('INSERT INTO role_permissions (role, tabs) VALUES (?, ?) ON CONFLICT (role) DO UPDATE SET tabs = ?',
+      [req.params.role, JSON.stringify(tabs), JSON.stringify(tabs)]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
  * GET /api/admin/stats — audit hisobotlari (segment bo'yicha, so'nggi lidlar)
  */
 router.get('/stats', auth.requireAuth, async (req, res) => {

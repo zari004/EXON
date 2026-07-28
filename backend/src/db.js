@@ -115,6 +115,24 @@ const init = async () => {
     )
   `);
 
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS role_permissions (
+      role TEXT PRIMARY KEY,
+      tabs TEXT NOT NULL DEFAULT '["dashboard"]'
+    )
+  `);
+
+  // Standart ruxsatlar — mavjud bo'lsa o'zgartirmaydi
+  await pool.query(`
+    INSERT INTO role_permissions (role, tabs) VALUES
+      ('seo',             '["dashboard","posts"]'),
+      ('menejer_bosh',    '["dashboard","cases","posts","pricing"]'),
+      ('menejer_oddiy',   '["dashboard","cases"]'),
+      ('dizayner_bosh',   '["dashboard","cases","posts"]'),
+      ('dizayner_oddiy',  '["cases"]')
+    ON CONFLICT (role) DO NOTHING
+  `);
+
   console.log('✅ Barcha jadvallar tayyor');
 };
 
