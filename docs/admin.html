@@ -161,8 +161,9 @@ body{background:var(--bg)}
     <p>Keyslar, blog va narxlarni boshqarish paneli.</p>
     <form id="loginForm">
       <input type="password" id="passwordInput" placeholder="Parol" autocomplete="current-password" required />
-      <button type="submit">Kirish</button>
+      <button type="submit" id="loginSubmitBtn">Kirish</button>
       <div class="login-error" id="loginError"></div>
+      <div class="login-error" id="loginHint" style="color:var(--gray-dim)"></div>
     </form>
   </div>
 </div>
@@ -361,11 +362,21 @@ body{background:var(--bg)}
     e.preventDefault();
     const pass = document.getElementById('passwordInput').value;
     const errEl = document.getElementById('loginError');
+    const hintEl = document.getElementById('loginHint');
+    const btn = document.getElementById('loginSubmitBtn');
     errEl.textContent = '';
+    btn.disabled = true;
+    btn.textContent = 'Kirilmoqda...';
+    const wakeupTimer = setTimeout(function () {
+      hintEl.textContent = "Server uyg'onmoqda, bu birinchi so'rovda 30-50 soniya vaqt olishi mumkin...";
+    }, 3000);
+    const controller = new AbortController();
+    const abortTimer = setTimeout(function () { controller.abort(); }, 60000);
     try {
       const res = await fetch(API + '/api/admin/login', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: pass })
+        body: JSON.stringify({ password: pass }),
+        signal: controller.signal
       });
       const data = await res.json();
       if (!data.success) { errEl.textContent = data.error || "Parol noto'g'ri"; return; }
@@ -373,7 +384,15 @@ body{background:var(--bg)}
       localStorage.setItem('exon_admin_token', TOKEN);
       showApp();
     } catch (err) {
-      errEl.textContent = 'Serverga ulanib bo\'lmadi: ' + err.message;
+      errEl.textContent = err.name === 'AbortError'
+        ? 'Server 60 soniyada javob bermadi. Birozdan so\'ng qayta urinib ko\'ring.'
+        : 'Serverga ulanib bo\'lmadi: ' + err.message;
+    } finally {
+      clearTimeout(wakeupTimer);
+      clearTimeout(abortTimer);
+      hintEl.textContent = '';
+      btn.disabled = false;
+      btn.textContent = 'Kirish';
     }
   });
 
