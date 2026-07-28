@@ -42,8 +42,9 @@ body{background:var(--bg)}
   padding:16px clamp(18px,3vw,32px);border-bottom:1px solid var(--line);
   background:rgba(12,15,14,.9);backdrop-filter:blur(12px);
 }
-.admin-top__brand{font-weight:700;font-size:16px;display:flex;align-items:center;gap:10px}
-.admin-top__brand span{color:var(--green)}
+.admin-top__brand{font-weight:700;font-size:16px;display:flex;align-items:center}
+.admin-top__brand-logo span{color:var(--green)}
+.admin-top__brand-label{margin-left:10px}
 .admin-logout{
   background:var(--surface);border:1px solid var(--line-2);color:var(--gray);
   padding:8px 16px;border-radius:8px;font-size:13.5px;cursor:pointer;
@@ -171,7 +172,7 @@ body{background:var(--bg)}
 <!-- ══════════ ADMIN APP ══════════ -->
 <div class="admin-app" id="adminApp">
   <div class="admin-top">
-    <div class="admin-top__brand">EX<span>ON</span> Admin</div>
+    <div class="admin-top__brand"><span class="admin-top__brand-logo">EX<span>ON</span></span><span class="admin-top__brand-label">Admin</span></div>
     <button class="admin-logout" id="logoutBtn">Chiqish</button>
   </div>
 
