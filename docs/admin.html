@@ -188,12 +188,40 @@ body{background:var(--bg)}
 .form-msg{font-size:13px;margin-top:10px;min-height:16px}
 .form-msg.error{color:#F2896F}
 .form-msg.ok{color:var(--green)}
+
+/* ── ADMIN TOP ACTIONS ── */
+.admin-top__actions{display:flex;align-items:center;gap:10px}
+[data-theme="light"] .admin-top{background:rgba(246,249,247,.92)}
+
+/* ── AUTH FRAME (kirish / kutish ekranlari) ── */
+.auth-frame{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+.auth-controls{display:flex;justify-content:flex-end;gap:8px;width:100%;max-width:360px}
+.auth-controls .lang,.admin-top__actions .lang{display:flex}
+
+@media (max-width:640px){
+  .admin-top{padding:12px 14px}
+  .admin-top__actions{gap:6px}
+  .admin-top__brand-label{display:none}
+  .admin-logout{padding:8px 10px}
+  .lang__btn{padding:4px 7px}
+}
 </style>
 </head>
 <body>
 
 <!-- ══════════ LOGIN ══════════ -->
 <div class="login-screen" id="loginScreen">
+  <div class="auth-frame">
+  <div class="auth-controls">
+    <button class="theme-toggle" type="button" aria-label="Mavzuni almashtirish">
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="lang" role="group" aria-label="Til tanlash">
+      <button class="lang__btn is-active" data-lang="uz" type="button">UZ</button>
+      <button class="lang__btn" data-lang="ru" type="button">RU</button>
+    </div>
+  </div>
   <div class="login-box">
     <h1>EXON Admin</h1>
 
@@ -231,23 +259,46 @@ body{background:var(--bg)}
       </form>
     </div>
   </div>
+  </div><!-- /auth-frame -->
 </div>
 
 <!-- ══════════ KUTISH EKRANI ══════════ -->
 <div class="pending-screen" id="pendingScreen">
+  <div class="auth-frame">
+  <div class="auth-controls">
+    <button class="theme-toggle" type="button" aria-label="Mavzuni almashtirish">
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="lang" role="group" aria-label="Til tanlash">
+      <button class="lang__btn is-active" data-lang="uz" type="button">UZ</button>
+      <button class="lang__btn" data-lang="ru" type="button">RU</button>
+    </div>
+  </div>
   <div class="pending-box">
     <div class="pending-icon">✅</div>
-    <h2>So'rovingiz yuborildi</h2>
-    <p>Ma'lumotlaringiz administratorlarga yuborildi.<br>Ular tasdiqlagandan so'ng tizimga kirishingiz mumkin.</p>
-    <button class="pending-back" onclick="showAuthScreen()">← Kirish sahifasiga qaytish</button>
+    <h2 id="pendingTitle">So'rovingiz yuborildi</h2>
+    <p id="pendingText">Ma'lumotlaringiz administratorlarga yuborildi.<br>Ular tasdiqlagandan so'ng tizimga kirishingiz mumkin.</p>
+    <button class="pending-back" id="pendingBack" onclick="showAuthScreen()">← Kirish sahifasiga qaytish</button>
   </div>
+  </div><!-- /auth-frame -->
 </div>
 
 <!-- ══════════ ADMIN APP ══════════ -->
 <div class="admin-app" id="adminApp">
   <div class="admin-top">
     <div class="admin-top__brand"><span class="admin-top__brand-logo">EX<span>ON</span></span><span class="admin-top__brand-label">Admin</span></div>
-    <button class="admin-logout" id="logoutBtn">Chiqish</button>
+    <div class="admin-top__actions">
+      <button class="theme-toggle" type="button" aria-label="Mavzuni almashtirish">
+        <svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="lang" role="group" aria-label="Til tanlash">
+        <button class="lang__btn is-active" data-lang="uz" type="button">UZ</button>
+        <button class="lang__btn" data-lang="ru" type="button">RU</button>
+      </div>
+      <button class="admin-logout" id="logoutBtn">Chiqish</button>
+    </div>
   </div>
 
   <div class="admin-tabs">
@@ -405,6 +456,7 @@ body{background:var(--bg)}
 </div>
 
 <script src="assets/js/api-base.js?v=2"></script>
+<script src="assets/js/theme.js"></script>
 <script>
 (function () {
   'use strict';
@@ -412,6 +464,237 @@ body{background:var(--bg)}
   let TOKEN = localStorage.getItem('exon_admin_token') || '';
   let USER_ROLE = localStorage.getItem('exon_admin_role') || '';
   let USER_NAME = localStorage.getItem('exon_admin_name') || '';
+
+  // ════════════════════════════════════════════════════════════
+  // TIL TIZIMI (i18n)
+  // ════════════════════════════════════════════════════════════
+  var LANG = localStorage.getItem('exon_admin_lang') || 'uz';
+
+  var LANGS = {
+    uz: {
+      'login.tab.kirish': 'Kirish',
+      'login.tab.royxat': "Ro'yxatdan o'tish",
+      'login.email': 'Email',
+      'login.password': 'Parol',
+      'login.btn': 'Kirish',
+      'reg.name': "To'liq ismingiz",
+      'reg.email': 'Email',
+      'reg.password': 'Parol (kamida 6 belgi)',
+      'reg.btn': "Ro'yxatdan o'tish",
+      'reg.role.menejer_oddiy': 'Menejer',
+      'reg.role.menejer_bosh': 'Bosh menejer',
+      'reg.role.dizayner_oddiy': 'Dizayner',
+      'reg.role.dizayner_bosh': 'Bosh dizayner',
+      'reg.role.seo': 'SEO mutaxassis',
+      'pending.title': "So'rovingiz yuborildi",
+      'pending.text': "Ma'lumotlaringiz administratorlarga yuborildi.<br>Ular tasdiqlagandan so'ng tizimga kirishingiz mumkin.",
+      'pending.back': '← Kirish sahifasiga qaytish',
+      'admin.logout': 'Chiqish',
+      'tab.dashboard': 'Hisobot',
+      'tab.cases': 'Keyslar',
+      'tab.posts': 'Blog',
+      'tab.pricing': 'Narxlar',
+      'tab.users': 'Foydalanuvchilar',
+      'dash.title': 'Audit hisobotlari',
+      'dash.total': 'Jami lidlar',
+      'dash.avg': "O'rtacha ball",
+      'dash.segA': 'Segment A',
+      'dash.segB': 'Segment B',
+      'dash.segC': 'Segment C',
+      'table.email': 'Email',
+      'table.score': 'Ball',
+      'table.seg': 'Segment',
+      'table.date': 'Sana',
+      'table.empty': "Hali lidlar yo'q",
+      'cases.title': 'Keyslar',
+      'cases.add': '+ Yangi keys',
+      'cases.empty': "Hali keyslar yo'q",
+      'cases.new': 'Yangi keys',
+      'cases.edit': 'Keysni tahrirlash',
+      'posts.title': 'Blog maqolalari',
+      'posts.add': '+ Yangi maqola',
+      'posts.empty': "Hali maqolalar yo'q",
+      'posts.new': 'Yangi maqola',
+      'posts.edit': 'Maqolani tahrirlash',
+      'pricing.title': 'Narxlar paketlari',
+      'pricing.add': '+ Yangi paket',
+      'pricing.empty': "Hali paketlar yo'q",
+      'pricing.new': 'Yangi paket',
+      'pricing.edit': 'Paketni tahrirlash',
+      'users.title': 'Foydalanuvchilar',
+      'users.empty': "Hali ro'yxatdan o'tganlar yo'q",
+      'users.pending': 'Kutmoqda',
+      'users.approved': 'Tasdiqlangan',
+      'users.rejected': 'Rad etilgan',
+      'users.approve': 'Tasdiqlash',
+      'users.reject': 'Rad etish',
+      'users.block': 'Bloklash',
+      'users.restore': 'Tiklash',
+      'item.edit': 'Tahrirlash',
+      'item.delete': "O'chirish",
+      'image.none': 'Rasm tanlanmagan',
+      'feature.placeholder': 'Xususiyat',
+      'modal.save': 'Saqlash',
+      'modal.cancel': 'Bekor qilish',
+      'confirm.del.case': "Bu keysni o'chirishni tasdiqlaysizmi?",
+      'confirm.del.post': "Bu maqolani o'chirishni tasdiqlaysizmi?",
+      'confirm.del.price': "Bu paketni o'chirishni tasdiqlaysizmi?",
+      'role.superadmin': 'Superadmin',
+      'role.seo': 'SEO mutaxassis',
+      'role.menejer_bosh': 'Bosh menejer',
+      'role.menejer_oddiy': 'Menejer',
+      'role.dizayner_bosh': 'Bosh dizayner',
+      'role.dizayner_oddiy': 'Dizayner',
+    },
+    ru: {
+      'login.tab.kirish': 'Войти',
+      'login.tab.royxat': 'Регистрация',
+      'login.email': 'Email',
+      'login.password': 'Пароль',
+      'login.btn': 'Войти',
+      'reg.name': 'Ваше полное имя',
+      'reg.email': 'Email',
+      'reg.password': 'Пароль (мин. 6 символов)',
+      'reg.btn': 'Зарегистрироваться',
+      'reg.role.menejer_oddiy': 'Менеджер',
+      'reg.role.menejer_bosh': 'Главный менеджер',
+      'reg.role.dizayner_oddiy': 'Дизайнер',
+      'reg.role.dizayner_bosh': 'Главный дизайнер',
+      'reg.role.seo': 'SEO специалист',
+      'pending.title': 'Запрос отправлен',
+      'pending.text': 'Ваши данные отправлены администраторам.<br>Вы сможете войти после их подтверждения.',
+      'pending.back': '← Вернуться на страницу входа',
+      'admin.logout': 'Выйти',
+      'tab.dashboard': 'Отчёты',
+      'tab.cases': 'Кейсы',
+      'tab.posts': 'Блог',
+      'tab.pricing': 'Тарифы',
+      'tab.users': 'Пользователи',
+      'dash.title': 'Отчёты аудита',
+      'dash.total': 'Всего лидов',
+      'dash.avg': 'Средний балл',
+      'dash.segA': 'Сегмент A',
+      'dash.segB': 'Сегмент B',
+      'dash.segC': 'Сегмент C',
+      'table.email': 'Email',
+      'table.score': 'Балл',
+      'table.seg': 'Сегмент',
+      'table.date': 'Дата',
+      'table.empty': 'Лидов пока нет',
+      'cases.title': 'Кейсы',
+      'cases.add': '+ Новый кейс',
+      'cases.empty': 'Кейсов пока нет',
+      'cases.new': 'Новый кейс',
+      'cases.edit': 'Редактировать кейс',
+      'posts.title': 'Статьи блога',
+      'posts.add': '+ Новая статья',
+      'posts.empty': 'Статей пока нет',
+      'posts.new': 'Новая статья',
+      'posts.edit': 'Редактировать статью',
+      'pricing.title': 'Тарифные пакеты',
+      'pricing.add': '+ Новый пакет',
+      'pricing.empty': 'Пакетов пока нет',
+      'pricing.new': 'Новый пакет',
+      'pricing.edit': 'Редактировать пакет',
+      'users.title': 'Пользователи',
+      'users.empty': 'Зарегистрированных пользователей пока нет',
+      'users.pending': 'Ожидает',
+      'users.approved': 'Подтверждён',
+      'users.rejected': 'Отклонён',
+      'users.approve': 'Подтвердить',
+      'users.reject': 'Отклонить',
+      'users.block': 'Заблокировать',
+      'users.restore': 'Восстановить',
+      'item.edit': 'Редактировать',
+      'item.delete': 'Удалить',
+      'image.none': 'Изображение не выбрано',
+      'feature.placeholder': 'Характеристика',
+      'modal.save': 'Сохранить',
+      'modal.cancel': 'Отмена',
+      'confirm.del.case': 'Удалить этот кейс?',
+      'confirm.del.post': 'Удалить эту статью?',
+      'confirm.del.price': 'Удалить этот пакет?',
+      'role.superadmin': 'Суперадмин',
+      'role.seo': 'SEO специалист',
+      'role.menejer_bosh': 'Главный менеджер',
+      'role.menejer_oddiy': 'Менеджер',
+      'role.dizayner_bosh': 'Главный дизайнер',
+      'role.dizayner_oddiy': 'Дизайнер',
+    }
+  };
+
+  function T(key) { return (LANGS[LANG] || LANGS.uz)[key] || key; }
+
+  function applyLang() {
+    document.documentElement.lang = LANG;
+    // Til tugmalarini yangilash
+    document.querySelectorAll('.lang__btn[data-lang]').forEach(function(btn) {
+      btn.classList.toggle('is-active', btn.dataset.lang === LANG);
+    });
+    // Login ekrani
+    document.getElementById('tabKirish').textContent = T('login.tab.kirish');
+    document.getElementById('tabRoyxat').textContent = T('login.tab.royxat');
+    document.getElementById('loginEmail').placeholder = T('login.email');
+    document.getElementById('loginPassword').placeholder = T('login.password');
+    document.getElementById('loginSubmitBtn').textContent = T('login.btn');
+    document.getElementById('regName').placeholder = T('reg.name');
+    document.getElementById('regEmail').placeholder = T('reg.email');
+    document.getElementById('regPassword').placeholder = T('reg.password');
+    document.getElementById('registerSubmitBtn').textContent = T('reg.btn');
+    // Role tanlash variantlari
+    var roleKeys = ['menejer_oddiy', 'menejer_bosh', 'dizayner_oddiy', 'dizayner_bosh', 'seo'];
+    Array.from(document.getElementById('regRole').options).forEach(function(opt, i) {
+      if (roleKeys[i]) opt.textContent = T('reg.role.' + roleKeys[i]);
+    });
+    // Kutish ekrani
+    document.getElementById('pendingTitle').textContent = T('pending.title');
+    document.getElementById('pendingText').innerHTML = T('pending.text');
+    document.getElementById('pendingBack').textContent = T('pending.back');
+    // Admin top
+    document.getElementById('logoutBtn').textContent = T('admin.logout');
+    // Tablar
+    document.querySelector('[data-tab="dashboard"]').textContent = T('tab.dashboard');
+    document.querySelector('[data-tab="cases"]').textContent = T('tab.cases');
+    document.querySelector('[data-tab="posts"]').textContent = T('tab.posts');
+    document.querySelector('[data-tab="pricing"]').textContent = T('tab.pricing');
+    document.querySelector('[data-tab="users"]').textContent = T('tab.users');
+    // Panel sarlavhalari
+    document.querySelector('#panel-dashboard .panel-head h2').textContent = T('dash.title');
+    document.querySelector('#panel-cases .panel-head h2').textContent = T('cases.title');
+    document.querySelector('#panel-cases .btn-add').textContent = T('cases.add');
+    document.querySelector('#panel-posts .panel-head h2').textContent = T('posts.title');
+    document.querySelector('#panel-posts .btn-add').textContent = T('posts.add');
+    document.querySelector('#panel-pricing .panel-head h2').textContent = T('pricing.title');
+    document.querySelector('#panel-pricing .btn-add').textContent = T('pricing.add');
+    document.querySelector('#panel-users .panel-head h2').textContent = T('users.title');
+    // Hisobot jadvali
+    var leadHeaders = document.querySelectorAll('#panel-dashboard .admin-table th');
+    if (leadHeaders.length === 4) {
+      leadHeaders[0].textContent = T('table.email');
+      leadHeaders[1].textContent = T('table.score');
+      leadHeaders[2].textContent = T('table.seg');
+      leadHeaders[3].textContent = T('table.date');
+    }
+    // Modal tugmalari
+    document.querySelectorAll('.modal-save').forEach(function(btn) { btn.textContent = T('modal.save'); });
+    document.querySelectorAll('.modal-cancel').forEach(function(btn) { btn.textContent = T('modal.cancel'); });
+    // Agar admin panel ochiq bo'lsa — dinamik kontent qayta yuklanadi
+    if (document.getElementById('adminApp').classList.contains('is-active')) {
+      loadDashboard(); loadCases(); loadPosts(); loadPricing();
+      if (USER_ROLE === 'superadmin') loadUsers();
+    }
+  }
+
+  function setLang(lang) {
+    LANG = lang;
+    localStorage.setItem('exon_admin_lang', lang);
+    applyLang();
+  }
+
+  // Til tugmalariga event listener
+  document.querySelectorAll('.lang__btn[data-lang]').forEach(function(btn) {
+    btn.addEventListener('click', function() { setLang(btn.dataset.lang); });
+  });
 
   const authHeaders = () => ({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TOKEN });
 
@@ -430,21 +713,21 @@ body{background:var(--bg)}
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('pendingScreen').classList.remove('is-active');
     document.getElementById('adminApp').classList.add('is-active');
-    // Superadmin bo'lsa — Foydalanuvchilar tabini ko'rsat
     var superTabs = document.querySelectorAll('.superadmin-tab');
     superTabs.forEach(function (t) { t.style.display = USER_ROLE === 'superadmin' ? '' : 'none'; });
-    loadDashboard(); loadCases(); loadPosts(); loadPricing();
-    if (USER_ROLE === 'superadmin') loadUsers();
+    applyLang();
   }
   function showAuthScreen() {
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('pendingScreen').classList.remove('is-active');
     document.getElementById('adminApp').classList.remove('is-active');
+    applyLang();
   }
   function showPending() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('pendingScreen').classList.add('is-active');
     document.getElementById('adminApp').classList.remove('is-active');
+    applyLang();
   }
   function logout() {
     TOKEN = ''; USER_ROLE = ''; USER_NAME = '';
@@ -618,16 +901,16 @@ body{background:var(--bg)}
       const data = await apiFetch('/api/admin/stats');
       const seg = data.bySegment || {};
       document.getElementById('statGrid').innerHTML =
-        '<div class="stat-card"><div class="stat-card__value">' + data.total + '</div><div class="stat-card__label">Jami lidlar</div></div>' +
-        '<div class="stat-card"><div class="stat-card__value">' + data.averageScore + '</div><div class="stat-card__label">O\'rtacha ball</div></div>' +
-        '<div class="stat-card"><div class="stat-card__value">' + (seg.A || 0) + '</div><div class="stat-card__label">Segment A</div></div>' +
-        '<div class="stat-card"><div class="stat-card__value">' + (seg.B || 0) + '</div><div class="stat-card__label">Segment B</div></div>' +
-        '<div class="stat-card"><div class="stat-card__value">' + (seg.C || 0) + '</div><div class="stat-card__label">Segment C</div></div>';
+        '<div class="stat-card"><div class="stat-card__value">' + data.total + '</div><div class="stat-card__label">' + T('dash.total') + '</div></div>' +
+        '<div class="stat-card"><div class="stat-card__value">' + data.averageScore + '</div><div class="stat-card__label">' + T('dash.avg') + '</div></div>' +
+        '<div class="stat-card"><div class="stat-card__value">' + (seg.A || 0) + '</div><div class="stat-card__label">' + T('dash.segA') + '</div></div>' +
+        '<div class="stat-card"><div class="stat-card__value">' + (seg.B || 0) + '</div><div class="stat-card__label">' + T('dash.segB') + '</div></div>' +
+        '<div class="stat-card"><div class="stat-card__value">' + (seg.C || 0) + '</div><div class="stat-card__label">' + T('dash.segC') + '</div></div>';
       document.getElementById('leadsBody').innerHTML = (data.recent || []).map(function (l) {
         return '<tr><td>' + esc(l.email) + '</td><td>' + l.score + '</td>' +
           '<td><span class="seg-pill seg-' + l.segment + '">' + l.segment + '</span></td>' +
-          '<td>' + new Date(l.created_at).toLocaleString('uz-UZ') + '</td></tr>';
-      }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--gray-dim)">Hali lidlar yo\'q</td></tr>';
+          '<td>' + new Date(l.created_at).toLocaleString(LANG === 'ru' ? 'ru-RU' : 'uz-UZ') + '</td></tr>';
+      }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--gray-dim)">' + T('table.empty') + '</td></tr>';
     } catch (err) { console.error(err); }
   }
   function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
@@ -647,16 +930,16 @@ body{background:var(--bg)}
           '<div class="item-row__body"><div class="item-row__title">' + esc(c.title) + '</div>' +
           '<div class="item-row__meta">' + esc(c.tag) + ' · ' + esc(c.metric1.value || '') + ' ' + esc(c.metric1.label || '') + '</div></div>' +
           '<div class="item-row__actions">' +
-          '<button class="icon-btn" onclick="openCaseForm(' + c.id + ')" title="Tahrirlash">✎</button>' +
-          '<button class="icon-btn danger" onclick="deleteCase(' + c.id + ')" title="O\'chirish">✕</button>' +
+          '<button class="icon-btn" onclick="openCaseForm(' + c.id + ')" title="' + T('item.edit') + '">✎</button>' +
+          '<button class="icon-btn danger" onclick="deleteCase(' + c.id + ')" title="' + T('item.delete') + '">✕</button>' +
           '</div></div>';
-      }).join('') : '<div class="empty-state">Hali keyslar yo\'q</div>';
+      }).join('') : '<div class="empty-state">' + T('cases.empty') + '</div>';
     } catch (err) { console.error(err); }
   }
 
   window.openCaseForm = function (id) {
     const existing = id ? casesCache.find(function (c) { return c.id === id; }) : null;
-    document.getElementById('caseModalTitle').textContent = existing ? 'Keysni tahrirlash' : 'Yangi keys';
+    document.getElementById('caseModalTitle').textContent = existing ? T('cases.edit') : T('cases.new');
     document.getElementById('caseId').value = existing ? existing.id : '';
     document.getElementById('caseTag').value = existing ? existing.tag : '';
     document.getElementById('caseTitle').value = existing ? existing.title : '';
@@ -669,7 +952,7 @@ body{background:var(--bg)}
       cb.checked = existing ? existing.markets.indexOf(cb.value) !== -1 : false;
     });
     const preview = document.getElementById('caseImgPreview');
-    preview.innerHTML = existing && existing.image ? '<img src="' + existing.image + '" />' : 'Rasm tanlanmagan';
+    preview.innerHTML = existing && existing.image ? '<img src="' + existing.image + '" />' : T('image.none');
     preview.dataset.value = existing && existing.image ? existing.image : '';
     document.getElementById('caseImgFile').value = '';
     document.getElementById('caseFormMsg').textContent = '';
@@ -707,7 +990,7 @@ body{background:var(--bg)}
   });
 
   window.deleteCase = async function (id) {
-    if (!confirm("Bu keysni o'chirishni tasdiqlaysizmi?")) return;
+    if (!confirm(T('confirm.del.case'))) return;
     try { await apiFetch('/api/cases/' + id, { method: 'DELETE' }); loadCases(); }
     catch (err) { alert(err.message); }
   };
@@ -727,16 +1010,16 @@ body{background:var(--bg)}
           '<div class="item-row__body"><div class="item-row__title">' + esc(p.title) + '</div>' +
           '<div class="item-row__meta">' + esc(p.tag) + ' · ' + esc(p.date || '') + ' · ' + esc(p.readTime || '') + '</div></div>' +
           '<div class="item-row__actions">' +
-          '<button class="icon-btn" onclick="openPostForm(' + p.id + ')" title="Tahrirlash">✎</button>' +
-          '<button class="icon-btn danger" onclick="deletePost(' + p.id + ')" title="O\'chirish">✕</button>' +
+          '<button class="icon-btn" onclick="openPostForm(' + p.id + ')" title="' + T('item.edit') + '">✎</button>' +
+          '<button class="icon-btn danger" onclick="deletePost(' + p.id + ')" title="' + T('item.delete') + '">✕</button>' +
           '</div></div>';
-      }).join('') : '<div class="empty-state">Hali maqolalar yo\'q</div>';
+      }).join('') : '<div class="empty-state">' + T('posts.empty') + '</div>';
     } catch (err) { console.error(err); }
   }
 
   window.openPostForm = function (id) {
     const existing = id ? postsCache.find(function (p) { return p.id === id; }) : null;
-    document.getElementById('postModalTitle').textContent = existing ? 'Maqolani tahrirlash' : 'Yangi maqola';
+    document.getElementById('postModalTitle').textContent = existing ? T('posts.edit') : T('posts.new');
     document.getElementById('postId').value = existing ? existing.id : '';
     document.getElementById('postTag').value = existing ? existing.tag : '';
     document.getElementById('postTitle').value = existing ? existing.title : '';
@@ -744,7 +1027,7 @@ body{background:var(--bg)}
     document.getElementById('postDate').value = existing ? existing.date : '';
     document.getElementById('postRead').value = existing ? existing.readTime : '';
     const preview = document.getElementById('postImgPreview');
-    preview.innerHTML = existing && existing.image ? '<img src="' + existing.image + '" />' : 'Rasm tanlanmagan';
+    preview.innerHTML = existing && existing.image ? '<img src="' + existing.image + '" />' : T('image.none');
     preview.dataset.value = existing && existing.image ? existing.image : '';
     document.getElementById('postImgFile').value = '';
     document.getElementById('postFormMsg').textContent = '';
@@ -780,7 +1063,7 @@ body{background:var(--bg)}
   });
 
   window.deletePost = async function (id) {
-    if (!confirm("Bu maqolani o'chirishni tasdiqlaysizmi?")) return;
+    if (!confirm(T('confirm.del.post'))) return;
     try { await apiFetch('/api/posts/' + id, { method: 'DELETE' }); loadPosts(); }
     catch (err) { alert(err.message); }
   };
@@ -800,10 +1083,10 @@ body{background:var(--bg)}
           '<div class="item-row__body"><div class="item-row__title">' + esc(p.name) + (p.featured ? ' ⭐' : '') + '</div>' +
           '<div class="item-row__meta">' + esc(p.amount) + ' ' + esc(p.currency || '') + ' · ' + esc(p.period || '') + '</div></div>' +
           '<div class="item-row__actions">' +
-          '<button class="icon-btn" onclick="openPricingForm(' + p.id + ')" title="Tahrirlash">✎</button>' +
-          '<button class="icon-btn danger" onclick="deletePricing(' + p.id + ')" title="O\'chirish">✕</button>' +
+          '<button class="icon-btn" onclick="openPricingForm(' + p.id + ')" title="' + T('item.edit') + '">✎</button>' +
+          '<button class="icon-btn danger" onclick="deletePricing(' + p.id + ')" title="' + T('item.delete') + '">✕</button>' +
           '</div></div>';
-      }).join('') : '<div class="empty-state">Hali paketlar yo\'q</div>';
+      }).join('') : '<div class="empty-state">' + T('pricing.empty') + '</div>';
     } catch (err) { console.error(err); }
   }
 
@@ -811,14 +1094,14 @@ body{background:var(--bg)}
     const wrap = document.getElementById('featuresList');
     const row = document.createElement('div');
     row.className = 'feature-row';
-    row.innerHTML = '<input type="text" value="' + (value ? esc(value) : '') + '" placeholder="Xususiyat" />' +
+    row.innerHTML = '<input type="text" value="' + (value ? esc(value) : '') + '" placeholder="' + T('feature.placeholder') + '" />' +
       '<button type="button" onclick="this.parentElement.remove()">✕</button>';
     wrap.appendChild(row);
   };
 
   window.openPricingForm = function (id) {
     const existing = id ? pricingCache.find(function (p) { return p.id === id; }) : null;
-    document.getElementById('pricingModalTitle').textContent = existing ? 'Paketni tahrirlash' : 'Yangi paket';
+    document.getElementById('pricingModalTitle').textContent = existing ? T('pricing.edit') : T('pricing.new');
     document.getElementById('priceId').value = existing ? existing.id : '';
     document.getElementById('priceBadge').value = existing ? existing.badge : '';
     document.getElementById('priceName').value = existing ? existing.name : '';
@@ -860,7 +1143,7 @@ body{background:var(--bg)}
   });
 
   window.deletePricing = async function (id) {
-    if (!confirm("Bu paketni o'chirishni tasdiqlaysizmi?")) return;
+    if (!confirm(T('confirm.del.price'))) return;
     try { await apiFetch('/api/pricing/' + id, { method: 'DELETE' }); loadPricing(); }
     catch (err) { alert(err.message); }
   };
@@ -868,37 +1151,28 @@ body{background:var(--bg)}
   // ══════════════════════════════════════════════════════════
   // FOYDALANUVCHILAR (superadmin)
   // ══════════════════════════════════════════════════════════
-  var ROLE_NAMES = {
-    superadmin: 'Superadmin',
-    seo: 'SEO mutaxassis',
-    menejer_bosh: 'Bosh menejer',
-    menejer_oddiy: 'Menejer',
-    dizayner_bosh: 'Bosh dizayner',
-    dizayner_oddiy: 'Dizayner'
-  };
-
   async function loadUsers() {
     try {
       var data = await apiFetch('/api/admin/users');
       var list = document.getElementById('usersList');
       var users = data.users || [];
       if (!users.length) {
-        list.innerHTML = '<div class="empty-state">Hali ro\'yxatdan o\'tgan foydalanuvchilar yo\'q</div>';
+        list.innerHTML = '<div class="empty-state">' + T('users.empty') + '</div>';
         return;
       }
       list.innerHTML = '<div class="item-list">' + users.map(function (u) {
-        var statusLabel = u.status === 'pending' ? "Kutmoqda" : u.status === 'approved' ? "Tasdiqlangan" : "Rad etilgan";
+        var statusLabel = u.status === 'pending' ? T('users.pending') : u.status === 'approved' ? T('users.approved') : T('users.rejected');
         var actions = u.status === 'pending'
-          ? '<button class="btn-approve" onclick="approveUser(' + u.id + ')">Tasdiqlash</button>' +
-            '<button class="btn-reject" onclick="rejectUser(' + u.id + ')" style="margin-left:6px">Rad etish</button>'
+          ? '<button class="btn-approve" onclick="approveUser(' + u.id + ')">' + T('users.approve') + '</button>' +
+            '<button class="btn-reject" onclick="rejectUser(' + u.id + ')" style="margin-left:6px">' + T('users.reject') + '</button>'
           : u.status === 'approved'
-            ? '<button class="btn-reject" onclick="rejectUser(' + u.id + ')">Bloklash</button>'
-            : '<button class="btn-approve" onclick="approveUser(' + u.id + ')">Tiklash</button>';
+            ? '<button class="btn-reject" onclick="rejectUser(' + u.id + ')">' + T('users.block') + '</button>'
+            : '<button class="btn-approve" onclick="approveUser(' + u.id + ')">' + T('users.restore') + '</button>';
         return '<div class="item-row">' +
           '<div class="item-row__thumb" style="font-size:18px">👤</div>' +
           '<div class="item-row__body">' +
             '<div class="item-row__title">' + esc(u.name) + '</div>' +
-            '<div class="item-row__meta">' + esc(u.email) + ' · <span class="role-label">' + (ROLE_NAMES[u.role] || u.role) + '</span></div>' +
+            '<div class="item-row__meta">' + esc(u.email) + ' · <span class="role-label">' + T('role.' + u.role) + '</span></div>' +
           '</div>' +
           '<div class="item-row__actions" style="align-items:center;gap:8px">' +
             '<span class="user-status ' + u.status + '">' + statusLabel + '</span>' +
