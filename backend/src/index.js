@@ -17,8 +17,24 @@ const PORT = process.env.PORT || 3000;
 // MIDDLEWARE
 // ════════════════════════════════════════════════════════════════════════════
 
+// CORS — barcha ruxsat etilgan manzil variantlarini qabul qiladi:
+// http/https, www/www-siz exon-marketing.uz, GitHub Pages va localhost.
+// Sabab: agar sayt http:// yoki www. bilan ochilsa, oldingi qat'iy
+// tekshiruv Origin'ni rad etib, brauzerda "Failed to fetch" berardi.
+const allowedOriginPatterns = [
+  /^https?:\/\/(www\.)?exon-marketing\.uz$/,
+  /^https:\/\/zari004\.github\.io$/,
+  /^http:\/\/localhost(:\d+)?$/,
+  /^http:\/\/127\.0\.0\.1(:\d+)?$/
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:8888',
+  origin: function (origin, callback) {
+    // origin bo'lmasa (curl, mobil app, server-to-server) — ruxsat
+    if (!origin) return callback(null, true);
+    const allowed = allowedOriginPatterns.some(function (re) { return re.test(origin); });
+    callback(null, allowed);
+  },
   credentials: true
 }));
 
