@@ -220,6 +220,7 @@ body{background:var(--bg)}
     <div class="lang" role="group" aria-label="Til tanlash">
       <button class="lang__btn is-active" data-lang="uz" type="button">UZ</button>
       <button class="lang__btn" data-lang="ru" type="button">RU</button>
+      <button class="lang__btn" data-lang="en" type="button">EN</button>
     </div>
   </div>
   <div class="login-box">
@@ -273,6 +274,7 @@ body{background:var(--bg)}
     <div class="lang" role="group" aria-label="Til tanlash">
       <button class="lang__btn is-active" data-lang="uz" type="button">UZ</button>
       <button class="lang__btn" data-lang="ru" type="button">RU</button>
+      <button class="lang__btn" data-lang="en" type="button">EN</button>
     </div>
   </div>
   <div class="pending-box">
@@ -296,6 +298,7 @@ body{background:var(--bg)}
       <div class="lang" role="group" aria-label="Til tanlash">
         <button class="lang__btn is-active" data-lang="uz" type="button">UZ</button>
         <button class="lang__btn" data-lang="ru" type="button">RU</button>
+        <button class="lang__btn" data-lang="en" type="button">EN</button>
       </div>
       <button class="admin-logout" id="logoutBtn">Chiqish</button>
     </div>
@@ -359,19 +362,19 @@ body{background:var(--bg)}
     <h3 id="caseModalTitle">Yangi keys</h3>
     <form id="caseForm">
       <input type="hidden" id="caseId" />
-      <div class="field"><label>Teg (masalan: 📱 Elektronika)</label><input type="text" id="caseTag" required /></div>
-      <div class="field"><label>Sarlavha</label><input type="text" id="caseTitle" required /></div>
-      <div class="field"><label>Tavsif</label><textarea id="caseDesc" required></textarea></div>
+      <div class="field"><label data-i18n="field.caseTag">Teg (masalan: 📱 Elektronika)</label><input type="text" id="caseTag" required /></div>
+      <div class="field"><label data-i18n="field.title">Sarlavha</label><input type="text" id="caseTitle" required /></div>
+      <div class="field"><label data-i18n="field.description">Tavsif</label><textarea id="caseDesc" required></textarea></div>
       <div class="field-row">
-        <div class="field"><label>Statistika 1 — qiymat</label><input type="text" id="caseM1v" placeholder="+340%" /></div>
-        <div class="field"><label>Statistika 1 — nomi</label><input type="text" id="caseM1l" placeholder="Trafik" /></div>
+        <div class="field"><label data-i18n="field.metric1Value">Statistika 1 — qiymat</label><input type="text" id="caseM1v" placeholder="+340%" /></div>
+        <div class="field"><label data-i18n="field.metric1Label">Statistika 1 — nomi</label><input type="text" id="caseM1l" placeholder="Trafik" /></div>
       </div>
       <div class="field-row">
-        <div class="field"><label>Statistika 2 — qiymat</label><input type="text" id="caseM2v" placeholder="+218%" /></div>
-        <div class="field"><label>Statistika 2 — nomi</label><input type="text" id="caseM2l" placeholder="Buyurtma" /></div>
+        <div class="field"><label data-i18n="field.metric2Value">Statistika 2 — qiymat</label><input type="text" id="caseM2v" placeholder="+218%" /></div>
+        <div class="field"><label data-i18n="field.metric2Label">Statistika 2 — nomi</label><input type="text" id="caseM2l" placeholder="Buyurtma" /></div>
       </div>
       <div class="field">
-        <label>Marketpleyslar</label>
+        <label data-i18n="field.marketplaces">Marketpleyslar</label>
         <div class="checks">
           <label><input type="checkbox" value="uzum" class="caseMarket" /> Uzum</label>
           <label><input type="checkbox" value="wb" class="caseMarket" /> Wildberries</label>
@@ -379,7 +382,7 @@ body{background:var(--bg)}
         </div>
       </div>
       <div class="field">
-        <label>Rasm</label>
+        <label data-i18n="field.image">Rasm</label>
         <div class="img-preview" id="caseImgPreview">Rasm tanlanmagan</div>
         <input type="file" id="caseImgFile" accept="image/*" />
       </div>
@@ -398,15 +401,15 @@ body{background:var(--bg)}
     <h3 id="postModalTitle">Yangi maqola</h3>
     <form id="postForm">
       <input type="hidden" id="postId" />
-      <div class="field"><label>Teg (masalan: SEO)</label><input type="text" id="postTag" required /></div>
-      <div class="field"><label>Sarlavha</label><input type="text" id="postTitle" required /></div>
-      <div class="field"><label>Tavsif</label><textarea id="postDesc" required></textarea></div>
+      <div class="field"><label data-i18n="field.postTag">Teg (masalan: SEO)</label><input type="text" id="postTag" required /></div>
+      <div class="field"><label data-i18n="field.title">Sarlavha</label><input type="text" id="postTitle" required /></div>
+      <div class="field"><label data-i18n="field.description">Tavsif</label><textarea id="postDesc" required></textarea></div>
       <div class="field-row">
-        <div class="field"><label>Sana (masalan: 25 iyul)</label><input type="text" id="postDate" /></div>
-        <div class="field"><label>O'qish vaqti (masalan: 5 min)</label><input type="text" id="postRead" /></div>
+        <div class="field"><label data-i18n="field.date">Sana (masalan: 25 iyul)</label><input type="text" id="postDate" /></div>
+        <div class="field"><label data-i18n="field.readTime">O'qish vaqti (masalan: 5 min)</label><input type="text" id="postRead" /></div>
       </div>
       <div class="field">
-        <label>Rasm</label>
+        <label data-i18n="field.image">Rasm</label>
         <div class="img-preview" id="postImgPreview">Rasm tanlanmagan</div>
         <input type="file" id="postImgFile" accept="image/*" />
       </div>
@@ -425,27 +428,27 @@ body{background:var(--bg)}
     <h3 id="pricingModalTitle">Yangi paket</h3>
     <form id="pricingForm">
       <input type="hidden" id="priceId" />
-      <div class="field"><label>Belgi (masalan: YANGI BOSHLOVCHILAR)</label><input type="text" id="priceBadge" /></div>
-      <div class="field"><label>Nomi</label><input type="text" id="priceName" required /></div>
-      <div class="field"><label>Tavsif</label><textarea id="priceDesc"></textarea></div>
+      <div class="field"><label data-i18n="field.badge">Belgi (masalan: YANGI BOSHLOVCHILAR)</label><input type="text" id="priceBadge" /></div>
+      <div class="field"><label data-i18n="field.name">Nomi</label><input type="text" id="priceName" required /></div>
+      <div class="field"><label data-i18n="field.description">Tavsif</label><textarea id="priceDesc"></textarea></div>
       <div class="field-row">
-        <div class="field"><label>Narx (masalan: 2,500 yoki Bepul)</label><input type="text" id="priceAmount" required /></div>
-        <div class="field"><label>Valyuta/davr (masalan: $/oy)</label><input type="text" id="priceCurrency" /></div>
+        <div class="field"><label data-i18n="field.price">Narx (masalan: 2,500 yoki Bepul)</label><input type="text" id="priceAmount" required /></div>
+        <div class="field"><label data-i18n="field.currency">Valyuta/davr (masalan: $/oy)</label><input type="text" id="priceCurrency" /></div>
       </div>
-      <div class="field"><label>Davr izohi (masalan: Har 5 ta SKU uchun)</label><input type="text" id="pricePeriod" /></div>
+      <div class="field"><label data-i18n="field.period">Davr izohi (masalan: Har 5 ta SKU uchun)</label><input type="text" id="pricePeriod" /></div>
       <div class="field">
-        <label>Xususiyatlar ro'yxati</label>
+        <label data-i18n="field.features">Xususiyatlar ro'yxati</label>
         <div class="features-list" id="featuresList"></div>
-        <button type="button" class="add-feature" onclick="addFeatureRow()">+ Qator qo'shish</button>
+        <button type="button" class="add-feature" data-i18n="field.addFeature" onclick="addFeatureRow()">+ Qator qo'shish</button>
       </div>
       <div class="field-row">
-        <div class="field"><label>Tugma matni</label><input type="text" id="priceCtaLabel" value="Batafsil" /></div>
+        <div class="field"><label data-i18n="field.buttonText">Tugma matni</label><input type="text" id="priceCtaLabel" value="Batafsil" /></div>
         <div class="field">
-          <label>Tugma turi</label>
-          <select id="priceCtaType"><option value="primary">Asosiy (yashil)</option><option value="secondary">Ikkinchi darajali</option></select>
+          <label data-i18n="field.buttonType">Tugma turi</label>
+          <select id="priceCtaType"><option value="primary" data-i18n="field.primary">Asosiy (yashil)</option><option value="secondary" data-i18n="field.secondary">Ikkinchi darajali</option></select>
         </div>
       </div>
-      <div class="field"><label><input type="checkbox" id="priceFeatured" style="width:auto;margin-right:8px" /> Eng mashhur sifatida belgilash</label></div>
+      <div class="field"><label><input type="checkbox" id="priceFeatured" style="width:auto;margin-right:8px" /> <span data-i18n="field.featured">Eng mashhur sifatida belgilash</span></label></div>
       <div class="form-msg" id="pricingFormMsg"></div>
       <div class="modal-actions">
         <button type="button" class="modal-cancel" onclick="closeModal('pricingModal')">Bekor qilish</button>
@@ -456,7 +459,7 @@ body{background:var(--bg)}
 </div>
 
 <script src="assets/js/api-base.js?v=2"></script>
-<script src="assets/js/theme.js"></script>
+<script src="assets/js/theme.js?v=3"></script>
 <script>
 (function () {
   'use strict';
@@ -468,7 +471,7 @@ body{background:var(--bg)}
   // ════════════════════════════════════════════════════════════
   // TIL TIZIMI (i18n)
   // ════════════════════════════════════════════════════════════
-  var LANG = localStorage.getItem('exon_admin_lang') || 'uz';
+  var LANG = localStorage.getItem('exon_lang') || 'uz';
 
   var LANGS = {
     uz: {
@@ -477,10 +480,17 @@ body{background:var(--bg)}
       'login.email': 'Email',
       'login.password': 'Parol',
       'login.btn': 'Kirish',
+      'login.loading': 'Kirilmoqda...',
+      'login.invalid': "Email yoki parol noto'g'ri",
+      'server.waking': "Server uyg'onmoqda",
+      'server.timeout': "Server javob bermadi. Birozdan so'ng qayta urinib ko'ring.",
+      'server.connection': "Serverga ulanib bo'lmadi: ",
       'reg.name': "To'liq ismingiz",
       'reg.email': 'Email',
       'reg.password': 'Parol (kamida 6 belgi)',
       'reg.btn': "Ro'yxatdan o'tish",
+      'reg.loading': 'Yuborilmoqda...',
+      'reg.error': 'Xatolik yuz berdi',
       'reg.role.menejer_oddiy': 'Menejer',
       'reg.role.menejer_bosh': 'Bosh menejer',
       'reg.role.dizayner_oddiy': 'Dizayner',
@@ -490,6 +500,8 @@ body{background:var(--bg)}
       'pending.text': "Ma'lumotlaringiz administratorlarga yuborildi.<br>Ular tasdiqlagandan so'ng tizimga kirishingiz mumkin.",
       'pending.back': '← Kirish sahifasiga qaytish',
       'admin.logout': 'Chiqish',
+      'theme.dark': "Qorong'i mavzu",
+      'theme.light': "Yorug' mavzu",
       'tab.dashboard': 'Hisobot',
       'tab.cases': 'Keyslar',
       'tab.posts': 'Blog',
@@ -534,6 +546,30 @@ body{background:var(--bg)}
       'item.delete': "O'chirish",
       'image.none': 'Rasm tanlanmagan',
       'feature.placeholder': 'Xususiyat',
+      'field.caseTag': 'Teg (masalan: 📱 Elektronika)',
+      'field.postTag': 'Teg (masalan: SEO)',
+      'field.title': 'Sarlavha',
+      'field.name': 'Nomi',
+      'field.description': 'Tavsif',
+      'field.metric1Value': 'Statistika 1 — qiymat',
+      'field.metric1Label': 'Statistika 1 — nomi',
+      'field.metric2Value': 'Statistika 2 — qiymat',
+      'field.metric2Label': 'Statistika 2 — nomi',
+      'field.marketplaces': 'Marketpleyslar',
+      'field.image': 'Rasm',
+      'field.date': 'Sana (masalan: 25 iyul)',
+      'field.readTime': "O'qish vaqti (masalan: 5 min)",
+      'field.badge': 'Belgi (masalan: YANGI BOSHLOVCHILAR)',
+      'field.price': 'Narx (masalan: 2,500 yoki Bepul)',
+      'field.currency': 'Valyuta/davr (masalan: $/oy)',
+      'field.period': 'Davr izohi (masalan: Har 5 ta SKU uchun)',
+      'field.features': "Xususiyatlar ro'yxati",
+      'field.addFeature': "+ Qator qo'shish",
+      'field.buttonText': 'Tugma matni',
+      'field.buttonType': 'Tugma turi',
+      'field.primary': 'Asosiy (yashil)',
+      'field.secondary': 'Ikkinchi darajali',
+      'field.featured': 'Eng mashhur sifatida belgilash',
       'modal.save': 'Saqlash',
       'modal.cancel': 'Bekor qilish',
       'confirm.del.case': "Bu keysni o'chirishni tasdiqlaysizmi?",
@@ -552,10 +588,17 @@ body{background:var(--bg)}
       'login.email': 'Email',
       'login.password': 'Пароль',
       'login.btn': 'Войти',
+      'login.loading': 'Выполняется вход...',
+      'login.invalid': 'Неверный email или пароль',
+      'server.waking': 'Сервер запускается',
+      'server.timeout': 'Сервер не ответил. Попробуйте ещё раз через некоторое время.',
+      'server.connection': 'Не удалось подключиться к серверу: ',
       'reg.name': 'Ваше полное имя',
       'reg.email': 'Email',
       'reg.password': 'Пароль (мин. 6 символов)',
       'reg.btn': 'Зарегистрироваться',
+      'reg.loading': 'Отправка...',
+      'reg.error': 'Произошла ошибка',
       'reg.role.menejer_oddiy': 'Менеджер',
       'reg.role.menejer_bosh': 'Главный менеджер',
       'reg.role.dizayner_oddiy': 'Дизайнер',
@@ -565,6 +608,8 @@ body{background:var(--bg)}
       'pending.text': 'Ваши данные отправлены администраторам.<br>Вы сможете войти после их подтверждения.',
       'pending.back': '← Вернуться на страницу входа',
       'admin.logout': 'Выйти',
+      'theme.dark': 'Тёмная тема',
+      'theme.light': 'Светлая тема',
       'tab.dashboard': 'Отчёты',
       'tab.cases': 'Кейсы',
       'tab.posts': 'Блог',
@@ -609,6 +654,30 @@ body{background:var(--bg)}
       'item.delete': 'Удалить',
       'image.none': 'Изображение не выбрано',
       'feature.placeholder': 'Характеристика',
+      'field.caseTag': 'Тег (например: 📱 Электроника)',
+      'field.postTag': 'Тег (например: SEO)',
+      'field.title': 'Заголовок',
+      'field.name': 'Название',
+      'field.description': 'Описание',
+      'field.metric1Value': 'Статистика 1 — значение',
+      'field.metric1Label': 'Статистика 1 — название',
+      'field.metric2Value': 'Статистика 2 — значение',
+      'field.metric2Label': 'Статистика 2 — название',
+      'field.marketplaces': 'Маркетплейсы',
+      'field.image': 'Изображение',
+      'field.date': 'Дата (например: 25 июля)',
+      'field.readTime': 'Время чтения (например: 5 мин)',
+      'field.badge': 'Метка (например: ДЛЯ НАЧИНАЮЩИХ)',
+      'field.price': 'Цена (например: 2,500 или Бесплатно)',
+      'field.currency': 'Валюта/период (например: $/мес)',
+      'field.period': 'Описание периода (например: за 5 SKU)',
+      'field.features': 'Список возможностей',
+      'field.addFeature': '+ Добавить строку',
+      'field.buttonText': 'Текст кнопки',
+      'field.buttonType': 'Тип кнопки',
+      'field.primary': 'Основная (зелёная)',
+      'field.secondary': 'Вторичная',
+      'field.featured': 'Отметить как популярный',
       'modal.save': 'Сохранить',
       'modal.cancel': 'Отмена',
       'confirm.del.case': 'Удалить этот кейс?',
@@ -620,6 +689,114 @@ body{background:var(--bg)}
       'role.menejer_oddiy': 'Менеджер',
       'role.dizayner_bosh': 'Главный дизайнер',
       'role.dizayner_oddiy': 'Дизайнер',
+    },
+    en: {
+      'login.tab.kirish': 'Sign in',
+      'login.tab.royxat': 'Register',
+      'login.email': 'Email',
+      'login.password': 'Password',
+      'login.btn': 'Sign in',
+      'login.loading': 'Signing in...',
+      'login.invalid': 'Incorrect email or password',
+      'server.waking': 'Server is waking up',
+      'server.timeout': 'The server did not respond. Please try again shortly.',
+      'server.connection': 'Could not connect to the server: ',
+      'reg.name': 'Full name',
+      'reg.email': 'Email',
+      'reg.password': 'Password (at least 6 characters)',
+      'reg.btn': 'Register',
+      'reg.loading': 'Submitting...',
+      'reg.error': 'Something went wrong',
+      'reg.role.menejer_oddiy': 'Manager',
+      'reg.role.menejer_bosh': 'Lead manager',
+      'reg.role.dizayner_oddiy': 'Designer',
+      'reg.role.dizayner_bosh': 'Lead designer',
+      'reg.role.seo': 'SEO specialist',
+      'pending.title': 'Request submitted',
+      'pending.text': 'Your details have been sent to the administrators.<br>You can sign in after they approve your account.',
+      'pending.back': '← Back to sign in',
+      'admin.logout': 'Sign out',
+      'theme.dark': 'Dark theme',
+      'theme.light': 'Light theme',
+      'tab.dashboard': 'Reports',
+      'tab.cases': 'Cases',
+      'tab.posts': 'Blog',
+      'tab.pricing': 'Pricing',
+      'tab.users': 'Users',
+      'dash.title': 'Audit reports',
+      'dash.total': 'Total leads',
+      'dash.avg': 'Average score',
+      'dash.segA': 'Segment A',
+      'dash.segB': 'Segment B',
+      'dash.segC': 'Segment C',
+      'table.email': 'Email',
+      'table.score': 'Score',
+      'table.seg': 'Segment',
+      'table.date': 'Date',
+      'table.empty': 'No leads yet',
+      'cases.title': 'Cases',
+      'cases.add': '+ New case',
+      'cases.empty': 'No cases yet',
+      'cases.new': 'New case',
+      'cases.edit': 'Edit case',
+      'posts.title': 'Blog articles',
+      'posts.add': '+ New article',
+      'posts.empty': 'No articles yet',
+      'posts.new': 'New article',
+      'posts.edit': 'Edit article',
+      'pricing.title': 'Pricing packages',
+      'pricing.add': '+ New package',
+      'pricing.empty': 'No packages yet',
+      'pricing.new': 'New package',
+      'pricing.edit': 'Edit package',
+      'users.title': 'Users',
+      'users.empty': 'No registered users yet',
+      'users.pending': 'Pending',
+      'users.approved': 'Approved',
+      'users.rejected': 'Rejected',
+      'users.approve': 'Approve',
+      'users.reject': 'Reject',
+      'users.block': 'Block',
+      'users.restore': 'Restore',
+      'item.edit': 'Edit',
+      'item.delete': 'Delete',
+      'image.none': 'No image selected',
+      'feature.placeholder': 'Feature',
+      'field.caseTag': 'Tag (for example: 📱 Electronics)',
+      'field.postTag': 'Tag (for example: SEO)',
+      'field.title': 'Title',
+      'field.name': 'Name',
+      'field.description': 'Description',
+      'field.metric1Value': 'Statistic 1 — value',
+      'field.metric1Label': 'Statistic 1 — label',
+      'field.metric2Value': 'Statistic 2 — value',
+      'field.metric2Label': 'Statistic 2 — label',
+      'field.marketplaces': 'Marketplaces',
+      'field.image': 'Image',
+      'field.date': 'Date (for example: July 25)',
+      'field.readTime': 'Reading time (for example: 5 min)',
+      'field.badge': 'Badge (for example: FOR BEGINNERS)',
+      'field.price': 'Price (for example: 2,500 or Free)',
+      'field.currency': 'Currency/period (for example: $/month)',
+      'field.period': 'Period note (for example: for every 5 SKUs)',
+      'field.features': 'Feature list',
+      'field.addFeature': '+ Add row',
+      'field.buttonText': 'Button text',
+      'field.buttonType': 'Button type',
+      'field.primary': 'Primary (green)',
+      'field.secondary': 'Secondary',
+      'field.featured': 'Mark as most popular',
+      'modal.save': 'Save',
+      'modal.cancel': 'Cancel',
+      'confirm.del.case': 'Delete this case?',
+      'confirm.del.post': 'Delete this article?',
+      'confirm.del.price': 'Delete this package?',
+      'role.superadmin': 'Superadmin',
+      'role.seo': 'SEO specialist',
+      'role.menejer_bosh': 'Lead manager',
+      'role.menejer_oddiy': 'Manager',
+      'role.dizayner_bosh': 'Lead designer',
+      'role.dizayner_oddiy': 'Designer',
     }
   };
 
@@ -630,6 +807,7 @@ body{background:var(--bg)}
     // Til tugmalarini yangilash
     document.querySelectorAll('.lang__btn[data-lang]').forEach(function(btn) {
       btn.classList.toggle('is-active', btn.dataset.lang === LANG);
+      btn.setAttribute('aria-pressed', String(btn.dataset.lang === LANG));
     });
     // Login ekrani
     document.getElementById('tabKirish').textContent = T('login.tab.kirish');
@@ -652,6 +830,11 @@ body{background:var(--bg)}
     document.getElementById('pendingBack').textContent = T('pending.back');
     // Admin top
     document.getElementById('logoutBtn').textContent = T('admin.logout');
+    var themeLabel = document.documentElement.getAttribute('data-theme') === 'light' ? T('theme.dark') : T('theme.light');
+    document.querySelectorAll('.theme-toggle').forEach(function(btn) {
+      btn.setAttribute('title', themeLabel);
+      btn.setAttribute('aria-label', themeLabel);
+    });
     // Tablar
     document.querySelector('[data-tab="dashboard"]').textContent = T('tab.dashboard');
     document.querySelector('[data-tab="cases"]').textContent = T('tab.cases');
@@ -675,6 +858,9 @@ body{background:var(--bg)}
       leadHeaders[2].textContent = T('table.seg');
       leadHeaders[3].textContent = T('table.date');
     }
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+      el.textContent = T(el.dataset.i18n);
+    });
     // Modal tugmalari
     document.querySelectorAll('.modal-save').forEach(function(btn) { btn.textContent = T('modal.save'); });
     document.querySelectorAll('.modal-cancel').forEach(function(btn) { btn.textContent = T('modal.cancel'); });
@@ -687,7 +873,7 @@ body{background:var(--bg)}
 
   function setLang(lang) {
     LANG = lang;
-    localStorage.setItem('exon_admin_lang', lang);
+    localStorage.setItem('exon_lang', lang);
     applyLang();
   }
 
@@ -769,7 +955,7 @@ body{background:var(--bg)}
       } catch (err) {
         clearTimeout(abortTimer);
         if (attempt === maxAttempts) throw err;
-        hintEl.textContent = "Server uyg'onmoqda (" + attempt + '/' + maxAttempts + ')...';
+        hintEl.textContent = T('server.waking') + " (" + attempt + '/' + maxAttempts + ')...';
         await wait(4000);
       }
     }
@@ -784,12 +970,12 @@ body{background:var(--bg)}
     var btn = document.getElementById('loginSubmitBtn');
     errEl.textContent = '';
     btn.disabled = true;
-    btn.textContent = 'Kirilmoqda...';
+    btn.textContent = T('login.loading');
     hintEl.textContent = '';
     try {
       var data = await loginWithRetry(email, pass, hintEl, 6);
       if (!data.success) {
-        errEl.textContent = data.error || "Email yoki parol noto'g'ri";
+        errEl.textContent = data.error || T('login.invalid');
         return;
       }
       TOKEN = data.token;
@@ -801,12 +987,12 @@ body{background:var(--bg)}
       showApp();
     } catch (err) {
       errEl.textContent = err.name === 'AbortError'
-        ? "Server javob bermadi. Birozdan so'ng qayta urinib ko'ring."
-        : "Serverga ulanib bo'lmadi: " + err.message;
+        ? T('server.timeout')
+        : T('server.connection') + err.message;
     } finally {
       hintEl.textContent = '';
       btn.disabled = false;
-      btn.textContent = 'Kirish';
+      btn.textContent = T('login.btn');
     }
   });
 
@@ -816,7 +1002,7 @@ body{background:var(--bg)}
     var btn = document.getElementById('registerSubmitBtn');
     errEl.textContent = '';
     btn.disabled = true;
-    btn.textContent = "Yuborilmoqda...";
+    btn.textContent = T('reg.loading');
     try {
       var body = {
         name: document.getElementById('regName').value.trim(),
@@ -829,14 +1015,14 @@ body{background:var(--bg)}
         body: JSON.stringify(body)
       });
       var data = await res.json();
-      if (!data.success) { errEl.textContent = data.error || 'Xatolik yuz berdi'; return; }
+      if (!data.success) { errEl.textContent = data.error || T('reg.error'); return; }
       document.getElementById('registerForm').reset();
       showPending();
     } catch (err) {
-      errEl.textContent = "Serverga ulanib bo'lmadi: " + err.message;
+      errEl.textContent = T('server.connection') + err.message;
     } finally {
       btn.disabled = false;
-      btn.textContent = "Ro'yxatdan o'tish";
+      btn.textContent = T('reg.btn');
     }
   });
 

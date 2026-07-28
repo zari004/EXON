@@ -527,7 +527,14 @@ ol,ul{list-style:none}
   .nav__menu a{padding:13px 0;font-size:16px;color:var(--white);border-bottom:1px solid var(--line)}
   .nav__menu a::after{display:none}
   .burger{display:flex}
-  .lang{display:none}
+  .nav__right{gap:7px}
+  .nav__right>.btn--pill{display:none}
+  .lang{display:flex}
+
+  @media (max-width:460px){
+    .theme-toggle{width:34px;height:34px}
+    .lang__btn{padding:4px 6px;font-size:10px}
+  }
 
   /* Egri chiziqsiz kontent past bo'ladi — 100svh majburlansa, ostida
      katta bo'sh maydon qoladi. Shuning uchun balandlik erkin qo'yiladi. */
