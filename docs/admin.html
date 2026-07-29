@@ -59,6 +59,23 @@ body{
   font-size:15px;margin-bottom:14px;
 }
 .login-box input:focus{outline:none;border-color:var(--green-deep);box-shadow:0 0 0 3px rgba(var(--green-rgb),.09)}
+
+/* ── PAROL KO'RSATISH/YASHIRISH TUGMASI (ko'z) ── */
+.pwd-field{position:relative}
+.pwd-field input{padding-right:44px !important}
+.pwd-eye{
+  position:absolute !important;right:4px;top:50%;transform:translateY(-50%);
+  width:34px !important;height:34px !important;border-radius:8px !important;
+  background:none !important;border:0 !important;box-shadow:none !important;
+  color:var(--gray-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  padding:0 !important;margin:0 !important;transition:color .15s;
+}
+.pwd-eye:hover{color:var(--gray)}
+.pwd-eye svg{width:18px;height:18px;flex-shrink:0}
+.pwd-eye .eye-closed{display:none}
+.pwd-eye.is-shown .eye-open{display:none}
+.pwd-eye.is-shown .eye-closed{display:block}
+.settings-field .pwd-field input{padding-right:44px}
 .login-box button{
   width:100%;height:48px;border-radius:999px;border:0;cursor:pointer;
   background:linear-gradient(140deg,var(--green-hi) 0%,var(--green) 52%,#1FA36C 100%);
@@ -704,7 +721,13 @@ body{
     <div class="login-form is-active" id="formKirish">
       <form id="loginForm">
         <input type="email" id="loginEmail" placeholder="Email" autocomplete="email" required />
-        <input type="password" id="loginPassword" placeholder="Parol" autocomplete="current-password" required />
+        <div class="pwd-field">
+          <input type="password" id="loginPassword" placeholder="Parol" autocomplete="current-password" required />
+          <button type="button" class="pwd-eye" data-target="loginPassword" aria-label="Parolni ko'rsatish">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/></svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </button>
+        </div>
         <button type="submit" id="loginSubmitBtn">Kirish</button>
         <div class="login-error" id="loginError"></div>
         <div class="login-error" id="loginHint" style="color:var(--gray-dim)"></div>
@@ -716,7 +739,13 @@ body{
       <form id="registerForm">
         <input type="text" id="regName" placeholder="To'liq ismingiz" autocomplete="name" required />
         <input type="email" id="regEmail" placeholder="Email" autocomplete="email" required />
-        <input type="password" id="regPassword" placeholder="Parol (kamida 6 belgi)" autocomplete="new-password" required />
+        <div class="pwd-field">
+          <input type="password" id="regPassword" placeholder="Parol (kamida 6 belgi)" autocomplete="new-password" required />
+          <button type="button" class="pwd-eye" data-target="regPassword" aria-label="Parolni ko'rsatish">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/></svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </button>
+        </div>
         <select id="regRole">
           <option value="menejer_oddiy">Menejer</option>
           <option value="menejer_bosh">Bosh menejer</option>
@@ -978,9 +1007,33 @@ body{
         <div class="settings-content-pane" id="setPaneSecurity">
           <h3>Parolni almashtirish</h3>
           <p class="hint">Xavfsizlik uchun joriy parolingizni tasdiqlashingiz kerak.</p>
-          <div class="settings-field"><label>Joriy parol</label><input type="password" id="setCurPass" autocomplete="current-password" /></div>
-          <div class="settings-field"><label>Yangi parol</label><input type="password" id="setNewPass" autocomplete="new-password" /></div>
-          <div class="settings-field"><label>Yangi parolni tasdiqlang</label><input type="password" id="setNewPass2" autocomplete="new-password" /></div>
+          <div class="settings-field"><label>Joriy parol</label>
+            <div class="pwd-field">
+              <input type="password" id="setCurPass" autocomplete="current-password" />
+              <button type="button" class="pwd-eye" data-target="setCurPass" aria-label="Parolni ko'rsatish">
+                <svg class="eye-open" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/></svg>
+                <svg class="eye-closed" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="settings-field"><label>Yangi parol</label>
+            <div class="pwd-field">
+              <input type="password" id="setNewPass" autocomplete="new-password" />
+              <button type="button" class="pwd-eye" data-target="setNewPass" aria-label="Parolni ko'rsatish">
+                <svg class="eye-open" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/></svg>
+                <svg class="eye-closed" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="settings-field"><label>Yangi parolni tasdiqlang</label>
+            <div class="pwd-field">
+              <input type="password" id="setNewPass2" autocomplete="new-password" />
+              <button type="button" class="pwd-eye" data-target="setNewPass2" aria-label="Parolni ko'rsatish">
+                <svg class="eye-open" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/></svg>
+                <svg class="eye-closed" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </div>
           <button type="button" class="settings-save-btn" id="setPassSaveBtn">Parolni almashtirish</button>
           <div class="form-msg" id="setPassMsg"></div>
         </div>
@@ -1791,6 +1844,17 @@ body{
       }
     }
   }
+
+  // ── Parolni ko'rsatish/yashirish (ko'z tugmasi) — barcha parol maydonlari uchun ──
+  document.querySelectorAll('.pwd-eye').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var target = document.getElementById(btn.dataset.target);
+      if (!target) return;
+      var showing = target.type === 'text';
+      target.type = showing ? 'password' : 'text';
+      btn.classList.toggle('is-shown', !showing);
+    });
+  });
 
   document.getElementById('loginForm').addEventListener('submit', async function (e) {
     e.preventDefault();
