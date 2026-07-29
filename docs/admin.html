@@ -219,6 +219,7 @@ body{
 .task-card__stripe.medium{background:#F59E0B}
 .task-card__stripe.high{background:#F2896F}
 .task-card__stripe.urgent{background:#EF4444;box-shadow:0 0 8px rgba(239,68,68,.4)}
+.task-card__stripe.none{background:transparent}
 
 .task-card__body{padding:11px 12px 10px 16px}
 .task-card__title{
@@ -239,6 +240,7 @@ body{
 .task-priority.medium{background:rgba(245,158,11,.12);color:#FBBF24}
 .task-priority.high{background:rgba(242,137,111,.14);color:#F2896F}
 .task-priority.urgent{background:rgba(239,68,68,.14);color:#EF4444}
+.task-priority.none{background:rgba(152,162,157,.08);color:var(--gray-dim)}
 .task-due{font-size:11px;color:var(--gray-dim);display:flex;align-items:center;gap:2px}
 .task-due.is-overdue{color:#F2896F;font-weight:600}
 .task-assignee{
@@ -1511,6 +1513,10 @@ body{
 
     <!-- PRIORITY POPUP -->
     <div class="td-popup" id="tdPriPop">
+      <button class="td-pop-item" data-val="none" type="button">
+        <span class="td-pri-flag none"></span> Belgilanmagan
+        <svg class="td-pop-check" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <button class="td-pop-item" data-val="urgent" type="button">
         <span class="td-pri-flag urgent"></span> Shoshilinch
         <svg class="td-pop-check" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1623,6 +1629,7 @@ body{
       'tasks.col.in_progress': 'Jarayonda',
       'tasks.col.review': 'Ko\'rib chiqishda',
       'tasks.col.done': 'Bajarildi',
+      'tasks.priority.none': 'Belgilanmagan',
       'tasks.priority.low': 'Kam',
       'tasks.priority.medium': 'O\'rtacha',
       'tasks.priority.high': 'Yuqori',
@@ -1752,6 +1759,7 @@ body{
       'tasks.col.in_progress': 'В работе',
       'tasks.col.review': 'На проверке',
       'tasks.col.done': 'Выполнено',
+      'tasks.priority.none': 'Не задано',
       'tasks.priority.low': 'Низкий',
       'tasks.priority.medium': 'Средний',
       'tasks.priority.high': 'Высокий',
@@ -1881,6 +1889,7 @@ body{
       'tasks.col.in_progress': 'In progress',
       'tasks.col.review': 'In review',
       'tasks.col.done': 'Done',
+      'tasks.priority.none': 'Not set',
       'tasks.priority.low': 'Low',
       'tasks.priority.medium': 'Medium',
       'tasks.priority.high': 'High',
@@ -3101,7 +3110,7 @@ body{
 
   // ── PRIORITY UI ──
   function setPriority(val) {
-    TD_PRIORITY = val || 'medium';
+    TD_PRIORITY = val || 'none';
     var btn = document.getElementById('tdPriBtn');
     btn.className = 'td-ibtn pri-' + TD_PRIORITY;
     document.querySelectorAll('#tdPriPop .td-pop-item').forEach(function (item) {
@@ -3183,26 +3192,41 @@ body{
         e.stopPropagation();
         var picked = btn.dataset.date;
         if (TD_CAL_MODE === 'dur') {
-          // Davomiylik: navbat bilan boshlanish va tugash tanlanadi
-          if (TD_DUR_TARGET === 'start' || !TD_START_DATE) {
-            TD_START_DATE = picked;
-            if (document.getElementById('taskDue').value && document.getElementById('taskDue').value < picked) {
-              document.getElementById('taskDue').value = picked;
-            }
-            TD_DUR_TARGET = 'end';
-          } else {
-            if (picked < TD_START_DATE) {
-              // teskari tanlansa — almashtirib qo'yamiz
-              document.getElementById('taskDue').value = TD_START_DATE;
-              TD_START_DATE = picked;
-            } else {
-              document.getElementById('taskDue').value = picked;
-            }
+          var dueInput = document.getElementById('taskDue');
+          // Tanlangan chegara yana bosilsa, o'sha tanlov bekor qilinadi.
+          if (picked === TD_START_DATE && picked === dueInput.value) {
+            TD_START_DATE = '';
+            dueInput.value = '';
             TD_DUR_TARGET = 'start';
+          } else if (picked === TD_START_DATE) {
+            TD_START_DATE = '';
+            TD_DUR_TARGET = 'start';
+          } else if (picked === dueInput.value) {
+            dueInput.value = '';
+            TD_DUR_TARGET = TD_START_DATE ? 'end' : 'start';
+          } else {
+            // Davomiylik: navbat bilan boshlanish va tugash tanlanadi
+            if (TD_DUR_TARGET === 'start' || !TD_START_DATE) {
+              TD_START_DATE = picked;
+              if (dueInput.value && dueInput.value < picked) {
+                dueInput.value = picked;
+              }
+              TD_DUR_TARGET = 'end';
+            } else {
+              if (picked < TD_START_DATE) {
+                // teskari tanlansa — almashtirib qo'yamiz
+                dueInput.value = TD_START_DATE;
+                TD_START_DATE = picked;
+              } else {
+                dueInput.value = picked;
+              }
+              TD_DUR_TARGET = 'start';
+            }
           }
           updateDurFields();
         } else {
-          document.getElementById('taskDue').value = picked;
+          var dateInput = document.getElementById('taskDue');
+          dateInput.value = dateInput.value === picked ? '' : picked;
         }
         tdRefreshLabel();
         renderCalendar(); // tanlov darhol ko'rinsin, oyna ochiq qoladi — OK bilan yopiladi
@@ -3250,7 +3274,7 @@ body{
   function buildTimeList() {
     var list = document.getElementById('tdTimeList');
     if (!TIME_LIST_BUILT) {
-      var html = '';
+      var html = '<button type="button" class="td-time-item" data-time="">Belgilanmagan</button>';
       for (var h = 0; h < 24; h++) {
         ['00', '30'].forEach(function (m) {
           var tv = pad2(h) + ':' + m;
@@ -3261,7 +3285,7 @@ body{
       list.querySelectorAll('.td-time-item').forEach(function (item) {
         item.addEventListener('click', function (e) {
           e.stopPropagation();
-          setTimeUI(item.dataset.time);
+          setTimeUI(TD_DUE_TIME === item.dataset.time ? '' : item.dataset.time);
           buildTimeList(); // belgilangan elementni yangilash
           closeCalSubpanels();
         });
@@ -3366,7 +3390,9 @@ body{
     // click handlers
     pop.querySelectorAll('.td-pop-item').forEach(function (item) {
       item.addEventListener('click', function () {
-        setAssignee(item.dataset.id, item.dataset.name);
+        var sameUser = item.dataset.id &&
+          String(item.dataset.id) === String(TD_ASSIGNEE_ID || '');
+        setAssignee(sameUser ? null : item.dataset.id, sameUser ? null : item.dataset.name);
         closeAllPopups();
       });
     });
@@ -3528,7 +3554,8 @@ body{
         else if (btn.dataset.quick === 'week') t.setDate(t.getDate() + 7);
         else if (btn.dataset.quick === 'month') t.setMonth(t.getMonth() + 1);
         var dateStr = t.getFullYear() + '-' + pad2(t.getMonth() + 1) + '-' + pad2(t.getDate());
-        document.getElementById('taskDue').value = dateStr;
+        var dateInput = document.getElementById('taskDue');
+        dateInput.value = dateInput.value === dateStr ? '' : dateStr;
         TD_CAL_YEAR = t.getFullYear(); TD_CAL_MONTH = t.getMonth();
         tdRefreshLabel();
         renderCalendar();
@@ -3588,14 +3615,17 @@ body{
     document.querySelectorAll('#tdReminderOverlay .td-cal-subitem').forEach(function (item) {
       item.addEventListener('click', function (e) {
         e.stopPropagation();
-        setReminderUI(item.dataset.val === '' ? null : item.dataset.val);
+        var current = TD_REMINDER_MINUTES === null ? '' : String(TD_REMINDER_MINUTES);
+        var next = item.dataset.val;
+        setReminderUI(next === '' || next === current ? null : next);
         closeCalSubpanels();
       });
     });
     document.querySelectorAll('#tdRepeatOverlay .td-cal-subitem').forEach(function (item) {
       item.addEventListener('click', function (e) {
         e.stopPropagation();
-        setRepeatUI(item.dataset.val);
+        var next = item.dataset.val;
+        setRepeatUI(next === TD_REPEAT_RULE ? 'none' : next);
         closeCalSubpanels();
       });
     });
@@ -3614,7 +3644,7 @@ body{
     });
     document.getElementById('tdPriPop').querySelectorAll('.td-pop-item').forEach(function (item) {
       item.addEventListener('click', function () {
-        setPriority(item.dataset.val);
+        setPriority(item.dataset.val === TD_PRIORITY ? 'none' : item.dataset.val);
         closeAllPopups();
       });
     });
