@@ -2247,7 +2247,7 @@ body{
         if (e.target.closest('.task-card__del')) return;
         var taskId = Number(card.dataset.id);
         var t = TASKS_MAP[taskId];
-        if (t) openTaskDrawer(t);
+        if (t) openTaskDrawer(t, card);
       });
 
       // Drag
@@ -2304,15 +2304,37 @@ body{
   }
 
   // ── DRAWER STATE ──
-  function tdOpen() {
+  function tdOpen(cardEl) {
     var td = document.getElementById('td');
-    var board = document.querySelector('#panel-tasks .kanban-board');
-    if (board) {
-      var topPx = Math.round(board.getBoundingClientRect().top);
-      var safeTop = Math.max(topPx, 8);
-      td.style.top = safeTop + 'px';
-      td.style.maxHeight = (window.innerHeight - safeTop - 16) + 'px';
+    var GAP = 10, MARGIN = 12, W = 390;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var top, left;
+
+    if (cardEl) {
+      // Oyna bosilgan vazifaning shundoq yonida ochiladi
+      var r = cardEl.getBoundingClientRect();
+      top = r.top;
+      left = r.right + GAP;                    // kartaning o'ng yonida
+      if (left + W > vw - MARGIN) {            // o'ngda joy yo'q — chap yonига
+        left = r.left - W - GAP;
+      }
+    } else {
+      // "+ Vazifa qo'shish" — board tepasidan
+      var board = document.querySelector('#panel-tasks .kanban-board');
+      var br = board ? board.getBoundingClientRect() : { top: 80, right: vw - 24 };
+      top = br.top;
+      left = vw - W - 24;
     }
+
+    // Ekran ichida ushlab turish
+    left = Math.min(Math.max(left, MARGIN), vw - W - MARGIN);
+    top = Math.min(Math.max(top, MARGIN), Math.max(vh - 220, MARGIN));
+
+    td.style.top = Math.round(top) + 'px';
+    td.style.left = Math.round(left) + 'px';
+    td.style.right = 'auto';
+    td.style.maxHeight = (vh - top - MARGIN) + 'px';
+
     td.classList.add('is-on');
     document.getElementById('tdBd').classList.add('is-on');
   }
@@ -2419,7 +2441,7 @@ body{
   }
 
   // ── OPEN DRAWER ──
-  function openTaskDrawer(task) {
+  function openTaskDrawer(task, cardEl) {
     TD_EDIT_ID = task ? task.id : null;
     var isDone = task && task.status === 'done';
     document.getElementById('taskTitle').value = task ? task.title : '';
@@ -2437,7 +2459,7 @@ body{
     var canManage = USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi';
     var delBtn = document.getElementById('tdDelBtn');
     delBtn.style.display = (TD_EDIT_ID && canManage) ? 'flex' : 'none';
-    tdOpen();
+    tdOpen(cardEl);
     setTimeout(function () { document.getElementById('taskTitle').focus(); }, 280);
   }
 
