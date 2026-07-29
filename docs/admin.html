@@ -371,7 +371,10 @@ body{
 .td-pri-flag.none{border:1.5px solid var(--gray-dim)}
 
 /* CUSTOM KALENDAR (sana tanlash) */
-.td-cal-pop{padding:12px}
+.td-cal-pop{
+  padding:12px;max-height:min(560px,calc(100vh - 110px));overflow-y:auto;
+  max-width:calc(100vw - 24px);
+}
 .td-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px}
 .td-cal-title{font-size:13.5px;font-weight:600;color:var(--white)}
 [data-theme="light"] .td-cal-title{color:#1a2117}
