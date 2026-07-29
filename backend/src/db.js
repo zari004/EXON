@@ -159,6 +159,8 @@ const init = async () => {
   await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS reminder_minutes INTEGER`);
   await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS reminder_sent BOOLEAN DEFAULT false`);
   await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS repeat_rule TEXT DEFAULT 'none'`);
+  await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS due_soon_notified BOOLEAN DEFAULT false`);
+  await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS overdue_notified BOOLEAN DEFAULT false`);
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS task_comments (
@@ -175,6 +177,41 @@ const init = async () => {
   await pool.query(`
     CREATE INDEX IF NOT EXISTS idx_task_comments_task_created
     ON task_comments(task_id, created_at)
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS notifications (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      type TEXT NOT NULL,
+      title TEXT NOT NULL,
+      message TEXT,
+      task_id INTEGER,
+      is_read BOOLEAN DEFAULT false,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_notifications_user_created
+    ON notifications(user_id, created_at DESC)
+  `);
+
+  // KPI rejalari — har bir xodim uchun bosh menejer/superadmin belgilaydigan
+  // oylik maqsad ball va vazifa muhimligi bo'yicha ball taqsimoti
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS kpi_plans (
+      id SERIAL PRIMARY KEY,
+      employee_id INTEGER NOT NULL UNIQUE REFERENCES admin_users(id) ON DELETE CASCADE,
+      target_points NUMERIC NOT NULL DEFAULT 100,
+      weight_none NUMERIC NOT NULL DEFAULT 0,
+      weight_low NUMERIC NOT NULL DEFAULT 5,
+      weight_medium NUMERIC NOT NULL DEFAULT 10,
+      weight_high NUMERIC NOT NULL DEFAULT 15,
+      weight_urgent NUMERIC NOT NULL DEFAULT 20,
+      created_by INTEGER,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    )
   `);
 
   // Standart ruxsatlar — mavjud bo'lsa o'zgartirmaydi

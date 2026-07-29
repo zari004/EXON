@@ -694,6 +694,73 @@ body{
 .sidebar-brand .logo{height:32px}
 .sidebar-brand .admin-badge{font-size:9px;padding:0 8px;height:22px}
 
+.admin-topbar{
+  position:fixed;top:16px;right:24px;z-index:18;
+  display:flex;align-items:center;gap:8px;
+}
+@media(max-width:768px){
+  .admin-topbar{top:12px;right:14px}
+}
+
+.notif-wrap{position:relative}
+.notif-bell{
+  width:34px;height:34px;border-radius:9px;border:1px solid var(--line-2);
+  background:var(--surface);color:var(--gray-dim);cursor:pointer;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  transition:color .15s,border-color .15s;
+}
+.notif-bell:hover{color:var(--white);border-color:var(--line)}
+.notif-bell svg{width:17px;height:17px}
+.notif-badge{
+  position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;padding:0 4px;
+  border-radius:999px;background:#F2896F;color:#fff;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;line-height:1;
+  border:2px solid var(--surface);
+}
+[data-theme="light"] .admin-topbar .notif-badge{border-color:#fff}
+.notif-dropdown{
+  display:none;position:fixed;top:60px;right:24px;width:320px;
+  max-width:calc(100vw - 40px);
+  background:var(--surface);border:1px solid var(--line-2);border-radius:14px;
+  box-shadow:0 24px 60px -24px rgba(0,0,0,.75);z-index:50;overflow:hidden;
+}
+@media(max-width:768px){
+  .notif-dropdown{top:56px;right:14px}
+}
+[data-theme="light"] .notif-dropdown{background:#fff;box-shadow:0 24px 60px -28px rgba(0,0,0,.25)}
+.notif-dropdown.is-on{display:block}
+.notif-dropdown__head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:12px 14px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600;color:var(--white);
+}
+[data-theme="light"] .notif-dropdown__head{color:#1a2117}
+.notif-dropdown__head button{
+  background:none !important;border:0 !important;box-shadow:none !important;
+  color:var(--green-hi) !important;font-size:11.5px;font-weight:500;cursor:pointer;
+  padding:0 !important;height:auto !important;width:auto !important;
+}
+.notif-dropdown__head button:hover{text-decoration:underline}
+.notif-dropdown__list{max-height:360px;overflow-y:auto}
+.notif-item{
+  display:flex;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer;
+  transition:background .15s;position:relative;
+}
+.notif-item:last-child{border-bottom:0}
+.notif-item:hover{background:rgba(var(--surface-2-rgb),.5)}
+.notif-item.is-unread{background:rgba(var(--green-rgb),.06)}
+.notif-item__icon{
+  width:30px;height:30px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  background:rgba(var(--surface-2-rgb),.7);
+}
+.notif-item__body{min-width:0;flex:1}
+.notif-item__title{font-size:12.5px;font-weight:600;color:var(--white);margin-bottom:2px}
+[data-theme="light"] .notif-item__title{color:#1a2117}
+.notif-item__msg{font-size:12px;color:var(--gray);line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.notif-item__time{font-size:10.5px;color:var(--gray-dim);margin-top:3px}
+.notif-item__dot{width:7px;height:7px;border-radius:50%;background:var(--green-hi);flex-shrink:0;position:absolute;top:14px;right:12px}
+.notif-empty{padding:36px 20px;text-align:center;color:var(--gray-dim);font-size:12.5px}
+
 .sidebar-nav{
   flex:1;padding:10px 8px;overflow-y:auto;
   display:flex;flex-direction:column;gap:2px;
@@ -753,7 +820,7 @@ body{
 .sidebar-controls .admin-install:hover{opacity:.88;transform:translateY(-1px)}
 .sidebar-controls .admin-install.is-visible{display:flex}
 
-.admin-content{margin-left:224px;flex:1;min-height:100vh}
+.admin-content{margin-left:224px;flex:1;min-height:100vh;padding-top:58px}
 
 /* Hamburger (mobile) */
 .sidebar-toggle{
@@ -834,6 +901,34 @@ body{
 .icon-btn:hover{color:var(--white);border-color:var(--line)}
 .icon-btn.danger:hover{color:#F2896F;border-color:#F2896F}
 .empty-state{padding:40px;text-align:center;color:var(--gray-dim);font-size:14px}
+
+/* ── KPI ── */
+#kpiMonthInput{
+  height:38px;padding:0 12px;border-radius:8px;background:var(--surface);
+  border:1px solid var(--line-2);color:var(--white);font-size:13px;
+}
+[data-theme="light"] #kpiMonthInput{color:#1a2117}
+.kpi-card{
+  padding:16px 17px;border-radius:14px;
+  background:linear-gradient(145deg,var(--surface),rgba(var(--surface-2-rgb),.38));border:1px solid var(--line);
+}
+.kpi-card__head{display:flex;align-items:center;gap:14px}
+.kpi-card__percent{font-size:18px;font-weight:700;flex-shrink:0}
+.kpi-progress{height:7px;border-radius:999px;background:var(--surface-2);margin-top:12px;overflow:hidden}
+.kpi-progress__fill{height:100%;border-radius:999px;transition:width .3s var(--ease)}
+.kpi-card__meta-row{font-size:11.5px;color:var(--gray-dim);margin-top:6px}
+.kpi-card__toggle{
+  margin-top:10px;background:none;border:0;color:var(--green-hi);font-size:12px;font-weight:500;
+  cursor:pointer;padding:0;
+}
+.kpi-card__toggle:hover{text-decoration:underline}
+.kpi-card__tasks{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--line);flex-direction:column;gap:8px}
+.kpi-card__tasks.is-on{display:flex}
+.kpi-task-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--gray)}
+.kpi-task-row__title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kpi-task-row__pts{color:var(--green-hi);font-weight:600;flex-shrink:0}
+.kpi-task-row__date{color:var(--gray-dim);font-size:11px;flex-shrink:0}
+.kpi-task-row--empty{color:var(--gray-dim);font-style:italic}
 
 /* ── MODAL FORM ── */
 .modal-overlay{
@@ -1077,6 +1172,32 @@ body{
   </button>
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
+  <!-- ── TEPA O'NG BURCHAK: bildirishnoma, mavzu, til ── -->
+  <div class="admin-topbar" id="adminTopbar">
+    <div class="notif-wrap">
+      <button class="notif-bell" id="notifBellBtn" type="button" aria-label="Bildirishnomalar">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span class="notif-badge" id="notifBadge" style="display:none">0</span>
+      </button>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-dropdown__head">
+          <span>Bildirishnomalar</span>
+          <button type="button" id="notifMarkAllBtn">Barchasini o'qish</button>
+        </div>
+        <div class="notif-dropdown__list" id="notifList"></div>
+      </div>
+    </div>
+    <button class="theme-toggle" type="button" aria-label="Mavzuni almashtirish">
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="lang" role="group" aria-label="Til tanlash">
+      <button class="lang__btn is-active" data-lang="uz" type="button">UZ</button>
+      <button class="lang__btn" data-lang="ru" type="button">RU</button>
+      <button class="lang__btn" data-lang="en" type="button">EN</button>
+    </div>
+  </div>
+
   <!-- ── SIDEBAR ── -->
   <aside class="admin-sidebar" id="adminSidebar">
     <div class="sidebar-brand">
@@ -1112,6 +1233,10 @@ body{
         <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
         <span>Vazifalar</span>
       </button>
+      <button class="sidebar-item kpi-tab" data-tab="kpi" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+        <span>KPI</span>
+      </button>
       <button class="sidebar-item" data-tab="settings">
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
         <span>Sozlamalar</span>
@@ -1135,15 +1260,6 @@ body{
         </div>
       </div>
       <div class="sidebar-controls">
-        <button class="theme-toggle" type="button" aria-label="Mavzuni almashtirish">
-          <svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-        </button>
-        <div class="lang" role="group" aria-label="Til tanlash">
-          <button class="lang__btn is-active" data-lang="uz" type="button">UZ</button>
-          <button class="lang__btn" data-lang="ru" type="button">RU</button>
-          <button class="lang__btn" data-lang="en" type="button">EN</button>
-        </div>
         <button class="admin-install" id="adminInstallBtn" type="button">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 3v13M7 11l5 5 5-5M3 19h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Ilovani yuklash
@@ -1246,6 +1362,18 @@ body{
         <div class="kanban-col__cards" id="kcol-done"></div>
       </div>
     </div>
+  </section>
+
+  <!-- KPI STATISTIKASI -->
+  <section class="admin-panel" id="panel-kpi">
+    <div class="panel-head">
+      <h2>KPI statistikasi</h2>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <input type="month" id="kpiMonthInput" />
+        <button class="btn-add" id="btnAddKpi" onclick="openKpiForm(null)" style="display:none">+ Yangi KPI rejasi</button>
+      </div>
+    </div>
+    <div class="item-list" id="kpiList"></div>
   </section>
 
   <!-- SOZLAMALAR (Account settings) -->
@@ -1391,6 +1519,35 @@ body{
       <div class="form-msg" id="postFormMsg"></div>
       <div class="modal-actions">
         <button type="button" class="modal-cancel" onclick="closeModal('postModal')">Bekor qilish</button>
+        <button type="submit" class="modal-save">Saqlash</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: KPI REJASI ══════════ -->
+<div class="modal-overlay" id="kpiModal">
+  <div class="modal-box">
+    <h3 id="kpiModalTitle">Yangi KPI rejasi</h3>
+    <form id="kpiForm">
+      <div class="field">
+        <label>Xodim</label>
+        <select id="kpiEmployeeSelect" required></select>
+      </div>
+      <div class="field"><label>Maqsad ball (oylik)</label><input type="number" id="kpiTarget" min="0" step="1" required /></div>
+      <p style="font-size:12px;color:var(--gray-dim);margin:2px 0 10px">Har bir bajarilgan vazifa muhimlik darajasiga qarab necha ball berishini belgilang:</p>
+      <div class="field-row">
+        <div class="field"><label>Kam</label><input type="number" id="kpiWLow" min="0" step="0.5" /></div>
+        <div class="field"><label>O'rtacha</label><input type="number" id="kpiWMedium" min="0" step="0.5" /></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Yuqori</label><input type="number" id="kpiWHigh" min="0" step="0.5" /></div>
+        <div class="field"><label>Shoshilinch</label><input type="number" id="kpiWUrgent" min="0" step="0.5" /></div>
+      </div>
+      <div class="field"><label>Belgilanmagan muhimlik</label><input type="number" id="kpiWNone" min="0" step="0.5" /></div>
+      <div class="form-msg" id="kpiFormMsg"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-cancel" onclick="closeModal('kpiModal')">Bekor qilish</button>
         <button type="submit" class="modal-save">Saqlash</button>
       </div>
     </form>
@@ -2258,10 +2415,14 @@ body{
       if (siteLabel) siteLabel.style.display = '';
       if (siteDivider) siteDivider.style.display = '';
     }
+    // KPI bo'limi — bosh menejer va superadmin/IT to'liq boshqaradi, SEO faqat ko'radi
+    var kpiVisible = isSuperLevel || USER_ROLE === 'menejer_bosh' || USER_ROLE === 'seo';
+    document.querySelectorAll('.kpi-tab').forEach(function (t) { t.style.display = kpiVisible ? '' : 'none'; });
     applyLang();
     // Rol nomini tarjima bilan to'ldirish (applyLang keyin)
     document.getElementById('sidebarUserRole').textContent = T('role.' + USER_ROLE) || USER_ROLE;
     await applyPermissions();
+    initNotifications();
   }
 
   // Joriy foydalanuvchi rolining ruxsatlarini yuklaydi va mos tablarni ko'rsatadi/yashiradi
@@ -2317,6 +2478,10 @@ body{
     localStorage.removeItem('exon_admin_token');
     localStorage.removeItem('exon_admin_role');
     localStorage.removeItem('exon_admin_name');
+    stopNotifPolling();
+    NOTIFS = [];
+    updateNotifBadge(0);
+    document.getElementById('notifList').innerHTML = '';
     showAuthScreen();
   }
   document.getElementById('logoutBtn').addEventListener('click', function () {
@@ -2561,6 +2726,7 @@ body{
       document.getElementById('panel-' + tab.dataset.tab).classList.add('is-active');
       if (tab.dataset.tab === 'tasks') loadTasks();
       if (tab.dataset.tab === 'settings') loadAccountSettings();
+      if (tab.dataset.tab === 'kpi') loadKpi();
       // Mobil: sideberni yop
       document.getElementById('adminSidebar').classList.remove('is-open');
       document.getElementById('sidebarBackdrop').classList.remove('is-open');
@@ -4244,6 +4410,294 @@ body{
       msg.className = 'form-msg ok'; msg.textContent = 'Parol almashtirildi';
     } catch (err) {
       msg.className = 'form-msg error'; msg.textContent = err.message || 'Xato';
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  // ══════════════════════════════════════════════════════════
+  // BILDIRISHNOMALAR (har bir akkaunt uchun alohida — server orqali)
+  // ══════════════════════════════════════════════════════════
+  var NOTIFS = [];
+  var NOTIF_POLL_TIMER = null;
+  var NOTIF_ICON = {
+    task_assigned: '📌',
+    task_comment: '💬',
+    task_due_soon: '⏰',
+    task_overdue: '⚠️'
+  };
+
+  function notifTimeAgo(iso) {
+    var diffMs = Date.now() - new Date(iso).getTime();
+    var min = Math.floor(diffMs / 60000);
+    if (min < 1) return 'hozir';
+    if (min < 60) return min + ' daq oldin';
+    var hr = Math.floor(min / 60);
+    if (hr < 24) return hr + ' soat oldin';
+    var day = Math.floor(hr / 24);
+    return day + ' kun oldin';
+  }
+
+  function updateNotifBadge(count) {
+    var badge = document.getElementById('notifBadge');
+    if (!badge) return;
+    if (count > 0) {
+      badge.textContent = count > 99 ? '99+' : String(count);
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function renderNotifications() {
+    var list = document.getElementById('notifList');
+    if (!NOTIFS.length) {
+      list.innerHTML = '<div class="notif-empty">Bildirishnomalar yo\'q</div>';
+      return;
+    }
+    list.innerHTML = NOTIFS.map(function (n) {
+      return '<div class="notif-item' + (n.is_read ? '' : ' is-unread') + '" data-id="' + n.id + '" data-task-id="' + (n.task_id || '') + '">' +
+        '<div class="notif-item__icon">' + (NOTIF_ICON[n.type] || '🔔') + '</div>' +
+        '<div class="notif-item__body">' +
+          '<div class="notif-item__title">' + escHtml(n.title) + '</div>' +
+          (n.message ? '<div class="notif-item__msg">' + escHtml(n.message) + '</div>' : '') +
+          '<div class="notif-item__time">' + notifTimeAgo(n.created_at) + '</div>' +
+        '</div>' +
+        (n.is_read ? '' : '<span class="notif-item__dot"></span>') +
+      '</div>';
+    }).join('');
+  }
+
+  async function loadNotifications() {
+    try {
+      var data = await apiFetch('/api/notifications');
+      NOTIFS = data.notifications || [];
+      updateNotifBadge(NOTIFS.filter(function (n) { return !n.is_read; }).length);
+      renderNotifications();
+    } catch (err) { /* jim — bildirishnoma yuklanmasa ham ilova ishlashda davom etadi */ }
+  }
+
+  async function refreshUnreadCount() {
+    try {
+      var data = await apiFetch('/api/notifications/unread-count');
+      updateNotifBadge(data.count || 0);
+    } catch (err) { /* jim */ }
+  }
+
+  function startNotifPolling() {
+    stopNotifPolling();
+    NOTIF_POLL_TIMER = setInterval(refreshUnreadCount, 30000);
+  }
+  function stopNotifPolling() {
+    if (NOTIF_POLL_TIMER) { clearInterval(NOTIF_POLL_TIMER); NOTIF_POLL_TIMER = null; }
+  }
+
+  function initNotifications() {
+    loadNotifications();
+    startNotifPolling();
+  }
+
+  async function openTaskFromNotification(taskId) {
+    var tasksTab = document.querySelector('.sidebar-item[data-tab="tasks"]');
+    if (tasksTab) tasksTab.click();
+    await loadTasks();
+    var t = TASKS_MAP[taskId];
+    if (t) openTaskDrawer(t, null);
+  }
+
+  document.getElementById('notifBellBtn').addEventListener('click', function (e) {
+    e.stopPropagation();
+    var dd = document.getElementById('notifDropdown');
+    var wasOn = dd.classList.contains('is-on');
+    dd.classList.toggle('is-on', !wasOn);
+    if (!wasOn) loadNotifications();
+  });
+
+  document.getElementById('notifMarkAllBtn').addEventListener('click', async function (e) {
+    e.stopPropagation();
+    try {
+      await apiFetch('/api/notifications/read-all', { method: 'POST' });
+      NOTIFS.forEach(function (n) { n.is_read = true; });
+      updateNotifBadge(0);
+      renderNotifications();
+    } catch (err) { /* jim */ }
+  });
+
+  document.getElementById('notifList').addEventListener('click', async function (e) {
+    var item = e.target.closest('.notif-item');
+    if (!item) return;
+    var id = Number(item.dataset.id);
+    var taskId = item.dataset.taskId ? Number(item.dataset.taskId) : null;
+    var n = NOTIFS.find(function (x) { return x.id === id; });
+    if (n && !n.is_read) {
+      n.is_read = true;
+      item.classList.remove('is-unread');
+      var dot = item.querySelector('.notif-item__dot');
+      if (dot) dot.remove();
+      updateNotifBadge(NOTIFS.filter(function (x) { return !x.is_read; }).length);
+      apiFetch('/api/notifications/' + id + '/read', { method: 'POST' }).catch(function () {});
+    }
+    document.getElementById('notifDropdown').classList.remove('is-on');
+    if (taskId) await openTaskFromNotification(taskId);
+  });
+
+  document.addEventListener('click', function (e) {
+    var wrap = document.querySelector('.notif-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      document.getElementById('notifDropdown').classList.remove('is-on');
+    }
+  });
+
+  // ══════════════════════════════════════════════════════════
+  // KPI STATISTIKASI
+  // ══════════════════════════════════════════════════════════
+  var KPI_MANAGE_ROLES = ['superadmin', 'it_bolimi', 'menejer_bosh'];
+  var KPI_CAN_MANAGE = false;
+  var KPI_EMPLOYEES = [];
+  var KPI_PLANS = [];
+
+  function kpiDefaultMonth() {
+    var now = new Date();
+    return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  }
+
+  async function loadKpi() {
+    KPI_CAN_MANAGE = KPI_MANAGE_ROLES.indexOf(USER_ROLE) !== -1;
+    var addBtn = document.getElementById('btnAddKpi');
+    if (addBtn) addBtn.style.display = KPI_CAN_MANAGE ? '' : 'none';
+    var monthInput = document.getElementById('kpiMonthInput');
+    if (!monthInput.value) monthInput.value = kpiDefaultMonth();
+
+    var list = document.getElementById('kpiList');
+    list.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
+    try {
+      var empData = await apiFetch('/api/kpi/employees');
+      KPI_EMPLOYEES = empData.employees || [];
+      var plansData = await apiFetch('/api/kpi/plans');
+      KPI_PLANS = plansData.plans || [];
+      var statsData = await apiFetch('/api/kpi/stats?month=' + encodeURIComponent(monthInput.value));
+      renderKpiList(statsData.kpis || []);
+    } catch (err) {
+      list.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
+    }
+  }
+
+  document.getElementById('kpiMonthInput').addEventListener('change', function () {
+    if (document.getElementById('panel-kpi').classList.contains('is-active')) loadKpi();
+  });
+
+  function renderKpiList(kpis) {
+    var list = document.getElementById('kpiList');
+    if (!kpis.length) {
+      list.innerHTML = '<div class="empty-state">Hali birorta KPI rejasi yaratilmagan</div>';
+      return;
+    }
+    list.innerHTML = kpis.map(function (k) {
+      var pct = Math.min(100, Math.max(0, k.percent));
+      var barColor = k.percent >= 100 ? 'var(--green-hi)' : (k.percent >= 60 ? '#F0A500' : '#F2896F');
+      var actions = KPI_CAN_MANAGE
+        ? '<div class="item-row__actions">' +
+            '<button class="icon-btn" data-kpi-edit="' + k.employee_id + '" title="Tahrirlash">✎</button>' +
+            '<button class="icon-btn danger" data-kpi-del="' + k.employee_id + '" title="O\'chirish">✕</button>' +
+          '</div>'
+        : '';
+      var taskRows = k.tasks.length
+        ? k.tasks.map(function (t) {
+            return '<div class="kpi-task-row">' +
+              '<span class="td-pri-flag ' + t.priority + '"></span>' +
+              '<span class="kpi-task-row__title">' + esc(t.title) + '</span>' +
+              '<span class="kpi-task-row__pts">+' + t.points + ' ball</span>' +
+              '<span class="kpi-task-row__date">' + new Date(t.completed_at).toLocaleDateString('uz-UZ') + '</span>' +
+            '</div>';
+          }).join('')
+        : '<div class="kpi-task-row kpi-task-row--empty">Bu davrda bajarilgan vazifa yo\'q</div>';
+      return '<div class="kpi-card">' +
+        '<div class="kpi-card__head">' +
+          '<div class="item-row__thumb" style="background:' + avaColor(k.employee_name) + '">' + avaLetter(k.employee_name) + '</div>' +
+          '<div class="item-row__body">' +
+            '<div class="item-row__title">' + esc(k.employee_name) + '</div>' +
+            '<div class="item-row__meta">' + esc(T('role.' + k.employee_role) || k.employee_role) + ' · ' + k.completed_count + " ta vazifa bajarildi</div>" +
+          '</div>' +
+          '<div class="kpi-card__percent" style="color:' + barColor + '">' + k.percent + '%</div>' +
+          actions +
+        '</div>' +
+        '<div class="kpi-progress"><div class="kpi-progress__fill" style="width:' + pct + '%;background:' + barColor + '"></div></div>' +
+        '<div class="kpi-card__meta-row">' + (Math.round(k.earned_points * 10) / 10) + ' / ' + k.target_points + ' ball</div>' +
+        '<button type="button" class="kpi-card__toggle">Vazifalar ro\'yxati ▾</button>' +
+        '<div class="kpi-card__tasks">' + taskRows + '</div>' +
+      '</div>';
+    }).join('');
+
+    list.querySelectorAll('.kpi-card__toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var tasksEl = btn.nextElementSibling;
+        var isOn = tasksEl.classList.toggle('is-on');
+        btn.textContent = isOn ? "Vazifalarni yashirish ▴" : "Vazifalar ro'yxati ▾";
+      });
+    });
+    list.querySelectorAll('[data-kpi-edit]').forEach(function (btn) {
+      btn.addEventListener('click', function () { openKpiForm(Number(btn.dataset.kpiEdit)); });
+    });
+    list.querySelectorAll('[data-kpi-del]').forEach(function (btn) {
+      btn.addEventListener('click', function () { deleteKpiPlan(Number(btn.dataset.kpiDel)); });
+    });
+  }
+
+  window.openKpiForm = function (employeeId) {
+    var editing = !!employeeId;
+    document.getElementById('kpiModalTitle').textContent = editing ? 'KPI rejasini tahrirlash' : 'Yangi KPI rejasi';
+    document.getElementById('kpiFormMsg').textContent = '';
+    var sel = document.getElementById('kpiEmployeeSelect');
+    sel.innerHTML = KPI_EMPLOYEES.map(function (e) {
+      var hasPlan = KPI_PLANS.some(function (p) { return p.employee_id === e.id; });
+      return '<option value="' + e.id + '">' + esc(e.name) + (hasPlan ? " (rejasi mavjud)" : '') + '</option>';
+    }).join('');
+    var plan = editing ? KPI_PLANS.find(function (p) { return p.employee_id === employeeId; }) : null;
+    if (editing) {
+      sel.value = String(employeeId);
+      sel.disabled = true;
+    } else {
+      sel.disabled = false;
+    }
+    document.getElementById('kpiTarget').value = plan ? plan.target_points : 100;
+    document.getElementById('kpiWNone').value = plan ? plan.weight_none : 0;
+    document.getElementById('kpiWLow').value = plan ? plan.weight_low : 5;
+    document.getElementById('kpiWMedium').value = plan ? plan.weight_medium : 10;
+    document.getElementById('kpiWHigh').value = plan ? plan.weight_high : 15;
+    document.getElementById('kpiWUrgent').value = plan ? plan.weight_urgent : 20;
+    document.getElementById('kpiModal').classList.add('is-active');
+  };
+
+  window.deleteKpiPlan = async function (employeeId) {
+    if (!confirm("KPI rejasini o'chirishni tasdiqlaysizmi?")) return;
+    try {
+      await apiFetch('/api/kpi/plans/' + employeeId, { method: 'DELETE' });
+      await loadKpi();
+    } catch (err) { alert(err.message || 'Xato'); }
+  };
+
+  document.getElementById('kpiForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var msg = document.getElementById('kpiFormMsg');
+    msg.textContent = '';
+    var employeeId = Number(document.getElementById('kpiEmployeeSelect').value);
+    if (!employeeId) { msg.textContent = 'Xodimni tanlang'; return; }
+    var body = {
+      target_points: Number(document.getElementById('kpiTarget').value) || 0,
+      weight_none: Number(document.getElementById('kpiWNone').value) || 0,
+      weight_low: Number(document.getElementById('kpiWLow').value) || 0,
+      weight_medium: Number(document.getElementById('kpiWMedium').value) || 0,
+      weight_high: Number(document.getElementById('kpiWHigh').value) || 0,
+      weight_urgent: Number(document.getElementById('kpiWUrgent').value) || 0
+    };
+    var btn = e.target.querySelector('.modal-save');
+    btn.disabled = true;
+    try {
+      await apiFetch('/api/kpi/plans/' + employeeId, { method: 'PUT', body: JSON.stringify(body) });
+      closeModal('kpiModal');
+      await loadKpi();
+    } catch (err) {
+      msg.textContent = err.message || 'Xato';
     } finally {
       btn.disabled = false;
     }

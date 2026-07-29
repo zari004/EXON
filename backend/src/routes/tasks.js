@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const auth = require('../services/auth');
+const notifications = require('../services/notifications');
 
 // Vazifalar bo'yicha to'liq boardni ko'radigan/boshqaradigan rollar.
 // Boshqa har qanday rol (menejer_oddiy, dizayner_bosh, dizayner_oddiy va h.k.)
@@ -106,6 +107,15 @@ router.post('/', auth.requireAuth, async (req, res) => {
         req.user.userId, req.user.name
       ]
     );
+    const assigneeId = assigned_to ? Number(assigned_to) : null;
+    if (assigneeId && assigneeId !== Number(req.user.userId)) {
+      await notifications.notify(
+        assigneeId, 'task_assigned',
+        'Sizga yangi vazifa berildi',
+        (req.user.name || 'Foydalanuvchi') + ' sizga "' + title.trim() + '" vazifasini berdi.',
+        result.id
+      );
+    }
     res.json({ success: true, id: result.id });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -134,20 +144,30 @@ router.put('/:id', auth.requireAuth, async (req, res) => {
     }
     const reminderMinutesVal = reminder_minutes !== undefined && reminder_minutes !== null && reminder_minutes !== ''
       ? Number(reminder_minutes) : null;
+    const newAssigneeId = assigned_to ? Number(assigned_to) : null;
     await db.run(
       `UPDATE tasks SET title=?, description=?, priority=?, status=COALESCE(?,status),
        due_date=?, start_date=?, due_time=?, reminder_minutes=?, reminder_sent=false, repeat_rule=?,
-       assigned_to=?, assigned_name=?, updated_at=NOW() WHERE id=?`,
+       assigned_to=?, assigned_name=?, due_soon_notified=false, overdue_notified=false, updated_at=NOW() WHERE id=?`,
       [
         title.trim(), description || null, priority || 'medium',
         status || null, due_date || null,
         start_date || null,
         due_time || null, reminderMinutesVal, repeat_rule || 'none',
-        assigned_to ? Number(assigned_to) : null,
+        newAssigneeId,
         assigned_name || null,
         req.params.id
       ]
     );
+    // Yangi tayinlash yoki qayta tayinlash bo'lsa — yangi mas'ulga bildirishnoma
+    if (newAssigneeId && newAssigneeId !== Number(before.assigned_to) && newAssigneeId !== Number(req.user.userId)) {
+      await notifications.notify(
+        newAssigneeId, 'task_assigned',
+        'Sizga vazifa tayinlandi',
+        (req.user.name || 'Foydalanuvchi') + ' sizga "' + title.trim() + '" vazifasini tayinladi.',
+        Number(req.params.id)
+      );
+    }
     // Agar vazifa hozirgina "bajarildi"ga o'tgan bo'lsa va takrorlanuvchi bo'lsa — keyingi nusxasini yaratish
     if (status === 'done' && before && before.status !== 'done') {
       const updated = await db.get('SELECT * FROM tasks WHERE id = ?', [req.params.id]);
@@ -231,6 +251,20 @@ router.post('/:id/comments', auth.requireAuth, async (req, res) => {
        LEFT JOIN admin_users u ON u.id = c.user_id WHERE c.id = ?`,
       [result.id]
     );
+    // Vazifa yaratuvchisi va mas'uliga (izoh yozgan kishidan tashqari) bildirishnoma
+    const notifyIds = new Set();
+    if (task.created_by) notifyIds.add(Number(task.created_by));
+    if (task.assigned_to) notifyIds.add(Number(task.assigned_to));
+    notifyIds.delete(Number(req.user.userId));
+    const preview = message.length > 80 ? message.slice(0, 80) + '…' : message;
+    for (const uid of notifyIds) {
+      await notifications.notify(
+        uid, 'task_comment',
+        'Yangi izoh: ' + task.title,
+        (req.user.name || 'Foydalanuvchi') + ': ' + preview,
+        task.id
+      );
+    }
     res.status(201).json({ success: true, comment: commentJson(req, comment) });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });

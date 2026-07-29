@@ -12,7 +12,10 @@ const postsRoutes = require('./routes/posts');
 const pricingRoutes = require('./routes/pricing');
 const tasksRoutes = require('./routes/tasks');
 const accountRoutes = require('./routes/account');
+const notificationsRoutes = require('./routes/notifications');
+const kpiRoutes = require('./routes/kpi');
 const reminderScheduler = require('./services/reminderScheduler');
+const notificationScheduler = require('./services/notificationScheduler');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -57,6 +60,9 @@ db.init()
     // Vazifa eslatmalari — server ishga tushganda darhol va har 2 daqiqada tekshiriladi
     reminderScheduler.checkReminders();
     setInterval(reminderScheduler.checkReminders, 2 * 60 * 1000);
+    // Muddati yaqinlashgan/o'tib ketgan vazifalar uchun bildirishnomalar — har 5 daqiqada
+    notificationScheduler.checkDueSoonAndOverdue();
+    setInterval(notificationScheduler.checkDueSoonAndOverdue, 5 * 60 * 1000);
   }).catch(err => {
     console.error('❌ Database error:', err);
     process.exit(1);
@@ -74,6 +80,8 @@ app.use('/api/posts', postsRoutes);
 app.use('/api/pricing', pricingRoutes);
 app.use('/api/tasks', tasksRoutes);
 app.use('/api/account', accountRoutes);
+app.use('/api/notifications', notificationsRoutes);
+app.use('/api/kpi', kpiRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
