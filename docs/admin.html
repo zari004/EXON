@@ -316,6 +316,8 @@ body{
   transition:background .15s,color .15s;flex-shrink:0;
 }
 .td-ibtn:hover{background:var(--surface);color:var(--gray)}
+.td-comment-toggle.is-active{background:rgba(var(--green-rgb),.1);color:var(--green-hi)}
+[data-theme="light"] .td-comment-toggle.is-active{background:#edf8f2;color:#078c58}
 .td-ibtn.pri-urgent{color:#F2896F}
 .td-ibtn.pri-high{color:#F0A500}
 .td-ibtn.pri-medium{color:#59A5D8}
@@ -353,7 +355,8 @@ body{
   padding:0;
 }
 [data-theme="light"] .td-comments{border-top-color:#e9ede9}
-.td-comments.is-on{display:flex;flex-direction:column}
+.td-comments.is-on.has-comments,
+.td-comments.is-on.is-compose-open{display:flex;flex-direction:column}
 .td-comments__head{
   display:none;align-items:center;gap:7px;
   padding:12px 17px 7px;color:var(--white);font-size:13px;font-weight:500;
@@ -430,7 +433,8 @@ body{
   background:var(--surface);color:var(--gray);font-size:11px;
 }
 .td-comment__edit-btn.is-save{background:var(--green);color:var(--green-ink);font-weight:600}
-.td-comments__compose{position:relative;display:flex;align-items:center;padding:10px 16px 12px}
+.td-comments__compose{position:relative;display:none;align-items:center;padding:10px 16px 12px}
+.td-comments.is-compose-open .td-comments__compose{display:flex}
 .td-comments__input{
   flex:1;min-height:39px;max-height:104px;padding:9px 72px 9px 11px;overflow-y:auto;
 }
@@ -451,6 +455,7 @@ body{
 .td-comments__send:disabled{opacity:.45;cursor:not-allowed}
 .td-comments__error{min-height:0;padding:0 16px;color:#F2896F;font-size:11px}
 .td-comments__error:not(:empty){padding-bottom:8px}
+.td-comments:not(.is-compose-open) .td-comments__error{display:none}
 @media(max-width:480px){
   .td{width:calc(100vw - 16px);max-width:none;border-radius:12px}
   .td-body{min-height:220px}
@@ -1619,6 +1624,9 @@ body{
     </button>
     <button class="td-ibtn" id="tdPriBtn" type="button" aria-label="Muhimlik" title="Muhimlik">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 3v18M4 3l16 7-16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="td-ibtn td-comment-toggle" id="tdCommentToggle" type="button" aria-label="Savol-javob yozish" title="Savol-javob yozish" aria-expanded="false">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 18.5 3.8 21l3.7-1.1c1.3.7 2.8 1.1 4.5 1.1 5 0 9-3.8 9-8.5S17 4 12 4s-9 3.8-9 8.5c0 2.3.8 4.3 2 6Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12.5h8M8 9.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
     </button>
     <button class="td-ibtn" id="tdCloseBtn" type="button" aria-label="Yopish">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -3621,6 +3629,11 @@ body{
     document.getElementById('tdCommentsError').textContent = '';
     var section = document.getElementById('tdComments');
     section.classList.toggle('is-on', Boolean(task && task.id));
+    section.classList.remove('is-compose-open');
+    var toggle = document.getElementById('tdCommentToggle');
+    toggle.style.display = task && task.id ? 'flex' : 'none';
+    toggle.classList.remove('is-active');
+    toggle.setAttribute('aria-expanded', 'false');
     renderTaskComments();
     if (task && task.id) {
       loadTaskComments(false);
@@ -3839,6 +3852,14 @@ body{
 
     // Vazifa bo'yicha savol-javoblar
     var commentInput = document.getElementById('tdCommentInput');
+    document.getElementById('tdCommentToggle').addEventListener('click', function () {
+      var section = document.getElementById('tdComments');
+      var willOpen = !section.classList.contains('is-compose-open');
+      section.classList.toggle('is-compose-open', willOpen);
+      this.classList.toggle('is-active', willOpen);
+      this.setAttribute('aria-expanded', String(willOpen));
+      if (willOpen) setTimeout(function () { commentInput.focus(); }, 20);
+    });
     document.getElementById('tdCommentSend').addEventListener('click', sendTaskComment);
     document.getElementById('tdCommentEmoji').addEventListener('click', function () {
       var start = commentInput.selectionStart;
@@ -4082,6 +4103,16 @@ body{
 
     // Escape ham qatlamlarni bittadan yopadi.
     document.addEventListener('keydown', function (e) {
+      var comments = document.getElementById('tdComments');
+      if (e.key === 'Escape' && comments.classList.contains('is-compose-open')) {
+        e.preventDefault();
+        comments.classList.remove('is-compose-open');
+        var toggle = document.getElementById('tdCommentToggle');
+        toggle.classList.remove('is-active');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.focus();
+        return;
+      }
       if (e.key === 'Escape' && getTopTaskLayer()) {
         e.preventDefault();
         closeTopTaskLayer();
