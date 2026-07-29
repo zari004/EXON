@@ -347,6 +347,88 @@ body{
 .td-creator.is-on{display:flex}
 .td-creator .td-ava{width:20px;height:20px;font-size:9.5px}
 
+/* TASK SAVOL-JAVOBLARI */
+.td-comments{
+  display:none;margin-top:6px;border-top:1px solid var(--line);
+  padding:14px 16px 4px;
+}
+[data-theme="light"] .td-comments{border-top-color:#e9ede9}
+.td-comments.is-on{display:block}
+.td-comments__head{
+  display:flex;align-items:center;gap:7px;margin-bottom:10px;
+  color:var(--white);font-size:13.5px;font-weight:600;
+}
+[data-theme="light"] .td-comments__head{color:#1a2117}
+.td-comments__count{
+  min-width:20px;height:20px;padding:0 6px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--surface);color:var(--gray);font-size:10.5px;font-weight:600;
+}
+.td-comments__list{display:flex;flex-direction:column;gap:7px}
+.td-comments__empty{padding:14px 8px;text-align:center;color:var(--gray-dim);font-size:12.5px}
+.td-comment{
+  display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;
+  padding:9px;border-radius:10px;background:rgba(var(--surface-rgb),.48);
+  border:1px solid transparent;
+}
+[data-theme="light"] .td-comment{background:#f5f7f6}
+.td-comment.is-own{background:rgba(var(--green-rgb),.065);border-color:rgba(var(--green-rgb),.13)}
+.td-comment__avatar{
+  width:30px;height:30px;border-radius:50%;object-fit:cover;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:11px;font-weight:700;overflow:hidden;
+}
+.td-comment__avatar img{width:100%;height:100%;object-fit:cover}
+.td-comment__main{min-width:0}
+.td-comment__top{display:flex;align-items:center;gap:6px;min-height:20px}
+.td-comment__author{
+  min-width:0;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:var(--white);font-size:12px;font-weight:600;
+}
+[data-theme="light"] .td-comment__author{color:#1a2117}
+.td-comment__time{color:var(--gray-dim);font-size:10.5px;white-space:nowrap}
+.td-comment__actions{display:flex;gap:2px;margin-left:auto}
+.td-comment__action{
+  width:24px;height:24px;display:flex;align-items:center;justify-content:center;
+  border:0;border-radius:6px;background:none;color:var(--gray-dim);
+  cursor:pointer;font-size:12px;transition:background .12s,color .12s;
+}
+.td-comment__action:hover{background:var(--surface);color:var(--gray)}
+.td-comment__action[data-action="delete"]:hover{color:#F2896F;background:rgba(242,137,111,.1)}
+.td-comment__message{
+  margin-top:3px;color:var(--gray);font-size:12.5px;line-height:1.5;
+  white-space:pre-wrap;overflow-wrap:anywhere;
+}
+.td-comment__edit{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.td-comment__edit textarea,.td-comments__input{
+  width:100%;border:1px solid var(--line-2);border-radius:8px;
+  background:var(--bg-2);color:var(--white);font-family:inherit;font-size:12.5px;
+  line-height:1.45;resize:none;outline:none;
+}
+[data-theme="light"] .td-comment__edit textarea,
+[data-theme="light"] .td-comments__input{background:#fff;color:#1a2117}
+.td-comment__edit textarea{padding:8px 9px;min-height:66px}
+.td-comment__edit textarea:focus,.td-comments__input:focus{
+  border-color:var(--green-deep);box-shadow:0 0 0 2px rgba(var(--green-rgb),.08);
+}
+.td-comment__edit-actions{display:flex;justify-content:flex-end;gap:6px}
+.td-comment__edit-btn{
+  border:0;border-radius:6px;padding:6px 9px;cursor:pointer;
+  background:var(--surface);color:var(--gray);font-size:11px;
+}
+.td-comment__edit-btn.is-save{background:var(--green);color:var(--green-ink);font-weight:600}
+.td-comments__compose{display:flex;align-items:flex-end;gap:7px;margin-top:10px}
+.td-comments__input{
+  flex:1;min-height:40px;max-height:110px;padding:10px 11px;overflow-y:auto;
+}
+.td-comments__send{
+  width:40px;height:40px;flex-shrink:0;border:0;border-radius:9px;
+  background:var(--green);color:var(--green-ink);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:opacity .15s;
+}
+.td-comments__send:disabled{opacity:.45;cursor:not-allowed}
+.td-comments__error{min-height:16px;margin-top:4px;color:#F2896F;font-size:11px}
+
 /* PRIORITY & ASSIGNEE POPUPS */
 .td-popup{
   position:absolute;right:12px;top:52px;
@@ -1550,6 +1632,20 @@ body{
       <span class="td-ava" id="tdCreatorAva" style="background:#6b7280">—</span>
       <span id="tdCreatorName"></span>
     </div>
+    <section class="td-comments" id="tdComments">
+      <div class="td-comments__head">
+        <span>Savol-javoblar</span>
+        <span class="td-comments__count" id="tdCommentsCount">0</span>
+      </div>
+      <div class="td-comments__list" id="tdCommentsList"></div>
+      <div class="td-comments__compose">
+        <textarea class="td-comments__input" id="tdCommentInput" rows="1" maxlength="2000" placeholder="Vazifa haqida savol yoki javob yozing..."></textarea>
+        <button class="td-comments__send" id="tdCommentSend" type="button" aria-label="Xabar yuborish" title="Yuborish">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4 18-7Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="td-comments__error" id="tdCommentsError"></div>
+    </section>
   </div>
 
   <!-- BOTTOM BAR -->
@@ -2838,6 +2934,10 @@ body{
   var TD_CAN_EDIT_FULL = true; // joriy ochiq vazifani to'liq tahrirlash huquqi bormi (aks holda faqat status)
   var TD_CAL_MODE = 'date';    // 'date' | 'dur' — kalendar qaysi tabda
   var TD_DUR_TARGET = 'start'; // davomiylikda keyingi bosish qaysi maydonni to'ldiradi
+  var TD_COMMENTS = [];
+  var TD_COMMENTS_TIMER = null;
+  var TD_COMMENT_EDIT_ID = null;
+  var TD_COMMENTS_LOADING = false;
   var draggedTaskId = null;
   var draggedCard = null;
 
@@ -3052,6 +3152,7 @@ body{
     document.getElementById('tdBd').classList.add('is-on');
   }
   function tdClose() {
+    stopCommentsPolling();
     document.getElementById('td').classList.remove('is-on');
     document.getElementById('tdBd').classList.remove('is-on');
     closeAllPopups();
@@ -3366,6 +3467,186 @@ body{
   }
 
   // ── BUILD ASSIGNEE POPUP ──
+  function commentTimeLabel(comment) {
+    var created = new Date(comment.created_at);
+    var seconds = Math.max(0, Math.floor((Date.now() - created.getTime()) / 1000));
+    var label;
+    if (seconds < 60) label = 'Hozirgina';
+    else if (seconds < 3600) label = Math.floor(seconds / 60) + ' daqiqa oldin';
+    else if (seconds < 86400) label = Math.floor(seconds / 3600) + ' soat oldin';
+    else label = created.toLocaleDateString('uz-UZ', { day: 'numeric', month: 'short' });
+    var updated = new Date(comment.updated_at);
+    if (updated.getTime() - created.getTime() > 3000) label += ' · tahrirlangan';
+    return label;
+  }
+
+  function commentAvatarHtml(comment) {
+    var avatar = String(comment.avatar || '');
+    if (/^(data:image\/|https?:\/\/)/i.test(avatar)) {
+      return '<span class="td-comment__avatar"><img src="' + escHtml(avatar) + '" alt="" /></span>';
+    }
+    var name = comment.user_name || 'Foydalanuvchi';
+    return '<span class="td-comment__avatar" style="background:' + avaColor(name) + '">' +
+      escHtml(avaLetter(name)) + '</span>';
+  }
+
+  function renderTaskComments() {
+    var list = document.getElementById('tdCommentsList');
+    document.getElementById('tdCommentsCount').textContent = TD_COMMENTS.length;
+    if (TD_COMMENTS_LOADING && !TD_COMMENTS.length) {
+      list.innerHTML = '<div class="td-comments__empty">Yuklanmoqda...</div>';
+      return;
+    }
+    if (!TD_COMMENTS.length) {
+      list.innerHTML = '<div class="td-comments__empty">Hali savol yoki javob yo‘q</div>';
+      return;
+    }
+
+    list.innerHTML = TD_COMMENTS.map(function (comment) {
+      var id = Number(comment.id);
+      var author = comment.is_own ? 'Siz' : (comment.user_name || 'Foydalanuvchi');
+      var actions = comment.can_manage
+        ? '<span class="td-comment__actions">' +
+            '<button type="button" class="td-comment__action" data-action="edit" data-id="' + id + '" title="Tahrirlash" aria-label="Tahrirlash">✎</button>' +
+            '<button type="button" class="td-comment__action" data-action="delete" data-id="' + id + '" title="O‘chirish" aria-label="O‘chirish">⌫</button>' +
+          '</span>'
+        : '';
+      var content;
+      if (TD_COMMENT_EDIT_ID === id) {
+        content =
+          '<div class="td-comment__edit">' +
+            '<textarea class="td-comment__edit-input" maxlength="2000">' + escHtml(comment.message) + '</textarea>' +
+            '<div class="td-comment__edit-actions">' +
+              '<button type="button" class="td-comment__edit-btn" data-action="edit-cancel" data-id="' + id + '">Bekor qilish</button>' +
+              '<button type="button" class="td-comment__edit-btn is-save" data-action="edit-save" data-id="' + id + '">Saqlash</button>' +
+            '</div>' +
+          '</div>';
+      } else {
+        content = '<div class="td-comment__message">' + escHtml(comment.message) + '</div>';
+      }
+      return '<article class="td-comment' + (comment.is_own ? ' is-own' : '') + '" data-comment-id="' + id + '">' +
+        commentAvatarHtml(comment) +
+        '<div class="td-comment__main">' +
+          '<div class="td-comment__top">' +
+            '<span class="td-comment__author">' + escHtml(author) + '</span>' +
+            '<span class="td-comment__time">' + escHtml(commentTimeLabel(comment)) + '</span>' +
+            actions +
+          '</div>' +
+          content +
+        '</div>' +
+      '</article>';
+    }).join('');
+  }
+
+  async function loadTaskComments(silent) {
+    var taskId = Number(TD_EDIT_ID);
+    if (!taskId || TD_COMMENT_EDIT_ID || TD_COMMENTS_LOADING) return;
+    TD_COMMENTS_LOADING = true;
+    if (!silent) renderTaskComments();
+    try {
+      var data = await apiFetch('/api/tasks/' + taskId + '/comments');
+      if (Number(TD_EDIT_ID) !== taskId) return;
+      TD_COMMENTS = data.comments || [];
+      document.getElementById('tdCommentsError').textContent = '';
+    } catch (err) {
+      if (!silent && Number(TD_EDIT_ID) === taskId) {
+        document.getElementById('tdCommentsError').textContent = err.message || 'Savol-javoblarni yuklab bo‘lmadi';
+      }
+    } finally {
+      TD_COMMENTS_LOADING = false;
+      if (Number(TD_EDIT_ID) === taskId) renderTaskComments();
+    }
+  }
+
+  function stopCommentsPolling() {
+    if (TD_COMMENTS_TIMER) clearInterval(TD_COMMENTS_TIMER);
+    TD_COMMENTS_TIMER = null;
+  }
+
+  function startCommentsPolling() {
+    stopCommentsPolling();
+    if (!TD_EDIT_ID) return;
+    TD_COMMENTS_TIMER = setInterval(function () {
+      if (document.getElementById('td').classList.contains('is-on')) loadTaskComments(true);
+    }, 15000);
+  }
+
+  function setupTaskComments(task) {
+    stopCommentsPolling();
+    TD_COMMENTS = [];
+    TD_COMMENT_EDIT_ID = null;
+    TD_COMMENTS_LOADING = false;
+    document.getElementById('tdCommentInput').value = '';
+    document.getElementById('tdCommentsError').textContent = '';
+    var section = document.getElementById('tdComments');
+    section.classList.toggle('is-on', Boolean(task && task.id));
+    renderTaskComments();
+    if (task && task.id) {
+      loadTaskComments(false);
+      startCommentsPolling();
+    }
+  }
+
+  async function sendTaskComment() {
+    var input = document.getElementById('tdCommentInput');
+    var button = document.getElementById('tdCommentSend');
+    var error = document.getElementById('tdCommentsError');
+    var message = input.value.trim();
+    if (!TD_EDIT_ID) { error.textContent = 'Avval vazifani saqlang'; return; }
+    if (!message) { error.textContent = 'Savol yoki javob yozing'; return; }
+    button.disabled = true;
+    error.textContent = '';
+    try {
+      var data = await apiFetch('/api/tasks/' + TD_EDIT_ID + '/comments', {
+        method: 'POST',
+        body: JSON.stringify({ message: message })
+      });
+      TD_COMMENTS.push(data.comment);
+      input.value = '';
+      input.style.height = 'auto';
+      renderTaskComments();
+      var list = document.getElementById('tdCommentsList');
+      if (list.lastElementChild) list.lastElementChild.scrollIntoView({ block: 'nearest' });
+    } catch (err) {
+      error.textContent = err.message || 'Xabarni yuborib bo‘lmadi';
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  async function updateTaskComment(commentId, message) {
+    var error = document.getElementById('tdCommentsError');
+    if (!message.trim()) { error.textContent = 'Xabar bo‘sh bo‘lishi mumkin emas'; return; }
+    try {
+      var data = await apiFetch('/api/tasks/' + TD_EDIT_ID + '/comments/' + commentId, {
+        method: 'PUT',
+        body: JSON.stringify({ message: message.trim() })
+      });
+      TD_COMMENTS = TD_COMMENTS.map(function (c) {
+        return Number(c.id) === Number(commentId) ? data.comment : c;
+      });
+      TD_COMMENT_EDIT_ID = null;
+      error.textContent = '';
+      renderTaskComments();
+    } catch (err) {
+      error.textContent = err.message || 'Xabarni tahrirlab bo‘lmadi';
+    }
+  }
+
+  async function deleteTaskComment(commentId) {
+    if (!confirm('Bu xabarni o‘chirasizmi?')) return;
+    var error = document.getElementById('tdCommentsError');
+    try {
+      await apiFetch('/api/tasks/' + TD_EDIT_ID + '/comments/' + commentId, { method: 'DELETE' });
+      TD_COMMENTS = TD_COMMENTS.filter(function (c) { return Number(c.id) !== Number(commentId); });
+      if (TD_COMMENT_EDIT_ID === Number(commentId)) TD_COMMENT_EDIT_ID = null;
+      error.textContent = '';
+      renderTaskComments();
+    } catch (err) {
+      error.textContent = err.message || 'Xabarni o‘chirib bo‘lmadi';
+    }
+  }
+
   async function ensureUsers() {
     if (TD_USERS.length) return;
     try {
@@ -3421,7 +3702,7 @@ body{
     var canManage = isFullBoardRole();
     // Yaratuvchi — o'zi yaratgan vazifani to'liq tahrirlashi va qayta
     // tayinlashi mumkin, hatto to'liq boardni ko'rmasa ham
-    var isCreatorOfThis = !!(task && task.created_name && task.created_name === USER_NAME);
+    var isCreatorOfThis = !!(task && task.is_own_creator);
     var canEditFull = canManage || isCreatorOfThis || !task;
     TD_CAN_EDIT_FULL = canEditFull;
     document.getElementById('taskTitle').disabled = !canEditFull;
@@ -3437,7 +3718,8 @@ body{
     if (task && task.created_name) {
       document.getElementById('tdCreatorAva').style.background = avaColor(task.created_name);
       document.getElementById('tdCreatorAva').textContent = avaLetter(task.created_name);
-      document.getElementById('tdCreatorName').textContent = task.created_name + ' tomonidan berilgan';
+      var creatorLabel = task.is_own_creator ? 'Siz' : task.created_name;
+      document.getElementById('tdCreatorName').textContent = creatorLabel + ' tomonidan berilgan';
       creatorEl.classList.add('is-on');
     } else {
       creatorEl.classList.remove('is-on');
@@ -3445,6 +3727,7 @@ body{
     // delete tugmasi — faqat tahrirlashda va to'liq huquq bo'lsa (admin yoki yaratuvchi)
     var delBtn = document.getElementById('tdDelBtn');
     delBtn.style.display = (TD_EDIT_ID && canEditFull) ? 'flex' : 'none';
+    setupTaskComments(task);
     tdOpen(cardEl);
     setTimeout(function () { document.getElementById('taskTitle').focus(); }, 280);
   }
@@ -3511,6 +3794,59 @@ body{
     document.getElementById('tdSaveBtn').addEventListener('click', tdSave);
     document.getElementById('taskTitle').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') { e.preventDefault(); tdSave(); }
+    });
+
+    // Vazifa bo'yicha savol-javoblar
+    var commentInput = document.getElementById('tdCommentInput');
+    document.getElementById('tdCommentSend').addEventListener('click', sendTaskComment);
+    commentInput.addEventListener('input', function () { autoResize(commentInput); });
+    commentInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        sendTaskComment();
+      }
+    });
+    document.getElementById('tdCommentsList').addEventListener('click', function (e) {
+      var button = e.target.closest('[data-action]');
+      if (!button) return;
+      var action = button.dataset.action;
+      var commentId = Number(button.dataset.id);
+      if (action === 'edit') {
+        TD_COMMENT_EDIT_ID = commentId;
+        document.getElementById('tdCommentsError').textContent = '';
+        renderTaskComments();
+        var editInput = document.querySelector('[data-comment-id="' + commentId + '"] .td-comment__edit-input');
+        if (editInput) {
+          autoResize(editInput);
+          editInput.focus();
+          editInput.setSelectionRange(editInput.value.length, editInput.value.length);
+        }
+      } else if (action === 'edit-cancel') {
+        TD_COMMENT_EDIT_ID = null;
+        document.getElementById('tdCommentsError').textContent = '';
+        renderTaskComments();
+      } else if (action === 'edit-save') {
+        var article = button.closest('[data-comment-id]');
+        var textarea = article && article.querySelector('.td-comment__edit-input');
+        if (textarea) updateTaskComment(commentId, textarea.value);
+      } else if (action === 'delete') {
+        deleteTaskComment(commentId);
+      }
+    });
+    document.getElementById('tdCommentsList').addEventListener('input', function (e) {
+      if (e.target.classList.contains('td-comment__edit-input')) autoResize(e.target);
+    });
+    document.getElementById('tdCommentsList').addEventListener('keydown', function (e) {
+      if (!e.target.classList.contains('td-comment__edit-input')) return;
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        TD_COMMENT_EDIT_ID = null;
+        renderTaskComments();
+      } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        var article = e.target.closest('[data-comment-id]');
+        if (article) updateTaskComment(Number(article.dataset.commentId), e.target.value);
+      }
     });
 
     // Done checkbox

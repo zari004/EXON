@@ -10,6 +10,36 @@ const auth = require('../services/auth');
 const FULL_BOARD_ROLES = ['superadmin', 'it_bolimi', 'seo', 'menejer_bosh'];
 function isFullBoard(role) { return FULL_BOARD_ROLES.includes(role); }
 
+async function getAccessibleTask(req, taskId) {
+  const task = await db.get('SELECT * FROM tasks WHERE id = ?', [taskId]);
+  if (!task) return null;
+  if (isFullBoard(req.user.role)) return task;
+  const userId = Number(req.user.userId);
+  const isCreator = Number(task.created_by) === userId;
+  const isAssignee = Number(task.assigned_to) === userId;
+  return isCreator || isAssignee ? task : null;
+}
+
+function isOwnComment(req, comment) {
+  if (req.user.userId !== null && req.user.userId !== undefined) {
+    return Number(comment.user_id) === Number(req.user.userId);
+  }
+  return Boolean(req.user.email && comment.user_email === req.user.email);
+}
+
+function canManageComment(req, comment) {
+  return isOwnComment(req, comment) ||
+    req.user.role === 'superadmin' ||
+    req.user.role === 'it_bolimi';
+}
+
+function commentJson(req, comment) {
+  return Object.assign({}, comment, {
+    is_own: isOwnComment(req, comment),
+    can_manage: canManageComment(req, comment)
+  });
+}
+
 // Takrorlanuvchi vazifa bajarilganda keyingi nusxasini yaratadi
 async function maybeCreateNextOccurrence(task) {
   if (!task || !task.repeat_rule || task.repeat_rule === 'none' || !task.due_date) return;
@@ -42,7 +72,13 @@ router.get('/', auth.requireAuth, async (req, res) => {
         [req.user.userId, req.user.userId]
       );
     }
-    res.json({ success: true, tasks });
+    const currentUserId = req.user.userId;
+    const taskList = tasks.map((task) => Object.assign({}, task, {
+      is_own_creator: currentUserId !== null && currentUserId !== undefined
+        ? Number(task.created_by) === Number(currentUserId)
+        : Boolean(req.user.name && task.created_name === req.user.name)
+    }));
+    res.json({ success: true, tasks: taskList });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -154,6 +190,108 @@ router.patch('/:id/status', auth.requireAuth, async (req, res) => {
 });
 
 // DELETE /api/tasks/:id — faqat admin/to'liq-board rollari yoki yaratuvchi o'chira oladi
+// GET /api/tasks/:id/comments — vazifa savol-javoblari
+router.get('/:id/comments', auth.requireAuth, async (req, res) => {
+  try {
+    const task = await getAccessibleTask(req, req.params.id);
+    if (!task) return res.status(404).json({ success: false, error: 'Vazifa topilmadi' });
+    const comments = await db.all(
+      `SELECT c.id, c.task_id, c.user_id, c.user_email, c.user_name,
+       c.message, c.created_at, c.updated_at, u.avatar
+       FROM task_comments c
+       LEFT JOIN admin_users u ON u.id = c.user_id
+       WHERE c.task_id = ? ORDER BY c.created_at ASC, c.id ASC`,
+      [req.params.id]
+    );
+    res.json({ success: true, comments: comments.map((c) => commentJson(req, c)) });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/tasks/:id/comments — savol yoki javob yozish
+router.post('/:id/comments', auth.requireAuth, async (req, res) => {
+  try {
+    const task = await getAccessibleTask(req, req.params.id);
+    if (!task) return res.status(404).json({ success: false, error: 'Vazifa topilmadi' });
+    const message = String(req.body.message || '').trim();
+    if (!message) return res.status(400).json({ success: false, error: 'Xabar bo‘sh bo‘lishi mumkin emas' });
+    if (message.length > 2000) {
+      return res.status(400).json({ success: false, error: 'Xabar 2000 belgidan oshmasligi kerak' });
+    }
+    const result = await db.run(
+      `INSERT INTO task_comments (task_id, user_id, user_email, user_name, message)
+       VALUES (?, ?, ?, ?, ?)`,
+      [req.params.id, req.user.userId || null, req.user.email || null, req.user.name || 'Foydalanuvchi', message]
+    );
+    const comment = await db.get(
+      `SELECT c.id, c.task_id, c.user_id, c.user_email, c.user_name,
+       c.message, c.created_at, c.updated_at, u.avatar
+       FROM task_comments c
+       LEFT JOIN admin_users u ON u.id = c.user_id WHERE c.id = ?`,
+      [result.id]
+    );
+    res.status(201).json({ success: true, comment: commentJson(req, comment) });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PUT /api/tasks/:id/comments/:commentId — xabarni tahrirlash
+router.put('/:id/comments/:commentId', auth.requireAuth, async (req, res) => {
+  try {
+    const task = await getAccessibleTask(req, req.params.id);
+    if (!task) return res.status(404).json({ success: false, error: 'Vazifa topilmadi' });
+    const comment = await db.get(
+      'SELECT * FROM task_comments WHERE id = ? AND task_id = ?',
+      [req.params.commentId, req.params.id]
+    );
+    if (!comment) return res.status(404).json({ success: false, error: 'Xabar topilmadi' });
+    if (!canManageComment(req, comment)) {
+      return res.status(403).json({ success: false, error: 'Bu xabarni tahrirlashga ruxsat yo‘q' });
+    }
+    const message = String(req.body.message || '').trim();
+    if (!message) return res.status(400).json({ success: false, error: 'Xabar bo‘sh bo‘lishi mumkin emas' });
+    if (message.length > 2000) {
+      return res.status(400).json({ success: false, error: 'Xabar 2000 belgidan oshmasligi kerak' });
+    }
+    await db.run(
+      'UPDATE task_comments SET message = ?, updated_at = NOW() WHERE id = ?',
+      [message, req.params.commentId]
+    );
+    const updated = await db.get(
+      `SELECT c.id, c.task_id, c.user_id, c.user_email, c.user_name,
+       c.message, c.created_at, c.updated_at, u.avatar
+       FROM task_comments c
+       LEFT JOIN admin_users u ON u.id = c.user_id WHERE c.id = ?`,
+      [req.params.commentId]
+    );
+    res.json({ success: true, comment: commentJson(req, updated) });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE /api/tasks/:id/comments/:commentId — xabarni o'chirish
+router.delete('/:id/comments/:commentId', auth.requireAuth, async (req, res) => {
+  try {
+    const task = await getAccessibleTask(req, req.params.id);
+    if (!task) return res.status(404).json({ success: false, error: 'Vazifa topilmadi' });
+    const comment = await db.get(
+      'SELECT * FROM task_comments WHERE id = ? AND task_id = ?',
+      [req.params.commentId, req.params.id]
+    );
+    if (!comment) return res.status(404).json({ success: false, error: 'Xabar topilmadi' });
+    if (!canManageComment(req, comment)) {
+      return res.status(403).json({ success: false, error: 'Bu xabarni o‘chirishga ruxsat yo‘q' });
+    }
+    await db.run('DELETE FROM task_comments WHERE id = ?', [req.params.commentId]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 router.delete('/:id', auth.requireAuth, async (req, res) => {
   try {
     const existing = await db.get('SELECT created_by FROM tasks WHERE id = ?', [req.params.id]);

@@ -160,6 +160,23 @@ const init = async () => {
   await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS reminder_sent BOOLEAN DEFAULT false`);
   await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS repeat_rule TEXT DEFAULT 'none'`);
 
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS task_comments (
+      id SERIAL PRIMARY KEY,
+      task_id INTEGER NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+      user_id INTEGER,
+      user_email TEXT,
+      user_name TEXT NOT NULL,
+      message TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_task_comments_task_created
+    ON task_comments(task_id, created_at)
+  `);
+
   // Standart ruxsatlar — mavjud bo'lsa o'zgartirmaydi
   await pool.query(`
     INSERT INTO role_permissions (role, tabs) VALUES
