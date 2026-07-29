@@ -3,6 +3,13 @@ const router = express.Router();
 const db = require('../db');
 const auth = require('../services/auth');
 
+// Vazifalar bo'yicha to'liq boardni ko'radigan/boshqaradigan rollar.
+// Boshqa har qanday rol (menejer_oddiy, dizayner_bosh, dizayner_oddiy va h.k.)
+// faqat o'zi yaratgan yoki o'ziga tayinlangan vazifalarni ko'radi/boshqaradi,
+// lekin baribir istalgan foydalanuvchiga vazifa bera oladi.
+const FULL_BOARD_ROLES = ['superadmin', 'it_bolimi', 'seo', 'menejer_bosh'];
+function isFullBoard(role) { return FULL_BOARD_ROLES.includes(role); }
+
 // Takrorlanuvchi vazifa bajarilganda keyingi nusxasini yaratadi
 async function maybeCreateNextOccurrence(task) {
   if (!task || !task.repeat_rule || task.repeat_rule === 'none' || !task.due_date) return;
@@ -27,12 +34,12 @@ async function maybeCreateNextOccurrence(task) {
 router.get('/', auth.requireAuth, async (req, res) => {
   try {
     let tasks;
-    if (req.user.role === 'superadmin' || req.user.role === 'it_bolimi') {
+    if (isFullBoard(req.user.role)) {
       tasks = await db.all('SELECT * FROM tasks ORDER BY created_at DESC');
     } else {
       tasks = await db.all(
-        'SELECT * FROM tasks WHERE assigned_to = ? ORDER BY created_at DESC',
-        [req.user.userId]
+        'SELECT * FROM tasks WHERE assigned_to = ? OR created_by = ? ORDER BY created_at DESC',
+        [req.user.userId, req.user.userId]
       );
     }
     res.json({ success: true, tasks });
@@ -41,8 +48,8 @@ router.get('/', auth.requireAuth, async (req, res) => {
   }
 });
 
-// POST /api/tasks
-router.post('/', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
+// POST /api/tasks — endi istalgan tizimga kirgan foydalanuvchi boshqalarga vazifa bera oladi
+router.post('/', auth.requireAuth, async (req, res) => {
   try {
     const { title, description, priority, status, due_date, start_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name } = req.body;
     if (!title || !title.trim()) {
@@ -69,9 +76,18 @@ router.post('/', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
   }
 });
 
-// PUT /api/tasks/:id — to'liq yangilash (tahrirlash)
-router.put('/:id', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
+// PUT /api/tasks/:id — to'liq yangilash (tahrirlash). Faqat admin/to'liq-board
+// rollari yoki shu vazifaning yaratuvchisi bajara oladi — sof tayinlangan
+// (lekin yaratmagan) kishi bu yerga kelmasligi kerak, u status'ni
+// PATCH /:id/status orqali o'zgartiradi.
+router.put('/:id', auth.requireAuth, async (req, res) => {
   try {
+    const before = await db.get('SELECT * FROM tasks WHERE id = ?', [req.params.id]);
+    if (!before) return res.status(404).json({ success: false, error: 'Vazifa topilmadi' });
+    const canEditFull = isFullBoard(req.user.role) || Number(before.created_by) === Number(req.user.userId);
+    if (!canEditFull) {
+      return res.status(403).json({ success: false, error: "Bu vazifani to'liq tahrirlashga ruxsat yo'q" });
+    }
     const { title, description, priority, status, due_date, start_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name } = req.body;
     const VALID_STATUS = ['new', 'in_progress', 'review', 'done'];
     if (!title || !title.trim()) {
@@ -80,7 +96,6 @@ router.put('/:id', auth.requireAuth, auth.requireSuperAdmin, async (req, res) =>
     if (status && !VALID_STATUS.includes(status)) {
       return res.status(400).json({ success: false, error: "Noto'g'ri status" });
     }
-    const before = await db.get('SELECT status FROM tasks WHERE id = ?', [req.params.id]);
     const reminderMinutesVal = reminder_minutes !== undefined && reminder_minutes !== null && reminder_minutes !== ''
       ? Number(reminder_minutes) : null;
     await db.run(
@@ -118,10 +133,12 @@ router.patch('/:id/status', auth.requireAuth, async (req, res) => {
     }
     const existing = await db.get('SELECT * FROM tasks WHERE id = ?', [req.params.id]);
     if (!existing) return res.status(404).json({ success: false, error: 'Vazifa topilmadi' });
-    // IT bo'limi / superadmin — hamma vazifani o'zgartira oladi
-    // Boshqalar — faqat o'ziga tayinlangan vazifani
-    if (req.user.role !== 'superadmin' && req.user.role !== 'it_bolimi') {
-      if (Number(existing.assigned_to) !== Number(req.user.userId)) {
+    // To'liq board rollari — hammasini o'zgartira oladi
+    // Boshqalar — faqat o'zi yaratgan yoki o'ziga tayinlangan vazifani
+    if (!isFullBoard(req.user.role)) {
+      const isAssignee = Number(existing.assigned_to) === Number(req.user.userId);
+      const isCreator = Number(existing.created_by) === Number(req.user.userId);
+      if (!isAssignee && !isCreator) {
         return res.status(403).json({ success: false, error: "Bu vazifani o'zgartirishga ruxsat yo'q" });
       }
     }
@@ -136,9 +153,15 @@ router.patch('/:id/status', auth.requireAuth, async (req, res) => {
   }
 });
 
-// DELETE /api/tasks/:id
-router.delete('/:id', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
+// DELETE /api/tasks/:id — faqat admin/to'liq-board rollari yoki yaratuvchi o'chira oladi
+router.delete('/:id', auth.requireAuth, async (req, res) => {
   try {
+    const existing = await db.get('SELECT created_by FROM tasks WHERE id = ?', [req.params.id]);
+    if (!existing) return res.status(404).json({ success: false, error: 'Vazifa topilmadi' });
+    const canDelete = isFullBoard(req.user.role) || Number(existing.created_by) === Number(req.user.userId);
+    if (!canDelete) {
+      return res.status(403).json({ success: false, error: "Bu vazifani o'chirishga ruxsat yo'q" });
+    }
     await db.run('DELETE FROM tasks WHERE id = ?', [req.params.id]);
     res.json({ success: true });
   } catch (err) {

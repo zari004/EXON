@@ -318,6 +318,7 @@ body{
 .td-ibtn.pri-high{color:#F0A500}
 .td-ibtn.pri-medium{color:#59A5D8}
 .td-ibtn.pri-low{color:#6EBF8B}
+.td-ibtn:disabled,.td-date-btn:disabled{opacity:.45;cursor:not-allowed;pointer-events:none}
 
 /* BODY — seamless title + description like TickTick */
 .td-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;padding-top:4px}
@@ -335,6 +336,7 @@ body{
   overflow:hidden;min-height:32px;
 }
 .td-desc-inp::placeholder{color:var(--gray-dim)}
+.td-title-inp:disabled,.td-desc-inp:disabled{opacity:.75;cursor:default}
 .td-err{font-size:12.5px;color:#F2896F;padding:0 22px 8px;min-height:0}
 .td-creator{
   display:none;align-items:center;gap:6px;
@@ -1564,6 +1566,10 @@ body{
   let TOKEN = localStorage.getItem('exon_admin_token') || '';
   let USER_ROLE = localStorage.getItem('exon_admin_role') || '';
   let USER_NAME = localStorage.getItem('exon_admin_name') || '';
+  // Vazifalar bo'yicha to'liq boardni ko'radigan/boshqaradigan rollar
+  // (sayt bo'limlari — Ruxsatlar paneli orqali — bundan mustaqil)
+  var TASKS_FULL_BOARD_ROLES = ['superadmin', 'it_bolimi', 'seo', 'menejer_bosh'];
+  function isFullBoardRole() { return TASKS_FULL_BOARD_ROLES.indexOf(USER_ROLE) !== -1; }
 
   // ════════════════════════════════════════════════════════════
   // TIL TIZIMI (i18n)
@@ -2816,6 +2822,7 @@ body{
   var TD_REMINDER_MINUTES = null; // son yoki null (eslatma yo'q)
   var TD_REPEAT_RULE = 'none'; // none|daily|weekly|monthly
   var TD_START_DATE = '';      // davomiylik boshlanish sanasi ('' = oddiy bitta sana)
+  var TD_CAN_EDIT_FULL = true; // joriy ochiq vazifani to'liq tahrirlash huquqi bormi (aks holda faqat status)
   var TD_CAL_MODE = 'date';    // 'date' | 'dur' — kalendar qaysi tabda
   var TD_DUR_TARGET = 'start'; // davomiylikda keyingi bosish qaysi maydonni to'ldiradi
   var draggedTaskId = null;
@@ -2858,7 +2865,7 @@ body{
     var isCreatorSelf = t.created_name && t.created_name === USER_NAME;
     var isAssigneeSelf = t.assigned_name && t.assigned_name === USER_NAME;
     var metaExtra = (t.created_name && !isCreatorSelf) ? '<span class="task-creator" title="Kimdan">📤 ' + escHtml(t.created_name) + '</span>' : '';
-    if (canManage && t.assigned_name && !isAssigneeSelf) {
+    if ((canManage || isCreatorSelf) && t.assigned_name && !isAssigneeSelf) {
       metaExtra += '<span class="task-assignee" title="Kimga">👤 ' + escHtml(t.assigned_name) + '</span>';
     }
     return '<div class="task-card" draggable="true" data-id="' + t.id + '" data-status="' + t.status + '">' +
@@ -2896,9 +2903,9 @@ body{
 
   // ── LOAD ──
   async function loadTasks() {
-    var canManage = (USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi');
+    var canManage = isFullBoardRole();
     var addBtn = document.getElementById('btnAddTask');
-    if (addBtn) addBtn.style.display = canManage ? '' : 'none';
+    if (addBtn) addBtn.style.display = ''; // endi hamma vazifa qo'sha oladi
 
     KS.forEach(function (s) {
       document.getElementById('kcol-' + s).innerHTML = '<div class="kanban-empty"><span class="kanban-empty__icon">⏳</span></div>';
@@ -3304,8 +3311,8 @@ body{
   async function ensureUsers() {
     if (TD_USERS.length) return;
     try {
-      var data = await apiFetch('/api/admin/users');
-      TD_USERS = (data.users || []).filter(function (u) { return u.status === 'approved'; });
+      var data = await apiFetch('/api/admin/assignable-users');
+      TD_USERS = data.users || [];
     } catch (e) { TD_USERS = []; }
   }
   function buildAssigneePopup() {
@@ -3351,11 +3358,20 @@ body{
     setTimeout(function () { autoResize(descEl); }, 10);
     setDoneChk(isDone);
     setPriority(task ? task.priority : 'medium');
-    var canManage = USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi';
+    var canManage = isFullBoardRole();
+    // Yaratuvchi — o'zi yaratgan vazifani to'liq tahrirlashi va qayta
+    // tayinlashi mumkin, hatto to'liq boardni ko'rmasa ham
+    var isCreatorOfThis = !!(task && task.created_name && task.created_name === USER_NAME);
+    var canEditFull = canManage || isCreatorOfThis || !task;
+    TD_CAN_EDIT_FULL = canEditFull;
+    document.getElementById('taskTitle').disabled = !canEditFull;
+    document.getElementById('taskDesc').disabled = !canEditFull;
+    document.getElementById('tdPriBtn').disabled = !canEditFull;
+    document.getElementById('tdDateBtn').disabled = !canEditFull;
     setAssignee(task ? task.assigned_to : null, task ? task.assigned_name : null);
-    // "Kimga" footer — faqat umumiy boardni ko'radiganlarga (admin). Shaxsiy oynada
-    // bu doim o'zi bo'lgani uchun ko'rsatilmaydi.
-    document.getElementById('tdAssDisplay').style.display = canManage ? 'flex' : 'none';
+    // "Kimga" footer — to'liq board yoki shu vazifani yaratgan odamga ko'rinadi.
+    // Faqat tayinlangan (lekin yaratmagan) kishiga — bu doim o'zi bo'lgani uchun ko'rsatilmaydi.
+    document.getElementById('tdAssDisplay').style.display = canEditFull ? 'flex' : 'none';
     // "Kimdan berilgan" — har ikkala tomonga ham ko'rinadi (agar ma'lum bo'lsa)
     var creatorEl = document.getElementById('tdCreator');
     if (task && task.created_name) {
@@ -3366,22 +3382,33 @@ body{
     } else {
       creatorEl.classList.remove('is-on');
     }
-    // delete button — only in edit mode and if canManage
+    // delete tugmasi — faqat tahrirlashda va to'liq huquq bo'lsa (admin yoki yaratuvchi)
     var delBtn = document.getElementById('tdDelBtn');
-    delBtn.style.display = (TD_EDIT_ID && canManage) ? 'flex' : 'none';
+    delBtn.style.display = (TD_EDIT_ID && canEditFull) ? 'flex' : 'none';
     tdOpen(cardEl);
     setTimeout(function () { document.getElementById('taskTitle').focus(); }, 280);
   }
 
   // ── SAVE ──
   async function tdSave() {
-    var title = document.getElementById('taskTitle').value.trim();
     var msg = document.getElementById('taskFormMsg');
-    if (!title) { msg.textContent = 'Sarlavha majburiy'; return; }
     msg.textContent = '';
     var btn = document.getElementById('tdSaveBtn');
     btn.disabled = true; btn.textContent = '...';
     try {
+      // Faqat tayinlangan (lekin yaratmagan) kishi — to'liq tahrirlash huquqi yo'q,
+      // faqat "bajarildi" holatini o'zgartira oladi
+      if (TD_EDIT_ID && !TD_CAN_EDIT_FULL) {
+        var isDoneOnly = document.getElementById('tdChk').classList.contains('is-done');
+        var currentStatusOnly = TASKS_MAP[TD_EDIT_ID] ? TASKS_MAP[TD_EDIT_ID].status : 'new';
+        var nextStatus = isDoneOnly ? 'done' : (currentStatusOnly === 'done' ? 'new' : currentStatusOnly);
+        await apiFetch('/api/tasks/' + TD_EDIT_ID + '/status', { method: 'PATCH', body: JSON.stringify({ status: nextStatus }) });
+        tdClose();
+        await loadTasks();
+        return;
+      }
+      var title = document.getElementById('taskTitle').value.trim();
+      if (!title) { msg.textContent = 'Sarlavha majburiy'; return; }
       var body = {
         title: title,
         description: document.getElementById('taskDesc').value.trim() || null,

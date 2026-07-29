@@ -37,6 +37,23 @@ router.get('/me', auth.requireAuth, (req, res) => {
 });
 
 /**
+ * GET /api/admin/assignable-users — vazifa tayinlash uchun minimal ro'yxat
+ * (istalgan tizimga kirgan foydalanuvchi chaqira oladi — endi hamma
+ * boshqalarga vazifa bera olishi kerak, shuning uchun email/rol kabi
+ * nozik maydonlarsiz, faqat id+ism qaytariladi)
+ */
+router.get('/assignable-users', auth.requireAuth, async (req, res) => {
+  try {
+    const users = await db.all(
+      "SELECT id, name FROM admin_users WHERE status = 'approved' ORDER BY name"
+    );
+    res.json({ success: true, users });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
  * GET /api/admin/users — barcha foydalanuvchilar ro'yxati (superadmin)
  */
 router.get('/users', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
