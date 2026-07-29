@@ -3063,6 +3063,36 @@ body{
     });
   }
 
+  // Faqat eng ustida turgan vazifa qatlamini qaytaradi.
+  // Tashqi bosish bir click bilan barcha oynalarni yopib yubormasligi uchun.
+  function getTopTaskLayer() {
+    var subOverlay = document.querySelector('.td-sub-overlay.is-on');
+    if (subOverlay) return subOverlay;
+
+    var popupIds = ['tdDatePop', 'tdPriPop', 'tdAssPop'];
+    for (var i = 0; i < popupIds.length; i++) {
+      var popup = document.getElementById(popupIds[i]);
+      if (popup.classList.contains('is-on')) return popup;
+    }
+
+    var drawer = document.getElementById('td');
+    return drawer.classList.contains('is-on') ? drawer : null;
+  }
+
+  function closeTopTaskLayer() {
+    var topLayer = getTopTaskLayer();
+    if (!topLayer) return false;
+
+    if (topLayer.classList.contains('td-sub-overlay')) {
+      closeCalSubpanels();
+    } else if (topLayer.id === 'td') {
+      tdClose();
+    } else {
+      topLayer.classList.remove('is-on');
+    }
+    return true;
+  }
+
   function openSubOverlay(rowId, overlayId) {
     closeCalSubpanels();
     document.getElementById(rowId).classList.add('is-open');
@@ -3446,7 +3476,10 @@ body{
   (function setupDrawer() {
     // Close
     document.getElementById('tdCloseBtn').addEventListener('click', tdClose);
-    document.getElementById('tdBd').addEventListener('click', tdClose);
+    document.getElementById('tdBd').addEventListener('click', function (e) {
+      e.stopPropagation();
+      closeTopTaskLayer();
+    });
 
     // Save
     document.getElementById('tdSaveBtn').addEventListener('click', tdSave);
@@ -3622,9 +3655,23 @@ body{
       } catch (err) { alert(err.message || 'Xato'); }
     });
 
-    // Close popups on outside click
-    document.addEventListener('click', function () { closeAllPopups(); });
-    document.getElementById('td').addEventListener('click', function (e) { e.stopPropagation(); });
+    // Drawer ichida eng ustki popupdan tashqariga bosilsa ham faqat o'sha
+    // popup yopiladi. Keyingi click navbatdagi pastki qatlamga o'tadi.
+    document.getElementById('td').addEventListener('click', function (e) {
+      var topLayer = getTopTaskLayer();
+      if (topLayer && topLayer.id !== 'td' && !topLayer.contains(e.target)) {
+        closeTopTaskLayer();
+      }
+      e.stopPropagation();
+    });
+
+    // Escape ham qatlamlarni bittadan yopadi.
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && getTopTaskLayer()) {
+        e.preventDefault();
+        closeTopTaskLayer();
+      }
+    });
   })();
 
   // Expose for "+" button in panel header
