@@ -101,9 +101,12 @@ router.get('/my-permissions', auth.requireAuth, async (req, res) => {
   }
   try {
     const perm = await db.get('SELECT tabs FROM role_permissions WHERE role = ?', [role]);
-    res.json({ success: true, tabs: perm ? JSON.parse(perm.tabs) : ['dashboard'] });
+    const tabs = perm ? JSON.parse(perm.tabs) : ['dashboard'];
+    // Vazifalar — har bir foydalanuvchining shaxsiy oynasi, admin ruxsatidan qat'i nazar har doim ochiq
+    if (!tabs.includes('tasks')) tabs.push('tasks');
+    res.json({ success: true, tabs });
   } catch (err) {
-    res.json({ success: true, tabs: ['dashboard'] });
+    res.json({ success: true, tabs: ['dashboard', 'tasks'] });
   }
 });
 

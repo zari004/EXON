@@ -142,11 +142,11 @@ const init = async () => {
   // Standart ruxsatlar — mavjud bo'lsa o'zgartirmaydi
   await pool.query(`
     INSERT INTO role_permissions (role, tabs) VALUES
-      ('seo',             '["dashboard","posts"]'),
-      ('menejer_bosh',    '["dashboard","cases","posts","pricing"]'),
-      ('menejer_oddiy',   '["dashboard","cases"]'),
-      ('dizayner_bosh',   '["dashboard","cases","posts"]'),
-      ('dizayner_oddiy',  '["cases"]')
+      ('seo',             '["dashboard","posts","tasks"]'),
+      ('menejer_bosh',    '["dashboard","cases","posts","pricing","tasks"]'),
+      ('menejer_oddiy',   '["dashboard","cases","tasks"]'),
+      ('dizayner_bosh',   '["dashboard","cases","posts","tasks"]'),
+      ('dizayner_oddiy',  '["cases","tasks"]')
     ON CONFLICT (role) DO NOTHING
   `);
 
