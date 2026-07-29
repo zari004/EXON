@@ -1,4 +1,10 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns');
+
+// Render kabi hostinglarda konteynerdan IPv6 chiqish yo'li yopiq bo'ladi,
+// lekin Node avval Gmail'ni IPv6 manzilga hal qilib, "ENETUNREACH" xatosi
+// bilan ulanolmay qoladi. IPv4'ni ustun qo'yish shu muammoni hal qiladi.
+if (dns.setDefaultResultOrder) dns.setDefaultResultOrder('ipv4first');
 
 let transporter = null;
 const gmailUser = (process.env.GMAIL_USER || '').trim();
@@ -8,7 +14,10 @@ const gmailAppPassword = (process.env.GMAIL_APP_PASSWORD || '').replace(/\s+/g, 
 
 if (gmailUser && gmailAppPassword) {
   transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    family: 4, // IPv6 ENETUNREACH'ning oldini olish uchun ulanishni IPv4'ga majburlaydi
     auth: {
       user: gmailUser,
       pass: gmailAppPassword
