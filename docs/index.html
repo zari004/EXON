@@ -58,10 +58,6 @@
         <button class="lang__btn is-active" type="button" aria-pressed="true">UZ</button>
         <button class="lang__btn" type="button" aria-pressed="false">RU</button>
       </div>
-      <button class="pwa-install" id="pwaInstall" aria-label="Ilovani o'rnatish" style="display:none">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 16l-4-4h2.5V4h3v8H16l-4 4Z" fill="currentColor"/><path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        O'rnatish
-      </button>
       <a class="btn btn--pill" href="audit.html">
         Bepul audit
         <span class="btn__plus" aria-hidden="true">+</span>
@@ -392,37 +388,19 @@
 <script src="assets/js/main.js?v=4"></script>
 <script>
 (function () {
-  // Service Worker ro'yxatdan o'tkazish
+  // Service Worker ro'yxatdan o'tkazish (keshlash/tezlik uchun —
+  // "ilovani yuklash" tugmasi faqat admin panelida, bu yerda ko'rsatilmaydi)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('/sw.js').catch(function () {});
     });
   }
 
-  // PWA Install prompt
-  var installBtn = document.getElementById('pwaInstall');
-  var deferredPrompt = null;
-
+  // Brauzerning o'z avtomatik o'rnatish taklifini bosib qo'yish — oddiy
+  // tashrif buyuruvchilarga ilova sifatida o'rnatish taklif qilinmasin
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();
-    deferredPrompt = e;
-    if (installBtn) installBtn.style.display = 'flex';
   });
-
-  window.addEventListener('appinstalled', function () {
-    if (installBtn) installBtn.style.display = 'none';
-    deferredPrompt = null;
-  });
-
-  if (installBtn) {
-    installBtn.addEventListener('click', async function () {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      var result = await deferredPrompt.userChoice;
-      if (result.outcome === 'accepted') installBtn.style.display = 'none';
-      deferredPrompt = null;
-    });
-  }
 })();
 </script>
 </body>

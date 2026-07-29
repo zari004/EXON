@@ -1,4 +1,4 @@
-const CACHE = 'exon-v11';
+const CACHE = 'exon-v12';
 const STATIC = [
   '/',
   '/index.html',
@@ -9,6 +9,7 @@ const STATIC = [
   '/keyslar.html',
   '/narxlar.html',
   '/manifest.json',
+  '/admin-manifest.json',
   '/assets/css/style.css',
   '/assets/js/api-base.js',
   '/assets/js/i18n.js',
