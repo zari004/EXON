@@ -28,11 +28,19 @@ router.put('/profile', auth.requireAuth, async (req, res) => {
     return res.status(400).json({ success: false, error: "Bu hisob profili shu yerdan sozlanmaydi" });
   }
   try {
-    const { name, avatar } = req.body;
+    const { name, email, avatar } = req.body;
     if (!name || !name.trim()) {
       return res.status(400).json({ success: false, error: 'Ism talab qilinadi' });
     }
-    await db.run('UPDATE admin_users SET name = ?, avatar = ? WHERE id = ?', [name.trim(), avatar || null, req.user.userId]);
+    const cleanEmail = (email || '').trim().toLowerCase();
+    if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      return res.status(400).json({ success: false, error: "To'g'ri email kiriting" });
+    }
+    const taken = await db.get('SELECT id FROM admin_users WHERE email = ? AND id != ?', [cleanEmail, req.user.userId]);
+    if (taken) {
+      return res.status(400).json({ success: false, error: 'Bu email boshqa hisobda band' });
+    }
+    await db.run('UPDATE admin_users SET name = ?, email = ?, avatar = ? WHERE id = ?', [name.trim(), cleanEmail, avatar || null, req.user.userId]);
     auth.updateTokenName(req.token, name.trim());
     res.json({ success: true });
   } catch (err) {

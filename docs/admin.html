@@ -610,13 +610,20 @@ body{
 [data-theme="light"] .settings-row__label{color:#1a2117}
 .settings-row__control{display:flex;align-items:center;gap:10px;flex:1;justify-content:flex-end;min-width:0}
 .settings-row__control input[type=text],.settings-row__control input[type=password]{
-  background:none;border:0;text-align:right;color:var(--gray);font-size:13.5px;
-  font-family:inherit;width:100%;max-width:280px;padding:4px 0;outline:none;
+  background:none;border:1px solid transparent;text-align:right;
+  color:var(--white);font-size:13.5px;cursor:pointer;
+  font-family:inherit;width:100%;max-width:280px;padding:6px 10px;outline:none;
+  border-radius:7px;transition:background .15s,border-color .15s;
 }
-.settings-row__control input[type=text]:focus,.settings-row__control input[type=password]:focus{color:var(--white)}
-[data-theme="light"] .settings-row__control input:focus{color:#1a2117}
-.settings-row__control input:disabled{color:var(--gray-dim);cursor:not-allowed}
-.settings-row__static{color:var(--gray-dim);font-size:13px}
+[data-theme="light"] .settings-row__control input[type=text],[data-theme="light"] .settings-row__control input[type=password]{color:#1a2117}
+.settings-row__control input[type=text]:hover,.settings-row__control input[type=password]:hover{background:var(--bg-2)}
+[data-theme="light"] .settings-row__control input[type=text]:hover,[data-theme="light"] .settings-row__control input[type=password]:hover{background:#fff;box-shadow:0 0 0 1px #e4e8e6}
+.settings-row__control input[type=text]:focus,.settings-row__control input[type=password]:focus{
+  cursor:text;background:var(--bg-2);border-color:var(--green-hi);
+}
+[data-theme="light"] .settings-row__control input[type=text]:focus,[data-theme="light"] .settings-row__control input[type=password]:focus{background:#fff}
+.settings-row__control input:disabled{color:var(--gray-dim) !important;cursor:not-allowed;background:none !important;border-color:transparent !important;box-shadow:none !important}
+.settings-row__hint{font-size:11px;color:var(--gray-dim);margin-top:2px}
 
 .settings-avatar{
   width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;
@@ -960,7 +967,7 @@ body{
           </div>
           <div class="settings-row">
             <span class="settings-row__label">Email</span>
-            <div class="settings-row__control"><span class="settings-row__static" id="setEmail"></span></div>
+            <div class="settings-row__control"><input type="text" id="setEmail" placeholder="Email" /></div>
           </div>
 
           <button type="button" class="settings-save-btn" id="setProfileSaveBtn">Profilni saqlash</button>
@@ -2802,7 +2809,7 @@ body{
     document.getElementById('setNewPass').value = '';
     document.getElementById('setNewPass2').value = '';
     // Har safar tozadan boshlaymiz — oldingi legacy holat qolib ketmasin
-    ['setName', 'setCurPass', 'setNewPass', 'setNewPass2'].forEach(function (id) {
+    ['setName', 'setEmail', 'setCurPass', 'setNewPass', 'setNewPass2'].forEach(function (id) {
       document.getElementById(id).disabled = false;
     });
     document.getElementById('setProfileSaveBtn').disabled = false;
@@ -2812,10 +2819,11 @@ body{
       var acc = data.account;
       SET_AVATAR_B64 = acc.avatar || null;
       document.getElementById('setName').value = acc.name || '';
-      document.getElementById('setEmail').textContent = acc.email || '';
+      document.getElementById('setEmail').value = acc.email || '';
       setAvatarPreview(acc.name, acc.avatar);
       if (acc.isLegacy) {
         document.getElementById('setName').disabled = true;
+        document.getElementById('setEmail').disabled = true;
         document.getElementById('setProfileSaveBtn').disabled = true;
         document.getElementById('setProfileMsg').textContent = "Bu hisob profili shu yerdan sozlanmaydi";
         document.getElementById('setCurPass').disabled = true;
@@ -2844,13 +2852,15 @@ body{
   // ── Profilni saqlash ──
   document.getElementById('setProfileSaveBtn').addEventListener('click', async function () {
     var name = document.getElementById('setName').value.trim();
+    var email = document.getElementById('setEmail').value.trim();
     var msg = document.getElementById('setProfileMsg');
     if (!name) { msg.className = 'form-msg error'; msg.textContent = 'Ism talab qilinadi'; return; }
+    if (!email || email.indexOf('@') === -1) { msg.className = 'form-msg error'; msg.textContent = "To'g'ri email kiriting"; return; }
     var btn = this;
     btn.disabled = true;
     msg.className = 'form-msg'; msg.textContent = '';
     try {
-      await apiFetch('/api/account/profile', { method: 'PUT', body: JSON.stringify({ name: name, avatar: SET_AVATAR_B64 }) });
+      await apiFetch('/api/account/profile', { method: 'PUT', body: JSON.stringify({ name: name, email: email, avatar: SET_AVATAR_B64 }) });
       USER_NAME = name;
       document.getElementById('sidebarUserName').textContent = name;
       var sideAva = document.querySelector('.sidebar-user__ava');
