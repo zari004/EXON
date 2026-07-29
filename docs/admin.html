@@ -375,11 +375,11 @@ body{
 /* CUSTOM KALENDAR (sana tanlash) */
 .td-cal-pop{
   flex-direction:column;padding:0;
-  max-height:min(560px,calc(100vh - 110px));
+  max-height:none;
   max-width:calc(100vw - 24px);
 }
 .td-cal-pop.is-on{display:flex}
-.td-cal-pop-inner{padding:12px;overflow-y:auto;flex:1;min-height:0}
+.td-cal-pop-inner{padding:12px;overflow:visible;flex:1;min-height:0}
 .td-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px}
 .td-cal-title{font-size:13.5px;font-weight:600;color:var(--white)}
 [data-theme="light"] .td-cal-title{color:#1a2117}
@@ -393,7 +393,7 @@ body{
 .td-cal-dow{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:10.5px;color:var(--gray-dim);margin-bottom:4px}
 .td-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
 .td-cal-day{
-  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  height:36px;display:flex;align-items:center;justify-content:center;
   border:0;background:none;border-radius:50%;font-size:12.5px;color:var(--white);cursor:pointer;
   transition:background .12s;
 }
