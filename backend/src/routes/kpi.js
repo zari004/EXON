@@ -42,6 +42,89 @@ function monthRange(monthStr) {
   return { start: start.toISOString(), end: end.toISOString() };
 }
 
+// Baholash uchun "hozir" nuqtasi: joriy oy tanlangan bo'lsa — haqiqiy hozirgi vaqt,
+// o'tgan oy bo'lsa — oy oxiri (shu oy ichida bajarilmagan vazifalar muddati o'tgan hisoblanadi)
+function evalNow(range) {
+  const now = new Date();
+  const rangeEnd = new Date(range.end);
+  return now < rangeEnd ? now : new Date(rangeEnd.getTime() - 1);
+}
+
+function dueAt(dueDate, dueTime) {
+  const d = new Date(dueDate);
+  if (dueTime) {
+    const parts = String(dueTime).split(':');
+    d.setHours(Number(parts[0]) || 0, Number(parts[1]) || 0, 0, 0);
+  } else {
+    d.setHours(23, 59, 0, 0);
+  }
+  return d;
+}
+
+// Bir xodim uchun tanlangan oyda KPI'ni hisoblaydi: boshlang'ich ball (odatda 100)dan
+// muddatida bajarilmagan/kechiktirilgan har bir vazifa uchun muhimlik darajasiga qarab
+// ball ayiriladi. Qolgan foizga mutanosib ravishda oylik bonus summasi belgilanadi.
+async function computeEmployeeKpi(plan, month) {
+  const range = monthRange(month);
+  const nowRef = evalNow(range);
+  const tasks = await db.all(
+    `SELECT id, title, priority, status, due_date, due_time, updated_at FROM tasks
+     WHERE assigned_to = ? AND due_date >= ? AND due_date < ?
+     ORDER BY due_date ASC`,
+    [plan.employee_id, range.start, range.end]
+  );
+  const weightMap = {
+    none: Number(plan.weight_none), low: Number(plan.weight_low),
+    medium: Number(plan.weight_medium), high: Number(plan.weight_high), urgent: Number(plan.weight_urgent)
+  };
+
+  let deducted = 0;
+  let onTimeCount = 0;
+  let pendingCount = 0;
+  const lateTasks = [];
+
+  for (const t of tasks) {
+    const due = dueAt(t.due_date, t.due_time);
+    if (t.status === 'done') {
+      const completedAt = new Date(t.updated_at);
+      if (completedAt > due) {
+        const pts = weightMap[t.priority] !== undefined ? weightMap[t.priority] : 0;
+        deducted += pts;
+        lateTasks.push({ id: t.id, title: t.title, priority: t.priority, points: pts, due_date: t.due_date, completed_at: t.updated_at, reason: 'late_done' });
+      } else {
+        onTimeCount++;
+      }
+    } else if (due < nowRef) {
+      const pts = weightMap[t.priority] !== undefined ? weightMap[t.priority] : 0;
+      deducted += pts;
+      lateTasks.push({ id: t.id, title: t.title, priority: t.priority, points: pts, due_date: t.due_date, completed_at: null, reason: 'overdue' });
+    } else {
+      pendingCount++;
+    }
+  }
+
+  const target = Number(plan.target_points) || 0;
+  const earned = Math.max(0, target - deducted);
+  const percent = target > 0 ? Math.max(0, Math.min(100, Math.round((earned / target) * 1000) / 10)) : 0;
+  const bonusAmount = Number(plan.bonus_amount) || 0;
+  const bonusEarned = Math.round(bonusAmount * percent) / 100;
+
+  return {
+    employee_id: plan.employee_id,
+    target_points: target,
+    bonus_amount: bonusAmount,
+    weights: weightMap,
+    deducted_points: deducted,
+    earned_points: earned,
+    percent: percent,
+    bonus_earned: bonusEarned,
+    on_time_count: onTimeCount,
+    pending_count: pendingCount,
+    late_count: lateTasks.length,
+    late_tasks: lateTasks
+  };
+}
+
 // GET /api/kpi/employees — KPI rejasi biriktirilishi mumkin bo'lgan xodimlar
 router.get('/employees', auth.requireAuth, requireKpiView, async (req, res) => {
   try {
@@ -75,6 +158,7 @@ router.put('/plans/:employeeId', auth.requireAuth, requireKpiManage, async (req,
 
     const toNum = (v) => (v === undefined || v === null || v === '' ? 0 : Number(v));
     const target = toNum(req.body.target_points);
+    const bonus = toNum(req.body.bonus_amount);
     const wNone = toNum(req.body.weight_none);
     const wLow = toNum(req.body.weight_low);
     const wMedium = toNum(req.body.weight_medium);
@@ -84,15 +168,15 @@ router.put('/plans/:employeeId', auth.requireAuth, requireKpiManage, async (req,
     const existing = await db.get('SELECT id FROM kpi_plans WHERE employee_id = ?', [employeeId]);
     if (existing) {
       await db.run(
-        `UPDATE kpi_plans SET target_points=?, weight_none=?, weight_low=?, weight_medium=?, weight_high=?, weight_urgent=?, updated_at=NOW()
+        `UPDATE kpi_plans SET target_points=?, bonus_amount=?, weight_none=?, weight_low=?, weight_medium=?, weight_high=?, weight_urgent=?, updated_at=NOW()
          WHERE employee_id=?`,
-        [target, wNone, wLow, wMedium, wHigh, wUrgent, employeeId]
+        [target, bonus, wNone, wLow, wMedium, wHigh, wUrgent, employeeId]
       );
     } else {
       await db.run(
-        `INSERT INTO kpi_plans (employee_id, target_points, weight_none, weight_low, weight_medium, weight_high, weight_urgent, created_by)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [employeeId, target, wNone, wLow, wMedium, wHigh, wUrgent, req.user.userId]
+        `INSERT INTO kpi_plans (employee_id, target_points, bonus_amount, weight_none, weight_low, weight_medium, weight_high, weight_urgent, created_by)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [employeeId, target, bonus, wNone, wLow, wMedium, wHigh, wUrgent, req.user.userId]
       );
     }
     res.json({ success: true });
@@ -111,50 +195,35 @@ router.delete('/plans/:employeeId', auth.requireAuth, requireKpiManage, async (r
   }
 });
 
-// GET /api/kpi/stats?month=YYYY-MM — har bir reja bor xodim uchun tanlangan
-// oyda bajarilgan vazifalar asosida hisoblangan KPI (ball, foiz, vazifalar ro'yxati)
+// GET /api/kpi/stats?month=YYYY-MM — barcha reja bor xodimlarning tanlangan oydagi KPI'si
 router.get('/stats', auth.requireAuth, requireKpiView, async (req, res) => {
   try {
     const month = /^\d{4}-\d{2}$/.test(req.query.month || '') ? req.query.month : currentMonthStr();
-    const range = monthRange(month);
     const plans = await db.all(`
       SELECT p.*, u.name AS employee_name, u.role AS employee_role
       FROM kpi_plans p JOIN admin_users u ON u.id = p.employee_id
       ORDER BY u.name
     `);
-
     const result = [];
     for (const p of plans) {
-      const tasks = await db.all(
-        `SELECT id, title, priority, updated_at FROM tasks
-         WHERE assigned_to = ? AND status = 'done' AND updated_at >= ? AND updated_at < ?
-         ORDER BY updated_at DESC`,
-        [p.employee_id, range.start, range.end]
-      );
-      const weightMap = {
-        none: Number(p.weight_none), low: Number(p.weight_low),
-        medium: Number(p.weight_medium), high: Number(p.weight_high), urgent: Number(p.weight_urgent)
-      };
-      let earned = 0;
-      const taskList = tasks.map((t) => {
-        const pts = weightMap[t.priority] !== undefined ? weightMap[t.priority] : 0;
-        earned += pts;
-        return { id: t.id, title: t.title, priority: t.priority, points: pts, completed_at: t.updated_at };
-      });
-      const target = Number(p.target_points) || 0;
-      result.push({
-        employee_id: p.employee_id,
-        employee_name: p.employee_name,
-        employee_role: p.employee_role,
-        target_points: target,
-        weights: weightMap,
-        earned_points: earned,
-        percent: target > 0 ? Math.round((earned / target) * 1000) / 10 : 0,
-        completed_count: taskList.length,
-        tasks: taskList
-      });
+      const stat = await computeEmployeeKpi(p, month);
+      result.push(Object.assign({ employee_name: p.employee_name, employee_role: p.employee_role }, stat));
     }
     res.json({ success: true, month, kpis: result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/kpi/my-stats?month=YYYY-MM — joriy foydalanuvchining o'z KPI'si
+// (rol cheklovisiz — har bir xodim faqat o'zinikini ko'radi)
+router.get('/my-stats', auth.requireAuth, async (req, res) => {
+  try {
+    const month = /^\d{4}-\d{2}$/.test(req.query.month || '') ? req.query.month : currentMonthStr();
+    const plan = await db.get('SELECT * FROM kpi_plans WHERE employee_id = ?', [req.user.userId]);
+    if (!plan) return res.json({ success: true, month, hasPlan: false });
+    const stat = await computeEmployeeKpi(plan, month);
+    res.json({ success: true, month, hasPlan: true, kpi: stat });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

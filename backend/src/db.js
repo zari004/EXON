@@ -203,6 +203,7 @@ const init = async () => {
       id SERIAL PRIMARY KEY,
       employee_id INTEGER NOT NULL UNIQUE REFERENCES admin_users(id) ON DELETE CASCADE,
       target_points NUMERIC NOT NULL DEFAULT 100,
+      bonus_amount NUMERIC NOT NULL DEFAULT 0,
       weight_none NUMERIC NOT NULL DEFAULT 0,
       weight_low NUMERIC NOT NULL DEFAULT 5,
       weight_medium NUMERIC NOT NULL DEFAULT 10,
@@ -213,6 +214,7 @@ const init = async () => {
       updated_at TIMESTAMP DEFAULT NOW()
     )
   `);
+  await pool.query(`ALTER TABLE kpi_plans ADD COLUMN IF NOT EXISTS bonus_amount NUMERIC NOT NULL DEFAULT 0`);
 
   // Standart ruxsatlar — mavjud bo'lsa o'zgartirmaydi
   await pool.query(`

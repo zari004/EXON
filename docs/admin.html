@@ -930,6 +930,36 @@ body{
 .kpi-task-row__date{color:var(--gray-dim);font-size:11px;flex-shrink:0}
 .kpi-task-row--empty{color:var(--gray-dim);font-style:italic}
 
+.kpi-modal-box{max-width:480px}
+.kpi-weight-section{margin-top:6px;padding:14px;border-radius:12px;background:rgba(var(--surface-2-rgb),.5);border:1px solid var(--line)}
+.kpi-weight-section__label{font-size:12px;color:var(--gray-dim);margin-bottom:12px;line-height:1.4}
+.kpi-weight-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.kpi-weight-item{display:flex;align-items:center;gap:7px;position:relative}
+.kpi-weight-item label{font-size:12px;color:var(--gray);flex-shrink:0;margin-right:auto}
+.kpi-weight-item input{
+  width:60px;height:34px;padding:0 8px;border-radius:7px;background:var(--bg-2);
+  border:1px solid var(--line-2);color:var(--white);font-size:13px;text-align:center;margin-bottom:0!important;
+}
+.kpi-modal-hint{font-size:11.5px;color:var(--gray-dim);line-height:1.5;margin:12px 0 4px}
+
+/* ── ISH UNUMDORLIGI ── */
+.prod-summary{
+  display:flex;align-items:center;gap:22px;padding:22px;border-radius:16px;margin-bottom:20px;
+  background:linear-gradient(145deg,var(--surface),rgba(var(--surface-2-rgb),.5));border:1px solid var(--line);
+}
+.prod-percent{font-size:42px;font-weight:800;flex-shrink:0;line-height:1}
+.prod-summary__body{flex:1;min-width:0}
+.prod-bonus{font-size:13.5px;color:var(--gray);margin-top:8px}
+.prod-bonus b{color:var(--green-hi);font-size:15px}
+.prod-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+.prod-stat{
+  padding:16px;border-radius:14px;text-align:center;
+  background:linear-gradient(145deg,var(--surface),rgba(var(--surface-2-rgb),.38));border:1px solid var(--line);
+}
+.prod-stat b{display:block;font-size:24px;font-weight:700;margin-bottom:3px}
+.prod-stat span{font-size:11.5px;color:var(--gray-dim);text-transform:uppercase;letter-spacing:.04em}
+.prod-section-title{font-size:14px;font-weight:600;margin-bottom:10px}
+
 /* ── MODAL FORM ── */
 .modal-overlay{
   display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.6);
@@ -1237,6 +1267,10 @@ body{
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
         <span>KPI</span>
       </button>
+      <button class="sidebar-item" data-tab="productivity">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 15l4-5 3 3 5-7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Ish unumdorligi</span>
+      </button>
       <button class="sidebar-item" data-tab="settings">
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
         <span>Sozlamalar</span>
@@ -1374,6 +1408,15 @@ body{
       </div>
     </div>
     <div class="item-list" id="kpiList"></div>
+  </section>
+
+  <!-- ISH UNUMDORLIGI (shaxsiy KPI) -->
+  <section class="admin-panel" id="panel-productivity">
+    <div class="panel-head">
+      <h2>Ish unumdorligi</h2>
+      <input type="month" id="prodMonthInput" />
+    </div>
+    <div id="prodContent"></div>
   </section>
 
   <!-- SOZLAMALAR (Account settings) -->
@@ -1527,24 +1570,28 @@ body{
 
 <!-- ══════════ MODAL: KPI REJASI ══════════ -->
 <div class="modal-overlay" id="kpiModal">
-  <div class="modal-box">
+  <div class="modal-box kpi-modal-box">
     <h3 id="kpiModalTitle">Yangi KPI rejasi</h3>
     <form id="kpiForm">
       <div class="field">
         <label>Xodim</label>
         <select id="kpiEmployeeSelect" required></select>
       </div>
-      <div class="field"><label>Maqsad ball (oylik)</label><input type="number" id="kpiTarget" min="0" step="1" required /></div>
-      <p style="font-size:12px;color:var(--gray-dim);margin:2px 0 10px">Har bir bajarilgan vazifa muhimlik darajasiga qarab necha ball berishini belgilang:</p>
       <div class="field-row">
-        <div class="field"><label>Kam</label><input type="number" id="kpiWLow" min="0" step="0.5" /></div>
-        <div class="field"><label>O'rtacha</label><input type="number" id="kpiWMedium" min="0" step="0.5" /></div>
+        <div class="field"><label>Boshlang'ich ball (oylik)</label><input type="number" id="kpiTarget" min="0" step="1" required /></div>
+        <div class="field"><label>Oylik bonus summasi (so'm)</label><input type="number" id="kpiBonus" min="0" step="1000" placeholder="0" /></div>
       </div>
-      <div class="field-row">
-        <div class="field"><label>Yuqori</label><input type="number" id="kpiWHigh" min="0" step="0.5" /></div>
-        <div class="field"><label>Shoshilinch</label><input type="number" id="kpiWUrgent" min="0" step="0.5" /></div>
+      <div class="kpi-weight-section">
+        <div class="kpi-weight-section__label">Kechiktirilgan vazifa uchun muhimligiga qarab necha ball ayiriladi</div>
+        <div class="kpi-weight-grid">
+          <div class="kpi-weight-item"><span class="td-pri-flag urgent"></span><label>Shoshilinch</label><input type="number" id="kpiWUrgent" min="0" step="0.5" /></div>
+          <div class="kpi-weight-item"><span class="td-pri-flag high"></span><label>Yuqori</label><input type="number" id="kpiWHigh" min="0" step="0.5" /></div>
+          <div class="kpi-weight-item"><span class="td-pri-flag medium"></span><label>O'rtacha</label><input type="number" id="kpiWMedium" min="0" step="0.5" /></div>
+          <div class="kpi-weight-item"><span class="td-pri-flag low"></span><label>Kam</label><input type="number" id="kpiWLow" min="0" step="0.5" /></div>
+          <div class="kpi-weight-item"><span class="td-pri-flag none"></span><label>Belgilanmagan</label><input type="number" id="kpiWNone" min="0" step="0.5" /></div>
+        </div>
       </div>
-      <div class="field"><label>Belgilanmagan muhimlik</label><input type="number" id="kpiWNone" min="0" step="0.5" /></div>
+      <p class="kpi-modal-hint">Muddatida bajarilgan vazifalar uchun ball ayirilmaydi. Oy oxirida qolgan ball foizi qancha bo'lsa, bonus summasining o'shancha foizi xodimga belgilanadi.</p>
       <div class="form-msg" id="kpiFormMsg"></div>
       <div class="modal-actions">
         <button type="button" class="modal-cancel" onclick="closeModal('kpiModal')">Bekor qilish</button>
@@ -2727,6 +2774,7 @@ body{
       if (tab.dataset.tab === 'tasks') loadTasks();
       if (tab.dataset.tab === 'settings') loadAccountSettings();
       if (tab.dataset.tab === 'kpi') loadKpi();
+      if (tab.dataset.tab === 'productivity') loadProductivity();
       // Mobil: sideberni yop
       document.getElementById('adminSidebar').classList.remove('is-open');
       document.getElementById('sidebarBackdrop').classList.remove('is-open');
@@ -4561,6 +4609,19 @@ body{
     return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
   }
 
+  function fmtMoney(n) {
+    var v = Math.round(n || 0);
+    var s = String(Math.abs(v));
+    var parts = [];
+    while (s.length > 3) { parts.unshift(s.slice(-3)); s = s.slice(0, -3); }
+    parts.unshift(s);
+    return (v < 0 ? '-' : '') + parts.join(' ') + " so'm";
+  }
+
+  function kpiLateReasonText(reason) {
+    return reason === 'overdue' ? "Muddati o'tgan" : 'Kechikib bajarilgan';
+  }
+
   async function loadKpi() {
     KPI_CAN_MANAGE = KPI_MANAGE_ROLES.indexOf(USER_ROLE) !== -1;
     var addBtn = document.getElementById('btnAddKpi');
@@ -4601,29 +4662,33 @@ body{
             '<button class="icon-btn danger" data-kpi-del="' + k.employee_id + '" title="O\'chirish">✕</button>' +
           '</div>'
         : '';
-      var taskRows = k.tasks.length
-        ? k.tasks.map(function (t) {
+      var taskRows = k.late_tasks.length
+        ? k.late_tasks.map(function (t) {
             return '<div class="kpi-task-row">' +
               '<span class="td-pri-flag ' + t.priority + '"></span>' +
               '<span class="kpi-task-row__title">' + esc(t.title) + '</span>' +
-              '<span class="kpi-task-row__pts">+' + t.points + ' ball</span>' +
-              '<span class="kpi-task-row__date">' + new Date(t.completed_at).toLocaleDateString('uz-UZ') + '</span>' +
+              '<span class="kpi-task-row__pts" style="color:#F2896F">-' + t.points + ' ball</span>' +
+              '<span class="kpi-task-row__date">' + kpiLateReasonText(t.reason) + '</span>' +
             '</div>';
           }).join('')
-        : '<div class="kpi-task-row kpi-task-row--empty">Bu davrda bajarilgan vazifa yo\'q</div>';
+        : '<div class="kpi-task-row kpi-task-row--empty">Ball ayirilgan vazifa yo\'q — barchasi o\'z vaqtida!</div>';
+      var bonusLine = k.bonus_amount > 0
+        ? '<div class="kpi-card__meta-row">Bonus: ' + fmtMoney(k.bonus_earned) + ' / ' + fmtMoney(k.bonus_amount) + '</div>'
+        : '';
       return '<div class="kpi-card">' +
         '<div class="kpi-card__head">' +
           '<div class="item-row__thumb" style="background:' + avaColor(k.employee_name) + '">' + avaLetter(k.employee_name) + '</div>' +
           '<div class="item-row__body">' +
             '<div class="item-row__title">' + esc(k.employee_name) + '</div>' +
-            '<div class="item-row__meta">' + esc(T('role.' + k.employee_role) || k.employee_role) + ' · ' + k.completed_count + " ta vazifa bajarildi</div>" +
+            '<div class="item-row__meta">' + esc(T('role.' + k.employee_role) || k.employee_role) + ' · ' + k.on_time_count + " ta o'z vaqtida · " + k.late_count + ' ta kechiktirilgan</div>' +
           '</div>' +
           '<div class="kpi-card__percent" style="color:' + barColor + '">' + k.percent + '%</div>' +
           actions +
         '</div>' +
         '<div class="kpi-progress"><div class="kpi-progress__fill" style="width:' + pct + '%;background:' + barColor + '"></div></div>' +
-        '<div class="kpi-card__meta-row">' + (Math.round(k.earned_points * 10) / 10) + ' / ' + k.target_points + ' ball</div>' +
-        '<button type="button" class="kpi-card__toggle">Vazifalar ro\'yxati ▾</button>' +
+        '<div class="kpi-card__meta-row">' + (Math.round(k.earned_points * 10) / 10) + ' / ' + k.target_points + ' ball' + (k.deducted_points > 0 ? ' · -' + k.deducted_points + ' ball ayirildi' : '') + '</div>' +
+        bonusLine +
+        '<button type="button" class="kpi-card__toggle">Ball ayirilgan vazifalar ▾</button>' +
         '<div class="kpi-card__tasks">' + taskRows + '</div>' +
       '</div>';
     }).join('');
@@ -4660,6 +4725,7 @@ body{
       sel.disabled = false;
     }
     document.getElementById('kpiTarget').value = plan ? plan.target_points : 100;
+    document.getElementById('kpiBonus').value = plan ? plan.bonus_amount : 0;
     document.getElementById('kpiWNone').value = plan ? plan.weight_none : 0;
     document.getElementById('kpiWLow').value = plan ? plan.weight_low : 5;
     document.getElementById('kpiWMedium').value = plan ? plan.weight_medium : 10;
@@ -4684,6 +4750,7 @@ body{
     if (!employeeId) { msg.textContent = 'Xodimni tanlang'; return; }
     var body = {
       target_points: Number(document.getElementById('kpiTarget').value) || 0,
+      bonus_amount: Number(document.getElementById('kpiBonus').value) || 0,
       weight_none: Number(document.getElementById('kpiWNone').value) || 0,
       weight_low: Number(document.getElementById('kpiWLow').value) || 0,
       weight_medium: Number(document.getElementById('kpiWMedium').value) || 0,
@@ -4702,6 +4769,63 @@ body{
       btn.disabled = false;
     }
   });
+
+  // ══════════════════════════════════════════════════════════
+  // ISH UNUMDORLIGI (xodimning shaxsiy KPI oynasi)
+  // ══════════════════════════════════════════════════════════
+  async function loadProductivity() {
+    var monthInput = document.getElementById('prodMonthInput');
+    if (!monthInput.value) monthInput.value = kpiDefaultMonth();
+    var el = document.getElementById('prodContent');
+    el.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
+    try {
+      var data = await apiFetch('/api/kpi/my-stats?month=' + encodeURIComponent(monthInput.value));
+      if (!data.hasPlan) {
+        el.innerHTML = '<div class="empty-state">Sizga hali KPI rejasi biriktirilmagan</div>';
+        return;
+      }
+      renderProductivity(data.kpi);
+    } catch (err) {
+      el.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
+    }
+  }
+
+  document.getElementById('prodMonthInput').addEventListener('change', function () {
+    if (document.getElementById('panel-productivity').classList.contains('is-active')) loadProductivity();
+  });
+
+  function renderProductivity(k) {
+    var el = document.getElementById('prodContent');
+    var pct = Math.min(100, Math.max(0, k.percent));
+    var barColor = k.percent >= 100 ? 'var(--green-hi)' : (k.percent >= 60 ? '#F0A500' : '#F2896F');
+    var lateRows = k.late_tasks.length
+      ? k.late_tasks.map(function (t) {
+          return '<div class="kpi-task-row">' +
+            '<span class="td-pri-flag ' + t.priority + '"></span>' +
+            '<span class="kpi-task-row__title">' + esc(t.title) + '</span>' +
+            '<span class="kpi-task-row__pts" style="color:#F2896F">-' + t.points + ' ball</span>' +
+            '<span class="kpi-task-row__date">' + kpiLateReasonText(t.reason) + '</span>' +
+          '</div>';
+        }).join('')
+      : '<div class="kpi-task-row kpi-task-row--empty">Ball ayirilgan vazifa yo\'q — barchasi o\'z vaqtida!</div>';
+
+    el.innerHTML =
+      '<div class="prod-summary">' +
+        '<div class="prod-percent" style="color:' + barColor + '">' + k.percent + '%</div>' +
+        '<div class="prod-summary__body">' +
+          '<div class="kpi-progress"><div class="kpi-progress__fill" style="width:' + pct + '%;background:' + barColor + '"></div></div>' +
+          '<div class="kpi-card__meta-row">' + (Math.round(k.earned_points * 10) / 10) + ' / ' + k.target_points + ' ball' + (k.deducted_points > 0 ? ' · -' + k.deducted_points + ' ball ayirildi' : '') + '</div>' +
+          (k.bonus_amount > 0 ? '<div class="prod-bonus">Bu oylik bonus: <b>' + fmtMoney(k.bonus_earned) + '</b> / ' + fmtMoney(k.bonus_amount) + '</div>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="prod-stats-row">' +
+        '<div class="prod-stat"><b style="color:var(--green-hi)">' + k.on_time_count + '</b><span>o\'z vaqtida</span></div>' +
+        '<div class="prod-stat"><b style="color:#F2896F">' + k.late_count + '</b><span>kechiktirilgan</span></div>' +
+        '<div class="prod-stat"><b style="color:var(--gray-dim)">' + k.pending_count + '</b><span>kutilmoqda</span></div>' +
+      '</div>' +
+      '<h3 class="prod-section-title">Ball ayirilgan vazifalar</h3>' +
+      '<div class="kpi-card__tasks is-on">' + lateRows + '</div>';
+  }
 
 })();
 </script>
