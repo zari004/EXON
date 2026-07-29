@@ -445,7 +445,7 @@ body{
 
 /* Vaqt ro'yxati (tez tanlash) */
 .td-time-list{
-  max-height:148px;overflow-y:auto;margin-top:6px;
+  flex:1;overflow-y:auto;margin-top:8px;
   border:1px solid var(--line);border-radius:8px;
 }
 [data-theme="light"] .td-time-list{border-color:#e9ede9}
@@ -472,19 +472,38 @@ body{
 .td-cal-row .td-chev{color:var(--gray-dim);transition:transform .15s;flex-shrink:0}
 .td-cal-row.is-open .td-chev{transform:rotate(90deg)}
 .td-cal-row.has-val span{color:var(--green-hi);font-weight:600}
-.td-cal-subpanel{display:none;padding:2px 4px 8px 29px}
-.td-cal-subpanel.is-on{display:block}
 .td-cal-subitem{
-  display:block;width:100%;text-align:left;background:none;border:0;padding:6px 10px;
-  border-radius:6px;font-size:12px;color:var(--gray);cursor:pointer;transition:background .12s;
+  display:block;width:100%;text-align:left;background:none;border:0;padding:8px 10px;
+  border-radius:6px;font-size:12.5px;color:var(--gray);cursor:pointer;transition:background .12s;
 }
 .td-cal-subitem:hover{background:var(--surface)}
 .td-cal-subitem.is-sel{color:var(--green-hi);font-weight:600}
 .td-cal-time-input{
-  width:100%;padding:6px 10px;border-radius:6px;background:var(--surface);
-  border:1px solid var(--line-2);color:var(--white);font-size:12.5px;font-family:inherit;
+  width:100%;padding:8px 10px;border-radius:7px;background:var(--surface);
+  border:1px solid var(--line-2);color:var(--white);font-size:13px;font-family:inherit;flex-shrink:0;
 }
 [data-theme="light"] .td-cal-time-input{color:#1a2117}
+
+/* Vaqt/Eslatma/Takrorlash — suzuvchi oyna (kalendar ustini to'liq qoplaydi) */
+.td-sub-overlay{
+  position:absolute;inset:0;background:var(--bg-2);border-radius:14px;
+  z-index:20;display:none;flex-direction:column;padding:14px;
+  box-shadow:0 10px 34px rgba(0,0,0,.28);
+}
+[data-theme="light"] .td-sub-overlay{background:#fff}
+.td-sub-overlay.is-on{display:flex}
+.td-sub-overlay-head{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-shrink:0;
+  font-size:14px;font-weight:600;color:var(--white);
+}
+[data-theme="light"] .td-sub-overlay-head{color:#1a2117}
+.td-sub-overlay-close{
+  background:none;border:0;color:var(--gray-dim);cursor:pointer;
+  width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+  font-size:13px;transition:background .12s,color .12s;
+}
+.td-sub-overlay-close:hover{background:var(--surface);color:var(--gray)}
+.td-sub-overlay-list{display:flex;flex-direction:column;gap:2px;overflow-y:auto}
 
 .td-ava{
   width:26px;height:26px;border-radius:50%;flex-shrink:0;
@@ -1397,10 +1416,6 @@ body{
           <span id="tdTimeLabel">Vaqt</span>
           <svg class="td-chev" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <div class="td-cal-subpanel" id="tdTimePanel">
-          <input type="time" class="td-cal-time-input" id="tdTimeInput" />
-          <div class="td-time-list" id="tdTimeList"></div>
-        </div>
 
         <!-- ESLATMA -->
         <button type="button" class="td-cal-row" id="tdReminderRow">
@@ -1408,14 +1423,6 @@ body{
           <span id="tdReminderLabel">Eslatma</span>
           <svg class="td-chev" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <div class="td-cal-subpanel" id="tdReminderPanel">
-          <button type="button" class="td-cal-subitem" data-val="">Yo'q</button>
-          <button type="button" class="td-cal-subitem" data-val="0">Vaqtida</button>
-          <button type="button" class="td-cal-subitem" data-val="5">5 daqiqa oldin</button>
-          <button type="button" class="td-cal-subitem" data-val="30">30 daqiqa oldin</button>
-          <button type="button" class="td-cal-subitem" data-val="60">1 soat oldin</button>
-          <button type="button" class="td-cal-subitem" data-val="1440">1 kun oldin</button>
-        </div>
 
         <!-- TAKRORLASH -->
         <button type="button" class="td-cal-row" id="tdRepeatRow">
@@ -1423,7 +1430,41 @@ body{
           <span id="tdRepeatLabel">Takrorlash</span>
           <svg class="td-chev" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <div class="td-cal-subpanel" id="tdRepeatPanel">
+      </div>
+
+      <!-- VAQT — suzuvchi oyna -->
+      <div class="td-sub-overlay" id="tdTimeOverlay">
+        <div class="td-sub-overlay-head">
+          <span>Vaqt</span>
+          <button type="button" class="td-sub-overlay-close" data-close="tdTimeOverlay" aria-label="Yopish">✕</button>
+        </div>
+        <input type="time" class="td-cal-time-input" id="tdTimeInput" />
+        <div class="td-time-list" id="tdTimeList"></div>
+      </div>
+
+      <!-- ESLATMA — suzuvchi oyna -->
+      <div class="td-sub-overlay" id="tdReminderOverlay">
+        <div class="td-sub-overlay-head">
+          <span>Eslatma</span>
+          <button type="button" class="td-sub-overlay-close" data-close="tdReminderOverlay" aria-label="Yopish">✕</button>
+        </div>
+        <div class="td-sub-overlay-list">
+          <button type="button" class="td-cal-subitem" data-val="">Yo'q</button>
+          <button type="button" class="td-cal-subitem" data-val="0">Vaqtida</button>
+          <button type="button" class="td-cal-subitem" data-val="5">5 daqiqa oldin</button>
+          <button type="button" class="td-cal-subitem" data-val="30">30 daqiqa oldin</button>
+          <button type="button" class="td-cal-subitem" data-val="60">1 soat oldin</button>
+          <button type="button" class="td-cal-subitem" data-val="1440">1 kun oldin</button>
+        </div>
+      </div>
+
+      <!-- TAKRORLASH — suzuvchi oyna -->
+      <div class="td-sub-overlay" id="tdRepeatOverlay">
+        <div class="td-sub-overlay-head">
+          <span>Takrorlash</span>
+          <button type="button" class="td-sub-overlay-close" data-close="tdRepeatOverlay" aria-label="Yopish">✕</button>
+        </div>
+        <div class="td-sub-overlay-list">
           <button type="button" class="td-cal-subitem" data-val="none">Yo'q</button>
           <button type="button" class="td-cal-subitem" data-val="daily">Har kuni</button>
           <button type="button" class="td-cal-subitem" data-val="weekly">Har hafta</button>
@@ -2969,9 +3010,15 @@ body{
     ['tdTimeRow', 'tdReminderRow', 'tdRepeatRow'].forEach(function (id) {
       document.getElementById(id).classList.remove('is-open');
     });
-    ['tdTimePanel', 'tdReminderPanel', 'tdRepeatPanel'].forEach(function (id) {
+    ['tdTimeOverlay', 'tdReminderOverlay', 'tdRepeatOverlay'].forEach(function (id) {
       document.getElementById(id).classList.remove('is-on');
     });
+  }
+
+  function openSubOverlay(rowId, overlayId) {
+    closeCalSubpanels();
+    document.getElementById(rowId).classList.add('is-open');
+    document.getElementById(overlayId).classList.add('is-on');
   }
 
   // ── PRIORITY UI ──
@@ -3167,7 +3214,7 @@ body{
     TD_REMINDER_MINUTES = (val === '' || val === null || val === undefined) ? null : Number(val);
     var row = document.getElementById('tdReminderRow');
     var label = document.getElementById('tdReminderLabel');
-    document.querySelectorAll('#tdReminderPanel .td-cal-subitem').forEach(function (item) {
+    document.querySelectorAll('#tdReminderOverlay .td-cal-subitem').forEach(function (item) {
       item.classList.toggle('is-sel', item.dataset.val === (TD_REMINDER_MINUTES === null ? '' : String(TD_REMINDER_MINUTES)));
     });
     if (TD_REMINDER_MINUTES !== null) { label.textContent = REMINDER_LABELS[String(TD_REMINDER_MINUTES)] || 'Eslatma'; row.classList.add('has-val'); }
@@ -3178,7 +3225,7 @@ body{
     TD_REPEAT_RULE = val || 'none';
     var row = document.getElementById('tdRepeatRow');
     var label = document.getElementById('tdRepeatLabel');
-    document.querySelectorAll('#tdRepeatPanel .td-cal-subitem').forEach(function (item) {
+    document.querySelectorAll('#tdRepeatOverlay .td-cal-subitem').forEach(function (item) {
       item.classList.toggle('is-sel', item.dataset.val === TD_REPEAT_RULE);
     });
     if (TD_REPEAT_RULE !== 'none') { label.textContent = REPEAT_LABELS[TD_REPEAT_RULE] || 'Takrorlash'; row.classList.add('has-val'); }
@@ -3413,38 +3460,38 @@ body{
       closeAllPopups();
     });
 
-    // Vaqt / Eslatma / Takrorlash qatorlari — bosilganda ochiladi/yopiladi
-    function toggleCalRow(rowId, panelId) {
-      var row = document.getElementById(rowId);
-      var panel = document.getElementById(panelId);
-      var wasOn = panel.classList.contains('is-on');
-      closeCalSubpanels();
-      if (!wasOn) { row.classList.add('is-open'); panel.classList.add('is-on'); }
-    }
+    // Vaqt / Eslatma / Takrorlash qatorlari — bosilganda suzuvchi oyna ochiladi
     document.getElementById('tdTimeRow').addEventListener('click', function (e) {
       e.stopPropagation();
-      toggleCalRow('tdTimeRow', 'tdTimePanel');
+      openSubOverlay('tdTimeRow', 'tdTimeOverlay');
     });
     document.getElementById('tdReminderRow').addEventListener('click', function (e) {
       e.stopPropagation();
-      toggleCalRow('tdReminderRow', 'tdReminderPanel');
+      openSubOverlay('tdReminderRow', 'tdReminderOverlay');
     });
     document.getElementById('tdRepeatRow').addEventListener('click', function (e) {
       e.stopPropagation();
-      toggleCalRow('tdRepeatRow', 'tdRepeatPanel');
+      openSubOverlay('tdRepeatRow', 'tdRepeatOverlay');
+    });
+    // Yopish (✕) tugmalari
+    document.querySelectorAll('.td-sub-overlay-close').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closeCalSubpanels();
+      });
     });
     document.getElementById('tdTimeInput').addEventListener('click', function (e) { e.stopPropagation(); });
     document.getElementById('tdTimeInput').addEventListener('change', function () {
       setTimeUI(this.value);
     });
-    document.querySelectorAll('#tdReminderPanel .td-cal-subitem').forEach(function (item) {
+    document.querySelectorAll('#tdReminderOverlay .td-cal-subitem').forEach(function (item) {
       item.addEventListener('click', function (e) {
         e.stopPropagation();
         setReminderUI(item.dataset.val === '' ? null : item.dataset.val);
         closeCalSubpanels();
       });
     });
-    document.querySelectorAll('#tdRepeatPanel .td-cal-subitem').forEach(function (item) {
+    document.querySelectorAll('#tdRepeatOverlay .td-cal-subitem').forEach(function (item) {
       item.addEventListener('click', function (e) {
         e.stopPropagation();
         setRepeatUI(item.dataset.val);
