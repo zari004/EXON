@@ -18,8 +18,7 @@ if (RESEND_API_KEY) {
 
 const isConfigured = () => Boolean(RESEND_API_KEY);
 
-// Parolni tiklash tasdiqlash kodini yuboradi
-const sendResetCode = async (toEmail, code) => {
+async function sendEmail(toEmail, subject, html) {
   if (!RESEND_API_KEY) {
     const error = new Error('Email xizmati sozlanmagan');
     error.code = 'EMAIL_NOT_CONFIGURED';
@@ -31,25 +30,43 @@ const sendResetCode = async (toEmail, code) => {
       'Authorization': `Bearer ${RESEND_API_KEY}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      from: `EXON Admin <${RESEND_FROM}>`,
-      to: [toEmail],
-      subject: 'EXON Admin — Parolni tiklash kodi',
-      html: `
-        <div style="font-family:sans-serif;max-width:420px;margin:0 auto">
-          <h2 style="color:#0BD16C">EXON Admin</h2>
-          <p>Parolingizni tiklash uchun quyidagi kodni kiriting:</p>
-          <div style="font-size:32px;font-weight:700;letter-spacing:6px;background:#f2f5f3;padding:16px 20px;border-radius:10px;text-align:center;margin:16px 0">${code}</div>
-          <p style="color:#888;font-size:13px">Bu kod 10 daqiqa davomida amal qiladi. Agar siz bu so'rovni yubormagan bo'lsangiz, xabarni e'tiborsiz qoldiring.</p>
-        </div>
-      `
-    })
+    body: JSON.stringify({ from: `EXON Admin <${RESEND_FROM}>`, to: [toEmail], subject, html })
   });
   if (!res.ok) {
     const errText = await res.text().catch(() => '');
     throw new Error(`Resend xatosi (${res.status}): ${errText}`);
   }
   return res.json();
-};
+}
 
-module.exports = { isConfigured, sendResetCode };
+// Parolni tiklash tasdiqlash kodini yuboradi
+const sendResetCode = (toEmail, code) => sendEmail(
+  toEmail,
+  'EXON Admin — Parolni tiklash kodi',
+  `
+    <div style="font-family:sans-serif;max-width:420px;margin:0 auto">
+      <h2 style="color:#0BD16C">EXON Admin</h2>
+      <p>Parolingizni tiklash uchun quyidagi kodni kiriting:</p>
+      <div style="font-size:32px;font-weight:700;letter-spacing:6px;background:#f2f5f3;padding:16px 20px;border-radius:10px;text-align:center;margin:16px 0">${code}</div>
+      <p style="color:#888;font-size:13px">Bu kod 10 daqiqa davomida amal qiladi. Agar siz bu so'rovni yubormagan bo'lsangiz, xabarni e'tiborsiz qoldiring.</p>
+    </div>
+  `
+);
+
+// Vazifa eslatmasini yuboradi
+const sendTaskReminder = (toEmail, taskTitle, dueLabel) => sendEmail(
+  toEmail,
+  `EXON Admin — Eslatma: "${taskTitle}"`,
+  `
+    <div style="font-family:sans-serif;max-width:420px;margin:0 auto">
+      <h2 style="color:#0BD16C">EXON Admin</h2>
+      <p>Sizga tayinlangan vazifa muddati yaqinlashmoqda:</p>
+      <div style="background:#f2f5f3;padding:16px 20px;border-radius:10px;margin:16px 0">
+        <div style="font-weight:700;font-size:16px;margin-bottom:6px">${taskTitle}</div>
+        <div style="color:#666;font-size:13px">${dueLabel}</div>
+      </div>
+    </div>
+  `
+);
+
+module.exports = { isConfigured, sendResetCode, sendTaskReminder };

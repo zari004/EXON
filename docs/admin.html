@@ -400,6 +400,35 @@ body{
 .td-cal-footbtn:hover{background:var(--surface)}
 .td-cal-footbtn.td-cal-today{color:var(--green-hi);font-weight:600}
 
+/* Vaqt / Eslatma / Takrorlash qatorlari */
+.td-cal-extra{margin-top:8px;padding-top:6px;border-top:1px solid var(--line)}
+[data-theme="light"] .td-cal-extra{border-top-color:#e9ede9}
+.td-cal-row{
+  display:flex;align-items:center;gap:10px;width:100%;background:none;border:0;
+  padding:8px 4px;border-radius:7px;font-size:12.5px;color:var(--white);cursor:pointer;
+  transition:background .12s;text-align:left;
+}
+[data-theme="light"] .td-cal-row{color:#1a2117}
+.td-cal-row:hover{background:var(--surface)}
+.td-cal-row svg:first-child{flex-shrink:0;color:var(--gray-dim)}
+.td-cal-row span{flex:1}
+.td-cal-row .td-chev{color:var(--gray-dim);transition:transform .15s;flex-shrink:0}
+.td-cal-row.is-open .td-chev{transform:rotate(90deg)}
+.td-cal-row.has-val span{color:var(--green-hi);font-weight:600}
+.td-cal-subpanel{display:none;padding:2px 4px 8px 29px}
+.td-cal-subpanel.is-on{display:block}
+.td-cal-subitem{
+  display:block;width:100%;text-align:left;background:none;border:0;padding:6px 10px;
+  border-radius:6px;font-size:12px;color:var(--gray);cursor:pointer;transition:background .12s;
+}
+.td-cal-subitem:hover{background:var(--surface)}
+.td-cal-subitem.is-sel{color:var(--green-hi);font-weight:600}
+.td-cal-time-input{
+  width:100%;padding:6px 10px;border-radius:6px;background:var(--surface);
+  border:1px solid var(--line-2);color:var(--white);font-size:12.5px;font-family:inherit;
+}
+[data-theme="light"] .td-cal-time-input{color:#1a2117}
+
 .td-ava{
   width:26px;height:26px;border-radius:50%;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
@@ -1268,6 +1297,47 @@ body{
         <span>Du</span><span>Se</span><span>Ch</span><span>Pa</span><span>Ju</span><span>Sh</span><span>Ya</span>
       </div>
       <div class="td-cal-grid" id="tdCalGrid"></div>
+
+      <div class="td-cal-extra">
+        <!-- VAQT -->
+        <button type="button" class="td-cal-row" id="tdTimeRow">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="tdTimeLabel">Vaqt</span>
+          <svg class="td-chev" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="td-cal-subpanel" id="tdTimePanel">
+          <input type="time" class="td-cal-time-input" id="tdTimeInput" />
+        </div>
+
+        <!-- ESLATMA -->
+        <button type="button" class="td-cal-row" id="tdReminderRow">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M10 20a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          <span id="tdReminderLabel">Eslatma</span>
+          <svg class="td-chev" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="td-cal-subpanel" id="tdReminderPanel">
+          <button type="button" class="td-cal-subitem" data-val="">Yo'q</button>
+          <button type="button" class="td-cal-subitem" data-val="0">Vaqtida</button>
+          <button type="button" class="td-cal-subitem" data-val="5">5 daqiqa oldin</button>
+          <button type="button" class="td-cal-subitem" data-val="30">30 daqiqa oldin</button>
+          <button type="button" class="td-cal-subitem" data-val="60">1 soat oldin</button>
+          <button type="button" class="td-cal-subitem" data-val="1440">1 kun oldin</button>
+        </div>
+
+        <!-- TAKRORLASH -->
+        <button type="button" class="td-cal-row" id="tdRepeatRow">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M17 2l4 4-4 4M3 12v-2a4 4 0 0 1 4-4h14M7 22l-4-4 4-4M21 12v2a4 4 0 0 1-4 4H3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="tdRepeatLabel">Takrorlash</span>
+          <svg class="td-chev" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="td-cal-subpanel" id="tdRepeatPanel">
+          <button type="button" class="td-cal-subitem" data-val="none">Yo'q</button>
+          <button type="button" class="td-cal-subitem" data-val="daily">Har kuni</button>
+          <button type="button" class="td-cal-subitem" data-val="weekly">Har hafta</button>
+          <button type="button" class="td-cal-subitem" data-val="monthly">Har oy</button>
+        </div>
+      </div>
+
       <div class="td-cal-foot">
         <button type="button" class="td-cal-footbtn" id="tdCalClear">Tozalash</button>
         <button type="button" class="td-cal-footbtn td-cal-today" id="tdCalToday">Bugun</button>
@@ -2571,6 +2641,9 @@ body{
   var TD_ASSIGNEE_ID = null;
   var TD_ASSIGNEE_NAME = null;
   var TD_USERS = [];           // cached user list
+  var TD_DUE_TIME = '';        // 'HH:MM' yoki ''
+  var TD_REMINDER_MINUTES = null; // son yoki null (eslatma yo'q)
+  var TD_REPEAT_RULE = 'none'; // none|daily|weekly|monthly
   var draggedTaskId = null;
   var draggedCard = null;
 
@@ -2790,6 +2863,16 @@ body{
     document.getElementById('tdPriPop').classList.remove('is-on');
     document.getElementById('tdAssPop').classList.remove('is-on');
     document.getElementById('tdDatePop').classList.remove('is-on');
+    closeCalSubpanels();
+  }
+
+  function closeCalSubpanels() {
+    ['tdTimeRow', 'tdReminderRow', 'tdRepeatRow'].forEach(function (id) {
+      document.getElementById(id).classList.remove('is-open');
+    });
+    ['tdTimePanel', 'tdReminderPanel', 'tdRepeatPanel'].forEach(function (id) {
+      document.getElementById(id).classList.remove('is-on');
+    });
   }
 
   // ── PRIORITY UI ──
@@ -2877,6 +2960,43 @@ body{
     document.getElementById('tdDatePop').classList.add('is-on');
   }
 
+  // ── VAQT / ESLATMA / TAKRORLASH ──
+  var REMINDER_LABELS = { '0': 'Vaqtida', '5': '5 daqiqa oldin', '30': '30 daqiqa oldin', '60': '1 soat oldin', '1440': '1 kun oldin' };
+  var REPEAT_LABELS = { daily: 'Har kuni', weekly: 'Har hafta', monthly: 'Har oy' };
+
+  function setTimeUI(val) {
+    TD_DUE_TIME = val || '';
+    document.getElementById('tdTimeInput').value = TD_DUE_TIME;
+    var row = document.getElementById('tdTimeRow');
+    var label = document.getElementById('tdTimeLabel');
+    if (TD_DUE_TIME) { label.textContent = TD_DUE_TIME; row.classList.add('has-val'); }
+    else { label.textContent = 'Vaqt'; row.classList.remove('has-val'); }
+    var status = TD_EDIT_ID && TASKS_MAP[TD_EDIT_ID] ? TASKS_MAP[TD_EDIT_ID].status : null;
+    setDateLabel(document.getElementById('taskDue').value, status);
+  }
+
+  function setReminderUI(val) {
+    TD_REMINDER_MINUTES = (val === '' || val === null || val === undefined) ? null : Number(val);
+    var row = document.getElementById('tdReminderRow');
+    var label = document.getElementById('tdReminderLabel');
+    document.querySelectorAll('#tdReminderPanel .td-cal-subitem').forEach(function (item) {
+      item.classList.toggle('is-sel', item.dataset.val === (TD_REMINDER_MINUTES === null ? '' : String(TD_REMINDER_MINUTES)));
+    });
+    if (TD_REMINDER_MINUTES !== null) { label.textContent = REMINDER_LABELS[String(TD_REMINDER_MINUTES)] || 'Eslatma'; row.classList.add('has-val'); }
+    else { label.textContent = 'Eslatma'; row.classList.remove('has-val'); }
+  }
+
+  function setRepeatUI(val) {
+    TD_REPEAT_RULE = val || 'none';
+    var row = document.getElementById('tdRepeatRow');
+    var label = document.getElementById('tdRepeatLabel');
+    document.querySelectorAll('#tdRepeatPanel .td-cal-subitem').forEach(function (item) {
+      item.classList.toggle('is-sel', item.dataset.val === TD_REPEAT_RULE);
+    });
+    if (TD_REPEAT_RULE !== 'none') { label.textContent = REPEAT_LABELS[TD_REPEAT_RULE] || 'Takrorlash'; row.classList.add('has-val'); }
+    else { label.textContent = 'Takrorlash'; row.classList.remove('has-val'); }
+  }
+
   function setDateLabel(val, taskStatus) {
     var btn = document.getElementById('tdDateBtn');
     var label = document.getElementById('tdDateLabel');
@@ -2887,6 +3007,7 @@ body{
       var diffDays = Math.round((today - due) / 86400000);
       var overdue = diffDays > 0 && taskStatus !== 'done';
       var txt = fmtDate(val);
+      if (TD_DUE_TIME) txt += ', ' + TD_DUE_TIME;
       if (overdue) txt += ' · ' + diffDays + 'k muddati o\'tgan';
       label.textContent = txt;
       btn.classList.add(overdue ? 'is-overdue' : 'has-date');
@@ -2946,7 +3067,9 @@ body{
     document.getElementById('taskDesc').value = task ? (task.description || '') : '';
     document.getElementById('taskDue').value = task && task.due_date ? task.due_date.split('T')[0] : '';
     document.getElementById('taskFormMsg').textContent = '';
-    setDateLabel(task && task.due_date ? task.due_date.split('T')[0] : '', task ? task.status : null);
+    setTimeUI(task && task.due_time ? task.due_time : '');
+    setReminderUI(task && task.reminder_minutes !== null && task.reminder_minutes !== undefined ? task.reminder_minutes : null);
+    setRepeatUI(task ? (task.repeat_rule || 'none') : 'none');
     // Auto-resize description textarea
     var descEl = document.getElementById('taskDesc');
     setTimeout(function () { autoResize(descEl); }, 10);
@@ -2988,6 +3111,9 @@ body{
         description: document.getElementById('taskDesc').value.trim() || null,
         priority: TD_PRIORITY,
         due_date: document.getElementById('taskDue').value || null,
+        due_time: TD_DUE_TIME || null,
+        reminder_minutes: TD_REMINDER_MINUTES,
+        repeat_rule: TD_REPEAT_RULE,
         assigned_to: TD_ASSIGNEE_ID ? Number(TD_ASSIGNEE_ID) : null,
         assigned_name: TD_ASSIGNEE_NAME || null
       };
@@ -3056,8 +3182,50 @@ body{
     document.getElementById('tdCalClear').addEventListener('click', function (e) {
       e.stopPropagation();
       document.getElementById('taskDue').value = '';
+      setTimeUI('');
+      setReminderUI(null);
+      setRepeatUI('none');
       setDateLabel('', null);
       closeAllPopups();
+    });
+
+    // Vaqt / Eslatma / Takrorlash qatorlari — bosilganda ochiladi/yopiladi
+    function toggleCalRow(rowId, panelId) {
+      var row = document.getElementById(rowId);
+      var panel = document.getElementById(panelId);
+      var wasOn = panel.classList.contains('is-on');
+      closeCalSubpanels();
+      if (!wasOn) { row.classList.add('is-open'); panel.classList.add('is-on'); }
+    }
+    document.getElementById('tdTimeRow').addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggleCalRow('tdTimeRow', 'tdTimePanel');
+    });
+    document.getElementById('tdReminderRow').addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggleCalRow('tdReminderRow', 'tdReminderPanel');
+    });
+    document.getElementById('tdRepeatRow').addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggleCalRow('tdRepeatRow', 'tdRepeatPanel');
+    });
+    document.getElementById('tdTimeInput').addEventListener('click', function (e) { e.stopPropagation(); });
+    document.getElementById('tdTimeInput').addEventListener('change', function () {
+      setTimeUI(this.value);
+    });
+    document.querySelectorAll('#tdReminderPanel .td-cal-subitem').forEach(function (item) {
+      item.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setReminderUI(item.dataset.val === '' ? null : item.dataset.val);
+        closeCalSubpanels();
+      });
+    });
+    document.querySelectorAll('#tdRepeatPanel .td-cal-subitem').forEach(function (item) {
+      item.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setRepeatUI(item.dataset.val);
+        closeCalSubpanels();
+      });
     });
 
     // Description auto-resize

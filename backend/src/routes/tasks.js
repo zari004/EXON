@@ -3,6 +3,26 @@ const router = express.Router();
 const db = require('../db');
 const auth = require('../services/auth');
 
+// Takrorlanuvchi vazifa bajarilganda keyingi nusxasini yaratadi
+async function maybeCreateNextOccurrence(task) {
+  if (!task || !task.repeat_rule || task.repeat_rule === 'none' || !task.due_date) return;
+  const next = new Date(task.due_date);
+  if (task.repeat_rule === 'daily') next.setDate(next.getDate() + 1);
+  else if (task.repeat_rule === 'weekly') next.setDate(next.getDate() + 7);
+  else if (task.repeat_rule === 'monthly') next.setMonth(next.getMonth() + 1);
+  else return;
+  const nextDueDate = next.toISOString().split('T')[0];
+  await db.run(
+    `INSERT INTO tasks (title, description, priority, status, due_date, due_time, reminder_minutes, reminder_sent, repeat_rule, assigned_to, assigned_name, created_by, created_name)
+     VALUES (?, ?, ?, 'new', ?, ?, ?, false, ?, ?, ?, ?, ?)`,
+    [
+      task.title, task.description, task.priority, nextDueDate,
+      task.due_time || null, task.reminder_minutes || null, task.repeat_rule,
+      task.assigned_to, task.assigned_name, task.created_by, task.created_name
+    ]
+  );
+}
+
 // GET /api/tasks
 router.get('/', auth.requireAuth, async (req, res) => {
   try {
@@ -24,16 +44,19 @@ router.get('/', auth.requireAuth, async (req, res) => {
 // POST /api/tasks
 router.post('/', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
   try {
-    const { title, description, priority, status, due_date, assigned_to, assigned_name } = req.body;
+    const { title, description, priority, status, due_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name } = req.body;
     if (!title || !title.trim()) {
       return res.status(400).json({ success: false, error: 'Sarlavha talab qilinadi' });
     }
     const result = await db.run(
-      `INSERT INTO tasks (title, description, priority, status, due_date, assigned_to, assigned_name, created_by, created_name)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO tasks (title, description, priority, status, due_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name, created_by, created_name)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         title.trim(), description || null, priority || 'medium',
         status || 'new', due_date || null,
+        due_time || null,
+        reminder_minutes !== undefined && reminder_minutes !== null && reminder_minutes !== '' ? Number(reminder_minutes) : null,
+        repeat_rule || 'none',
         assigned_to ? Number(assigned_to) : null,
         assigned_name || null,
         req.user.userId, req.user.name
@@ -48,7 +71,7 @@ router.post('/', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
 // PUT /api/tasks/:id — to'liq yangilash (tahrirlash)
 router.put('/:id', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
   try {
-    const { title, description, priority, status, due_date, assigned_to, assigned_name } = req.body;
+    const { title, description, priority, status, due_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name } = req.body;
     const VALID_STATUS = ['new', 'in_progress', 'review', 'done'];
     if (!title || !title.trim()) {
       return res.status(400).json({ success: false, error: 'Sarlavha talab qilinadi' });
@@ -56,17 +79,27 @@ router.put('/:id', auth.requireAuth, auth.requireSuperAdmin, async (req, res) =>
     if (status && !VALID_STATUS.includes(status)) {
       return res.status(400).json({ success: false, error: "Noto'g'ri status" });
     }
+    const before = await db.get('SELECT status FROM tasks WHERE id = ?', [req.params.id]);
+    const reminderMinutesVal = reminder_minutes !== undefined && reminder_minutes !== null && reminder_minutes !== ''
+      ? Number(reminder_minutes) : null;
     await db.run(
       `UPDATE tasks SET title=?, description=?, priority=?, status=COALESCE(?,status),
-       due_date=?, assigned_to=?, assigned_name=?, updated_at=NOW() WHERE id=?`,
+       due_date=?, due_time=?, reminder_minutes=?, reminder_sent=false, repeat_rule=?,
+       assigned_to=?, assigned_name=?, updated_at=NOW() WHERE id=?`,
       [
         title.trim(), description || null, priority || 'medium',
         status || null, due_date || null,
+        due_time || null, reminderMinutesVal, repeat_rule || 'none',
         assigned_to ? Number(assigned_to) : null,
         assigned_name || null,
         req.params.id
       ]
     );
+    // Agar vazifa hozirgina "bajarildi"ga o'tgan bo'lsa va takrorlanuvchi bo'lsa — keyingi nusxasini yaratish
+    if (status === 'done' && before && before.status !== 'done') {
+      const updated = await db.get('SELECT * FROM tasks WHERE id = ?', [req.params.id]);
+      await maybeCreateNextOccurrence(updated);
+    }
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -81,16 +114,20 @@ router.patch('/:id/status', auth.requireAuth, async (req, res) => {
     if (!VALID_STATUS.includes(status)) {
       return res.status(400).json({ success: false, error: "Noto'g'ri status" });
     }
+    const existing = await db.get('SELECT * FROM tasks WHERE id = ?', [req.params.id]);
+    if (!existing) return res.status(404).json({ success: false, error: 'Vazifa topilmadi' });
     // IT bo'limi / superadmin — hamma vazifani o'zgartira oladi
     // Boshqalar — faqat o'ziga tayinlangan vazifani
     if (req.user.role !== 'superadmin' && req.user.role !== 'it_bolimi') {
-      const task = await db.get('SELECT assigned_to FROM tasks WHERE id = ?', [req.params.id]);
-      if (!task) return res.status(404).json({ success: false, error: 'Vazifa topilmadi' });
-      if (Number(task.assigned_to) !== Number(req.user.userId)) {
+      if (Number(existing.assigned_to) !== Number(req.user.userId)) {
         return res.status(403).json({ success: false, error: "Bu vazifani o'zgartirishga ruxsat yo'q" });
       }
     }
     await db.run('UPDATE tasks SET status = ?, updated_at = NOW() WHERE id = ?', [status, req.params.id]);
+    // Agar vazifa hozirgina "bajarildi"ga o'tgan bo'lsa va takrorlanuvchi bo'lsa — keyingi nusxasini yaratish
+    if (status === 'done' && existing.status !== 'done') {
+      await maybeCreateNextOccurrence(Object.assign({}, existing, { status: 'done' }));
+    }
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });

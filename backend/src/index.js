@@ -12,6 +12,7 @@ const postsRoutes = require('./routes/posts');
 const pricingRoutes = require('./routes/pricing');
 const tasksRoutes = require('./routes/tasks');
 const accountRoutes = require('./routes/account');
+const reminderScheduler = require('./services/reminderScheduler');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -53,6 +54,9 @@ db.init()
   .then(() => db.seed())
   .then(() => {
     console.log('✅ Database initialized');
+    // Vazifa eslatmalari — server ishga tushganda darhol va har 2 daqiqada tekshiriladi
+    reminderScheduler.checkReminders();
+    setInterval(reminderScheduler.checkReminders, 2 * 60 * 1000);
   }).catch(err => {
     console.error('❌ Database error:', err);
     process.exit(1);

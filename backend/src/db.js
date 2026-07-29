@@ -141,6 +141,10 @@ const init = async () => {
       priority TEXT NOT NULL DEFAULT 'medium',
       status TEXT NOT NULL DEFAULT 'new',
       due_date DATE,
+      due_time TEXT,
+      reminder_minutes INTEGER,
+      reminder_sent BOOLEAN DEFAULT false,
+      repeat_rule TEXT DEFAULT 'none',
       assigned_to INTEGER,
       assigned_name TEXT,
       created_by INTEGER,
@@ -149,6 +153,11 @@ const init = async () => {
       updated_at TIMESTAMP DEFAULT NOW()
     )
   `);
+  // Eski jadvalga yangi ustunlarni qo'shish (vaqt, eslatma, takrorlash)
+  await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS due_time TEXT`);
+  await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS reminder_minutes INTEGER`);
+  await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS reminder_sent BOOLEAN DEFAULT false`);
+  await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS repeat_rule TEXT DEFAULT 'none'`);
 
   // Standart ruxsatlar — mavjud bo'lsa o'zgartirmaydi
   await pool.query(`
