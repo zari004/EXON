@@ -274,24 +274,24 @@ body{
 .td-bd.is-on{pointer-events:auto}
 .td{
   position:fixed;top:28px;right:24px;
-  width:390px;max-width:calc(100vw - 40px);
+  width:406px;max-width:calc(100vw - 32px);
   max-height:calc(100vh - 44px);
   z-index:1200;display:flex;flex-direction:column;
   background:var(--bg-2);
   border:1px solid var(--line-2);
-  border-radius:16px;
-  box-shadow:0 24px 64px rgba(0,0,0,.36),0 6px 20px rgba(0,0,0,.2);
+  border-radius:13px;
+  box-shadow:0 16px 42px rgba(0,0,0,.28),0 3px 10px rgba(0,0,0,.16);
   transform:translateY(-8px);
   opacity:0;pointer-events:none;
   transition:transform .22s cubic-bezier(.34,1.28,.64,1),opacity .18s ease;
 }
-[data-theme="light"] .td{background:#fff;border-color:#dde3dd;box-shadow:0 20px 56px rgba(0,0,0,.11),0 4px 16px rgba(0,0,0,.07)}
+[data-theme="light"] .td{background:#fff;border-color:#e3e6e4;box-shadow:0 12px 32px rgba(25,35,29,.12),0 2px 6px rgba(25,35,29,.08)}
 .td.is-on{transform:translateY(0);opacity:1;pointer-events:auto}
 
 /* TOP BAR — TickTick compact toolbar */
 .td-top{
   display:flex;align-items:center;gap:2px;
-  padding:6px 10px;border-bottom:1px solid var(--line);flex-shrink:0;min-height:42px;
+  padding:7px 12px;border-bottom:1px solid var(--line);flex-shrink:0;min-height:52px;
 }
 [data-theme="light"] .td-top{border-bottom-color:#e9ede9}
 .td-chk{
@@ -323,85 +323,93 @@ body{
 .td-ibtn:disabled,.td-date-btn:disabled{opacity:.45;cursor:not-allowed;pointer-events:none}
 
 /* BODY — seamless title + description like TickTick */
-.td-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;padding-top:4px}
+.td-body{flex:1;min-height:248px;overflow-y:auto;display:flex;flex-direction:column;padding-top:0}
 .td-title-inp{
   background:none;border:0;width:100%;
-  padding:16px 22px 8px;font-size:22px;font-weight:700;line-height:1.25;
+  padding:21px 20px 6px;font-size:18px;font-weight:650;line-height:1.35;
   color:var(--white);outline:none;font-family:inherit;
 }
 [data-theme="light"] .td-title-inp{color:#1a1f1b}
-.td-title-inp::placeholder{color:var(--gray-dim);font-weight:500;font-size:20px}
+.td-title-inp::placeholder{color:var(--gray-dim);font-weight:500;font-size:18px}
 .td-desc-inp{
   background:none;border:0;width:100%;
-  padding:0 22px 16px;font-size:14px;color:var(--gray);
-  outline:none;resize:none;line-height:1.7;font-family:inherit;
-  overflow:hidden;min-height:32px;
+  padding:0 20px 18px;font-size:13px;color:var(--gray);
+  outline:none;resize:none;line-height:1.6;font-family:inherit;
+  overflow:hidden;min-height:112px;
 }
 .td-desc-inp::placeholder{color:var(--gray-dim)}
 .td-title-inp:disabled,.td-desc-inp:disabled{opacity:.75;cursor:default}
-.td-err{font-size:12.5px;color:#F2896F;padding:0 22px 8px;min-height:0}
+.td-err{font-size:12px;color:#F2896F;padding:0 20px 8px;min-height:0}
 .td-creator{
   display:none;align-items:center;gap:6px;
-  padding:0 22px 12px;font-size:12px;color:var(--gray-dim);
+  padding:0 20px 12px;font-size:11.5px;color:var(--gray-dim);
 }
 .td-creator.is-on{display:flex}
 .td-creator .td-ava{width:20px;height:20px;font-size:9.5px}
 
 /* TASK SAVOL-JAVOBLARI */
 .td-comments{
-  display:none;margin-top:6px;border-top:1px solid var(--line);
-  padding:14px 16px 4px;
+  display:none;margin-top:auto;border-top:1px solid var(--line);
+  padding:0;
 }
 [data-theme="light"] .td-comments{border-top-color:#e9ede9}
-.td-comments.is-on{display:block}
+.td-comments.is-on{display:flex;flex-direction:column}
 .td-comments__head{
-  display:flex;align-items:center;gap:7px;margin-bottom:10px;
-  color:var(--white);font-size:13.5px;font-weight:600;
+  display:none;align-items:center;gap:7px;
+  padding:12px 17px 7px;color:var(--white);font-size:13px;font-weight:500;
 }
+.td-comments.has-comments .td-comments__head{display:flex}
 [data-theme="light"] .td-comments__head{color:#1a2117}
 .td-comments__count{
-  min-width:20px;height:20px;padding:0 6px;border-radius:999px;
+  min-width:14px;height:18px;padding:0;
   display:inline-flex;align-items:center;justify-content:center;
-  background:var(--surface);color:var(--gray);font-size:10.5px;font-weight:600;
+  background:none;color:var(--gray-dim);font-size:11px;font-weight:400;
 }
-.td-comments__list{display:flex;flex-direction:column;gap:7px}
-.td-comments__empty{padding:14px 8px;text-align:center;color:var(--gray-dim);font-size:12.5px}
+.td-comments__list{display:none;flex-direction:column;gap:0;padding:0 10px 4px;max-height:210px;overflow-y:auto}
+.td-comments.has-comments .td-comments__list{display:flex}
+.td-comments__empty{display:none}
 .td-comment{
-  display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;
-  padding:9px;border-radius:10px;background:rgba(var(--surface-rgb),.48);
-  border:1px solid transparent;
+  display:grid;grid-template-columns:34px minmax(0,1fr);gap:9px;
+  padding:8px;border-radius:8px;background:transparent;
+  border:0;
 }
-[data-theme="light"] .td-comment{background:#f5f7f6}
-.td-comment.is-own{background:rgba(var(--green-rgb),.065);border-color:rgba(var(--green-rgb),.13)}
+[data-theme="light"] .td-comment{background:transparent}
+.td-comment:hover{background:rgba(var(--surface-rgb),.38)}
+[data-theme="light"] .td-comment:hover{background:#f7f8f7}
+.td-comment.is-own{background:transparent}
 .td-comment__avatar{
-  width:30px;height:30px;border-radius:50%;object-fit:cover;
+  width:34px;height:34px;border-radius:50%;object-fit:cover;
   display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:11px;font-weight:700;overflow:hidden;
+  color:#fff;font-size:12px;font-weight:700;overflow:hidden;
 }
 .td-comment__avatar img{width:100%;height:100%;object-fit:cover}
 .td-comment__main{min-width:0}
-.td-comment__top{display:flex;align-items:center;gap:6px;min-height:20px}
+.td-comment__top{display:flex;align-items:center;gap:7px;min-height:18px}
 .td-comment__author{
-  min-width:0;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  color:var(--white);font-size:12px;font-weight:600;
+  min-width:0;max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:var(--gray);font-size:12px;font-weight:500;
 }
-[data-theme="light"] .td-comment__author{color:#1a2117}
-.td-comment__time{color:var(--gray-dim);font-size:10.5px;white-space:nowrap}
-.td-comment__actions{display:flex;gap:2px;margin-left:auto}
+[data-theme="light"] .td-comment__author{color:#6f746f}
+.td-comment.is-own .td-comment__author{color:var(--white);font-weight:600}
+[data-theme="light"] .td-comment.is-own .td-comment__author{color:#242824}
+.td-comment__time{color:var(--gray-dim);font-size:11px;white-space:nowrap}
+.td-comment__actions{display:flex;gap:1px;margin-left:auto;opacity:.45;transition:opacity .15s}
+.td-comment:hover .td-comment__actions{opacity:1}
 .td-comment__action{
-  width:24px;height:24px;display:flex;align-items:center;justify-content:center;
-  border:0;border-radius:6px;background:none;color:var(--gray-dim);
-  cursor:pointer;font-size:12px;transition:background .12s,color .12s;
+  width:22px;height:22px;display:flex;align-items:center;justify-content:center;
+  border:0;border-radius:5px;background:none;color:var(--gray-dim);
+  cursor:pointer;font-size:11px;transition:background .12s,color .12s;
 }
 .td-comment__action:hover{background:var(--surface);color:var(--gray)}
 .td-comment__action[data-action="delete"]:hover{color:#F2896F;background:rgba(242,137,111,.1)}
 .td-comment__message{
-  margin-top:3px;color:var(--gray);font-size:12.5px;line-height:1.5;
+  margin-top:3px;color:var(--white);font-size:13px;line-height:1.45;
   white-space:pre-wrap;overflow-wrap:anywhere;
 }
+[data-theme="light"] .td-comment__message{color:#252925}
 .td-comment__edit{display:flex;flex-direction:column;gap:6px;margin-top:6px}
 .td-comment__edit textarea,.td-comments__input{
-  width:100%;border:1px solid var(--line-2);border-radius:8px;
+  width:100%;border:1px solid var(--line-2);border-radius:7px;
   background:var(--bg-2);color:var(--white);font-family:inherit;font-size:12.5px;
   line-height:1.45;resize:none;outline:none;
 }
@@ -409,7 +417,7 @@ body{
 [data-theme="light"] .td-comments__input{background:#fff;color:#1a2117}
 .td-comment__edit textarea{padding:8px 9px;min-height:66px}
 .td-comment__edit textarea:focus,.td-comments__input:focus{
-  border-color:var(--green-deep);box-shadow:0 0 0 2px rgba(var(--green-rgb),.08);
+  border-color:#5b78ff;box-shadow:0 0 0 1px rgba(91,120,255,.12);
 }
 .td-comment__edit-actions{display:flex;justify-content:flex-end;gap:6px}
 .td-comment__edit-btn{
@@ -417,17 +425,35 @@ body{
   background:var(--surface);color:var(--gray);font-size:11px;
 }
 .td-comment__edit-btn.is-save{background:var(--green);color:var(--green-ink);font-weight:600}
-.td-comments__compose{display:flex;align-items:flex-end;gap:7px;margin-top:10px}
+.td-comments__compose{position:relative;display:flex;align-items:center;padding:10px 16px 12px}
 .td-comments__input{
-  flex:1;min-height:40px;max-height:110px;padding:10px 11px;overflow-y:auto;
+  flex:1;min-height:39px;max-height:104px;padding:9px 72px 9px 11px;overflow-y:auto;
 }
+.td-comments__compose-actions{
+  position:absolute;right:21px;bottom:17px;display:flex;align-items:center;gap:2px;
+}
+.td-comments__compose-icon{
+  width:27px;height:27px;border:0;border-radius:6px;background:transparent;color:var(--gray-dim);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .12s,color .12s;
+}
+.td-comments__compose-icon:hover{background:var(--surface);color:var(--gray)}
 .td-comments__send{
-  width:40px;height:40px;flex-shrink:0;border:0;border-radius:9px;
-  background:var(--green);color:var(--green-ink);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;transition:opacity .15s;
+  width:27px;height:27px;flex-shrink:0;border:0;border-radius:6px;
+  background:transparent;color:var(--gray-dim);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background .12s,color .12s,opacity .15s;
 }
+.td-comments__send:hover{background:rgba(var(--green-rgb),.1);color:var(--green)}
 .td-comments__send:disabled{opacity:.45;cursor:not-allowed}
-.td-comments__error{min-height:16px;margin-top:4px;color:#F2896F;font-size:11px}
+.td-comments__error{min-height:0;padding:0 16px;color:#F2896F;font-size:11px}
+.td-comments__error:not(:empty){padding-bottom:8px}
+@media(max-width:480px){
+  .td{width:calc(100vw - 16px);max-width:none;border-radius:12px}
+  .td-body{min-height:220px}
+  .td-title-inp{padding-left:17px;padding-right:17px}
+  .td-desc-inp{padding-left:17px;padding-right:17px}
+  .td-comments__compose{padding-left:12px;padding-right:12px}
+  .td-comments__compose-actions{right:17px}
+}
 
 /* PRIORITY & ASSIGNEE POPUPS */
 .td-popup{
@@ -1639,10 +1665,15 @@ body{
       </div>
       <div class="td-comments__list" id="tdCommentsList"></div>
       <div class="td-comments__compose">
-        <textarea class="td-comments__input" id="tdCommentInput" rows="1" maxlength="2000" placeholder="Vazifa haqida savol yoki javob yozing..."></textarea>
-        <button class="td-comments__send" id="tdCommentSend" type="button" aria-label="Xabar yuborish" title="Yuborish">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4 18-7Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <textarea class="td-comments__input" id="tdCommentInput" rows="1" maxlength="2000" placeholder="Savol yoki javob yozing..."></textarea>
+        <div class="td-comments__compose-actions">
+          <button class="td-comments__compose-icon" id="tdCommentEmoji" type="button" aria-label="Emoji qo‘shish" title="Emoji">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/><path d="M8.5 14c.8 1.1 2 1.7 3.5 1.7s2.7-.6 3.5-1.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <button class="td-comments__send" id="tdCommentSend" type="button" aria-label="Xabar yuborish" title="Yuborish">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4 18-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
       </div>
       <div class="td-comments__error" id="tdCommentsError"></div>
     </section>
@@ -3492,13 +3523,14 @@ body{
 
   function renderTaskComments() {
     var list = document.getElementById('tdCommentsList');
+    document.getElementById('tdComments').classList.toggle('has-comments', TD_COMMENTS.length > 0);
     document.getElementById('tdCommentsCount').textContent = TD_COMMENTS.length;
     if (TD_COMMENTS_LOADING && !TD_COMMENTS.length) {
-      list.innerHTML = '<div class="td-comments__empty">Yuklanmoqda...</div>';
+      list.innerHTML = '';
       return;
     }
     if (!TD_COMMENTS.length) {
-      list.innerHTML = '<div class="td-comments__empty">Hali savol yoki javob yo‘q</div>';
+      list.innerHTML = '';
       return;
     }
 
@@ -3799,9 +3831,17 @@ body{
     // Vazifa bo'yicha savol-javoblar
     var commentInput = document.getElementById('tdCommentInput');
     document.getElementById('tdCommentSend').addEventListener('click', sendTaskComment);
+    document.getElementById('tdCommentEmoji').addEventListener('click', function () {
+      var start = commentInput.selectionStart;
+      var end = commentInput.selectionEnd;
+      commentInput.value = commentInput.value.slice(0, start) + '🙂' + commentInput.value.slice(end);
+      commentInput.setSelectionRange(start + 2, start + 2);
+      commentInput.focus();
+      autoResize(commentInput);
+    });
     commentInput.addEventListener('input', function () { autoResize(commentInput); });
     commentInput.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         sendTaskComment();
       }
