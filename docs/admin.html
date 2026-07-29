@@ -62,16 +62,18 @@ body{
 
 /* ── PAROL KO'RSATISH/YASHIRISH TUGMASI (ko'z) ── */
 .pwd-field{position:relative;display:flex;align-items:stretch}
+.login-box .pwd-field{margin-bottom:14px}
 .pwd-field input{padding-right:44px !important;flex:1;min-width:0}
+.login-box .pwd-field input{margin-bottom:0}
 .pwd-eye{
-  position:absolute !important;right:6px;top:0;bottom:0;margin:auto 0 !important;
+  position:absolute !important;right:6px;top:50%;transform:translateY(-50%);margin:0 !important;
   width:32px !important;height:32px !important;border-radius:8px !important;
   background:none !important;border:0 !important;box-shadow:none !important;
-  color:var(--gray-dim) !important;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--white) !important;cursor:pointer;display:flex;align-items:center;justify-content:center;
   padding:0 !important;transition:color .15s,background .15s;
 }
 .pwd-eye:hover{color:var(--gray) !important;background:rgba(128,128,128,.1) !important}
-.pwd-eye svg{width:18px;height:18px;flex-shrink:0}
+.pwd-eye svg{width:18px;height:18px;flex-shrink:0;stroke:currentColor}
 .pwd-eye .eye-closed{display:none}
 .pwd-eye.is-shown .eye-open{display:none}
 .pwd-eye.is-shown .eye-closed{display:block}

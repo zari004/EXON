@@ -1,4 +1,4 @@
-const CACHE = 'exon-v1';
+const CACHE = 'exon-v2';
 const STATIC = [
   '/',
   '/index.html',
@@ -37,6 +37,23 @@ self.addEventListener('fetch', (e) => {
   const url = e.request.url;
   // API so'rovlari keshlanmaydi — har doim tarmoqdan
   if (url.includes('/api/') || e.request.method !== 'GET') return;
+
+  // Always prefer the deployed HTML for navigations so a release is not
+  // hidden behind an older service-worker cache.
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      fetch(e.request)
+        .then((res) => {
+          if (res.ok) {
+            const clone = res.clone();
+            caches.open(CACHE).then((c) => c.put(e.request, clone));
+          }
+          return res;
+        })
+        .catch(() => caches.match(e.request))
+    );
+    return;
+  }
 
   e.respondWith(
     caches.match(e.request).then((cached) => {
