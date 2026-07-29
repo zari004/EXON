@@ -372,9 +372,12 @@ body{
 
 /* CUSTOM KALENDAR (sana tanlash) */
 .td-cal-pop{
-  padding:12px;max-height:min(560px,calc(100vh - 110px));overflow-y:auto;
+  flex-direction:column;padding:0;
+  max-height:min(560px,calc(100vh - 110px));
   max-width:calc(100vw - 24px);
 }
+.td-cal-pop.is-on{display:flex}
+.td-cal-pop-inner{padding:12px;overflow-y:auto;flex:1;min-height:0}
 .td-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px}
 .td-cal-title{font-size:13.5px;font-weight:600;color:var(--white)}
 [data-theme="light"] .td-cal-title{color:#1a2117}
@@ -401,7 +404,7 @@ body{
 .td-cal-day.is-range-start{background:var(--green);color:var(--green-ink);font-weight:700;border-radius:50% 0 0 50%}
 .td-cal-day.is-range-end{background:var(--green);color:var(--green-ink);font-weight:700;border-radius:0 50% 50% 0}
 .td-cal-day.is-range-start.is-range-end{border-radius:50%}
-.td-cal-foot{display:flex;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.td-cal-foot{display:flex;gap:8px;padding:10px 12px 12px;border-top:1px solid var(--line);flex-shrink:0}
 [data-theme="light"] .td-cal-foot{border-top-color:#e9ede9}
 .td-cal-ok{
   flex:1.4;background:linear-gradient(140deg,var(--green-hi) 0%,var(--green) 52%,#1FA36C 100%);
@@ -1361,6 +1364,7 @@ body{
 
     <!-- DATE POPUP (custom kalendar, TickTick uslubi) -->
     <div class="td-popup td-cal-pop" id="tdDatePop" style="left:12px;min-width:296px">
+     <div class="td-cal-pop-inner" id="tdCalPopInner">
 
       <!-- SANA / DAVOMIYLIK tablari -->
       <div class="td-cal-tabs">
@@ -1434,8 +1438,9 @@ body{
           <svg class="td-chev" width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
+     </div><!-- /td-cal-pop-inner (skrollanadigan qism shu yerda tugaydi) -->
 
-      <!-- VAQT — suzuvchi oyna -->
+      <!-- VAQT — suzuvchi oyna (popup'ning to'liq ustini qoplaydi, skrolldan mustaqil) -->
       <div class="td-sub-overlay" id="tdTimeOverlay">
         <div class="td-sub-overlay-head">
           <span>Vaqt</span>
