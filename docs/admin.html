@@ -365,7 +365,7 @@ body{
   font-size:12px;font-weight:700;color:#fff;text-transform:uppercase;
 }
 .td-ass-name{font-size:13px;color:var(--gray);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.td-foot-actions{display:flex;align-items:center;gap:2px;flex-shrink:0}
+.td-foot-actions{display:flex;align-items:center;gap:2px;flex-shrink:0;margin-left:auto}
 .td-foot-del{
   background:none;border:0;color:var(--gray-dim);cursor:pointer;
   width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;
@@ -2180,9 +2180,15 @@ body{
   }
 
   // ── CARD HTML ──
-  function taskCardHTML(t) {
+  // canManage=true (superadmin/it_bolimi) — umumiy boardda ikkala taraf (kimdan + kimga) ko'rinadi.
+  // canManage=false — shaxsiy oynada faqat "kimdan" ko'rinadi, chunki "kimga" doim o'zi bo'ladi.
+  function taskCardHTML(t, canManage) {
     var p = t.priority || 'medium';
     var overdue = isOverdue(t.due_date, t.status);
+    var metaExtra = t.created_name ? '<span class="task-creator" title="Kimdan">📤 ' + escHtml(t.created_name) + '</span>' : '';
+    if (canManage && t.assigned_name) {
+      metaExtra += '<span class="task-assignee" title="Kimga">👤 ' + escHtml(t.assigned_name) + '</span>';
+    }
     return '<div class="task-card" draggable="true" data-id="' + t.id + '" data-status="' + t.status + '">' +
       '<div class="task-card__stripe ' + p + '"></div>' +
       '<div class="task-card__body">' +
@@ -2191,8 +2197,7 @@ body{
         '<div class="task-card__meta">' +
           '<span class="task-priority ' + p + '">' + (T('tasks.priority.' + p) || p) + '</span>' +
           (t.due_date ? '<span class="task-due' + (overdue ? ' is-overdue' : '') + '">📅 ' + fmtDate(t.due_date) + '</span>' : '') +
-          (t.created_name ? '<span class="task-creator" title="Kimdan">📤 ' + escHtml(t.created_name) + '</span>' : '') +
-          (t.assigned_name ? '<span class="task-assignee" title="Kimga">👤 ' + escHtml(t.assigned_name) + '</span>' : '') +
+          metaExtra +
         '</div>' +
       '</div>' +
     '</div>';
@@ -2243,7 +2248,7 @@ body{
         var items = grouped[s];
         document.getElementById('kcount-' + s).textContent = items.length;
         col.innerHTML = items.length
-          ? items.map(taskCardHTML).join('')
+          ? items.map(function (t) { return taskCardHTML(t, canManage); }).join('')
           : '<div class="kanban-empty"><span class="kanban-empty__icon">📋</span>' + T('tasks.empty') + '</div>';
       });
 
@@ -2470,8 +2475,12 @@ body{
     setTimeout(function () { autoResize(descEl); }, 10);
     setDoneChk(isDone);
     setPriority(task ? task.priority : 'medium');
+    var canManage = USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi';
     setAssignee(task ? task.assigned_to : null, task ? task.assigned_name : null);
-    // Kimdan berilgan — faqat tahrirlashda va yaratuvchi ma'lum bo'lsa
+    // "Kimga" footer — faqat umumiy boardni ko'radiganlarga (admin). Shaxsiy oynada
+    // bu doim o'zi bo'lgani uchun ko'rsatilmaydi.
+    document.getElementById('tdAssDisplay').style.display = canManage ? 'flex' : 'none';
+    // "Kimdan berilgan" — har ikkala tomonga ham ko'rinadi (agar ma'lum bo'lsa)
     var creatorEl = document.getElementById('tdCreator');
     if (task && task.created_name) {
       document.getElementById('tdCreatorAva').style.background = avaColor(task.created_name);
@@ -2482,7 +2491,6 @@ body{
       creatorEl.classList.remove('is-on');
     }
     // delete button — only in edit mode and if canManage
-    var canManage = USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi';
     var delBtn = document.getElementById('tdDelBtn');
     delBtn.style.display = (TD_EDIT_ID && canManage) ? 'flex' : 'none';
     tdOpen(cardEl);
