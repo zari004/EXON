@@ -2265,13 +2265,18 @@ body{
   }
 
   // ── CARD HTML ──
-  // canManage=true (superadmin/it_bolimi) — umumiy boardda ikkala taraf (kimdan + kimga) ko'rinadi.
-  // canManage=false — shaxsiy oynada faqat "kimdan" ko'rinadi, chunki "kimga" doim o'zi bo'ladi.
+  // Har doim faqat "boshqa taraf" ko'rsatiladi — o'z ismini takror ko'rish shart emas:
+  //  - canManage=false (shaxsiy oyna): faqat "kimdan" (chunki "kimga" doim o'zi)
+  //  - canManage=true (umumiy board): kim o'zi bo'lmasa shu taraf ko'rsatiladi
+  //    (masalan admin o'zi yaratgan vazifada "kimdan: Admin" ko'rsatilmaydi,
+  //    lekin "kimga: Zarnigor" ko'rsatiladi)
   function taskCardHTML(t, canManage) {
     var p = t.priority || 'medium';
     var overdue = isOverdue(t.due_date, t.status);
-    var metaExtra = t.created_name ? '<span class="task-creator" title="Kimdan">📤 ' + escHtml(t.created_name) + '</span>' : '';
-    if (canManage && t.assigned_name) {
+    var isCreatorSelf = t.created_name && t.created_name === USER_NAME;
+    var isAssigneeSelf = t.assigned_name && t.assigned_name === USER_NAME;
+    var metaExtra = (t.created_name && !isCreatorSelf) ? '<span class="task-creator" title="Kimdan">📤 ' + escHtml(t.created_name) + '</span>' : '';
+    if (canManage && t.assigned_name && !isAssigneeSelf) {
       metaExtra += '<span class="task-assignee" title="Kimga">👤 ' + escHtml(t.assigned_name) + '</span>';
     }
     return '<div class="task-card" draggable="true" data-id="' + t.id + '" data-status="' + t.status + '">' +
