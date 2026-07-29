@@ -56,7 +56,9 @@ router.put('/password', auth.requireAuth, async (req, res) => {
     const user = await db.get('SELECT password_hash FROM admin_users WHERE id = ?', [req.user.userId]);
     if (!user) return res.status(404).json({ success: false, error: 'Foydalanuvchi topilmadi' });
     const match = await bcrypt.compare(currentPassword, user.password_hash);
-    if (!match) return res.status(401).json({ success: false, error: "Joriy parol noto'g'ri" });
+    // 401 emas — apiFetch har qanday 401'ni "sessiya tugadi" deb avtomatik logout qiladi,
+    // shuning uchun bu yerda 400 ishlatiladi (parol xato, sessiya emas)
+    if (!match) return res.status(400).json({ success: false, error: "Joriy parol noto'g'ri" });
     const hash = await bcrypt.hash(newPassword, 10);
     await db.run('UPDATE admin_users SET password_hash = ? WHERE id = ?', [hash, req.user.userId]);
     res.json({ success: true });
