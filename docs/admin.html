@@ -591,6 +591,11 @@ body{
 [data-theme="light"] .sidebar-item:hover{background:rgba(var(--green-rgb),.06);color:#1a2117}
 
 .sidebar-divider{height:1px;background:var(--line);margin:8px 4px}
+.sidebar-section-label{
+  font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--gray-dim);padding:10px 12px 4px;
+}
+.sidebar-section-label:first-child{padding-top:2px}
 
 .sidebar-footer{
   padding:14px 14px 16px;border-top:1px solid var(--line);
@@ -957,6 +962,7 @@ body{
     </div>
 
     <nav class="sidebar-nav" id="sidebarNav">
+      <div class="sidebar-section-label" id="sidebarSectionSite">Sayt boshqaruvi</div>
       <button class="sidebar-item is-active" data-tab="dashboard">
         <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="10" y="8" width="4" height="13" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="17" y="3" width="4" height="18" rx="1" stroke="currentColor" stroke-width="1.7"/></svg>
         <span>Hisobot</span>
@@ -973,6 +979,9 @@ body{
         <svg viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z" stroke="currentColor" stroke-width="1.7"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg>
         <span>Narxlar</span>
       </button>
+
+      <div class="sidebar-divider" id="sidebarDividerSite"></div>
+      <div class="sidebar-section-label">Boshqaruv</div>
       <button class="sidebar-item" data-tab="tasks">
         <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
         <span>Vazifalar</span>
@@ -981,7 +990,6 @@ body{
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
         <span>Sozlamalar</span>
       </button>
-      <div class="sidebar-divider"></div>
       <button class="sidebar-item superadmin-tab" data-tab="users" style="display:none">
         <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.7"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
         <span>Foydalanuvchilar</span>
@@ -2079,6 +2087,18 @@ body{
     var superTabs = document.querySelectorAll('.superadmin-tab');
     var isSuperLevel = USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi';
     superTabs.forEach(function (t) { t.style.display = isSuperLevel ? '' : 'none'; });
+    // Admin/it_bolimi har doim "Sayt boshqaruvi" bo'limini to'liq ko'radi —
+    // oldingi (oddiy foydalanuvchi) sessiyasidan qolgan "yashirin" holatni tozalaydi
+    if (isSuperLevel) {
+      ['dashboard', 'cases', 'posts', 'pricing'].forEach(function (tab) {
+        var btn = document.querySelector('.sidebar-item[data-tab="' + tab + '"]');
+        if (btn) btn.style.display = '';
+      });
+      var siteLabel = document.getElementById('sidebarSectionSite');
+      var siteDivider = document.getElementById('sidebarDividerSite');
+      if (siteLabel) siteLabel.style.display = '';
+      if (siteDivider) siteDivider.style.display = '';
+    }
     applyLang();
     // Rol nomini tarjima bilan to'ldirish (applyLang keyin)
     document.getElementById('sidebarUserRole').textContent = T('role.' + USER_ROLE) || USER_ROLE;
@@ -2091,13 +2111,22 @@ body{
     try {
       var data = await apiFetch('/api/admin/my-permissions');
       var allowed = data.tabs || ['dashboard'];
-      ['dashboard', 'cases', 'posts', 'pricing', 'tasks'].forEach(function (tab) {
+      var siteTabs = ['dashboard', 'cases', 'posts', 'pricing'];
+      var anySiteVisible = false;
+      siteTabs.concat('tasks').forEach(function (tab) {
         var btn = document.querySelector('.sidebar-item[data-tab="' + tab + '"]');
         var panel = document.getElementById('panel-' + tab);
         var visible = allowed.indexOf(tab) !== -1;
         if (btn) btn.style.display = visible ? '' : 'none';
         if (!visible && panel) panel.classList.remove('is-active');
+        if (visible && siteTabs.indexOf(tab) !== -1) anySiteVisible = true;
       });
+      // Sayt boshqaruvi bo'limidagi barcha tablar yashirin bo'lsa,
+      // bo'lim yorlig'i va ajratuvchi chiziq ham osilib qolmasin
+      var siteLabel = document.getElementById('sidebarSectionSite');
+      var siteDivider = document.getElementById('sidebarDividerSite');
+      if (siteLabel) siteLabel.style.display = anySiteVisible ? '' : 'none';
+      if (siteDivider) siteDivider.style.display = anySiteVisible ? '' : 'none';
       // Birinchi ko'rinadigan tabni faollashtirish
       var activeTab = document.querySelector('.sidebar-item.is-active');
       if (!activeTab || activeTab.style.display === 'none') {
