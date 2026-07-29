@@ -2247,7 +2247,7 @@ body{
         if (e.target.closest('.task-card__del')) return;
         var taskId = Number(card.dataset.id);
         var t = TASKS_MAP[taskId];
-        if (t) openTaskDrawer(t, card);
+        if (t) openTaskDrawer(t);
       });
 
       // Drag
@@ -2304,20 +2304,14 @@ body{
   }
 
   // ── DRAWER STATE ──
-  function tdOpen(cardEl) {
+  function tdOpen() {
     var td = document.getElementById('td');
-    var ref = cardEl || document.querySelector('#panel-tasks .panel-head');
-    if (ref) {
-      var rect = ref.getBoundingClientRect();
-      var topPx = Math.round(cardEl ? rect.top : rect.top);
+    var board = document.querySelector('#panel-tasks .kanban-board');
+    if (board) {
+      var topPx = Math.round(board.getBoundingClientRect().top);
       var safeTop = Math.max(topPx, 8);
-      var drawerH = Math.min(620, window.innerHeight - safeTop - 16);
-      // agar pastda joy bo'lmasa, yuqoriga siljit
-      if (safeTop + drawerH > window.innerHeight - 16) {
-        safeTop = Math.max(window.innerHeight - drawerH - 16, 8);
-      }
       td.style.top = safeTop + 'px';
-      td.style.maxHeight = drawerH + 'px';
+      td.style.maxHeight = (window.innerHeight - safeTop - 16) + 'px';
     }
     td.classList.add('is-on');
     document.getElementById('tdBd').classList.add('is-on');
@@ -2425,7 +2419,7 @@ body{
   }
 
   // ── OPEN DRAWER ──
-  function openTaskDrawer(task, cardEl) {
+  function openTaskDrawer(task) {
     TD_EDIT_ID = task ? task.id : null;
     var isDone = task && task.status === 'done';
     document.getElementById('taskTitle').value = task ? task.title : '';
@@ -2443,7 +2437,7 @@ body{
     var canManage = USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi';
     var delBtn = document.getElementById('tdDelBtn');
     delBtn.style.display = (TD_EDIT_ID && canManage) ? 'flex' : 'none';
-    tdOpen(cardEl);
+    tdOpen();
     setTimeout(function () { document.getElementById('taskTitle').focus(); }, 280);
   }
 
