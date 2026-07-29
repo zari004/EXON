@@ -1,55 +1,55 @@
-const nodemailer = require('nodemailer');
-const dns = require('dns');
+// Resend.com HTTPS API orqali email yuboradi.
+// SMTP portlari (465/587) ko'p bulutli hostinglarda (shu jumladan Render)
+// tarmoq darajasida to'silgan/beqaror bo'lishi mumkin — HTTPS (443) esa
+// har doim ochiq bo'ladi, shuning uchun email yuborish uchun API ishlatiladi.
 
-// Render kabi hostinglarda konteynerdan IPv6 chiqish yo'li yopiq bo'ladi,
-// lekin Node avval Gmail'ni IPv6 manzilga hal qilib, "ENETUNREACH" xatosi
-// bilan ulanolmay qoladi. IPv4'ni ustun qo'yish shu muammoni hal qiladi.
-if (dns.setDefaultResultOrder) dns.setDefaultResultOrder('ipv4first');
+const RESEND_API_KEY = (process.env.RESEND_API_KEY || '').trim();
+// Domen tasdiqlanmagan bo'lsa, Resend'ning standart "onboarding@resend.dev"
+// manzilidan yuboriladi — bu holatda faqat Resend hisobi ro'yxatdan o'tgan
+// emailga yuborish mumkin. To'liq ishlashi uchun domenni Resend'da
+// tasdiqlab, RESEND_FROM'ni shu domendagi manzilga o'zgartiring.
+const RESEND_FROM = (process.env.RESEND_FROM || 'onboarding@resend.dev').trim();
 
-let transporter = null;
-const gmailUser = (process.env.GMAIL_USER || '').trim();
-// Google App Passwords are often copied in four-character groups. Gmail
-// expects the same 16 characters without spaces.
-const gmailAppPassword = (process.env.GMAIL_APP_PASSWORD || '').replace(/\s+/g, '');
-
-if (gmailUser && gmailAppPassword) {
-  transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    family: 4, // IPv6 ENETUNREACH'ning oldini olish uchun ulanishni IPv4'ga majburlaydi
-    auth: {
-      user: gmailUser,
-      pass: gmailAppPassword
-    }
-  });
-  console.log('✅ Gmail mailer initialized');
+if (RESEND_API_KEY) {
+  console.log('✅ Resend mailer initialized');
 } else {
-  console.log('⚠️ GMAIL_USER / GMAIL_APP_PASSWORD sozlanmagan. Email yuborish o\'tkazib yuboriladi.');
+  console.log('⚠️ RESEND_API_KEY sozlanmagan. Email yuborish o\'tkazib yuboriladi.');
 }
+
+const isConfigured = () => Boolean(RESEND_API_KEY);
 
 // Parolni tiklash tasdiqlash kodini yuboradi
 const sendResetCode = async (toEmail, code) => {
-  if (!transporter) {
+  if (!RESEND_API_KEY) {
     const error = new Error('Email xizmati sozlanmagan');
     error.code = 'EMAIL_NOT_CONFIGURED';
     throw error;
   }
-  return transporter.sendMail({
-    from: `"EXON Admin" <${gmailUser}>`,
-    to: toEmail,
-    subject: 'EXON Admin — Parolni tiklash kodi',
-    html: `
-      <div style="font-family:sans-serif;max-width:420px;margin:0 auto">
-        <h2 style="color:#0BD16C">EXON Admin</h2>
-        <p>Parolingizni tiklash uchun quyidagi kodni kiriting:</p>
-        <div style="font-size:32px;font-weight:700;letter-spacing:6px;background:#f2f5f3;padding:16px 20px;border-radius:10px;text-align:center;margin:16px 0">${code}</div>
-        <p style="color:#888;font-size:13px">Bu kod 10 daqiqa davomida amal qiladi. Agar siz bu so'rovni yubormagan bo'lsangiz, xabarni e'tiborsiz qoldiring.</p>
-      </div>
-    `
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: `EXON Admin <${RESEND_FROM}>`,
+      to: [toEmail],
+      subject: 'EXON Admin — Parolni tiklash kodi',
+      html: `
+        <div style="font-family:sans-serif;max-width:420px;margin:0 auto">
+          <h2 style="color:#0BD16C">EXON Admin</h2>
+          <p>Parolingizni tiklash uchun quyidagi kodni kiriting:</p>
+          <div style="font-size:32px;font-weight:700;letter-spacing:6px;background:#f2f5f3;padding:16px 20px;border-radius:10px;text-align:center;margin:16px 0">${code}</div>
+          <p style="color:#888;font-size:13px">Bu kod 10 daqiqa davomida amal qiladi. Agar siz bu so'rovni yubormagan bo'lsangiz, xabarni e'tiborsiz qoldiring.</p>
+        </div>
+      `
+    })
   });
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    throw new Error(`Resend xatosi (${res.status}): ${errText}`);
+  }
+  return res.json();
 };
-
-const isConfigured = () => Boolean(transporter);
 
 module.exports = { isConfigured, sendResetCode };
