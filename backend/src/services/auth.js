@@ -25,6 +25,14 @@ const loginByEmail = async (email, password) => {
   const isSuperAdminAttempt = adminEmail ? email === adminEmail : true;
   if (isSuperAdminAttempt && adminPassword && password === adminPassword) {
     const token = crypto.randomBytes(32).toString('hex');
+    // Agar shu email bilan DB'da haqiqiy hisob mavjud bo'lsa — o'sha profilga bog'laymiz,
+    // shunda Sozlamalar orqali ism/parol/rasm tahrirlash ishlaydi (userId null bo'lmaydi).
+    // Aks holda (hali birorta hisob yaratilmagan bo'lsa) — eski "anonim" superadmin.
+    const existing = await db.get('SELECT * FROM admin_users WHERE email = ?', [email]);
+    if (existing && (existing.role === 'superadmin' || existing.role === 'it_bolimi')) {
+      tokens.set(token, { expiresAt: Date.now() + TOKEN_TTL_MS, role: existing.role, userId: existing.id, email, name: existing.name });
+      return { token, role: existing.role, name: existing.name };
+    }
     tokens.set(token, { expiresAt: Date.now() + TOKEN_TTL_MS, role: 'superadmin', userId: null, email, name: 'Admin' });
     return { token, role: 'superadmin', name: 'Admin' };
   }
