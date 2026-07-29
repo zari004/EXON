@@ -394,11 +394,68 @@ body{
 .td-cal-day.is-muted{color:var(--gray-dim);opacity:.45;cursor:default}
 .td-cal-day.is-today{color:var(--green-hi);font-weight:700}
 .td-cal-day.is-selected{background:var(--green);color:var(--green-ink);font-weight:700}
-.td-cal-foot{display:flex;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
+.td-cal-day.is-in-range{background:rgba(var(--green-rgb),.14);border-radius:0}
+.td-cal-day.is-range-start{background:var(--green);color:var(--green-ink);font-weight:700;border-radius:50% 0 0 50%}
+.td-cal-day.is-range-end{background:var(--green);color:var(--green-ink);font-weight:700;border-radius:0 50% 50% 0}
+.td-cal-day.is-range-start.is-range-end{border-radius:50%}
+.td-cal-foot{display:flex;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
 [data-theme="light"] .td-cal-foot{border-top-color:#e9ede9}
-.td-cal-footbtn{background:none;border:0;color:var(--gray);font-size:12px;cursor:pointer;padding:6px 8px;border-radius:6px;transition:background .12s}
-.td-cal-footbtn:hover{background:var(--surface)}
-.td-cal-footbtn.td-cal-today{color:var(--green-hi);font-weight:600}
+.td-cal-ok{
+  flex:1.4;background:linear-gradient(140deg,var(--green-hi) 0%,var(--green) 52%,#1FA36C 100%);
+  color:var(--green-ink);border:0;border-radius:8px;padding:9px;
+  font-size:13px;font-weight:700;cursor:pointer;transition:opacity .15s;
+}
+.td-cal-ok:hover{opacity:.88}
+.td-cal-clear{
+  flex:1;background:none;border:1px solid var(--line-2);border-radius:8px;
+  color:var(--gray);font-size:13px;cursor:pointer;padding:9px;transition:border-color .15s,color .15s;
+}
+.td-cal-clear:hover{border-color:#F2896F;color:#F2896F}
+
+/* Sana / Davomiylik tablari */
+.td-cal-tabs{display:flex;background:var(--surface);border-radius:9px;padding:3px;margin-bottom:10px;gap:2px}
+[data-theme="light"] .td-cal-tabs{background:#eef2ef}
+.td-cal-tab{
+  flex:1;border:0;background:none;padding:6px;border-radius:7px;
+  font-size:12.5px;color:var(--gray);cursor:pointer;transition:background .15s,color .15s;
+}
+.td-cal-tab.is-active{background:var(--bg-2);color:var(--white);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+[data-theme="light"] .td-cal-tab.is-active{background:#fff;color:#1a2117;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+
+/* Tezkor sana tugmalari */
+.td-cal-quick{display:flex;justify-content:space-around;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+[data-theme="light"] .td-cal-quick{border-bottom-color:#e9ede9}
+.td-cal-quickbtn{
+  background:none;border:0;color:var(--gray);width:42px;height:38px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:background .12s,color .12s;
+}
+.td-cal-quickbtn:hover{background:var(--surface);color:var(--green-hi)}
+
+/* Davomiylik maydonlari */
+.td-dur-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 2px 5px 4px}
+.td-dur-label{font-size:12.5px;color:var(--gray)}
+.td-dur-field{
+  background:var(--surface);border:1px solid var(--line-2);border-radius:7px;
+  color:var(--white);font-size:12.5px;padding:6px 12px;min-width:120px;cursor:pointer;
+  transition:border-color .15s;
+}
+[data-theme="light"] .td-dur-field{background:#f4f7f5;color:#1a2117}
+.td-dur-field.is-active{border-color:var(--green-hi);color:var(--green-hi);font-weight:600}
+
+/* Vaqt ro'yxati (tez tanlash) */
+.td-time-list{
+  max-height:148px;overflow-y:auto;margin-top:6px;
+  border:1px solid var(--line);border-radius:8px;
+}
+[data-theme="light"] .td-time-list{border-color:#e9ede9}
+.td-time-item{
+  display:flex;align-items:center;justify-content:space-between;width:100%;
+  background:none;border:0;padding:7px 12px;font-size:12.5px;color:var(--gray);
+  cursor:pointer;transition:background .12s;
+}
+.td-time-item:hover{background:var(--surface)}
+.td-time-item.is-sel{color:var(--green-hi);font-weight:600}
 
 /* Vaqt / Eslatma / Takrorlash qatorlari */
 .td-cal-extra{margin-top:8px;padding-top:6px;border-top:1px solid var(--line)}
@@ -1280,8 +1337,43 @@ body{
     </button>
     <input type="date" id="taskDue" class="td-date-inp" tabindex="-1" />
 
-    <!-- DATE POPUP (custom kalendar) -->
-    <div class="td-popup td-cal-pop" id="tdDatePop" style="left:12px;min-width:280px">
+    <!-- DATE POPUP (custom kalendar, TickTick uslubi) -->
+    <div class="td-popup td-cal-pop" id="tdDatePop" style="left:12px;min-width:296px">
+
+      <!-- SANA / DAVOMIYLIK tablari -->
+      <div class="td-cal-tabs">
+        <button type="button" class="td-cal-tab is-active" id="tdTabDate">Sana</button>
+        <button type="button" class="td-cal-tab" id="tdTabDur">Davomiylik</button>
+      </div>
+
+      <!-- Tezkor tanlash: bugun / ertaga / +7 kun / keyingi oy -->
+      <div class="td-cal-quick" id="tdCalQuick">
+        <button type="button" class="td-cal-quickbtn" data-quick="today" title="Bugun">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <button type="button" class="td-cal-quickbtn" data-quick="tomorrow" title="Ertaga">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 10a4 4 0 0 1 4 4H8a4 4 0 0 1 4-4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 3v3M5.6 6.6l1.8 1.8M18.4 6.6l-1.8 1.8M3 14h2M19 14h2M4 18h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <button type="button" class="td-cal-quickbtn" data-quick="week" title="7 kundan keyin">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 9.5h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><text x="12" y="18" text-anchor="middle" font-size="7.5" font-weight="700" fill="currentColor" stroke="none" font-family="inherit">+7</text></svg>
+        </button>
+        <button type="button" class="td-cal-quickbtn" data-quick="month" title="Keyingi oy">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 13.5A8 8 0 1 1 10.5 4 6.5 6.5 0 0 0 20 13.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <!-- DAVOMIYLIK maydonlari (faqat "Davomiylik" tabida) -->
+      <div id="tdDurFields" style="display:none">
+        <div class="td-dur-row">
+          <span class="td-dur-label">Boshlanish</span>
+          <button type="button" class="td-dur-field" id="tdDurStart" data-target="start">—</button>
+        </div>
+        <div class="td-dur-row">
+          <span class="td-dur-label">Tugash</span>
+          <button type="button" class="td-dur-field" id="tdDurEnd" data-target="end">—</button>
+        </div>
+      </div>
+
       <div class="td-cal-head">
         <span class="td-cal-title" id="tdCalTitle">Iyul 2026</span>
         <div class="td-cal-nav">
@@ -1307,6 +1399,7 @@ body{
         </button>
         <div class="td-cal-subpanel" id="tdTimePanel">
           <input type="time" class="td-cal-time-input" id="tdTimeInput" />
+          <div class="td-time-list" id="tdTimeList"></div>
         </div>
 
         <!-- ESLATMA -->
@@ -1339,8 +1432,8 @@ body{
       </div>
 
       <div class="td-cal-foot">
-        <button type="button" class="td-cal-footbtn" id="tdCalClear">Tozalash</button>
-        <button type="button" class="td-cal-footbtn td-cal-today" id="tdCalToday">Bugun</button>
+        <button type="button" class="td-cal-ok" id="tdCalOk">OK</button>
+        <button type="button" class="td-cal-clear" id="tdCalClear">Tozalash</button>
       </div>
     </div>
     <button class="td-ibtn" id="tdAssBtn" type="button" aria-label="Tayinlash" title="Tayinlash">
@@ -2644,6 +2737,9 @@ body{
   var TD_DUE_TIME = '';        // 'HH:MM' yoki ''
   var TD_REMINDER_MINUTES = null; // son yoki null (eslatma yo'q)
   var TD_REPEAT_RULE = 'none'; // none|daily|weekly|monthly
+  var TD_START_DATE = '';      // davomiylik boshlanish sanasi ('' = oddiy bitta sana)
+  var TD_CAL_MODE = 'date';    // 'date' | 'dur' — kalendar qaysi tabda
+  var TD_DUR_TARGET = 'start'; // davomiylikda keyingi bosish qaysi maydonni to'ldiradi
   var draggedTaskId = null;
   var draggedCard = null;
 
@@ -2662,7 +2758,10 @@ body{
   }
   function fmtDate(d) {
     if (!d) return '';
-    return new Date(d).toLocaleDateString('uz-UZ', { day: '2-digit', month: 'short' });
+    // Brauzer o'zbek lokalida oy nomini "M07" ko'rinishida qaytarishi mumkin,
+    // shuning uchun oy nomlari qo'lda yoziladi: "30-iyul"
+    var dt = new Date(d);
+    return dt.getDate() + '-' + UZ_MONTHS[dt.getMonth()].toLowerCase();
   }
   function isOverdue(due, status) {
     if (!due || status === 'done') return false;
@@ -2911,6 +3010,11 @@ body{
   var UZ_MONTHS = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'];
   function pad2(n) { return n < 10 ? '0' + n : '' + n; }
 
+  function tdRefreshLabel() {
+    var status = TD_EDIT_ID && TASKS_MAP[TD_EDIT_ID] ? TASKS_MAP[TD_EDIT_ID].status : null;
+    setDateLabel(document.getElementById('taskDue').value, status);
+  }
+
   function renderCalendar() {
     document.getElementById('tdCalTitle').textContent = UZ_MONTHS[TD_CAL_MONTH] + ' ' + TD_CAL_YEAR;
     var grid = document.getElementById('tdCalGrid');
@@ -2918,9 +3022,12 @@ body{
     var startOffset = (firstDay.getDay() + 6) % 7; // Dushanba = 0
     var daysInMonth = new Date(TD_CAL_YEAR, TD_CAL_MONTH + 1, 0).getDate();
     var daysInPrevMonth = new Date(TD_CAL_YEAR, TD_CAL_MONTH, 0).getDate();
-    var selectedVal = document.getElementById('taskDue').value;
+    var dueVal = document.getElementById('taskDue').value;
     var t = new Date();
     var todayStr = t.getFullYear() + '-' + pad2(t.getMonth() + 1) + '-' + pad2(t.getDate());
+    var isDur = TD_CAL_MODE === 'dur';
+    var rangeStart = isDur ? TD_START_DATE : '';
+    var rangeEnd = isDur ? dueVal : '';
 
     var html = '';
     for (var i = startOffset; i > 0; i--) {
@@ -2930,7 +3037,13 @@ body{
       var dateStr = TD_CAL_YEAR + '-' + pad2(TD_CAL_MONTH + 1) + '-' + pad2(d);
       var cls = 'td-cal-day';
       if (dateStr === todayStr) cls += ' is-today';
-      if (dateStr === selectedVal) cls += ' is-selected';
+      if (isDur) {
+        if (dateStr === rangeStart) cls += ' is-range-start';
+        if (dateStr === rangeEnd) cls += ' is-range-end';
+        if (rangeStart && rangeEnd && dateStr > rangeStart && dateStr < rangeEnd) cls += ' is-in-range';
+      } else {
+        if (dateStr === dueVal) cls += ' is-selected';
+      }
       html += '<button type="button" class="' + cls + '" data-date="' + dateStr + '">' + d + '</button>';
     }
     var remainder = (startOffset + daysInMonth) % 7;
@@ -2943,12 +3056,58 @@ body{
     grid.querySelectorAll('.td-cal-day:not(.is-muted)').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         e.stopPropagation();
-        document.getElementById('taskDue').value = btn.dataset.date;
-        var status = TD_EDIT_ID && TASKS_MAP[TD_EDIT_ID] ? TASKS_MAP[TD_EDIT_ID].status : null;
-        setDateLabel(btn.dataset.date, status);
-        closeAllPopups();
+        var picked = btn.dataset.date;
+        if (TD_CAL_MODE === 'dur') {
+          // Davomiylik: navbat bilan boshlanish va tugash tanlanadi
+          if (TD_DUR_TARGET === 'start' || !TD_START_DATE) {
+            TD_START_DATE = picked;
+            if (document.getElementById('taskDue').value && document.getElementById('taskDue').value < picked) {
+              document.getElementById('taskDue').value = picked;
+            }
+            TD_DUR_TARGET = 'end';
+          } else {
+            if (picked < TD_START_DATE) {
+              // teskari tanlansa — almashtirib qo'yamiz
+              document.getElementById('taskDue').value = TD_START_DATE;
+              TD_START_DATE = picked;
+            } else {
+              document.getElementById('taskDue').value = picked;
+            }
+            TD_DUR_TARGET = 'start';
+          }
+          updateDurFields();
+        } else {
+          document.getElementById('taskDue').value = picked;
+        }
+        tdRefreshLabel();
+        renderCalendar(); // tanlov darhol ko'rinsin, oyna ochiq qoladi — OK bilan yopiladi
       });
     });
+  }
+
+  function updateDurFields() {
+    var s = document.getElementById('tdDurStart');
+    var e = document.getElementById('tdDurEnd');
+    s.textContent = TD_START_DATE ? fmtDate(TD_START_DATE) : '—';
+    e.textContent = document.getElementById('taskDue').value ? fmtDate(document.getElementById('taskDue').value) : '—';
+    s.classList.toggle('is-active', TD_DUR_TARGET === 'start');
+    e.classList.toggle('is-active', TD_DUR_TARGET === 'end');
+  }
+
+  function setCalMode(mode) {
+    TD_CAL_MODE = mode;
+    document.getElementById('tdTabDate').classList.toggle('is-active', mode === 'date');
+    document.getElementById('tdTabDur').classList.toggle('is-active', mode === 'dur');
+    document.getElementById('tdDurFields').style.display = mode === 'dur' ? 'block' : 'none';
+    document.getElementById('tdCalQuick').style.display = mode === 'dur' ? 'none' : 'flex';
+    if (mode === 'date') {
+      TD_START_DATE = ''; // oddiy rejimga qaytilsa oraliq bekor bo'ladi
+    } else {
+      TD_DUR_TARGET = TD_START_DATE ? 'end' : 'start';
+      updateDurFields();
+    }
+    tdRefreshLabel();
+    renderCalendar();
   }
 
   function openCalendar() {
@@ -2956,8 +3115,37 @@ body{
     var base = val ? new Date(val) : new Date();
     TD_CAL_YEAR = base.getFullYear();
     TD_CAL_MONTH = base.getMonth();
-    renderCalendar();
+    buildTimeList();
+    setCalMode(TD_START_DATE ? 'dur' : 'date');
     document.getElementById('tdDatePop').classList.add('is-on');
+  }
+
+  // Vaqt ro'yxati — 30 daqiqalik oraliqlar bilan tez tanlash
+  var TIME_LIST_BUILT = false;
+  function buildTimeList() {
+    var list = document.getElementById('tdTimeList');
+    if (!TIME_LIST_BUILT) {
+      var html = '';
+      for (var h = 0; h < 24; h++) {
+        ['00', '30'].forEach(function (m) {
+          var tv = pad2(h) + ':' + m;
+          html += '<button type="button" class="td-time-item" data-time="' + tv + '">' + tv + '</button>';
+        });
+      }
+      list.innerHTML = html;
+      list.querySelectorAll('.td-time-item').forEach(function (item) {
+        item.addEventListener('click', function (e) {
+          e.stopPropagation();
+          setTimeUI(item.dataset.time);
+          buildTimeList(); // belgilangan elementni yangilash
+          closeCalSubpanels();
+        });
+      });
+      TIME_LIST_BUILT = true;
+    }
+    list.querySelectorAll('.td-time-item').forEach(function (item) {
+      item.classList.toggle('is-sel', item.dataset.time === TD_DUE_TIME);
+    });
   }
 
   // ── VAQT / ESLATMA / TAKRORLASH ──
@@ -3007,6 +3195,7 @@ body{
       var diffDays = Math.round((today - due) / 86400000);
       var overdue = diffDays > 0 && taskStatus !== 'done';
       var txt = fmtDate(val);
+      if (TD_START_DATE && TD_START_DATE !== val) txt = fmtDate(TD_START_DATE) + ' – ' + fmtDate(val);
       if (TD_DUE_TIME) txt += ', ' + TD_DUE_TIME;
       if (overdue) txt += ' · ' + diffDays + 'k muddati o\'tgan';
       label.textContent = txt;
@@ -3067,6 +3256,9 @@ body{
     document.getElementById('taskDesc').value = task ? (task.description || '') : '';
     document.getElementById('taskDue').value = task && task.due_date ? task.due_date.split('T')[0] : '';
     document.getElementById('taskFormMsg').textContent = '';
+    TD_START_DATE = task && task.start_date ? task.start_date.split('T')[0] : '';
+    TD_CAL_MODE = TD_START_DATE ? 'dur' : 'date';
+    TD_DUR_TARGET = 'start';
     setTimeUI(task && task.due_time ? task.due_time : '');
     setReminderUI(task && task.reminder_minutes !== null && task.reminder_minutes !== undefined ? task.reminder_minutes : null);
     setRepeatUI(task ? (task.repeat_rule || 'none') : 'none');
@@ -3111,6 +3303,7 @@ body{
         description: document.getElementById('taskDesc').value.trim() || null,
         priority: TD_PRIORITY,
         due_date: document.getElementById('taskDue').value || null,
+        start_date: TD_START_DATE || null,
         due_time: TD_DUE_TIME || null,
         reminder_minutes: TD_REMINDER_MINUTES,
         repeat_rule: TD_REPEAT_RULE,
@@ -3170,18 +3363,49 @@ body{
       TD_CAL_MONTH++; if (TD_CAL_MONTH > 11) { TD_CAL_MONTH = 0; TD_CAL_YEAR++; }
       renderCalendar();
     });
-    document.getElementById('tdCalToday').addEventListener('click', function (e) {
+    // Sana / Davomiylik tablari
+    document.getElementById('tdTabDate').addEventListener('click', function (e) {
+      e.stopPropagation(); setCalMode('date');
+    });
+    document.getElementById('tdTabDur').addEventListener('click', function (e) {
+      e.stopPropagation(); setCalMode('dur');
+    });
+
+    // Tezkor sana tugmalari: bugun / ertaga / +7 / keyingi oy
+    document.querySelectorAll('#tdCalQuick .td-cal-quickbtn').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var t = new Date();
+        if (btn.dataset.quick === 'tomorrow') t.setDate(t.getDate() + 1);
+        else if (btn.dataset.quick === 'week') t.setDate(t.getDate() + 7);
+        else if (btn.dataset.quick === 'month') t.setMonth(t.getMonth() + 1);
+        var dateStr = t.getFullYear() + '-' + pad2(t.getMonth() + 1) + '-' + pad2(t.getDate());
+        document.getElementById('taskDue').value = dateStr;
+        TD_CAL_YEAR = t.getFullYear(); TD_CAL_MONTH = t.getMonth();
+        tdRefreshLabel();
+        renderCalendar();
+      });
+    });
+
+    // Davomiylik maydonlari — qaysi biri bosilsa, keyingi kun tanlashi shu maydonga yoziladi
+    document.querySelectorAll('.td-dur-field').forEach(function (f) {
+      f.addEventListener('click', function (e) {
+        e.stopPropagation();
+        TD_DUR_TARGET = f.dataset.target;
+        updateDurFields();
+      });
+    });
+
+    // OK — tanlovni tasdiqlab oynani yopadi
+    document.getElementById('tdCalOk').addEventListener('click', function (e) {
       e.stopPropagation();
-      var t = new Date();
-      var dateStr = t.getFullYear() + '-' + pad2(t.getMonth() + 1) + '-' + pad2(t.getDate());
-      document.getElementById('taskDue').value = dateStr;
-      var status = TD_EDIT_ID && TASKS_MAP[TD_EDIT_ID] ? TASKS_MAP[TD_EDIT_ID].status : null;
-      setDateLabel(dateStr, status);
       closeAllPopups();
     });
     document.getElementById('tdCalClear').addEventListener('click', function (e) {
       e.stopPropagation();
       document.getElementById('taskDue').value = '';
+      TD_START_DATE = '';
+      TD_DUR_TARGET = 'start';
       setTimeUI('');
       setReminderUI(null);
       setRepeatUI('none');

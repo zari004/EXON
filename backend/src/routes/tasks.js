@@ -44,16 +44,17 @@ router.get('/', auth.requireAuth, async (req, res) => {
 // POST /api/tasks
 router.post('/', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
   try {
-    const { title, description, priority, status, due_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name } = req.body;
+    const { title, description, priority, status, due_date, start_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name } = req.body;
     if (!title || !title.trim()) {
       return res.status(400).json({ success: false, error: 'Sarlavha talab qilinadi' });
     }
     const result = await db.run(
-      `INSERT INTO tasks (title, description, priority, status, due_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name, created_by, created_name)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO tasks (title, description, priority, status, due_date, start_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name, created_by, created_name)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         title.trim(), description || null, priority || 'medium',
         status || 'new', due_date || null,
+        start_date || null,
         due_time || null,
         reminder_minutes !== undefined && reminder_minutes !== null && reminder_minutes !== '' ? Number(reminder_minutes) : null,
         repeat_rule || 'none',
@@ -71,7 +72,7 @@ router.post('/', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
 // PUT /api/tasks/:id — to'liq yangilash (tahrirlash)
 router.put('/:id', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
   try {
-    const { title, description, priority, status, due_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name } = req.body;
+    const { title, description, priority, status, due_date, start_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name } = req.body;
     const VALID_STATUS = ['new', 'in_progress', 'review', 'done'];
     if (!title || !title.trim()) {
       return res.status(400).json({ success: false, error: 'Sarlavha talab qilinadi' });
@@ -84,11 +85,12 @@ router.put('/:id', auth.requireAuth, auth.requireSuperAdmin, async (req, res) =>
       ? Number(reminder_minutes) : null;
     await db.run(
       `UPDATE tasks SET title=?, description=?, priority=?, status=COALESCE(?,status),
-       due_date=?, due_time=?, reminder_minutes=?, reminder_sent=false, repeat_rule=?,
+       due_date=?, start_date=?, due_time=?, reminder_minutes=?, reminder_sent=false, repeat_rule=?,
        assigned_to=?, assigned_name=?, updated_at=NOW() WHERE id=?`,
       [
         title.trim(), description || null, priority || 'medium',
         status || null, due_date || null,
+        start_date || null,
         due_time || null, reminderMinutesVal, repeat_rule || 'none',
         assigned_to ? Number(assigned_to) : null,
         assigned_name || null,

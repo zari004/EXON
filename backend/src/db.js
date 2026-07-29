@@ -153,7 +153,8 @@ const init = async () => {
       updated_at TIMESTAMP DEFAULT NOW()
     )
   `);
-  // Eski jadvalga yangi ustunlarni qo'shish (vaqt, eslatma, takrorlash)
+  // Eski jadvalga yangi ustunlarni qo'shish (vaqt, eslatma, takrorlash, davomiylik)
+  await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS start_date DATE`);
   await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS due_time TEXT`);
   await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS reminder_minutes INTEGER`);
   await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS reminder_sent BOOLEAN DEFAULT false`);
