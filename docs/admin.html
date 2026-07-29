@@ -369,6 +369,37 @@ body{
 .td-pri-flag.medium{background:#59A5D8}
 .td-pri-flag.low{background:#6EBF8B}
 .td-pri-flag.none{border:1.5px solid var(--gray-dim)}
+
+/* CUSTOM KALENDAR (sana tanlash) */
+.td-cal-pop{padding:12px}
+.td-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px}
+.td-cal-title{font-size:13.5px;font-weight:600;color:var(--white)}
+[data-theme="light"] .td-cal-title{color:#1a2117}
+.td-cal-nav{display:flex;gap:2px}
+.td-cal-navbtn{
+  background:none;border:0;color:var(--gray-dim);cursor:pointer;
+  width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  transition:background .12s,color .12s;
+}
+.td-cal-navbtn:hover{background:var(--surface);color:var(--gray)}
+.td-cal-dow{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:10.5px;color:var(--gray-dim);margin-bottom:4px}
+.td-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.td-cal-day{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  border:0;background:none;border-radius:50%;font-size:12.5px;color:var(--white);cursor:pointer;
+  transition:background .12s;
+}
+[data-theme="light"] .td-cal-day{color:#1a2117}
+.td-cal-day:hover{background:var(--surface)}
+.td-cal-day.is-muted{color:var(--gray-dim);opacity:.45;cursor:default}
+.td-cal-day.is-today{color:var(--green-hi);font-weight:700}
+.td-cal-day.is-selected{background:var(--green);color:var(--green-ink);font-weight:700}
+.td-cal-foot{display:flex;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
+[data-theme="light"] .td-cal-foot{border-top-color:#e9ede9}
+.td-cal-footbtn{background:none;border:0;color:var(--gray);font-size:12px;cursor:pointer;padding:6px 8px;border-radius:6px;transition:background .12s}
+.td-cal-footbtn:hover{background:var(--surface)}
+.td-cal-footbtn.td-cal-today{color:var(--green-hi);font-weight:600}
+
 .td-ava{
   width:26px;height:26px;border-radius:50%;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
@@ -1219,6 +1250,29 @@ body{
       <span id="tdDateLabel">Sana va eslatma</span>
     </button>
     <input type="date" id="taskDue" class="td-date-inp" tabindex="-1" />
+
+    <!-- DATE POPUP (custom kalendar) -->
+    <div class="td-popup td-cal-pop" id="tdDatePop" style="left:12px;min-width:280px">
+      <div class="td-cal-head">
+        <span class="td-cal-title" id="tdCalTitle">Iyul 2026</span>
+        <div class="td-cal-nav">
+          <button type="button" class="td-cal-navbtn" id="tdCalPrev" aria-label="Oldingi oy">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="button" class="td-cal-navbtn" id="tdCalNext" aria-label="Keyingi oy">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="td-cal-dow">
+        <span>Du</span><span>Se</span><span>Ch</span><span>Pa</span><span>Ju</span><span>Sh</span><span>Ya</span>
+      </div>
+      <div class="td-cal-grid" id="tdCalGrid"></div>
+      <div class="td-cal-foot">
+        <button type="button" class="td-cal-footbtn" id="tdCalClear">Tozalash</button>
+        <button type="button" class="td-cal-footbtn td-cal-today" id="tdCalToday">Bugun</button>
+      </div>
+    </div>
     <button class="td-ibtn" id="tdAssBtn" type="button" aria-label="Tayinlash" title="Tayinlash">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
     </button>
@@ -2735,6 +2789,7 @@ body{
   function closeAllPopups() {
     document.getElementById('tdPriPop').classList.remove('is-on');
     document.getElementById('tdAssPop').classList.remove('is-on');
+    document.getElementById('tdDatePop').classList.remove('is-on');
   }
 
   // ── PRIORITY UI ──
@@ -2768,6 +2823,60 @@ body{
   }
 
   // ── DATE UI — overdue detection ──
+  // ── CUSTOM KALENDAR ──
+  var TD_CAL_YEAR, TD_CAL_MONTH; // hozir ko'rsatilayotgan oy/yil (oy 0-indeksli)
+  var UZ_MONTHS = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'];
+  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function renderCalendar() {
+    document.getElementById('tdCalTitle').textContent = UZ_MONTHS[TD_CAL_MONTH] + ' ' + TD_CAL_YEAR;
+    var grid = document.getElementById('tdCalGrid');
+    var firstDay = new Date(TD_CAL_YEAR, TD_CAL_MONTH, 1);
+    var startOffset = (firstDay.getDay() + 6) % 7; // Dushanba = 0
+    var daysInMonth = new Date(TD_CAL_YEAR, TD_CAL_MONTH + 1, 0).getDate();
+    var daysInPrevMonth = new Date(TD_CAL_YEAR, TD_CAL_MONTH, 0).getDate();
+    var selectedVal = document.getElementById('taskDue').value;
+    var t = new Date();
+    var todayStr = t.getFullYear() + '-' + pad2(t.getMonth() + 1) + '-' + pad2(t.getDate());
+
+    var html = '';
+    for (var i = startOffset; i > 0; i--) {
+      html += '<button type="button" class="td-cal-day is-muted" disabled>' + (daysInPrevMonth - i + 1) + '</button>';
+    }
+    for (var d = 1; d <= daysInMonth; d++) {
+      var dateStr = TD_CAL_YEAR + '-' + pad2(TD_CAL_MONTH + 1) + '-' + pad2(d);
+      var cls = 'td-cal-day';
+      if (dateStr === todayStr) cls += ' is-today';
+      if (dateStr === selectedVal) cls += ' is-selected';
+      html += '<button type="button" class="' + cls + '" data-date="' + dateStr + '">' + d + '</button>';
+    }
+    var remainder = (startOffset + daysInMonth) % 7;
+    var nextDays = remainder === 0 ? 0 : 7 - remainder;
+    for (var d2 = 1; d2 <= nextDays; d2++) {
+      html += '<button type="button" class="td-cal-day is-muted" disabled>' + d2 + '</button>';
+    }
+    grid.innerHTML = html;
+
+    grid.querySelectorAll('.td-cal-day:not(.is-muted)').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        document.getElementById('taskDue').value = btn.dataset.date;
+        var status = TD_EDIT_ID && TASKS_MAP[TD_EDIT_ID] ? TASKS_MAP[TD_EDIT_ID].status : null;
+        setDateLabel(btn.dataset.date, status);
+        closeAllPopups();
+      });
+    });
+  }
+
+  function openCalendar() {
+    var val = document.getElementById('taskDue').value;
+    var base = val ? new Date(val) : new Date();
+    TD_CAL_YEAR = base.getFullYear();
+    TD_CAL_MONTH = base.getMonth();
+    renderCalendar();
+    document.getElementById('tdDatePop').classList.add('is-on');
+  }
+
   function setDateLabel(val, taskStatus) {
     var btn = document.getElementById('tdDateBtn');
     var label = document.getElementById('tdDateLabel');
@@ -2916,15 +3025,39 @@ body{
       this.classList.toggle('is-done');
     });
 
-    // Date button → trigger native date input
-    var dateInp = document.getElementById('taskDue');
-    document.getElementById('tdDateBtn').addEventListener('click', function () {
+    // Date button → custom kalendar popup
+    document.getElementById('tdDateBtn').addEventListener('click', function (e) {
+      e.stopPropagation();
+      var pop = document.getElementById('tdDatePop');
+      var wasOn = pop.classList.contains('is-on');
       closeAllPopups();
-      dateInp.showPicker ? dateInp.showPicker() : dateInp.click();
+      if (!wasOn) openCalendar();
     });
-    dateInp.addEventListener('change', function () {
+    document.getElementById('tdDatePop').addEventListener('click', function (e) { e.stopPropagation(); });
+    document.getElementById('tdCalPrev').addEventListener('click', function (e) {
+      e.stopPropagation();
+      TD_CAL_MONTH--; if (TD_CAL_MONTH < 0) { TD_CAL_MONTH = 11; TD_CAL_YEAR--; }
+      renderCalendar();
+    });
+    document.getElementById('tdCalNext').addEventListener('click', function (e) {
+      e.stopPropagation();
+      TD_CAL_MONTH++; if (TD_CAL_MONTH > 11) { TD_CAL_MONTH = 0; TD_CAL_YEAR++; }
+      renderCalendar();
+    });
+    document.getElementById('tdCalToday').addEventListener('click', function (e) {
+      e.stopPropagation();
+      var t = new Date();
+      var dateStr = t.getFullYear() + '-' + pad2(t.getMonth() + 1) + '-' + pad2(t.getDate());
+      document.getElementById('taskDue').value = dateStr;
       var status = TD_EDIT_ID && TASKS_MAP[TD_EDIT_ID] ? TASKS_MAP[TD_EDIT_ID].status : null;
-      setDateLabel(dateInp.value, status);
+      setDateLabel(dateStr, status);
+      closeAllPopups();
+    });
+    document.getElementById('tdCalClear').addEventListener('click', function (e) {
+      e.stopPropagation();
+      document.getElementById('taskDue').value = '';
+      setDateLabel('', null);
+      closeAllPopups();
     });
 
     // Description auto-resize
