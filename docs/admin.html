@@ -93,6 +93,14 @@ body{
 .login-form{display:none}
 .login-form.is-active{display:block}
 .login-box .field-sep{margin:10px 0;font-size:12px;color:var(--gray-dim);text-align:center}
+.forgot-link{
+  display:block !important;width:auto !important;height:auto !important;
+  background:none !important;box-shadow:none !important;border:0 !important;
+  color:var(--gray) !important;font-size:12.5px !important;font-weight:400 !important;
+  text-align:right;margin:-6px 0 14px !important;padding:0 !important;cursor:pointer;
+  text-decoration:underline;text-underline-offset:2px;
+}
+.forgot-link:hover{color:var(--green-hi) !important}
 
 /* ── PENDING SCREEN ── */
 .pending-screen{
@@ -586,7 +594,7 @@ body{
 .add-feature{margin-top:4px;background:none;border:1px dashed var(--line-2);border-radius:6px;color:var(--gray);padding:8px;font-size:12.5px;cursor:pointer;width:100%}
 .modal-actions{display:flex;gap:10px;margin-top:22px}
 .modal-actions button{flex:1;height:44px;border-radius:8px;border:0;font-weight:600;font-size:14px;cursor:pointer}
-.modal-save{background:linear-gradient(140deg,var(--green-hi) 0%,var(--green) 52%,#1FA36C 100%);color:var(--green-ink)}
+.modal-save,.modal-save-static{background:linear-gradient(140deg,var(--green-hi) 0%,var(--green) 52%,#1FA36C 100%);color:var(--green-ink)}
 .modal-cancel{background:var(--surface);border:1px solid var(--line-2) !important;color:var(--gray)}
 .form-msg{font-size:13px;margin-top:10px;min-height:16px}
 .form-msg.error{color:#F2896F}
@@ -728,6 +736,7 @@ body{
             <svg class="eye-closed" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
           </button>
         </div>
+        <button type="button" class="forgot-link" id="forgotPwdLink">Parolni unutdingizmi?</button>
         <button type="submit" id="loginSubmitBtn">Kirish</button>
         <div class="login-error" id="loginError"></div>
         <div class="login-error" id="loginHint" style="color:var(--gray-dim)"></div>
@@ -1036,6 +1045,7 @@ body{
           </div>
           <button type="button" class="settings-save-btn" id="setPassSaveBtn">Parolni almashtirish</button>
           <div class="form-msg" id="setPassMsg"></div>
+          <button type="button" class="forgot-link" id="setForgotPwdLink" style="text-align:left;margin:14px 0 0 !important;display:inline-block !important">Joriy parolni bilmayman — kod orqali tiklash</button>
         </div>
       </div>
     </div>
@@ -1142,6 +1152,53 @@ body{
         <button type="submit" class="modal-save">Saqlash</button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: PAROLNI TIKLASH (email kod orqali) ══════════ -->
+<div class="modal-overlay" id="resetPwdModal">
+  <div class="modal-box" style="max-width:400px">
+    <h3>Parolni tiklash</h3>
+
+    <!-- 1-QADAM: email kiritish -->
+    <div id="resetStep1">
+      <p style="color:var(--gray);font-size:13px;margin-bottom:16px">Ro'yxatdan o'tgan emailingizni kiriting — tasdiqlash kodi yuboriladi.</p>
+      <div class="field"><label>Email</label><input type="text" id="resetEmail" placeholder="email@misol.com" /></div>
+      <div class="form-msg" id="resetStep1Msg"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-cancel" onclick="closeModal('resetPwdModal')">Bekor qilish</button>
+        <button type="button" class="modal-save-static" id="resetSendCodeBtn">Kod yuborish</button>
+      </div>
+    </div>
+
+    <!-- 2-QADAM: kod + yangi parol -->
+    <div id="resetStep2" style="display:none">
+      <p style="color:var(--gray);font-size:13px;margin-bottom:16px"><span id="resetEmailLabel"></span> manziliga yuborilgan 6 xonali kodni kiriting.</p>
+      <div class="field"><label>Tasdiqlash kodi</label><input type="text" id="resetCode" placeholder="000000" maxlength="6" inputmode="numeric" /></div>
+      <div class="field"><label>Yangi parol</label>
+        <div class="pwd-field">
+          <input type="password" id="resetNewPass" autocomplete="new-password" />
+          <button type="button" class="pwd-eye" data-target="resetNewPass" aria-label="Parolni ko'rsatish">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/></svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="field"><label>Yangi parolni tasdiqlang</label>
+        <div class="pwd-field">
+          <input type="password" id="resetNewPass2" autocomplete="new-password" />
+          <button type="button" class="pwd-eye" data-target="resetNewPass2" aria-label="Parolni ko'rsatish">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/></svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="form-msg" id="resetStep2Msg"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-cancel" onclick="closeModal('resetPwdModal')">Bekor qilish</button>
+        <button type="button" class="modal-save-static" id="resetConfirmBtn">Parolni tiklash</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1854,6 +1911,80 @@ body{
       target.type = showing ? 'password' : 'text';
       btn.classList.toggle('is-shown', !showing);
     });
+  });
+
+  // ── PAROLNI TIKLASH (email kod orqali) — login sahifasi va Sozlamalar'dan ochiladi ──
+  function openResetModal(prefillEmail) {
+    document.getElementById('resetEmail').value = prefillEmail || '';
+    document.getElementById('resetStep1').style.display = '';
+    document.getElementById('resetStep2').style.display = 'none';
+    document.getElementById('resetStep1Msg').className = 'form-msg';
+    document.getElementById('resetStep1Msg').textContent = '';
+    document.getElementById('resetStep2Msg').className = 'form-msg';
+    document.getElementById('resetStep2Msg').textContent = '';
+    document.getElementById('resetCode').value = '';
+    document.getElementById('resetNewPass').value = '';
+    document.getElementById('resetNewPass2').value = '';
+    document.getElementById('resetPwdModal').classList.add('is-active');
+  }
+  document.getElementById('forgotPwdLink').addEventListener('click', function () {
+    openResetModal(document.getElementById('loginEmail').value.trim());
+  });
+  document.getElementById('setForgotPwdLink').addEventListener('click', function () {
+    openResetModal(document.getElementById('setEmail').value.trim());
+  });
+
+  document.getElementById('resetSendCodeBtn').addEventListener('click', async function () {
+    var email = document.getElementById('resetEmail').value.trim();
+    var msg = document.getElementById('resetStep1Msg');
+    if (!email || email.indexOf('@') === -1) { msg.className = 'form-msg error'; msg.textContent = "To'g'ri email kiriting"; return; }
+    var btn = this;
+    btn.disabled = true;
+    msg.className = 'form-msg'; msg.textContent = '';
+    try {
+      var res = await fetch(API + '/api/auth/forgot-password', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      });
+      var data = await res.json();
+      if (!data.success) { msg.className = 'form-msg error'; msg.textContent = data.error || 'Xato'; return; }
+      document.getElementById('resetEmailLabel').textContent = email;
+      document.getElementById('resetStep1').style.display = 'none';
+      document.getElementById('resetStep2').style.display = '';
+    } catch (err) {
+      msg.className = 'form-msg error'; msg.textContent = "Server bilan bog'lanib bo'lmadi";
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  document.getElementById('resetConfirmBtn').addEventListener('click', async function () {
+    var email = document.getElementById('resetEmail').value.trim();
+    var code = document.getElementById('resetCode').value.trim();
+    var n1 = document.getElementById('resetNewPass').value;
+    var n2 = document.getElementById('resetNewPass2').value;
+    var msg = document.getElementById('resetStep2Msg');
+    if (!code) { msg.className = 'form-msg error'; msg.textContent = 'Kodni kiriting'; return; }
+    if (!n1 || !n2) { msg.className = 'form-msg error'; msg.textContent = 'Yangi parolni kiriting'; return; }
+    if (n1 !== n2) { msg.className = 'form-msg error'; msg.textContent = 'Yangi parollar mos kelmadi'; return; }
+    if (n1.length < 6) { msg.className = 'form-msg error'; msg.textContent = 'Yangi parol kamida 6 ta belgi'; return; }
+    var btn = this;
+    btn.disabled = true;
+    msg.className = 'form-msg'; msg.textContent = '';
+    try {
+      var res = await fetch(API + '/api/auth/reset-password', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, code: code, newPassword: n1 })
+      });
+      var data = await res.json();
+      if (!data.success) { msg.className = 'form-msg error'; msg.textContent = data.error || 'Xato'; return; }
+      msg.className = 'form-msg ok'; msg.textContent = 'Parol tiklandi! Endi yangi parol bilan kiring.';
+      setTimeout(function () { closeModal('resetPwdModal'); }, 1500);
+    } catch (err) {
+      msg.className = 'form-msg error'; msg.textContent = "Server bilan bog'lanib bo'lmadi";
+    } finally {
+      btn.disabled = false;
+    }
   });
 
   document.getElementById('loginForm').addEventListener('submit', async function (e) {

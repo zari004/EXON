@@ -5,6 +5,25 @@ const db = require('../db');
 const tokens = new Map(); // token -> { expiresAt, role, userId, email, name }
 const TOKEN_TTL_MS = 12 * 60 * 60 * 1000; // 12 soat
 
+const resetCodes = new Map(); // email -> { code, expiresAt }
+const RESET_CODE_TTL_MS = 10 * 60 * 1000; // 10 daqiqa
+
+// Parolni tiklash uchun 6 xonali kod yaratadi va vaqtinchalik saqlaydi
+const createResetCode = (email) => {
+  const code = String(Math.floor(100000 + Math.random() * 900000));
+  resetCodes.set(email, { code, expiresAt: Date.now() + RESET_CODE_TTL_MS });
+  return code;
+};
+
+const verifyResetCode = (email, code) => {
+  const entry = resetCodes.get(email);
+  if (!entry) return false;
+  if (Date.now() > entry.expiresAt) { resetCodes.delete(email); return false; }
+  return entry.code === code;
+};
+
+const clearResetCode = (email) => { resetCodes.delete(email); };
+
 // Eski parol-only login — superadmin uchun backward compat
 const login = (password) => {
   const expected = process.env.ADMIN_PASSWORD;
@@ -93,4 +112,7 @@ const requireSuperAdmin = (req, res, next) => {
   res.status(403).json({ success: false, error: "Bu amalni faqat IT bo'limi yoki superadmin bajarishi mumkin" });
 };
 
-module.exports = { login, loginByEmail, registerUser, verify, updateTokenName, logout, requireAuth, requireSuperAdmin };
+module.exports = {
+  login, loginByEmail, registerUser, verify, updateTokenName, logout, requireAuth, requireSuperAdmin,
+  createResetCode, verifyResetCode, clearResetCode
+};
