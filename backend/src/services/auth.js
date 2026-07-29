@@ -61,6 +61,13 @@ const verify = (token) => {
   return data;
 };
 
+// Profil tahrirlangandan so'ng joriy sessiyadagi ismni yangilaydi —
+// qayta login qilmasdan turib created_name kabi joylarda yangi ism ko'rinsin
+const updateTokenName = (token, name) => {
+  const data = tokens.get(token);
+  if (data) data.name = name;
+};
+
 const logout = (token) => { tokens.delete(token); };
 
 const requireAuth = (req, res, next) => {
@@ -69,6 +76,7 @@ const requireAuth = (req, res, next) => {
   const data = token ? verify(token) : false;
   if (!data) return res.status(401).json({ success: false, error: 'Avtorizatsiya talab qilinadi' });
   req.user = data;
+  req.token = token;
   next();
 };
 
@@ -77,4 +85,4 @@ const requireSuperAdmin = (req, res, next) => {
   res.status(403).json({ success: false, error: "Bu amalni faqat IT bo'limi yoki superadmin bajarishi mumkin" });
 };
 
-module.exports = { login, loginByEmail, registerUser, verify, logout, requireAuth, requireSuperAdmin };
+module.exports = { login, loginByEmail, registerUser, verify, updateTokenName, logout, requireAuth, requireSuperAdmin };

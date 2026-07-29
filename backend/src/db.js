@@ -111,7 +111,18 @@ const init = async () => {
       password_hash TEXT NOT NULL,
       role TEXT NOT NULL DEFAULT 'menejer_oddiy',
       status TEXT NOT NULL DEFAULT 'pending',
+      avatar TEXT,
       created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+  // Eski jadvallarga avatar ustunini qo'shish (agar hali yo'q bo'lsa)
+  await pool.query(`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS avatar TEXT`);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS site_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT,
+      updated_at TIMESTAMP DEFAULT NOW()
     )
   `);
 

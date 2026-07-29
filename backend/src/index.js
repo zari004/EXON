@@ -11,6 +11,7 @@ const casesRoutes = require('./routes/cases');
 const postsRoutes = require('./routes/posts');
 const pricingRoutes = require('./routes/pricing');
 const tasksRoutes = require('./routes/tasks');
+const accountRoutes = require('./routes/account');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -68,6 +69,7 @@ app.use('/api/cases', casesRoutes);
 app.use('/api/posts', postsRoutes);
 app.use('/api/pricing', pricingRoutes);
 app.use('/api/tasks', tasksRoutes);
+app.use('/api/account', accountRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
