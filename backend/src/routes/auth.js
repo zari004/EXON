@@ -72,13 +72,26 @@ router.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
     if (!email) return res.status(400).json({ success: false, error: 'Email talab qilinadi' });
+    if (!mailer.isConfigured()) {
+      return res.status(503).json({
+        success: false,
+        error: 'Email xizmati hozircha sozlanmagan. Administratorga murojaat qiling.'
+      });
+    }
     const cleanEmail = email.toLowerCase().trim();
     const user = await db.get('SELECT id FROM admin_users WHERE email = ?', [cleanEmail]);
     if (user) {
       const code = auth.createResetCode(cleanEmail);
-      mailer.sendResetCode(cleanEmail, code).catch(function (err) {
-        console.error('Mail yuborishda xato:', err.message);
-      });
+      try {
+        await mailer.sendResetCode(cleanEmail, code);
+      } catch (mailError) {
+        auth.clearResetCode(cleanEmail);
+        console.error('Mail yuborishda xato:', mailError.message);
+        return res.status(503).json({
+          success: false,
+          error: 'Tasdiqlash kodini emailga yuborib bo‘lmadi. Birozdan so‘ng qayta urinib ko‘ring.'
+        });
+      }
     }
     res.json({ success: true, message: "Agar bu email ro'yxatdan o'tgan bo'lsa, tasdiqlash kodi yuborildi" });
   } catch (err) {

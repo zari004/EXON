@@ -143,7 +143,14 @@ backend/
 1. New Web Service → connect GitHub repo `zari004/EXON`
 2. Root Directory: `backend`
 3. Build Command: `npm install`, Start Command: `npm start`
-4. Add environment variables: `DATABASE_URL`, `ADMIN_PASSWORD`, `FRONTEND_URL`, `NODE_ENV=production`
+4. Add environment variables: `DATABASE_URL`, `ADMIN_PASSWORD`, `FRONTEND_URL`,
+   `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `NODE_ENV=production`
+
+For password-reset emails, enable 2-Step Verification on the sender Google
+account and create a 16-character App Password at
+https://myaccount.google.com/apppasswords. Set the Gmail address as
+`GMAIL_USER` and the App Password as `GMAIL_APP_PASSWORD`; do not use the
+account's normal password.
 
 Database lives on **Supabase** (separate free Postgres), so Render's lack of a
 persistent disk on the free tier doesn't matter — no data is stored on the

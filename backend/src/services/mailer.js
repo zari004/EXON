@@ -1,13 +1,17 @@
 const nodemailer = require('nodemailer');
 
 let transporter = null;
+const gmailUser = (process.env.GMAIL_USER || '').trim();
+// Google App Passwords are often copied in four-character groups. Gmail
+// expects the same 16 characters without spaces.
+const gmailAppPassword = (process.env.GMAIL_APP_PASSWORD || '').replace(/\s+/g, '');
 
-if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+if (gmailUser && gmailAppPassword) {
   transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD
+      user: gmailUser,
+      pass: gmailAppPassword
     }
   });
   console.log('✅ Gmail mailer initialized');
@@ -18,11 +22,12 @@ if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
 // Parolni tiklash tasdiqlash kodini yuboradi
 const sendResetCode = async (toEmail, code) => {
   if (!transporter) {
-    console.log(`⚠️ Mailer sozlanmagan. ${toEmail} uchun kod: ${code} (faqat konsolda)`);
-    return;
+    const error = new Error('Email xizmati sozlanmagan');
+    error.code = 'EMAIL_NOT_CONFIGURED';
+    throw error;
   }
-  await transporter.sendMail({
-    from: `"EXON Admin" <${process.env.GMAIL_USER}>`,
+  return transporter.sendMail({
+    from: `"EXON Admin" <${gmailUser}>`,
     to: toEmail,
     subject: 'EXON Admin — Parolni tiklash kodi',
     html: `
@@ -36,4 +41,6 @@ const sendResetCode = async (toEmail, code) => {
   });
 };
 
-module.exports = { sendResetCode };
+const isConfigured = () => Boolean(transporter);
+
+module.exports = { isConfigured, sendResetCode };
