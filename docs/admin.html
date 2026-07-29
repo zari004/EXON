@@ -500,6 +500,10 @@ body{
 }
 [data-theme="light"] .td-sub-overlay{background:#fff}
 .td-sub-overlay.is-on{display:flex}
+#tdReminderOverlay,#tdRepeatOverlay{
+  bottom:auto;
+  max-height:calc(100vh - 110px);
+}
 .td-sub-overlay-head{
   display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-shrink:0;
   font-size:14px;font-weight:600;color:var(--white);
