@@ -248,30 +248,31 @@ body{
 [data-theme="light"] .td{background:#fff;border-left-color:#e4e8e6}
 .td.is-on{transform:translateX(0)}
 
-/* TOP BAR */
+/* TOP BAR — TickTick compact toolbar */
 .td-top{
-  display:flex;align-items:center;gap:4px;
-  padding:8px 12px;border-bottom:1px solid var(--line);flex-shrink:0;
+  display:flex;align-items:center;gap:2px;
+  padding:6px 10px;border-bottom:1px solid var(--line);flex-shrink:0;min-height:42px;
 }
-[data-theme="light"] .td-top{border-bottom-color:#e4e8e6}
+[data-theme="light"] .td-top{border-bottom-color:#e9ede9}
 .td-chk{
-  background:none;border:1.8px solid var(--gray-dim);border-radius:5px;
-  width:20px;height:20px;cursor:pointer;flex-shrink:0;transition:all .15s;
+  background:none;border:1.8px solid var(--gray-dim);border-radius:4px;
+  width:18px;height:18px;cursor:pointer;flex-shrink:0;transition:all .18s;
   display:flex;align-items:center;justify-content:center;color:transparent;
 }
 .td-chk.is-done{background:var(--green);border-color:var(--green);color:#fff}
-.td-top-sep{width:1px;height:18px;background:var(--line);margin:0 4px;flex-shrink:0}
+.td-top-sep{width:1px;height:16px;background:var(--line);margin:0 6px;flex-shrink:0}
 .td-date-btn{
-  display:flex;align-items:center;gap:6px;background:none;border:0;
-  color:var(--gray-dim);font-size:12.5px;cursor:pointer;padding:5px 8px;
-  border-radius:6px;transition:background .15s,color .15s;flex:1;text-align:left;
+  display:flex;align-items:center;gap:5px;background:none;border:0;
+  color:var(--gray-dim);font-size:12px;cursor:pointer;padding:4px 7px;
+  border-radius:6px;transition:background .15s,color .15s;flex:1;text-align:left;min-width:0;
 }
-.td-date-btn:hover{background:var(--surface);color:var(--gray)}
+.td-date-btn:hover{background:var(--surface)}
 .td-date-btn.has-date{color:var(--green)}
+.td-date-btn.is-overdue{color:#F2896F !important}
 .td-date-inp{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
 .td-ibtn{
   background:none;border:0;color:var(--gray-dim);cursor:pointer;
-  width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;
   transition:background .15s,color .15s;flex-shrink:0;
 }
 .td-ibtn:hover{background:var(--surface);color:var(--gray)}
@@ -280,22 +281,23 @@ body{
 .td-ibtn.pri-medium{color:#59A5D8}
 .td-ibtn.pri-low{color:#6EBF8B}
 
-/* BODY */
-.td-body{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+/* BODY — seamless title + description like TickTick */
+.td-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;padding-top:4px}
 .td-title-inp{
   background:none;border:0;width:100%;
-  padding:18px 20px 14px;font-size:18px;font-weight:700;
+  padding:16px 22px 8px;font-size:22px;font-weight:700;line-height:1.25;
   color:var(--white);outline:none;font-family:inherit;
 }
-[data-theme="light"] .td-title-inp{color:#1a2117}
-.td-title-inp::placeholder{color:var(--gray-dim);font-weight:400}
+[data-theme="light"] .td-title-inp{color:#1a1f1b}
+.td-title-inp::placeholder{color:var(--gray-dim);font-weight:500;font-size:20px}
 .td-desc-inp{
   background:none;border:0;width:100%;
-  padding:0 20px 16px;font-size:13.5px;color:var(--gray);
-  outline:none;resize:none;min-height:80px;line-height:1.65;font-family:inherit;
+  padding:0 22px 16px;font-size:14px;color:var(--gray);
+  outline:none;resize:none;line-height:1.7;font-family:inherit;
+  overflow:hidden;min-height:32px;
 }
 .td-desc-inp::placeholder{color:var(--gray-dim)}
-.td-err{font-size:12.5px;color:#F2896F;padding:0 20px 8px;min-height:0}
+.td-err{font-size:12.5px;color:#F2896F;padding:0 22px 8px;min-height:0}
 
 /* PRIORITY & ASSIGNEE POPUPS */
 .td-popup{
@@ -329,26 +331,34 @@ body{
   font-size:11px;font-weight:700;color:#fff;text-transform:uppercase;
 }
 
-/* BOTTOM BAR */
+/* BOTTOM BAR — TickTick footer */
 .td-foot{
-  display:flex;align-items:center;gap:8px;
-  padding:10px 14px;border-top:1px solid var(--line);flex-shrink:0;
+  display:flex;align-items:center;gap:6px;
+  padding:8px 12px 10px;border-top:1px solid var(--line);flex-shrink:0;
 }
-[data-theme="light"] .td-foot{border-top-color:#e4e8e6}
-.td-ass-display{display:flex;align-items:center;gap:7px;cursor:pointer;padding:4px 6px;border-radius:6px;transition:background .15s}
+[data-theme="light"] .td-foot{border-top-color:#e9ede9}
+.td-ass-display{
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+  padding:5px 8px;border-radius:8px;transition:background .15s;flex:1;min-width:0;
+}
 .td-ass-display:hover{background:var(--surface)}
-.td-ass-name{font-size:13px;color:var(--gray)}
+.td-ava{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;text-transform:uppercase;
+}
+.td-ass-name{font-size:13px;color:var(--gray);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.td-foot-actions{display:flex;align-items:center;gap:2px;flex-shrink:0}
 .td-foot-del{
   background:none;border:0;color:var(--gray-dim);cursor:pointer;
-  width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;
   transition:background .15s,color .15s;
 }
 .td-foot-del:hover{color:#F2896F;background:rgba(242,137,111,.1)}
 .td-save-btn{
-  margin-left:auto;
   background:linear-gradient(135deg,var(--green-hi) 0%,var(--green) 60%,#1FA36C 100%);
   color:var(--green-ink);border:0;border-radius:8px;
-  padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s;
+  padding:7px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s;flex-shrink:0;
 }
 .td-save-btn:hover{opacity:.88}
 .td-save-btn:disabled{opacity:.5;cursor:not-allowed}
@@ -985,10 +995,12 @@ body{
       <span class="td-ava" id="tdAva" style="background:#6b7280">—</span>
       <span class="td-ass-name" id="tdAssName">Tayinlanmagan</span>
     </div>
-    <button class="td-foot-del" id="tdDelBtn" type="button" title="O'chirish" style="display:none">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <button class="td-save-btn" id="tdSaveBtn" type="button">Saqlash</button>
+    <div class="td-foot-actions">
+      <button class="td-foot-del" id="tdDelBtn" type="button" title="O'chirish" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="td-save-btn" id="tdSaveBtn" type="button">Saqlash</button>
+    </div>
   </div>
 </div>
 
@@ -2330,17 +2342,29 @@ body{
     });
   }
 
-  // ── DATE UI ──
-  function setDateLabel(val) {
+  // ── DATE UI — overdue detection ──
+  function setDateLabel(val, taskStatus) {
     var btn = document.getElementById('tdDateBtn');
     var label = document.getElementById('tdDateLabel');
+    btn.classList.remove('has-date', 'is-overdue');
     if (val) {
-      label.textContent = fmtDate(val);
-      btn.classList.add('has-date');
+      var due = new Date(val);
+      var today = new Date(); today.setHours(0,0,0,0);
+      var diffDays = Math.round((today - due) / 86400000);
+      var overdue = diffDays > 0 && taskStatus !== 'done';
+      var txt = fmtDate(val);
+      if (overdue) txt += ' · ' + diffDays + 'k muddati o\'tgan';
+      label.textContent = txt;
+      btn.classList.add(overdue ? 'is-overdue' : 'has-date');
     } else {
       label.textContent = 'Sana va eslatma';
-      btn.classList.remove('has-date');
     }
+  }
+
+  // ── TEXTAREA AUTO-RESIZE ──
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
   }
 
   // ── DONE CHECKBOX ──
@@ -2388,7 +2412,10 @@ body{
     document.getElementById('taskDesc').value = task ? (task.description || '') : '';
     document.getElementById('taskDue').value = task && task.due_date ? task.due_date.split('T')[0] : '';
     document.getElementById('taskFormMsg').textContent = '';
-    setDateLabel(task && task.due_date ? task.due_date.split('T')[0] : '');
+    setDateLabel(task && task.due_date ? task.due_date.split('T')[0] : '', task ? task.status : null);
+    // Auto-resize description textarea
+    var descEl = document.getElementById('taskDesc');
+    setTimeout(function () { autoResize(descEl); }, 10);
     setDoneChk(isDone);
     setPriority(task ? task.priority : 'medium');
     setAssignee(task ? task.assigned_to : null, task ? task.assigned_name : null);
@@ -2458,8 +2485,13 @@ body{
       dateInp.showPicker ? dateInp.showPicker() : dateInp.click();
     });
     dateInp.addEventListener('change', function () {
-      setDateLabel(dateInp.value);
+      var status = TD_EDIT_ID && TASKS_MAP[TD_EDIT_ID] ? TASKS_MAP[TD_EDIT_ID].status : null;
+      setDateLabel(dateInp.value, status);
     });
+
+    // Description auto-resize
+    var descEl = document.getElementById('taskDesc');
+    descEl.addEventListener('input', function () { autoResize(descEl); });
 
     // Priority popup toggle
     document.getElementById('tdPriBtn').addEventListener('click', function (e) {
