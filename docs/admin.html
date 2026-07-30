@@ -7,7 +7,7 @@
 <title>Admin — EXON</title>
 <link rel="stylesheet" href="assets/css/style.css?v=13" />
 <link rel="manifest" href="/admin-manifest.json" />
-<link rel="apple-touch-icon" href="assets/img/icon.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/app-icon-180.png" />
 <meta name="theme-color" content="#0BD16C" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1191,14 +1191,15 @@ body{
   border-radius:20px;padding:30px;margin-bottom:40px;box-shadow:0 30px 90px -36px rgba(0,0,0,.9);
 }
 .modal-box h3{font-size:17px;font-weight:600;margin-bottom:20px}
-.field{margin-bottom:14px}
+.field{margin-bottom:14px;min-width:0}
 .field label{display:block;font-size:12.5px;color:var(--gray);margin-bottom:6px;font-weight:500}
-.field input[type=text],.field input[type=password],.field textarea,.field select{
+.field input[type=text],.field input[type=password],.field input[type=number],.field input[type=month],.field input[type=date],.field textarea,.field select{
   width:100%;padding:10px 12px;border-radius:8px;background:var(--surface);
   border:1px solid var(--line-2);color:var(--white);font-size:14px;font-family:inherit;
+  box-sizing:border-box;
 }
 .field textarea{min-height:70px;resize:vertical}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 .checks{display:flex;gap:14px;flex-wrap:wrap}
 .checks label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gray);font-weight:400}
 .img-preview{
