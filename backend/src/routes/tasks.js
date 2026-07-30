@@ -51,12 +51,12 @@ async function maybeCreateNextOccurrence(task) {
   else return;
   const nextDueDate = next.toISOString().split('T')[0];
   await db.run(
-    `INSERT INTO tasks (title, description, priority, status, due_date, due_time, reminder_minutes, reminder_sent, repeat_rule, assigned_to, assigned_name, created_by, created_name)
-     VALUES (?, ?, ?, 'new', ?, ?, ?, false, ?, ?, ?, ?, ?)`,
+    `INSERT INTO tasks (title, description, priority, status, due_date, due_time, reminder_minutes, reminder_sent, repeat_rule, assigned_to, assigned_name, store_id, store_name, created_by, created_name)
+     VALUES (?, ?, ?, 'new', ?, ?, ?, false, ?, ?, ?, ?, ?, ?, ?)`,
     [
       task.title, task.description, task.priority, nextDueDate,
       task.due_time || null, task.reminder_minutes || null, task.repeat_rule,
-      task.assigned_to, task.assigned_name, task.created_by, task.created_name
+      task.assigned_to, task.assigned_name, task.store_id, task.store_name, task.created_by, task.created_name
     ]
   );
 }
@@ -88,13 +88,13 @@ router.get('/', auth.requireAuth, async (req, res) => {
 // POST /api/tasks — endi istalgan tizimga kirgan foydalanuvchi boshqalarga vazifa bera oladi
 router.post('/', auth.requireAuth, async (req, res) => {
   try {
-    const { title, description, priority, status, due_date, start_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name } = req.body;
+    const { title, description, priority, status, due_date, start_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name, store_id, store_name } = req.body;
     if (!title || !title.trim()) {
       return res.status(400).json({ success: false, error: 'Sarlavha talab qilinadi' });
     }
     const result = await db.run(
-      `INSERT INTO tasks (title, description, priority, status, due_date, start_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name, created_by, created_name)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO tasks (title, description, priority, status, due_date, start_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name, store_id, store_name, created_by, created_name)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         title.trim(), description || null, priority || 'medium',
         status || 'new', due_date || null,
@@ -104,6 +104,8 @@ router.post('/', auth.requireAuth, async (req, res) => {
         repeat_rule || 'none',
         assigned_to ? Number(assigned_to) : null,
         assigned_name || null,
+        store_id ? Number(store_id) : null,
+        store_name || null,
         req.user.userId, req.user.name
       ]
     );
@@ -134,7 +136,7 @@ router.put('/:id', auth.requireAuth, async (req, res) => {
     if (!canEditFull) {
       return res.status(403).json({ success: false, error: "Bu vazifani to'liq tahrirlashga ruxsat yo'q" });
     }
-    const { title, description, priority, status, due_date, start_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name } = req.body;
+    const { title, description, priority, status, due_date, start_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name, store_id, store_name } = req.body;
     const VALID_STATUS = ['new', 'in_progress', 'done'];
     if (!title || !title.trim()) {
       return res.status(400).json({ success: false, error: 'Sarlavha talab qilinadi' });
@@ -148,7 +150,7 @@ router.put('/:id', auth.requireAuth, async (req, res) => {
     await db.run(
       `UPDATE tasks SET title=?, description=?, priority=?, status=COALESCE(?,status),
        due_date=?, start_date=?, due_time=?, reminder_minutes=?, reminder_sent=false, repeat_rule=?,
-       assigned_to=?, assigned_name=?, due_soon_notified=false, overdue_notified=false, updated_at=NOW() WHERE id=?`,
+       assigned_to=?, assigned_name=?, store_id=?, store_name=?, due_soon_notified=false, overdue_notified=false, updated_at=NOW() WHERE id=?`,
       [
         title.trim(), description || null, priority || 'medium',
         status || null, due_date || null,
@@ -156,6 +158,8 @@ router.put('/:id', auth.requireAuth, async (req, res) => {
         due_time || null, reminderMinutesVal, repeat_rule || 'none',
         newAssigneeId,
         assigned_name || null,
+        store_id ? Number(store_id) : null,
+        store_name || null,
         req.params.id
       ]
     );

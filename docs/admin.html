@@ -254,6 +254,11 @@ body{
   background:rgba(var(--green-rgb),.09);padding:2px 7px;border-radius:999px;
   max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
+.task-store{
+  font-size:10.5px;color:var(--gray-dim);
+  background:rgba(var(--surface-2-rgb),.7);padding:2px 7px;border-radius:999px;
+  max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
 .task-card__footer{
   display:flex;align-items:center;justify-content:flex-end;
   padding:5px 10px;border-top:1px solid var(--line);
@@ -598,6 +603,17 @@ body{
 .td-pop-item.is-sel{background:rgba(var(--green-rgb),.08)}
 .td-pop-check{margin-left:auto;color:var(--green);opacity:0}
 .td-pop-item.is-sel .td-pop-check{opacity:1}
+.td-store-add{display:flex;gap:6px;padding:4px 4px 8px;margin-bottom:4px;border-bottom:1px solid var(--line)}
+.td-store-add input{
+  flex:1;min-width:0;background:var(--surface);border:1px solid var(--line-2);border-radius:7px;
+  padding:6px 9px;font-size:12.5px;color:var(--white);
+}
+[data-theme="light"] .td-store-add input{color:#1a2117}
+.td-store-add button{
+  flex-shrink:0;background:var(--green);color:var(--green-ink);border:0;border-radius:7px;
+  padding:0 11px;font-size:13px;font-weight:700;cursor:pointer;
+}
+.td-store-add button:hover{opacity:.85}
 .td-pri-flag{width:14px;height:14px;border-radius:3px;flex-shrink:0}
 .td-pri-flag.urgent{background:#F2896F}
 .td-pri-flag.high{background:#F0A500}
@@ -762,6 +778,7 @@ body{
   padding:8px 12px 10px;border-top:1px solid var(--line);flex-shrink:0;
 }
 [data-theme="light"] .td-foot{border-top-color:#e9ede9}
+.td-foot-tags{display:flex;align-items:center;gap:2px;flex:1;min-width:0}
 .td-ass-display{
   display:flex;align-items:center;gap:8px;cursor:pointer;
   padding:5px 8px;border-radius:8px;transition:background .15s;flex:1;min-width:0;
@@ -2392,6 +2409,9 @@ body{
     <button class="td-ibtn" id="tdAssBtn" type="button" aria-label="Tayinlash" title="Tayinlash">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
     </button>
+    <button class="td-ibtn" id="tdStoreBtn" type="button" aria-label="Do'kon" title="Do'kon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 9.5 5 4h14l1 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 9.5v10h15v-10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 19.5v-6h5v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
     <button class="td-ibtn" id="tdPriBtn" type="button" aria-label="Muhimlik" title="Muhimlik">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 3v18M4 3l16 7-16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
@@ -2430,6 +2450,11 @@ body{
     <div class="td-popup" id="tdAssPop" style="min-width:200px;right:44px">
       <!-- populated by JS -->
     </div>
+
+    <!-- DO'KON POPUP -->
+    <div class="td-popup" id="tdStorePop" style="min-width:200px;right:78px">
+      <!-- populated by JS -->
+    </div>
   </div>
 
   <!-- BODY -->
@@ -2464,9 +2489,15 @@ body{
 
   <!-- BOTTOM BAR -->
   <div class="td-foot">
-    <div class="td-ass-display" id="tdAssDisplay">
-      <span class="td-ava" id="tdAva" style="background:#6b7280">—</span>
-      <span class="td-ass-name" id="tdAssName">Tayinlanmagan</span>
+    <div class="td-foot-tags" id="tdFootTags">
+      <div class="td-ass-display" id="tdAssDisplay">
+        <span class="td-ava" id="tdAva" style="background:#6b7280">—</span>
+        <span class="td-ass-name" id="tdAssName">Tayinlanmagan</span>
+      </div>
+      <div class="td-ass-display" id="tdStoreDisplay">
+        <span class="td-ava" id="tdStoreAva" style="background:#6b7280">🏬</span>
+        <span class="td-ass-name" id="tdStoreNameLbl">Do'kon yo'q</span>
+      </div>
     </div>
     <div class="td-foot-actions">
       <button class="td-foot-del" id="tdDelBtn" type="button" title="O'chirish" style="display:none">
@@ -3917,6 +3948,10 @@ body{
   var TD_ASSIGNEE_ID = null;
   var TD_ASSIGNEE_NAME = null;
   var TD_USERS = [];           // cached user list
+  var TD_STORE_ID = null;
+  var TD_STORE_NAME = null;
+  var TD_STORES = [];          // cached store list
+  var TD_STORES_CAN_MANAGE = false;
   var TD_DUE_TIME = '';        // 'HH:MM' yoki ''
   var TD_REMINDER_MINUTES = null; // son yoki null (eslatma yo'q)
   var TD_REPEAT_RULE = 'none'; // none|daily|weekly|monthly
@@ -3974,6 +4009,9 @@ body{
     if ((canManage || isCreatorSelf) && t.assigned_name && !isAssigneeSelf) {
       metaExtra += '<span class="task-assignee" title="Kimga">👤 ' + escHtml(t.assigned_name) + '</span>';
     }
+    if (t.store_name) {
+      metaExtra += '<span class="task-store" title="Do\'kon">🏬 ' + escHtml(t.store_name) + '</span>';
+    }
     return '<div class="task-card" draggable="true" data-id="' + t.id + '" data-status="' + t.status + '">' +
       '<div class="task-card__stripe ' + p + '"></div>' +
       '<div class="task-card__body">' +
@@ -3997,6 +4035,7 @@ body{
     var tag = '';
     if (t.created_name && !isCreatorSelf) tag = '📤 ' + escHtml(t.created_name);
     else if ((canManage || isCreatorSelf) && t.assigned_name && !isAssigneeSelf) tag = '👤 ' + escHtml(t.assigned_name);
+    var storeTag = t.store_name ? '🏬 ' + escHtml(t.store_name) : '';
     var isDone = t.status === 'done';
     return '<div class="task-row" data-id="' + t.id + '" data-status="' + t.status + '">' +
       '<div class="task-row__stripe ' + p + '"></div>' +
@@ -4008,6 +4047,7 @@ body{
         '<div class="task-row__meta">' +
           (t.due_date ? '<span class="task-row__due' + (overdue ? ' is-overdue' : '') + '">📅 ' + fmtDate(t.due_date) + '</span>' : '') +
           (tag ? '<span class="task-row__tag">' + tag + '</span>' : '') +
+          (storeTag ? '<span class="task-row__tag">' + storeTag + '</span>' : '') +
         '</div>' +
       '</div>' +
       '<svg class="task-row__chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>' +
@@ -4369,6 +4409,7 @@ body{
   function closeAllPopups() {
     document.getElementById('tdPriPop').classList.remove('is-on');
     document.getElementById('tdAssPop').classList.remove('is-on');
+    document.getElementById('tdStorePop').classList.remove('is-on');
     document.getElementById('tdDatePop').classList.remove('is-on');
     closeCalSubpanels();
   }
@@ -4388,7 +4429,7 @@ body{
     var subOverlay = document.querySelector('.td-sub-overlay.is-on');
     if (subOverlay) return subOverlay;
 
-    var popupIds = ['tdDatePop', 'tdPriPop', 'tdAssPop'];
+    var popupIds = ['tdDatePop', 'tdPriPop', 'tdAssPop', 'tdStorePop'];
     for (var i = 0; i < popupIds.length; i++) {
       var popup = document.getElementById(popupIds[i]);
       if (popup.classList.contains('is-on')) return popup;
@@ -4444,6 +4485,18 @@ body{
       nameEl.textContent = 'Tayinlanmagan';
     }
     document.querySelectorAll('#tdAssPop .td-pop-item').forEach(function (item) {
+      item.classList.toggle('is-sel', String(item.dataset.id) === String(id || ''));
+    });
+  }
+
+  // ── DO'KON UI — vazifani odamga tayinlashga o'xshab, do'konga ham
+  // "tayinlash" mumkin (ixtiyoriy) ──
+  function setStore(id, name) {
+    TD_STORE_ID = id || null;
+    TD_STORE_NAME = name || null;
+    var nameEl = document.getElementById('tdStoreNameLbl');
+    nameEl.textContent = (id && name) ? name : "Do'kon yo'q";
+    document.querySelectorAll('#tdStorePop .td-pop-item').forEach(function (item) {
       item.classList.toggle('is-sel', String(item.dataset.id) === String(id || ''));
     });
   }
@@ -4873,6 +4926,61 @@ body{
       TD_USERS = data.users || [];
     } catch (e) { TD_USERS = []; }
   }
+
+  var TD_STORES_LOADED = false;
+  async function ensureStores() {
+    if (TD_STORES_LOADED) return;
+    try {
+      var data = await apiFetch('/api/admin/stores');
+      TD_STORES = data.stores || [];
+      TD_STORES_CAN_MANAGE = !!data.canManage;
+      TD_STORES_LOADED = true;
+    } catch (e) { TD_STORES = []; TD_STORES_CAN_MANAGE = false; }
+  }
+  function buildStorePopup() {
+    var pop = document.getElementById('tdStorePop');
+    var addForm = TD_STORES_CAN_MANAGE
+      ? '<div class="td-store-add"><input type="text" id="tdStoreNewInp" placeholder="Yangi do\'kon nomi..." maxlength="80" />' +
+        '<button type="button" id="tdStoreAddBtn">+</button></div>'
+      : '';
+    var items = '<button class="td-pop-item" data-id="" data-name="" type="button">' +
+      '<span class="td-ava" style="background:#6b7280;width:22px;height:22px;font-size:10px">🏬</span> Do\'kon yo\'q' +
+      '<svg class="td-pop-check" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+      '</button>';
+    TD_STORES.forEach(function (s) {
+      items += '<button class="td-pop-item" data-id="' + s.id + '" data-name="' + escHtml(s.name) + '" type="button">' +
+        '<span class="td-ava" style="background:#6b7280;width:22px;height:22px;font-size:10px">🏬</span> ' + escHtml(s.name) +
+        '<svg class="td-pop-check" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</button>';
+    });
+    pop.innerHTML = addForm + items;
+    pop.querySelectorAll('.td-pop-item').forEach(function (item) {
+      item.addEventListener('click', function () {
+        var sameStore = item.dataset.id &&
+          String(item.dataset.id) === String(TD_STORE_ID || '');
+        setStore(sameStore ? null : item.dataset.id, sameStore ? null : item.dataset.name);
+        closeAllPopups();
+      });
+    });
+    if (TD_STORES_CAN_MANAGE) {
+      var addNewStore = async function () {
+        var inp = document.getElementById('tdStoreNewInp');
+        var name = inp.value.trim();
+        if (!name) return;
+        try {
+          var res = await apiFetch('/api/admin/stores', { method: 'POST', body: JSON.stringify({ name: name }) });
+          TD_STORES.push(res.store);
+          buildStorePopup();
+          setStore(res.store.id, res.store.name);
+        } catch (err) { alert(err.message || "Do'kon qo'shib bo'lmadi"); }
+      };
+      document.getElementById('tdStoreAddBtn').addEventListener('click', addNewStore);
+      document.getElementById('tdStoreNewInp').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); addNewStore(); }
+      });
+    }
+    setStore(TD_STORE_ID, TD_STORE_NAME);
+  }
   function buildAssigneePopup() {
     var pop = document.getElementById('tdAssPop');
     var items = '<button class="td-pop-item" data-id="" data-name="" type="button">' +
@@ -4929,9 +5037,11 @@ body{
     document.getElementById('tdPriBtn').disabled = !canEditFull;
     document.getElementById('tdDateBtn').disabled = !canEditFull;
     setAssignee(task ? task.assigned_to : null, task ? task.assigned_name : null);
+    setStore(task ? task.store_id : null, task ? task.store_name : null);
     // "Kimga" footer — to'liq board yoki shu vazifani yaratgan odamga ko'rinadi.
     // Faqat tayinlangan (lekin yaratmagan) kishiga — bu doim o'zi bo'lgani uchun ko'rsatilmaydi.
     document.getElementById('tdAssDisplay').style.display = canEditFull ? 'flex' : 'none';
+    document.getElementById('tdStoreDisplay').style.display = canEditFull ? 'flex' : 'none';
     // "Kimdan berilgan" — har ikkala tomonga ham ko'rinadi (agar ma'lum bo'lsa)
     var creatorEl = document.getElementById('tdCreator');
     if (task && task.created_name) {
@@ -4982,7 +5092,9 @@ body{
         reminder_minutes: TD_REMINDER_MINUTES,
         repeat_rule: TD_REPEAT_RULE,
         assigned_to: TD_ASSIGNEE_ID ? Number(TD_ASSIGNEE_ID) : null,
-        assigned_name: TD_ASSIGNEE_NAME || null
+        assigned_name: TD_ASSIGNEE_NAME || null,
+        store_id: TD_STORE_ID ? Number(TD_STORE_ID) : null,
+        store_name: TD_STORE_NAME || null
       };
       if (TD_EDIT_ID) {
         var isDone = document.getElementById('tdChk').classList.contains('is-done');
@@ -5248,6 +5360,31 @@ body{
       if (!wasOn) {
         await ensureUsers();
         buildAssigneePopup();
+        pop.classList.add('is-on');
+      }
+    });
+
+    // Do'kon tugmasi
+    document.getElementById('tdStoreBtn').addEventListener('click', async function (e) {
+      e.stopPropagation();
+      var pop = document.getElementById('tdStorePop');
+      var wasOn = pop.classList.contains('is-on');
+      closeAllPopups();
+      if (!wasOn) {
+        await ensureStores();
+        buildStorePopup();
+        pop.classList.add('is-on');
+      }
+    });
+    // Do'kon footer display click
+    document.getElementById('tdStoreDisplay').addEventListener('click', async function (e) {
+      e.stopPropagation();
+      var pop = document.getElementById('tdStorePop');
+      var wasOn = pop.classList.contains('is-on');
+      closeAllPopups();
+      if (!wasOn) {
+        await ensureStores();
+        buildStorePopup();
         pop.classList.add('is-on');
       }
     });

@@ -53,6 +53,65 @@ router.get('/assignable-users', auth.requireAuth, async (req, res) => {
   }
 });
 
+// Do'konlarni boshqarish (qo'shish/o'chirish) huquqiga ega rollar —
+// vazifani odamga tayinlashdan farqli o'laroq, do'kon ro'yxati ochiq emas,
+// faqat shu rollar yangi do'kon kirita/o'chira oladi
+const STORE_MANAGER_ROLES = ['superadmin', 'it_bolimi', 'menejer_bosh'];
+function canManageStores(role) { return STORE_MANAGER_ROLES.indexOf(role) !== -1; }
+
+/**
+ * GET /api/admin/stores — vazifaga "do'kon" tayinlash uchun umumiy ro'yxat
+ * (assignable-users kabi — istalgan tizimga kirgan foydalanuvchi tanlab
+ * ko'ra oladi, lekin faqat ro'yxatdan tanlaydi, qo'shа olmaydi)
+ */
+router.get('/stores', auth.requireAuth, async (req, res) => {
+  try {
+    const stores = await db.all('SELECT id, name FROM stores ORDER BY name');
+    res.json({ success: true, stores, canManage: canManageStores(req.user.role) });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * POST /api/admin/stores — yangi do'kon qo'shish (faqat do'kon boshqaruvchilari)
+ */
+router.post('/stores', auth.requireAuth, async (req, res) => {
+  try {
+    if (!canManageStores(req.user.role)) {
+      return res.status(403).json({ success: false, error: "Do'kon qo'shishga ruxsat yo'q" });
+    }
+    const { name } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).json({ success: false, error: "Do'kon nomi talab qilinadi" });
+    }
+    const result = await db.run(
+      'INSERT INTO stores (name, created_by, created_name) VALUES (?, ?, ?)',
+      [name.trim(), req.user.userId, req.user.name || null]
+    );
+    res.json({ success: true, store: { id: result.id, name: name.trim() } });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * DELETE /api/admin/stores/:id — do'konni ro'yxatdan olib tashlash
+ * (faqat do'kon boshqaruvchilari; shu do'konga tayinlangan eski
+ * vazifalardagi nom saqlanib qoladi, faqat ro'yxatdan yo'qoladi)
+ */
+router.delete('/stores/:id', auth.requireAuth, async (req, res) => {
+  try {
+    if (!canManageStores(req.user.role)) {
+      return res.status(403).json({ success: false, error: "Do'kon o'chirishga ruxsat yo'q" });
+    }
+    await db.run('DELETE FROM stores WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 /**
  * GET /api/admin/users — barcha foydalanuvchilar ro'yxati (superadmin)
  */

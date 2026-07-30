@@ -165,6 +165,20 @@ const init = async () => {
   // shu statusda qolib ketgan eski vazifalarni "in_progress"ga o'tkazamiz
   await pool.query(`UPDATE tasks SET status = 'in_progress' WHERE status = 'review'`);
 
+  // Vazifani odamga tayinlashga o'xshab, do'konga ham "tayinlash" mumkin
+  // bo'lishi uchun — umumiy do'konlar ro'yxati va vazifadagi denormalizatsiya
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS stores (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      created_by INTEGER,
+      created_name TEXT,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+  await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS store_id INTEGER`);
+  await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS store_name TEXT`);
+
   await pool.query(`
     CREATE TABLE IF NOT EXISTS task_comments (
       id SERIAL PRIMARY KEY,
