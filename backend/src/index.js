@@ -1,4 +1,9 @@
 require('dotenv').config();
+// Node jarayonini UTC'ga mahkamlaymiz — aks holda pg kutubxonasi DATE/TIMESTAMP
+// ustunlarini serverning "mahalliy" vaqt zonasi asosida talqin qilib, hosting
+// muhitidan qat'i nazar sana/vaqt hisob-kitoblarida (masalan Keldi-ketdi
+// bo'limidagi kechikish/maosh hisob-kitobida) noaniqlikka olib kelishi mumkin.
+process.env.TZ = 'UTC';
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -14,6 +19,7 @@ const tasksRoutes = require('./routes/tasks');
 const accountRoutes = require('./routes/account');
 const notificationsRoutes = require('./routes/notifications');
 const kpiRoutes = require('./routes/kpi');
+const attendanceRoutes = require('./routes/attendance');
 const reminderScheduler = require('./services/reminderScheduler');
 const notificationScheduler = require('./services/notificationScheduler');
 
@@ -82,6 +88,7 @@ app.use('/api/tasks', tasksRoutes);
 app.use('/api/account', accountRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/kpi', kpiRoutes);
+app.use('/api/attendance', attendanceRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

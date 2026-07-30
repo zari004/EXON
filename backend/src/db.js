@@ -216,6 +216,61 @@ const init = async () => {
   `);
   await pool.query(`ALTER TABLE kpi_plans ADD COLUMN IF NOT EXISTS bonus_amount NUMERIC NOT NULL DEFAULT 0`);
 
+  // ── KELDI-KETDI (davomat) ──
+  // Ishxona hududi — IT bo'limi/superadmin belgilaydi, GPS geofencing uchun (bitta qator, id=1)
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS office_location (
+      id INTEGER PRIMARY KEY DEFAULT 1,
+      name TEXT NOT NULL DEFAULT 'Bosh ofis',
+      latitude NUMERIC NOT NULL,
+      longitude NUMERIC NOT NULL,
+      radius_meters INTEGER NOT NULL DEFAULT 100,
+      updated_by INTEGER,
+      updated_at TIMESTAMP DEFAULT NOW(),
+      CONSTRAINT office_location_single_row CHECK (id = 1)
+    )
+  `);
+
+  // Kechikish siyosati — bosh menejer/superadmin belgilaydi (bitta qator, id=1)
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS attendance_policy (
+      id INTEGER PRIMARY KEY DEFAULT 1,
+      work_start_time TEXT NOT NULL DEFAULT '09:00',
+      grace_minutes INTEGER NOT NULL DEFAULT 10,
+      tiers TEXT NOT NULL DEFAULT '[{"after_minutes":10,"deduct_percent":5},{"after_minutes":30,"deduct_percent":15},{"after_minutes":60,"deduct_percent":30},{"after_minutes":120,"deduct_percent":50}]',
+      updated_by INTEGER,
+      updated_at TIMESTAMP DEFAULT NOW(),
+      CONSTRAINT attendance_policy_single_row CHECK (id = 1)
+    )
+  `);
+
+  // Har bir xodimning har kunlik keldi-ketdi yozuvi — joylashuv + rasm bilan tasdiqlanadi
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS attendance_records (
+      id SERIAL PRIMARY KEY,
+      employee_id INTEGER NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+      work_date DATE NOT NULL,
+      check_in_at TIMESTAMP,
+      check_in_lat NUMERIC,
+      check_in_lng NUMERIC,
+      check_in_photo TEXT,
+      late_minutes INTEGER DEFAULT 0,
+      deduct_percent NUMERIC DEFAULT 0,
+      check_out_at TIMESTAMP,
+      check_out_lat NUMERIC,
+      check_out_lng NUMERIC,
+      check_out_photo TEXT,
+      edited_by INTEGER,
+      edited_at TIMESTAMP,
+      created_at TIMESTAMP DEFAULT NOW(),
+      UNIQUE(employee_id, work_date)
+    )
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_attendance_employee_date
+    ON attendance_records(employee_id, work_date DESC)
+  `);
+
   // Standart ruxsatlar — mavjud bo'lsa o'zgartirmaydi
   await pool.query(`
     INSERT INTO role_permissions (role, tabs) VALUES
@@ -225,6 +280,11 @@ const init = async () => {
       ('dizayner_bosh',   '["dashboard","cases","posts","tasks"]'),
       ('dizayner_oddiy',  '["cases","tasks"]')
     ON CONFLICT (role) DO NOTHING
+  `);
+
+  // Standart kechikish siyosati (bosh menejer/superadmin keyinchalik o'zgartirishi mumkin)
+  await pool.query(`
+    INSERT INTO attendance_policy (id) VALUES (1) ON CONFLICT (id) DO NOTHING
   `);
 
   console.log('✅ Barcha jadvallar tayyor');
