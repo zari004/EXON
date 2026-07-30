@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="robots" content="noindex, nofollow" />
 <title>Admin — EXON</title>
 <link rel="stylesheet" href="assets/css/style.css?v=13" />
@@ -139,6 +139,11 @@ body{
 /* ── KANBAN BOARD ── */
 .kanban-board{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
 @media(max-width:1100px){.kanban-board{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:580px){
+  .kanban-col{min-height:0}
+  .kanban-col__cards{min-height:0}
+  .kanban-empty{padding:18px 10px}
+}
 @media(max-width:580px){.kanban-board{grid-template-columns:1fr}}
 
 .kanban-col{
@@ -839,7 +844,26 @@ body{
   .admin-sidebar{transform:translateX(-100%);transition:transform .25s var(--ease)}
   .admin-sidebar.is-open{transform:translateX(0)}
   .sidebar-backdrop.is-open{display:block}
-  .admin-content{margin-left:0;padding-top:60px}
+  .admin-content{margin-left:0;padding-top:60px;padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+}
+
+/* ── PASTKI NAVIGATSIYA (faqat telefon, "ilova"ga o'xshash tab-bar) ── */
+.bottom-nav{display:none}
+@media(max-width:768px){
+  .bottom-nav{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:18;
+    background:var(--surface);border-top:1px solid var(--line);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+  }
+  [data-theme="light"] .bottom-nav{background:#fff;box-shadow:0 -6px 20px rgba(0,0,0,.06)}
+  .bottom-nav-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    background:none;border:0;color:var(--gray-dim);padding:7px 2px 5px;border-radius:12px;
+    font-size:10px;font-weight:600;cursor:pointer;transition:color .15s;min-width:0;
+  }
+  .bottom-nav-item svg{width:20px;height:20px;flex-shrink:0}
+  .bottom-nav-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .bottom-nav-item.is-active{color:var(--green-hi)}
 }
 
 .admin-panel{
@@ -877,6 +901,28 @@ body{
 .seg-pill.seg-A{background:rgba(76,247,156,.15);color:var(--green-hi)}
 .seg-pill.seg-B{background:rgba(11,209,108,.12);color:var(--green)}
 .seg-pill.seg-C{background:rgba(152,162,157,.12);color:var(--gray)}
+
+/* Telefonda jadval o'rniga kartochkalar ro'yxati — har bir <td> o'z data-label
+   qiymatini chap tomonda ko'rsatadi, ustunlar siqilib/kesilib qolmaydi */
+@media(max-width:640px){
+  .admin-table--responsive thead{display:none}
+  .admin-table--responsive,.admin-table--responsive tbody{display:block;width:100%}
+  .admin-table--responsive tr{
+    display:flex;flex-direction:column;gap:8px;padding:14px 15px;
+    border-bottom:1px solid var(--line);
+  }
+  .admin-table--responsive tbody tr:last-child{border-bottom:0}
+  .admin-table--responsive td{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:0;border-bottom:0;font-size:13.5px;
+  }
+  .admin-table--responsive td[data-label]:not([data-label=""])::before{
+    content:attr(data-label);font-size:11px;font-weight:600;color:var(--gray-dim);
+    text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;
+  }
+  .admin-table--responsive td:empty,
+  .admin-table--responsive td[data-label=""]{justify-content:flex-end}
+}
 
 /* ── ITEM LISTS ── */
 .item-list{display:flex;flex-direction:column;gap:10px}
@@ -984,8 +1030,8 @@ body{
 .att-pane h3{font-size:15px;font-weight:600}
 
 @media(max-width:768px){
-  .att-shell{flex-direction:column;min-height:0}
-  .att-nav{width:100%;flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .att-shell{flex-direction:column;min-height:0;min-width:0}
+  .att-nav{width:100%;min-width:0;flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
   .att-content{padding:18px}
 }
 
@@ -1202,8 +1248,8 @@ body{
 [data-theme="light"] .settings-field input{background:#fff;color:#1a2117}
 
 @media (max-width:640px){
-  .settings-shell{flex-direction:column;min-height:0}
-  .settings-nav{width:100%;flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .settings-shell{flex-direction:column;min-height:0;min-width:0}
+  .settings-nav{width:100%;min-width:0;flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
   .settings-content{padding:20px}
 }
 
@@ -1437,7 +1483,7 @@ body{
   <section class="admin-panel is-active" id="panel-dashboard">
     <div class="panel-head"><h2>Audit hisobotlari</h2></div>
     <div class="stat-grid" id="statGrid"></div>
-    <table class="admin-table">
+    <table class="admin-table admin-table--responsive">
       <thead><tr><th>Email</th><th>Ball</th><th>Segment</th><th>Sana</th></tr></thead>
       <tbody id="leadsBody"></tbody>
     </table>
@@ -1595,7 +1641,7 @@ body{
             <input type="month" id="attTeamMonthInput" />
           </div>
           <div style="overflow-x:auto">
-            <table class="admin-table" id="attTeamTable">
+            <table class="admin-table admin-table--responsive" id="attTeamTable">
               <thead><tr><th>Xodim</th><th>Sana</th><th>Keldi</th><th>Kechikish</th><th>Ushlab qolindi</th><th>Ketdi</th><th></th></tr></thead>
               <tbody id="attTeamBody"></tbody>
             </table>
@@ -1726,6 +1772,30 @@ body{
     </div>
   </section>
   </main><!-- /admin-content -->
+
+  <!-- ── PASTKI NAVIGATSIYA (faqat telefon) ── -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button type="button" class="bottom-nav-item" data-tab="dashboard">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="10" y="8" width="4" height="13" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="17" y="3" width="4" height="18" rx="1" stroke="currentColor" stroke-width="1.7"/></svg>
+      <span>Bosh sahifa</span>
+    </button>
+    <button type="button" class="bottom-nav-item" data-tab="tasks">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      <span>Vazifalar</span>
+    </button>
+    <button type="button" class="bottom-nav-item" data-tab="attendance">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/></svg>
+      <span>Keldi-ketdi</span>
+    </button>
+    <button type="button" class="bottom-nav-item" data-tab="productivity">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 15l4-5 3 3 5-7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Unumdorlik</span>
+    </button>
+    <button type="button" class="bottom-nav-item" id="bottomNavMore">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>
+      <span>Ko'proq</span>
+    </button>
+  </nav>
 </div><!-- /admin-app -->
 
 <!-- ══════════ MODAL: KEYS FORM ══════════ -->
@@ -2723,6 +2793,7 @@ body{
     // Rol nomini tarjima bilan to'ldirish (applyLang keyin)
     document.getElementById('sidebarUserRole').textContent = T('role.' + USER_ROLE) || USER_ROLE;
     await applyPermissions();
+    syncBottomNavVisibility();
     initNotifications();
   }
 
@@ -3033,6 +3104,7 @@ body{
       // Mobil: sideberni yop
       document.getElementById('adminSidebar').classList.remove('is-open');
       document.getElementById('sidebarBackdrop').classList.remove('is-open');
+      syncBottomNavActive(tab.dataset.tab);
     });
   });
 
@@ -3040,6 +3112,34 @@ body{
   document.getElementById('sidebarToggle').addEventListener('click', function () {
     document.getElementById('adminSidebar').classList.toggle('is-open');
     document.getElementById('sidebarBackdrop').classList.toggle('is-open');
+  });
+
+  // ── PASTKI NAVIGATSIYA (faqat telefon) ──
+  // Bottom-nav tugmalari mavjud sidebar-item'larni bosgandek ishlaydi — shu orqali
+  // panel almashtirish, ma'lumot yuklash va ruxsat tekshiruvi bir joyda qoladi,
+  // ikki xil mantiq takrorlanmaydi.
+  function syncBottomNavActive(tabName) {
+    document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(function (btn) {
+      btn.classList.toggle('is-active', btn.dataset.tab === tabName);
+    });
+  }
+  function syncBottomNavVisibility() {
+    document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(function (btn) {
+      var target = document.querySelector('.sidebar-item[data-tab="' + btn.dataset.tab + '"]');
+      btn.style.display = (target && target.style.display !== 'none') ? '' : 'none';
+    });
+    var activeTab = document.querySelector('.sidebar-item[data-tab].is-active');
+    syncBottomNavActive(activeTab ? activeTab.dataset.tab : null);
+  }
+  document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var target = document.querySelector('.sidebar-item[data-tab="' + btn.dataset.tab + '"]');
+      if (target) target.click();
+    });
+  });
+  document.getElementById('bottomNavMore').addEventListener('click', function () {
+    document.getElementById('adminSidebar').classList.add('is-open');
+    document.getElementById('sidebarBackdrop').classList.add('is-open');
   });
   document.getElementById('sidebarBackdrop').addEventListener('click', function () {
     document.getElementById('adminSidebar').classList.remove('is-open');
@@ -3085,9 +3185,9 @@ body{
         '<div class="stat-card"><div class="stat-card__value">' + (seg.B || 0) + '</div><div class="stat-card__label">' + T('dash.segB') + '</div></div>' +
         '<div class="stat-card"><div class="stat-card__value">' + (seg.C || 0) + '</div><div class="stat-card__label">' + T('dash.segC') + '</div></div>';
       document.getElementById('leadsBody').innerHTML = (data.recent || []).map(function (l) {
-        return '<tr><td>' + esc(l.email) + '</td><td>' + l.score + '</td>' +
-          '<td><span class="seg-pill seg-' + l.segment + '">' + l.segment + '</span></td>' +
-          '<td>' + new Date(l.created_at).toLocaleString(LANG === 'ru' ? 'ru-RU' : 'uz-UZ') + '</td></tr>';
+        return '<tr><td data-label="' + T('table.email') + '">' + esc(l.email) + '</td><td data-label="' + T('table.score') + '">' + l.score + '</td>' +
+          '<td data-label="' + T('table.seg') + '"><span class="seg-pill seg-' + l.segment + '">' + l.segment + '</span></td>' +
+          '<td data-label="' + T('table.date') + '">' + new Date(l.created_at).toLocaleString(LANG === 'ru' ? 'ru-RU' : 'uz-UZ') + '</td></tr>';
       }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--gray-dim)">' + T('table.empty') + '</td></tr>';
     } catch (err) { console.error(err); }
   }
@@ -3632,8 +3732,13 @@ body{
   // ── DRAWER STATE ──
   function tdOpen(cardEl) {
     var td = document.getElementById('td');
-    var GAP = 10, MARGIN = 12, W = 390;
+    var GAP = 10, MARGIN = 12;
     var vw = window.innerWidth, vh = window.innerHeight;
+    // Tor ekranlarda (masalan telefon) oyna kengligi CSS orqali torayadi
+    // (@media(max-width:480px) .td{width:calc(100vw - 16px)}) — pozitsiya
+    // hisob-kitobi ham shu haqiqiy kenglikka mos bo'lishi kerak, aks holda
+    // oyna ekrandan tashqariga (masalan chapga) chiqib ketishi mumkin edi.
+    var W = Math.min(390, vw - MARGIN * 2);
     var top, left;
 
     if (cardEl) {
@@ -5429,13 +5534,13 @@ body{
     body.innerHTML = records.map(function (r) {
       var pillStyle = r.deduct_percent > 0 ? 'background:rgba(242,137,111,.15);color:#F2896F' : 'background:rgba(76,247,156,.15);color:var(--green-hi)';
       return '<tr data-id="' + r.id + '">' +
-        '<td>' + esc(r.employee_name) + '</td>' +
-        '<td>' + attFmtDateShort(r.work_date) + '</td>' +
-        '<td><input type="time" class="att-edit-input" data-field="check_in_time" value="' + attTimeValue(r.check_in_at) + '" /></td>' +
-        '<td>' + (r.late_minutes > 0 ? r.late_minutes + ' daq' : '—') + '</td>' +
-        '<td><span class="att-deduct-pill" style="' + pillStyle + '">' + r.deduct_percent + '%</span></td>' +
-        '<td><input type="time" class="att-edit-input" data-field="check_out_time" value="' + attTimeValue(r.check_out_at) + '" /></td>' +
-        '<td><button type="button" class="icon-btn att-save-row" title="Saqlash">💾</button></td>' +
+        '<td data-label="Xodim">' + esc(r.employee_name) + '</td>' +
+        '<td data-label="Sana">' + attFmtDateShort(r.work_date) + '</td>' +
+        '<td data-label="Keldi"><input type="time" class="att-edit-input" data-field="check_in_time" value="' + attTimeValue(r.check_in_at) + '" /></td>' +
+        '<td data-label="Kechikish">' + (r.late_minutes > 0 ? r.late_minutes + ' daq' : '—') + '</td>' +
+        '<td data-label="Ushlab qolindi"><span class="att-deduct-pill" style="' + pillStyle + '">' + r.deduct_percent + '%</span></td>' +
+        '<td data-label="Ketdi"><input type="time" class="att-edit-input" data-field="check_out_time" value="' + attTimeValue(r.check_out_at) + '" /></td>' +
+        '<td data-label=""><button type="button" class="icon-btn att-save-row" title="Saqlash">💾</button></td>' +
       '</tr>';
     }).join('');
 
