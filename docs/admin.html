@@ -271,6 +271,118 @@ body{
 }
 .task-card__del:hover{color:#F2896F;background:rgba(242,137,111,.1)}
 
+/* ── MOBIL VAZIFALAR — TickTick uslubidagi ro'yxat + status tablari ── */
+.task-tabs{display:none}
+.task-list-mobile{display:none}
+.task-fab{display:none}
+@media(max-width:768px){
+  .kanban-board{display:none}
+  .task-tabs{
+    display:flex;gap:8px;overflow-x:auto;padding:2px 2px 14px;margin:0 -2px 2px;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;
+  }
+  .task-tabs::-webkit-scrollbar{display:none}
+  .task-tab{
+    flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:9px 15px;border-radius:999px;
+    background:var(--surface);border:1px solid var(--line);color:var(--gray);
+    font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;
+    transition:background .18s var(--ease),color .18s var(--ease),border-color .18s var(--ease),transform .18s var(--ease),box-shadow .18s var(--ease);
+  }
+  [data-theme="light"] .task-tab{background:#fff;border-color:#E4EBE6}
+  .task-tab.is-active{background:rgba(var(--green-rgb),.15);color:var(--green-hi);border-color:rgba(var(--green-rgb),.35)}
+  .task-tab__count{
+    background:rgba(152,162,157,.18);border-radius:999px;padding:1px 7px;font-size:11px;font-weight:700;
+  }
+  .task-tab.is-active .task-tab__count{background:rgba(var(--green-rgb),.24);color:var(--green-hi)}
+  /* Vazifa ustida ushlab turib sudralganda, tab ustiga kelganda katta bo'lib
+     "tashlash mumkin" ekanini bildiradi */
+  .task-tab.is-drop-target{
+    transform:scale(1.1);box-shadow:0 8px 22px rgba(var(--green-rgb),.4);
+    border-color:var(--green-hi);background:rgba(var(--green-rgb),.24);color:var(--green-hi);
+  }
+
+  .task-list-mobile{
+    display:flex;flex-direction:column;gap:9px;
+    animation:taskListIn .22s var(--ease);
+  }
+  @keyframes taskListIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+  .task-row{
+    position:relative;display:flex;align-items:center;gap:11px;
+    padding:12px 13px;border-radius:14px;overflow:hidden;
+    background:var(--surface);border:1px solid var(--line);
+    cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:pan-y;
+    transition:transform .18s var(--ease),box-shadow .2s var(--ease),opacity .18s var(--ease);
+  }
+  [data-theme="light"] .task-row{background:#fff;border-color:#E4EBE6;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+  .task-row:active{transform:scale(.985)}
+  /* Uzoq bosib turilganda "ko'tarilib" ketadi — endi uni tab ustiga
+     sudrab tashlash mumkinligini bildiradi */
+  .task-row.is-longpress{
+    transform:scale(1.045);box-shadow:0 16px 34px rgba(0,0,0,.4);z-index:5;
+  }
+  .task-row.is-drag-source{opacity:.32}
+  .task-row__stripe{position:absolute;left:0;top:0;bottom:0;width:3px}
+  .task-row__stripe.low{background:rgba(152,162,157,.4)}
+  .task-row__stripe.medium{background:#F59E0B}
+  .task-row__stripe.high{background:#F2896F}
+  .task-row__stripe.urgent{background:#EF4444;box-shadow:0 0 8px rgba(239,68,68,.4)}
+  .task-row__stripe.none{background:transparent}
+  .task-row__check{
+    width:21px;height:21px;border-radius:7px;flex-shrink:0;
+    border:1.8px solid var(--gray-dim);display:flex;align-items:center;justify-content:center;
+    color:transparent;transition:all .18s var(--ease);
+  }
+  .task-row__check.is-done{background:var(--green);border-color:var(--green);color:#fff}
+  .task-row__body{flex:1;min-width:0}
+  .task-row__title{
+    font-size:14px;font-weight:600;color:var(--white);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  [data-theme="light"] .task-row__title{color:#1a2117}
+  .task-row__meta{display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap}
+  .task-row__due{font-size:11px;color:var(--gray-dim);display:flex;align-items:center;gap:2px}
+  .task-row__due.is-overdue{color:#F2896F;font-weight:600}
+  .task-row__tag{
+    font-size:10.5px;color:var(--gray-dim);background:rgba(var(--surface-2-rgb),.7);
+    padding:2px 7px;border-radius:999px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .task-row__chev{flex-shrink:0;color:var(--gray-dim);opacity:.5}
+  .task-list-empty{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:50px 10px;gap:8px;color:var(--gray-dim);font-size:13px;
+  }
+  .task-list-empty__icon{font-size:26px;opacity:.4}
+
+  /* Sudrab tashlanadigan "hayolat" karta — barmoqni kuzatib yuradi */
+  .task-drag-ghost{
+    position:fixed;left:0;top:0;z-index:250;pointer-events:none;
+    display:flex;align-items:center;gap:8px;
+    padding:12px 16px;border-radius:14px;
+    background:var(--bg-2);border:1.5px solid var(--green-hi);
+    box-shadow:0 18px 44px rgba(0,0,0,.45);
+    font-size:13.5px;font-weight:600;color:var(--white);
+    max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    transform:translate(-50%,-50%) scale(1.06);opacity:.97;
+    transition:transform .12s ease;
+  }
+  [data-theme="light"] .task-drag-ghost{background:#fff;color:#1a2117}
+
+  /* Yangi vazifa qo'shish — pastki o'ng burchakda doira "+" tugma */
+  .task-fab{
+    display:flex;align-items:center;justify-content:center;
+    position:fixed;right:18px;bottom:calc(78px + env(safe-area-inset-bottom));
+    width:56px;height:56px;border-radius:50%;border:0;cursor:pointer;
+    background:linear-gradient(135deg,var(--green-hi),var(--green));color:var(--green-ink);
+    box-shadow:0 12px 28px -6px rgba(var(--green-rgb),.75);
+    transition:transform .15s var(--ease),box-shadow .15s var(--ease);
+    z-index:16;
+  }
+  .task-fab svg{width:24px;height:24px}
+  .task-fab:active{transform:scale(.92)}
+  #btnAddTask{display:none !important}
+}
+
 /* ── TASK DRAWER — floating card (TickTick uslubi) ── */
 .td-bd{
   position:fixed;inset:0;z-index:1199;
@@ -1650,6 +1762,26 @@ body{
         <div class="kanban-col__cards" id="kcol-done"></div>
       </div>
     </div>
+
+    <!-- Telefon uchun: TickTick uslubidagi status tablari + vazifalar ro'yxati -->
+    <div class="task-tabs" id="taskTabs">
+      <button type="button" class="task-tab is-active" data-status="new">
+        <span class="task-tab__label">Yangi</span><span class="task-tab__count" id="ttcount-new">0</span>
+      </button>
+      <button type="button" class="task-tab" data-status="in_progress">
+        <span class="task-tab__label">Jarayonda</span><span class="task-tab__count" id="ttcount-in_progress">0</span>
+      </button>
+      <button type="button" class="task-tab" data-status="review">
+        <span class="task-tab__label">Ko'rib chiqishda</span><span class="task-tab__count" id="ttcount-review">0</span>
+      </button>
+      <button type="button" class="task-tab" data-status="done">
+        <span class="task-tab__label">Bajarildi</span><span class="task-tab__count" id="ttcount-done">0</span>
+      </button>
+    </div>
+    <div class="task-list-mobile" id="taskListMobile"></div>
+    <button type="button" class="task-fab" id="taskFabAdd" onclick="openTaskModal()" aria-label="Vazifa qo'shish">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
   </section>
 
   <!-- KPI STATISTIKASI -->
@@ -2831,6 +2963,8 @@ body{
     ['new','in_progress','review','done'].forEach(function(s){
       var el = document.querySelector('.kanban-col[data-status="'+s+'"] .kanban-col__title');
       if (el) el.textContent = T('tasks.col.'+s);
+      var tabLbl = document.querySelector('.task-tab[data-status="'+s+'"] .task-tab__label');
+      if (tabLbl) tabLbl.textContent = T('tasks.col.'+s);
     });
     // Drawer buttons
     var tdSb = document.getElementById('tdSaveBtn');
@@ -3734,6 +3868,9 @@ body{
   var draggedCard = null;
 
   var KS = ['new', 'in_progress', 'review', 'done'];
+  var TASKS_GROUPED = {};
+  var TASKS_CAN_MANAGE = false;
+  var TASKS_MOBILE_STATUS = 'new';
 
   var AVA_COLORS = ['#4CAF84','#59A5D8','#F0A500','#F2896F','#9B8FD4','#E07AB0','#3DC9B3','#7B9E5A'];
   function avaColor(name) {
@@ -3787,6 +3924,32 @@ body{
     '</div>';
   }
 
+  // Telefon uchun — TickTick uslubidagi bitta qatorli vazifa elementi
+  function taskRowHTML(t, canManage) {
+    var p = t.priority || 'medium';
+    var overdue = isOverdue(t.due_date, t.status);
+    var isCreatorSelf = t.created_name && t.created_name === USER_NAME;
+    var isAssigneeSelf = t.assigned_name && t.assigned_name === USER_NAME;
+    var tag = '';
+    if (t.created_name && !isCreatorSelf) tag = '📤 ' + escHtml(t.created_name);
+    else if ((canManage || isCreatorSelf) && t.assigned_name && !isAssigneeSelf) tag = '👤 ' + escHtml(t.assigned_name);
+    var isDone = t.status === 'done';
+    return '<div class="task-row" data-id="' + t.id + '" data-status="' + t.status + '">' +
+      '<div class="task-row__stripe ' + p + '"></div>' +
+      '<span class="task-row__check' + (isDone ? ' is-done' : '') + '">' +
+        (isDone ? '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '') +
+      '</span>' +
+      '<div class="task-row__body">' +
+        '<div class="task-row__title">' + escHtml(t.title) + '</div>' +
+        '<div class="task-row__meta">' +
+          (t.due_date ? '<span class="task-row__due' + (overdue ? ' is-overdue' : '') + '">📅 ' + fmtDate(t.due_date) + '</span>' : '') +
+          (tag ? '<span class="task-row__tag">' + tag + '</span>' : '') +
+        '</div>' +
+      '</div>' +
+      '<svg class="task-row__chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>' +
+    '</div>';
+  }
+
   // ── COLUMN HELPERS ──
   function colEmpty(colEl) {
     return !colEl.querySelector('.task-card');
@@ -3826,6 +3989,8 @@ body{
       var grouped = {};
       KS.forEach(function (s) { grouped[s] = []; });
       tasks.forEach(function (t) { if (grouped[t.status]) grouped[t.status].push(t); });
+      TASKS_GROUPED = grouped;
+      TASKS_CAN_MANAGE = canManage;
 
       KS.forEach(function (s) {
         var col = document.getElementById('kcol-' + s);
@@ -3837,10 +4002,14 @@ body{
       });
 
       setupKanbanEvents();
+      updateTaskTabCounts();
+      renderMobileTaskList();
     } catch (err) {
       KS.forEach(function (s) {
         document.getElementById('kcol-' + s).innerHTML = '<div class="kanban-empty" style="color:#F2896F">Yuklashda xato</div>';
       });
+      var mlist = document.getElementById('taskListMobile');
+      if (mlist) mlist.innerHTML = '<div class="task-list-empty" style="color:#F2896F">Yuklashda xato</div>';
     }
   }
 
@@ -3908,6 +4077,163 @@ body{
     });
   }
 
+  // ── MOBIL RO'YXAT (TickTick uslubi) ──
+  function updateTaskTabCounts() {
+    KS.forEach(function (s) {
+      var el = document.getElementById('ttcount-' + s);
+      if (el) el.textContent = (TASKS_GROUPED[s] || []).length;
+    });
+  }
+
+  function renderMobileTaskList() {
+    var list = document.getElementById('taskListMobile');
+    if (!list) return;
+    var items = TASKS_GROUPED[TASKS_MOBILE_STATUS] || [];
+    list.innerHTML = items.length
+      ? items.map(function (t) { return taskRowHTML(t, TASKS_CAN_MANAGE); }).join('')
+      : '<div class="task-list-empty"><span class="task-list-empty__icon">📋</span>' + T('tasks.empty') + '</div>';
+    // Bo'lim almashganda animatsiya qayta ishga tushishi uchun class qayta qo'llanadi
+    list.classList.remove('task-list-mobile');
+    void list.offsetWidth;
+    list.classList.add('task-list-mobile');
+    setupTaskRowEvents();
+  }
+
+  // ── UZOQ BOSIB SUDRASH — vazifani ustiga bosib turib tepadagi status
+  // tabiga tashlab, statusni o'zgartirish (telefon uchun) ──
+  var ROW_DRAG = null;
+  var ROW_SUPPRESS_CLICK = false;
+  var LONGPRESS_MS = 380, MOVE_CANCEL_PX = 10;
+
+  function setupTaskRowEvents() {
+    document.querySelectorAll('#taskListMobile .task-row').forEach(function (row) {
+      row.addEventListener('click', function () {
+        if (ROW_SUPPRESS_CLICK) { ROW_SUPPRESS_CLICK = false; return; }
+        var taskId = Number(row.dataset.id);
+        var t = TASKS_MAP[taskId];
+        if (t) openTaskDrawer(t, row);
+      });
+      row.addEventListener('touchstart', function (e) {
+        if (e.touches.length !== 1) return;
+        var touch = e.touches[0];
+        var taskId = Number(row.dataset.id);
+        var t = TASKS_MAP[taskId];
+        if (!t) return;
+        ROW_DRAG = {
+          id: taskId, fromStatus: t.status, rowEl: row,
+          startX: touch.clientX, startY: touch.clientY,
+          active: false, ghost: null, timer: null
+        };
+        ROW_DRAG.timer = setTimeout(function () { activateRowDrag(touch.clientX, touch.clientY); }, LONGPRESS_MS);
+      }, { passive: true });
+
+      row.addEventListener('touchmove', function (e) {
+        if (!ROW_DRAG || ROW_DRAG.rowEl !== row) return;
+        var touch = e.touches[0];
+        if (!ROW_DRAG.active) {
+          var dx = Math.abs(touch.clientX - ROW_DRAG.startX);
+          var dy = Math.abs(touch.clientY - ROW_DRAG.startY);
+          if (dx > MOVE_CANCEL_PX || dy > MOVE_CANCEL_PX) {
+            clearTimeout(ROW_DRAG.timer);
+            ROW_DRAG = null;
+          }
+          return;
+        }
+        e.preventDefault();
+        moveRowGhost(touch.clientX, touch.clientY);
+      }, { passive: false });
+
+      row.addEventListener('touchend', function () { finishRowDrag(); });
+      row.addEventListener('touchcancel', function () { finishRowDrag(); });
+    });
+  }
+
+  function activateRowDrag(x, y) {
+    if (!ROW_DRAG) return;
+    ROW_DRAG.active = true;
+    if (navigator.vibrate) navigator.vibrate(15);
+    ROW_DRAG.rowEl.classList.add('is-longpress');
+    var ghost = document.createElement('div');
+    ghost.className = 'task-drag-ghost';
+    ghost.textContent = (TASKS_MAP[ROW_DRAG.id] || {}).title || '';
+    document.body.appendChild(ghost);
+    ROW_DRAG.ghost = ghost;
+    moveRowGhost(x, y);
+    setTimeout(function () {
+      if (ROW_DRAG) ROW_DRAG.rowEl.classList.add('is-drag-source');
+    }, 80);
+  }
+
+  function moveRowGhost(x, y) {
+    if (!ROW_DRAG || !ROW_DRAG.ghost) return;
+    ROW_DRAG.ghost.style.left = x + 'px';
+    ROW_DRAG.ghost.style.top = y + 'px';
+    var target = document.elementFromPoint(x, y);
+    var tab = target ? target.closest('.task-tab') : null;
+    document.querySelectorAll('.task-tab').forEach(function (el) {
+      el.classList.toggle('is-drop-target', el === tab);
+    });
+  }
+
+  function finishRowDrag() {
+    if (!ROW_DRAG) return;
+    var drag = ROW_DRAG;
+    ROW_DRAG = null;
+    clearTimeout(drag.timer);
+    drag.rowEl.classList.remove('is-longpress', 'is-drag-source');
+
+    if (!drag.active) return; // oddiy tap — click hodisasi o'zi ochadi
+
+    ROW_SUPPRESS_CLICK = true;
+    var dropTab = document.querySelector('.task-tab.is-drop-target');
+    document.querySelectorAll('.task-tab').forEach(function (el) { el.classList.remove('is-drop-target'); });
+    if (drag.ghost) drag.ghost.remove();
+
+    var newStatus = dropTab ? dropTab.dataset.status : null;
+    if (!newStatus || newStatus === drag.fromStatus) return;
+
+    // Optimistik: mahalliy holatni darhol yangilaymiz, so'ng serverga yuboramiz
+    var t = TASKS_MAP[drag.id];
+    if (t) t.status = newStatus;
+    var fromArr = TASKS_GROUPED[drag.fromStatus] || [];
+    var idx = fromArr.findIndex(function (x) { return Number(x.id) === Number(drag.id); });
+    if (idx !== -1) fromArr.splice(idx, 1);
+    if (t) {
+      TASKS_GROUPED[newStatus] = TASKS_GROUPED[newStatus] || [];
+      TASKS_GROUPED[newStatus].unshift(t);
+    }
+
+    // Kanban (desktop) kartasini ham mos ustunga ko'chiramiz, keyin sanoqlar yangilanadi
+    var oldCard = document.querySelector('#panel-tasks .task-card[data-id="' + drag.id + '"]');
+    if (oldCard) {
+      var newCol = document.getElementById('kcol-' + newStatus);
+      var oldCol = oldCard.parentElement;
+      oldCard.dataset.status = newStatus;
+      clearEmptyState(newCol);
+      newCol.appendChild(oldCard);
+      setEmptyState(oldCol);
+    }
+    updateCount(drag.fromStatus);
+    updateCount(newStatus);
+    updateTaskTabCounts();
+    renderMobileTaskList();
+
+    apiFetch('/api/tasks/' + drag.id + '/status', {
+      method: 'PATCH',
+      body: JSON.stringify({ status: newStatus })
+    }).catch(function () { loadTasks(); });
+  }
+
+  document.getElementById('taskTabs').addEventListener('click', function (e) {
+    var btn = e.target.closest('.task-tab');
+    if (!btn) return;
+    var status = btn.dataset.status;
+    if (status === TASKS_MOBILE_STATUS) return;
+    TASKS_MOBILE_STATUS = status;
+    document.querySelectorAll('.task-tab').forEach(function (t) { t.classList.toggle('is-active', t.dataset.status === status); });
+    renderMobileTaskList();
+  });
+
   // ── DRAWER STATE ──
   function tdOpen(cardEl) {
     var td = document.getElementById('td');
@@ -3929,9 +4255,14 @@ body{
         left = r.left - W - GAP;
       }
     } else {
-      // "+ Vazifa qo'shish" — board tepasidan
+      // "+ Vazifa qo'shish" — board tepasidan (telefonda kanban-board
+      // yashirin bo'lgani uchun, o'sha holda status tablari asos qilinadi)
       var board = document.querySelector('#panel-tasks .kanban-board');
-      var br = board ? board.getBoundingClientRect() : { top: 80, right: vw - 24 };
+      var br = board ? board.getBoundingClientRect() : null;
+      if (!br || (br.width === 0 && br.height === 0)) {
+        var alt = document.querySelector('#panel-tasks .task-tabs') || document.querySelector('#panel-tasks .panel-head');
+        br = alt ? alt.getBoundingClientRect() : { top: 80, right: vw - 24 };
+      }
       top = br.top;
       left = vw - W - 24;
     }
