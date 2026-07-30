@@ -1102,6 +1102,29 @@ body{
 .icon-btn.danger:hover{color:#F2896F;border-color:#F2896F}
 .empty-state{padding:40px;text-align:center;color:var(--gray-dim);font-size:14px}
 
+/* ── DO'KONLAR ── */
+.store-add-row{display:flex;gap:10px;margin-bottom:18px;align-items:center}
+.store-add-row input[type="text"]{
+  flex:1;min-width:0;height:42px;padding:0 15px;border-radius:10px;
+  background:var(--surface);border:1px solid var(--line-2);color:var(--white);font-size:14px;
+}
+[data-theme="light"] .store-add-row input[type="text"]{color:#1a2117}
+.store-add-row .btn-add{padding:0 22px;flex-shrink:0}
+.store-logo-pick{
+  width:42px;height:42px;border-radius:10px;flex-shrink:0;overflow:hidden;
+  background:var(--surface);border:1.5px dashed var(--line-2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:19px;color:var(--gray-dim);
+  transition:border-color .15s,color .15s;padding:0;
+}
+.store-logo-pick:hover{border-color:var(--green-hi);color:var(--green-hi)}
+.store-logo-pick img{width:100%;height:100%;object-fit:cover}
+.store-add-cancel{
+  flex-shrink:0;width:36px;height:36px;border-radius:8px;background:none;
+  border:1px solid var(--line-2);color:var(--gray-dim);cursor:pointer;font-size:15px;
+}
+.store-add-cancel:hover{color:#F2896F;border-color:#F2896F}
+.item-row__thumb img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+
 /* ── KPI ── */
 #kpiMonthInput,#prodMonthInput,#attMyMonthInput,#attTeamMonthInput{
   height:38px;padding:0 12px;border-radius:8px;background:var(--surface);
@@ -1631,6 +1654,10 @@ body{
         <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
         <span>Vazifalar</span>
       </button>
+      <button class="sidebar-item" data-tab="stores">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 9.5 5 4h14l1 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 9.5v10h15v-10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 19.5v-6h5v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Do'konlar</span>
+      </button>
       <button class="sidebar-item kpi-tab" data-tab="kpi" style="display:none">
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
         <span>KPI</span>
@@ -1789,6 +1816,23 @@ body{
       </div>
     </div>
     <div class="item-list" id="kpiList"></div>
+  </section>
+
+  <!-- DO'KONLAR — vazifani do'konga "tayinlash" uchun umumiy ro'yxat -->
+  <section class="admin-panel" id="panel-stores">
+    <div class="panel-head">
+      <h2 data-i18n="stores.title">Do'konlar</h2>
+    </div>
+    <div class="store-add-row" id="storeAddRow" style="display:none">
+      <button type="button" class="store-logo-pick" id="storeLogoPick" title="Logo tanlash">
+        <span id="storeLogoPickIcon">🏬</span>
+      </button>
+      <input type="file" id="storeLogoFile" accept="image/*" style="display:none" />
+      <input type="text" id="storeNewNameInp" data-i18n-ph="stores.add.placeholder" placeholder="Yangi do'kon nomi..." maxlength="80" />
+      <button class="btn-add" id="storeAddBtn" type="button">+</button>
+      <button type="button" class="store-add-cancel" id="storeEditCancelBtn" style="display:none" title="Bekor qilish">✕</button>
+    </div>
+    <div class="item-list" id="storesList"></div>
   </section>
 
   <!-- ISH UNUMDORLIGI (shaxsiy KPI) -->
@@ -2011,6 +2055,11 @@ body{
 
     <div class="more-section-label">Boshqaruv</div>
     <div class="more-list">
+      <button type="button" class="more-item" data-tab="stores">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 9.5 5 4h14l1 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 9.5v10h15v-10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 19.5v-6h5v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Do'konlar</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <button type="button" class="more-item kpi-tab" data-tab="kpi" style="display:none">
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
         <span>KPI</span>
@@ -2585,6 +2634,12 @@ body{
       'tab.users': 'Foydalanuvchilar',
       'tab.permissions': 'Ruxsatlar',
       'tab.tasks': 'Vazifalar',
+      'tab.stores': 'Do\'konlar',
+      'stores.title': 'Do\'konlar',
+      'stores.add.placeholder': 'Yangi do\'kon nomi...',
+      'stores.empty': 'Do\'konlar yo\'q',
+      'stores.confirm.del': 'Bu do\'konni ro\'yxatdan olib tashlaysizmi?',
+      'stores.no_permission': 'Do\'kon qo\'sha olmaysiz',
       'tasks.title': 'Vazifalar',
       'tasks.add': '+ Vazifa qo\'shish',
       'tasks.col.new': 'Yangi',
@@ -2714,6 +2769,12 @@ body{
       'tab.users': 'Пользователи',
       'tab.permissions': 'Доступы',
       'tab.tasks': 'Задачи',
+      'tab.stores': 'Магазины',
+      'stores.title': 'Магазины',
+      'stores.add.placeholder': 'Название нового магазина...',
+      'stores.empty': 'Нет магазинов',
+      'stores.confirm.del': 'Удалить этот магазин из списка?',
+      'stores.no_permission': 'Нет прав на добавление магазина',
       'tasks.title': 'Задачи',
       'tasks.add': '+ Добавить задачу',
       'tasks.col.new': 'Новые',
@@ -2843,6 +2904,12 @@ body{
       'tab.users': 'Users',
       'tab.permissions': 'Permissions',
       'tab.tasks': 'Tasks',
+      'tab.stores': 'Stores',
+      'stores.title': 'Stores',
+      'stores.add.placeholder': 'New store name...',
+      'stores.empty': 'No stores',
+      'stores.confirm.del': 'Remove this store from the list?',
+      'stores.no_permission': "You can't add a store",
       'tasks.title': 'Tasks',
       'tasks.add': '+ Add task',
       'tasks.col.new': 'New',
@@ -2979,6 +3046,7 @@ body{
     document.querySelector('[data-tab="posts"] span').textContent = T('tab.posts');
     document.querySelector('[data-tab="pricing"] span').textContent = T('tab.pricing');
     document.querySelector('[data-tab="tasks"] span').textContent = T('tab.tasks');
+    document.querySelectorAll('[data-tab="stores"] span').forEach(function(el){ el.textContent = T('tab.stores'); });
     document.querySelector('[data-tab="users"] span').textContent = T('tab.users');
     document.querySelector('[data-tab="permissions"] span').textContent = T('tab.permissions');
     // Tasks panel
@@ -3022,6 +3090,9 @@ body{
     }
     document.querySelectorAll('[data-i18n]').forEach(function(el) {
       el.textContent = T(el.dataset.i18n);
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(function(el) {
+      el.placeholder = T(el.dataset.i18nPh);
     });
     // Modal tugmalari
     document.querySelectorAll('.modal-save').forEach(function(btn) { btn.textContent = T('modal.save'); });
@@ -3416,6 +3487,7 @@ body{
     panel.classList.add('is-active');
     if (!options.skipSave) saveAdminViewState({ tab: tab.dataset.tab, taskId: null });
     if (tab.dataset.tab === 'tasks') await loadTasks();
+    if (tab.dataset.tab === 'stores') await loadStores();
     if (tab.dataset.tab === 'settings') await loadAccountSettings();
     if (tab.dataset.tab === 'kpi') await loadKpi();
     if (tab.dataset.tab === 'productivity') await loadProductivity();
@@ -3950,6 +4022,7 @@ body{
   var TD_USERS = [];           // cached user list
   var TD_STORE_ID = null;
   var TD_STORE_NAME = null;
+  var TD_STORE_LOGO = null;
   var TD_STORES = [];          // cached store list
   var TD_STORES_CAN_MANAGE = false;
   var TD_DUE_TIME = '';        // 'HH:MM' yoki ''
@@ -4010,7 +4083,7 @@ body{
       metaExtra += '<span class="task-assignee" title="Kimga">👤 ' + escHtml(t.assigned_name) + '</span>';
     }
     if (t.store_name) {
-      metaExtra += '<span class="task-store" title="Do\'kon">🏬 ' + escHtml(t.store_name) + '</span>';
+      metaExtra += '<span class="task-store" title="Do\'kon">' + storeBadgeIcon(t.store_logo) + ' ' + escHtml(t.store_name) + '</span>';
     }
     return '<div class="task-card" draggable="true" data-id="' + t.id + '" data-status="' + t.status + '">' +
       '<div class="task-card__stripe ' + p + '"></div>' +
@@ -4035,7 +4108,7 @@ body{
     var tag = '';
     if (t.created_name && !isCreatorSelf) tag = '📤 ' + escHtml(t.created_name);
     else if ((canManage || isCreatorSelf) && t.assigned_name && !isAssigneeSelf) tag = '👤 ' + escHtml(t.assigned_name);
-    var storeTag = t.store_name ? '🏬 ' + escHtml(t.store_name) : '';
+    var storeTag = t.store_name ? storeBadgeIcon(t.store_logo) + ' ' + escHtml(t.store_name) : '';
     var isDone = t.status === 'done';
     return '<div class="task-row" data-id="' + t.id + '" data-status="' + t.status + '">' +
       '<div class="task-row__stripe ' + p + '"></div>' +
@@ -4491,10 +4564,17 @@ body{
 
   // ── DO'KON UI — vazifani odamga tayinlashga o'xshab, do'konga ham
   // "tayinlash" mumkin (ixtiyoriy) ──
-  function setStore(id, name) {
+  function setStore(id, name, logo) {
     TD_STORE_ID = id || null;
     TD_STORE_NAME = name || null;
+    if (id && logo === undefined) {
+      var found = TD_STORES.find(function (s) { return String(s.id) === String(id); });
+      logo = found ? found.logo : null;
+    }
+    TD_STORE_LOGO = logo || null;
+    var avaEl = document.getElementById('tdStoreAva');
     var nameEl = document.getElementById('tdStoreNameLbl');
+    avaEl.innerHTML = (id && name) ? storeThumbHTML(TD_STORE_LOGO) : '🏬';
     nameEl.textContent = (id && name) ? name : "Do'kon yo'q";
     document.querySelectorAll('#tdStorePop .td-pop-item').forEach(function (item) {
       item.classList.toggle('is-sel', String(item.dataset.id) === String(id || ''));
@@ -4949,7 +5029,7 @@ body{
       '</button>';
     TD_STORES.forEach(function (s) {
       items += '<button class="td-pop-item" data-id="' + s.id + '" data-name="' + escHtml(s.name) + '" type="button">' +
-        '<span class="td-ava" style="background:#6b7280;width:22px;height:22px;font-size:10px">🏬</span> ' + escHtml(s.name) +
+        '<span class="td-ava" style="background:#6b7280;width:22px;height:22px;font-size:10px;overflow:hidden">' + storeThumbHTML(s.logo) + '</span> ' + escHtml(s.name) +
         '<svg class="td-pop-check" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
         '</button>';
     });
@@ -4981,6 +5061,132 @@ body{
     }
     setStore(TD_STORE_ID, TD_STORE_NAME);
   }
+
+  // ── DO'KONLAR BO'LIMI (alohida panel — ro'yxatni ko'rish/boshqarish) ──
+  // Do'kon logosi bo'lmasa hamma joyda shu 🏬 belgisi ko'rsatiladi (fallback)
+  function storeThumbHTML(logo) {
+    return logo ? '<img src="' + logo + '" />' : '🏬';
+  }
+  // Vazifa kartochkasi/qatoridagi kichik belgi uchun (matn bilan bir qatorda)
+  function storeBadgeIcon(logo) {
+    return logo
+      ? '<img src="' + logo + '" style="width:11px;height:11px;border-radius:50%;object-fit:cover;vertical-align:-1px" />'
+      : '🏬';
+  }
+  var STORE_EDIT_ID = null;   // null = yangi qo'shish, aks holda shu id tahrirlanmoqda
+  var STORE_NEW_LOGO_B64 = null;
+
+  function resetStoreAddForm() {
+    STORE_EDIT_ID = null;
+    STORE_NEW_LOGO_B64 = null;
+    document.getElementById('storeNewNameInp').value = '';
+    document.getElementById('storeLogoFile').value = '';
+    document.getElementById('storeLogoPickIcon').outerHTML = '<span id="storeLogoPickIcon">🏬</span>';
+    document.getElementById('storeAddBtn').textContent = '+';
+    document.getElementById('storeEditCancelBtn').style.display = 'none';
+  }
+
+  async function loadStores() {
+    var list = document.getElementById('storesList');
+    list.innerHTML = '<div class="empty-state">...</div>';
+    resetStoreAddForm();
+    try {
+      var data = await apiFetch('/api/admin/stores');
+      TD_STORES = data.stores || [];
+      TD_STORES_CAN_MANAGE = !!data.canManage;
+      TD_STORES_LOADED = true;
+    } catch (e) {
+      TD_STORES_CAN_MANAGE = false;
+      list.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato</div>';
+      return;
+    }
+    document.getElementById('storeAddRow').style.display = TD_STORES_CAN_MANAGE ? 'flex' : 'none';
+    renderStoresList();
+  }
+  function renderStoresList() {
+    var list = document.getElementById('storesList');
+    if (!TD_STORES.length) {
+      list.innerHTML = '<div class="empty-state">' + T('stores.empty') + '</div>';
+      return;
+    }
+    var editableCls = TD_STORES_CAN_MANAGE ? ' store-edit-trigger" style="cursor:pointer"' : '"';
+    list.innerHTML = TD_STORES.map(function (s) {
+      return '<div class="item-row" data-id="' + s.id + '">' +
+        '<div class="item-row__thumb' + editableCls + '>' + storeThumbHTML(s.logo) + '</div>' +
+        '<div class="item-row__body' + editableCls + '><div class="item-row__title">' + escHtml(s.name) + '</div></div>' +
+        (TD_STORES_CAN_MANAGE
+          ? '<div class="item-row__actions"><button class="icon-btn danger store-del-btn" type="button" title="O\'chirish">' +
+            '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            '</button></div>'
+          : '') +
+      '</div>';
+    }).join('');
+    list.querySelectorAll('.store-del-btn').forEach(function (btn) {
+      btn.addEventListener('click', async function (e) {
+        e.stopPropagation();
+        var row = btn.closest('.item-row');
+        var id = row.dataset.id;
+        if (!confirm(T('stores.confirm.del'))) return;
+        try {
+          await apiFetch('/api/admin/stores/' + id, { method: 'DELETE' });
+          TD_STORES = TD_STORES.filter(function (s) { return String(s.id) !== String(id); });
+          if (STORE_EDIT_ID && String(STORE_EDIT_ID) === String(id)) resetStoreAddForm();
+          renderStoresList();
+        } catch (err) { alert(err.message || 'Xato'); }
+      });
+    });
+    if (TD_STORES_CAN_MANAGE) {
+      list.querySelectorAll('.store-edit-trigger').forEach(function (el) {
+        el.addEventListener('click', function () {
+          var id = el.closest('.item-row').dataset.id;
+          var s = TD_STORES.find(function (x) { return String(x.id) === String(id); });
+          if (!s) return;
+          STORE_EDIT_ID = s.id;
+          STORE_NEW_LOGO_B64 = s.logo || null;
+          document.getElementById('storeNewNameInp').value = s.name;
+          document.getElementById('storeLogoPickIcon').outerHTML = s.logo
+            ? '<img id="storeLogoPickIcon" src="' + s.logo + '" />'
+            : '<span id="storeLogoPickIcon">🏬</span>';
+          document.getElementById('storeAddBtn').textContent = '✓';
+          document.getElementById('storeEditCancelBtn').style.display = '';
+          document.getElementById('storeNewNameInp').focus();
+        });
+      });
+    }
+  }
+  document.getElementById('storeLogoPick').addEventListener('click', function () {
+    document.getElementById('storeLogoFile').click();
+  });
+  document.getElementById('storeLogoFile').addEventListener('change', async function (e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var base64 = await fileToResizedBase64(file, 160);
+    STORE_NEW_LOGO_B64 = base64;
+    document.getElementById('storeLogoPickIcon').outerHTML = '<img id="storeLogoPickIcon" src="' + base64 + '" />';
+  });
+  document.getElementById('storeEditCancelBtn').addEventListener('click', resetStoreAddForm);
+  document.getElementById('storeAddBtn').addEventListener('click', async function () {
+    var inp = document.getElementById('storeNewNameInp');
+    var name = inp.value.trim();
+    if (!name) return;
+    try {
+      var body = { name: name, logo: STORE_NEW_LOGO_B64 || null };
+      if (STORE_EDIT_ID) {
+        await apiFetch('/api/admin/stores/' + STORE_EDIT_ID, { method: 'PUT', body: JSON.stringify(body) });
+        var idx = TD_STORES.findIndex(function (s) { return String(s.id) === String(STORE_EDIT_ID); });
+        if (idx !== -1) TD_STORES[idx] = { id: STORE_EDIT_ID, name: name, logo: STORE_NEW_LOGO_B64 || null };
+      } else {
+        var res = await apiFetch('/api/admin/stores', { method: 'POST', body: JSON.stringify(body) });
+        TD_STORES.push(res.store);
+      }
+      resetStoreAddForm();
+      renderStoresList();
+    } catch (err) { alert(err.message || "Do'kon qo'shib bo'lmadi"); }
+  });
+  document.getElementById('storeNewNameInp').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('storeAddBtn').click(); }
+  });
+
   function buildAssigneePopup() {
     var pop = document.getElementById('tdAssPop');
     var items = '<button class="td-pop-item" data-id="" data-name="" type="button">' +
@@ -5037,7 +5243,7 @@ body{
     document.getElementById('tdPriBtn').disabled = !canEditFull;
     document.getElementById('tdDateBtn').disabled = !canEditFull;
     setAssignee(task ? task.assigned_to : null, task ? task.assigned_name : null);
-    setStore(task ? task.store_id : null, task ? task.store_name : null);
+    setStore(task ? task.store_id : null, task ? task.store_name : null, task ? task.store_logo : null);
     // "Kimga" footer — to'liq board yoki shu vazifani yaratgan odamga ko'rinadi.
     // Faqat tayinlangan (lekin yaratmagan) kishiga — bu doim o'zi bo'lgani uchun ko'rsatilmaydi.
     document.getElementById('tdAssDisplay').style.display = canEditFull ? 'flex' : 'none';

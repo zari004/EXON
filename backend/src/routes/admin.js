@@ -66,7 +66,7 @@ function canManageStores(role) { return STORE_MANAGER_ROLES.indexOf(role) !== -1
  */
 router.get('/stores', auth.requireAuth, async (req, res) => {
   try {
-    const stores = await db.all('SELECT id, name FROM stores ORDER BY name');
+    const stores = await db.all('SELECT id, name, logo FROM stores ORDER BY name');
     res.json({ success: true, stores, canManage: canManageStores(req.user.role) });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -81,15 +81,35 @@ router.post('/stores', auth.requireAuth, async (req, res) => {
     if (!canManageStores(req.user.role)) {
       return res.status(403).json({ success: false, error: "Do'kon qo'shishga ruxsat yo'q" });
     }
-    const { name } = req.body;
+    const { name, logo } = req.body;
     if (!name || !name.trim()) {
       return res.status(400).json({ success: false, error: "Do'kon nomi talab qilinadi" });
     }
     const result = await db.run(
-      'INSERT INTO stores (name, created_by, created_name) VALUES (?, ?, ?)',
-      [name.trim(), req.user.userId, req.user.name || null]
+      'INSERT INTO stores (name, logo, created_by, created_name) VALUES (?, ?, ?, ?)',
+      [name.trim(), logo || null, req.user.userId, req.user.name || null]
     );
-    res.json({ success: true, store: { id: result.id, name: name.trim() } });
+    res.json({ success: true, store: { id: result.id, name: name.trim(), logo: logo || null } });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * PUT /api/admin/stores/:id — do'kon nomi/logosini tahrirlash
+ * (faqat do'kon boshqaruvchilari)
+ */
+router.put('/stores/:id', auth.requireAuth, async (req, res) => {
+  try {
+    if (!canManageStores(req.user.role)) {
+      return res.status(403).json({ success: false, error: "Do'konni tahrirlashga ruxsat yo'q" });
+    }
+    const { name, logo } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).json({ success: false, error: "Do'kon nomi talab qilinadi" });
+    }
+    await db.run('UPDATE stores SET name=?, logo=? WHERE id=?', [name.trim(), logo || null, req.params.id]);
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

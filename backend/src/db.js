@@ -171,11 +171,13 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS stores (
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
+      logo TEXT,
       created_by INTEGER,
       created_name TEXT,
       created_at TIMESTAMP DEFAULT NOW()
     )
   `);
+  await pool.query(`ALTER TABLE stores ADD COLUMN IF NOT EXISTS logo TEXT`);
   await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS store_id INTEGER`);
   await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS store_name TEXT`);
 

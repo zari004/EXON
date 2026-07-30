@@ -66,10 +66,13 @@ router.get('/', auth.requireAuth, async (req, res) => {
   try {
     let tasks;
     if (isFullBoard(req.user.role)) {
-      tasks = await db.all('SELECT * FROM tasks ORDER BY created_at DESC');
+      tasks = await db.all(
+        'SELECT tasks.*, stores.logo AS store_logo FROM tasks LEFT JOIN stores ON stores.id = tasks.store_id ORDER BY tasks.created_at DESC'
+      );
     } else {
       tasks = await db.all(
-        'SELECT * FROM tasks WHERE assigned_to = ? OR created_by = ? ORDER BY created_at DESC',
+        `SELECT tasks.*, stores.logo AS store_logo FROM tasks LEFT JOIN stores ON stores.id = tasks.store_id
+         WHERE tasks.assigned_to = ? OR tasks.created_by = ? ORDER BY tasks.created_at DESC`,
         [req.user.userId, req.user.userId]
       );
     }
