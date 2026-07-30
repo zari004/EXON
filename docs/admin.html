@@ -1127,6 +1127,69 @@ body{
 .store-add-cancel:hover{color:#F2896F;border-color:#F2896F}
 .item-row__thumb img{width:100%;height:100%;object-fit:cover;border-radius:8px}
 
+/* ── KALENDAR (do'konlar bo'yicha) ── */
+.cal-page{display:flex;gap:20px;align-items:flex-start}
+.cal-filters{
+  width:200px;flex-shrink:0;padding:16px;border-radius:14px;
+  background:var(--surface);border:1px solid var(--line);
+}
+[data-theme="light"] .cal-filters{background:#F7FAF8}
+.cal-filters__label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-dim);margin-bottom:10px}
+.cal-filter-item{
+  display:flex;align-items:center;gap:9px;padding:6px 2px;font-size:13.5px;
+  color:var(--gray);cursor:pointer;
+}
+.cal-filter-item:hover{color:var(--white)}
+[data-theme="light"] .cal-filter-item:hover{color:#1a2117}
+.cal-filter-item input{accent-color:var(--green-hi);width:15px;height:15px;flex-shrink:0}
+.cal-filter-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cal-filter-item img{width:16px;height:16px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.cal-main{flex:1;min-width:0}
+.cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.cal-nav__title{font-size:16px;font-weight:700;min-width:130px}
+.cal-weekdays{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:1px;
+  font-size:11px;font-weight:700;color:var(--gray-dim);text-transform:uppercase;
+  padding:0 1px 8px;
+}
+.cal-weekdays span{text-align:center}
+.cal-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:1fr;gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;
+}
+.cal-day{
+  background:var(--bg);min-height:104px;padding:6px;cursor:pointer;
+  display:flex;flex-direction:column;gap:3px;transition:background .12s;
+}
+.cal-day:hover{background:var(--surface)}
+.cal-day.is-muted{opacity:.35;cursor:default}
+.cal-day.is-muted:hover{background:var(--bg)}
+.cal-day__num{
+  font-size:12px;font-weight:600;color:var(--gray-dim);width:22px;height:22px;
+  display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;
+}
+.cal-day.is-today .cal-day__num{background:var(--green-hi);color:var(--green-ink);font-weight:700}
+.cal-day__tasks{display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.cal-task-chip{
+  display:flex;align-items:center;gap:4px;padding:2px 5px;border-radius:5px;
+  font-size:10.5px;background:rgba(var(--surface-2-rgb),.8);color:var(--gray);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;
+}
+.cal-task-chip:hover{background:rgba(var(--green-rgb),.12)}
+.cal-task-chip__check{
+  width:11px;height:11px;border-radius:50%;border:1.5px solid var(--gray-dim);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:transparent;
+}
+.cal-task-chip.is-done{opacity:.55}
+.cal-task-chip.is-done .cal-task-chip__check{background:var(--green);border-color:var(--green);color:#fff}
+.cal-task-chip__title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cal-task-chip.is-done .cal-task-chip__title{text-decoration:line-through}
+.cal-day__more{font-size:10px;color:var(--gray-dim);padding:1px 5px}
+@media(max-width:900px){
+  .cal-page{flex-direction:column}
+  .cal-filters{width:100%}
+}
+
 /* ── KPI ── */
 #kpiMonthInput,#prodMonthInput,#attMyMonthInput,#attTeamMonthInput{
   height:38px;padding:0 12px;border-radius:8px;background:var(--surface);
@@ -1660,6 +1723,10 @@ body{
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 9.5 5 4h14l1 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 9.5v10h15v-10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 19.5v-6h5v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>Do'konlar</span>
       </button>
+      <button class="sidebar-item calendar-tab" data-tab="calendar" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M3 9h18M8 2v4M16 2v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Kalendar</span>
+      </button>
       <button class="sidebar-item kpi-tab" data-tab="kpi" style="display:none">
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
         <span>KPI</span>
@@ -1835,6 +1902,41 @@ body{
       <button type="button" class="store-add-cancel" id="storeEditCancelBtn" style="display:none" title="Bekor qilish">✕</button>
     </div>
     <div class="item-list" id="storesList"></div>
+  </section>
+
+  <!-- KALENDAR — do'konlar bo'yicha vazifalarni oy taqvimida ko'rish/qo'shish
+       (faqat superadmin/IT bo'limi/bosh menejer) -->
+  <section class="admin-panel" id="panel-calendar">
+    <div class="panel-head">
+      <h2>Kalendar</h2>
+      <button class="btn-add" id="btnAddCalTask" type="button">+ Vazifa</button>
+    </div>
+    <div class="cal-page">
+      <aside class="cal-filters">
+        <div class="cal-filters__label">Do'konlar</div>
+        <label class="cal-filter-item">
+          <input type="checkbox" id="calFilterAll" checked />
+          <span>Barchasi</span>
+        </label>
+        <div id="calFilterStores"></div>
+      </aside>
+      <div class="cal-main">
+        <div class="cal-nav">
+          <button type="button" class="icon-btn" id="calPrevBtn" aria-label="Oldingi oy">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="cal-nav__title" id="calMonthTitle">—</div>
+          <button type="button" class="icon-btn" id="calNextBtn" aria-label="Keyingi oy">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="button" class="btn-add" id="calTodayBtn" style="padding:6px 16px;margin-left:10px">Bugun</button>
+        </div>
+        <div class="cal-weekdays">
+          <span>Du</span><span>Se</span><span>Cho</span><span>Pay</span><span>Ju</span><span>Sha</span><span>Ya</span>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+    </div>
   </section>
 
   <!-- ISH UNUMDORLIGI (shaxsiy KPI) -->
@@ -2060,6 +2162,11 @@ body{
       <button type="button" class="more-item" data-tab="stores">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 9.5 5 4h14l1 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 9.5v10h15v-10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 19.5v-6h5v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>Do'konlar</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="more-item calendar-tab" data-tab="calendar" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M3 9h18M8 2v4M16 2v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Kalendar</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="more-item kpi-tab" data-tab="kpi" style="display:none">
@@ -2637,6 +2744,7 @@ body{
       'tab.permissions': 'Ruxsatlar',
       'tab.tasks': 'Vazifalar',
       'tab.stores': 'Do\'konlar',
+      'tab.calendar': 'Kalendar',
       'stores.title': 'Do\'konlar',
       'stores.add.placeholder': 'Yangi do\'kon nomi...',
       'stores.empty': 'Do\'konlar yo\'q',
@@ -2772,6 +2880,7 @@ body{
       'tab.permissions': 'Доступы',
       'tab.tasks': 'Задачи',
       'tab.stores': 'Магазины',
+      'tab.calendar': 'Календарь',
       'stores.title': 'Магазины',
       'stores.add.placeholder': 'Название нового магазина...',
       'stores.empty': 'Нет магазинов',
@@ -2907,6 +3016,7 @@ body{
       'tab.permissions': 'Permissions',
       'tab.tasks': 'Tasks',
       'tab.stores': 'Stores',
+      'tab.calendar': 'Calendar',
       'stores.title': 'Stores',
       'stores.add.placeholder': 'New store name...',
       'stores.empty': 'No stores',
@@ -3049,6 +3159,7 @@ body{
     document.querySelector('[data-tab="pricing"] span').textContent = T('tab.pricing');
     document.querySelector('[data-tab="tasks"] span').textContent = T('tab.tasks');
     document.querySelectorAll('[data-tab="stores"] span').forEach(function(el){ el.textContent = T('tab.stores'); });
+    document.querySelectorAll('[data-tab="calendar"] span').forEach(function(el){ el.textContent = T('tab.calendar'); });
     document.querySelector('[data-tab="users"] span').textContent = T('tab.users');
     document.querySelector('[data-tab="permissions"] span').textContent = T('tab.permissions');
     // Tasks panel
@@ -3161,6 +3272,9 @@ body{
     // KPI bo'limi — bosh menejer va superadmin/IT to'liq boshqaradi, SEO faqat ko'radi
     var kpiVisible = isSuperLevel || USER_ROLE === 'menejer_bosh' || USER_ROLE === 'seo';
     document.querySelectorAll('.kpi-tab').forEach(function (t) { t.style.display = kpiVisible ? '' : 'none'; });
+    // Kalendar (do'konlar bo'yicha) — faqat superadmin/IT bo'limi/bosh menejer
+    var calendarVisible = isSuperLevel || USER_ROLE === 'menejer_bosh';
+    document.querySelectorAll('.calendar-tab').forEach(function (t) { t.style.display = calendarVisible ? '' : 'none'; });
     // Keldi-ketdi ichki bo'limlari — rolga qarab
     var attTeamVisible = isSuperLevel || USER_ROLE === 'menejer_bosh' || USER_ROLE === 'seo';
     var attOfficeVisible = isSuperLevel;
@@ -3490,6 +3604,7 @@ body{
     if (!options.skipSave) saveAdminViewState({ tab: tab.dataset.tab, taskId: null });
     if (tab.dataset.tab === 'tasks') await loadTasks();
     if (tab.dataset.tab === 'stores') await loadStores();
+    if (tab.dataset.tab === 'calendar') await loadCalendar();
     if (tab.dataset.tab === 'settings') await loadAccountSettings();
     if (tab.dataset.tab === 'kpi') await loadKpi();
     if (tab.dataset.tab === 'productivity') await loadProductivity();
@@ -4440,7 +4555,10 @@ body{
       var board = document.querySelector('#panel-tasks .kanban-board');
       var br = board ? board.getBoundingClientRect() : null;
       if (!br || (br.width === 0 && br.height === 0)) {
-        var alt = document.querySelector('#panel-tasks .task-tabs') || document.querySelector('#panel-tasks .panel-head');
+        // Kanban-board yashirin (masalan telefonda, yoki hozir boshqa panel
+        // faol — Do'konlar/Kalendar) — hozir ko'rinib turgan panel tepasi asos qilinadi
+        var alt = document.querySelector('.admin-panel.is-active .task-tabs') ||
+          document.querySelector('.admin-panel.is-active .panel-head');
         br = alt ? alt.getBoundingClientRect() : { top: 80, right: vw - 24 };
       }
       top = br.top;
@@ -5189,6 +5307,124 @@ body{
     if (e.key === 'Enter') { e.preventDefault(); document.getElementById('storeAddBtn').click(); }
   });
 
+  // ── KALENDAR (do'konlar bo'yicha) ──
+  var CAL_YEAR = null, CAL_MONTH = null;
+  var CAL_MAX_CHIPS = 3;
+
+  async function loadCalendar() {
+    if (CAL_YEAR === null) {
+      var now = new Date();
+      CAL_YEAR = now.getFullYear();
+      CAL_MONTH = now.getMonth();
+    }
+    await ensureStores();
+    await loadTasks();
+    renderCalFilters();
+    renderCalGrid();
+  }
+
+  function renderCalFilters() {
+    var container = document.getElementById('calFilterStores');
+    container.innerHTML = TD_STORES.map(function (s) {
+      return '<label class="cal-filter-item" data-store-id="' + s.id + '">' +
+        '<input type="checkbox" checked />' +
+        (s.logo ? '<img src="' + s.logo + '" />' : '<span>🏬</span>') +
+        '<span>' + escHtml(s.name) + '</span>' +
+      '</label>';
+    }).join('');
+    container.querySelectorAll('.cal-filter-item input').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        var all = document.querySelectorAll('#calFilterStores input');
+        var allChecked = Array.prototype.every.call(all, function (c) { return c.checked; });
+        document.getElementById('calFilterAll').checked = allChecked;
+        renderCalGrid();
+      });
+    });
+  }
+
+  document.getElementById('calFilterAll').addEventListener('change', function () {
+    var checked = this.checked;
+    document.querySelectorAll('#calFilterStores input').forEach(function (cb) { cb.checked = checked; });
+    renderCalGrid();
+  });
+
+  function renderCalGrid() {
+    document.getElementById('calMonthTitle').textContent = UZ_MONTHS[CAL_MONTH] + ' ' + CAL_YEAR;
+    var checkedIds = {};
+    document.querySelectorAll('#calFilterStores input:checked').forEach(function (cb) {
+      checkedIds[cb.closest('.cal-filter-item').dataset.storeId] = true;
+    });
+    var byDate = {};
+    Object.keys(TASKS_MAP).forEach(function (id) {
+      var t = TASKS_MAP[id];
+      if (!t.due_date) return;
+      if (t.store_id && !checkedIds[String(t.store_id)]) return;
+      var d = t.due_date.split('T')[0];
+      (byDate[d] = byDate[d] || []).push(t);
+    });
+
+    var grid = document.getElementById('calGrid');
+    var firstDay = new Date(CAL_YEAR, CAL_MONTH, 1);
+    var startOffset = (firstDay.getDay() + 6) % 7; // Dushanba = 0
+    var daysInMonth = new Date(CAL_YEAR, CAL_MONTH + 1, 0).getDate();
+    var daysInPrevMonth = new Date(CAL_YEAR, CAL_MONTH, 0).getDate();
+    var now = new Date();
+    var todayStr = now.getFullYear() + '-' + pad2(now.getMonth() + 1) + '-' + pad2(now.getDate());
+
+    var html = '';
+    for (var i = startOffset; i > 0; i--) {
+      html += '<div class="cal-day is-muted"><div class="cal-day__num">' + (daysInPrevMonth - i + 1) + '</div></div>';
+    }
+    for (var d = 1; d <= daysInMonth; d++) {
+      var dateStr = CAL_YEAR + '-' + pad2(CAL_MONTH + 1) + '-' + pad2(d);
+      var dayTasks = byDate[dateStr] || [];
+      var chips = dayTasks.slice(0, CAL_MAX_CHIPS).map(function (t) {
+        var done = t.status === 'done';
+        return '<div class="cal-task-chip' + (done ? ' is-done' : '') + '" data-task-id="' + t.id + '">' +
+          '<span class="cal-task-chip__check">' +
+          (done ? '<svg viewBox="0 0 24 24" width="7" height="7" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '') +
+          '</span><span class="cal-task-chip__title">' + escHtml(t.title) + '</span></div>';
+      }).join('');
+      var more = dayTasks.length > CAL_MAX_CHIPS ? '<div class="cal-day__more">+' + (dayTasks.length - CAL_MAX_CHIPS) + ' ta yana</div>' : '';
+      html += '<div class="cal-day' + (dateStr === todayStr ? ' is-today' : '') + '" data-date="' + dateStr + '">' +
+        '<div class="cal-day__num">' + d + '</div>' +
+        '<div class="cal-day__tasks">' + chips + more + '</div>' +
+      '</div>';
+    }
+    var remainder = (startOffset + daysInMonth) % 7;
+    var nextDays = remainder === 0 ? 0 : 7 - remainder;
+    for (var d2 = 1; d2 <= nextDays; d2++) {
+      html += '<div class="cal-day is-muted"><div class="cal-day__num">' + d2 + '</div></div>';
+    }
+    grid.innerHTML = html;
+
+    grid.querySelectorAll('.cal-task-chip').forEach(function (chip) {
+      chip.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var t = TASKS_MAP[Number(chip.dataset.taskId)];
+        if (t) openTaskDrawer(t, chip);
+      });
+    });
+    grid.querySelectorAll('.cal-day:not(.is-muted)').forEach(function (dayEl) {
+      dayEl.addEventListener('click', function () { openTaskDrawer(null, dayEl, dayEl.dataset.date); });
+    });
+  }
+
+  document.getElementById('calPrevBtn').addEventListener('click', function () {
+    CAL_MONTH--; if (CAL_MONTH < 0) { CAL_MONTH = 11; CAL_YEAR--; }
+    renderCalGrid();
+  });
+  document.getElementById('calNextBtn').addEventListener('click', function () {
+    CAL_MONTH++; if (CAL_MONTH > 11) { CAL_MONTH = 0; CAL_YEAR++; }
+    renderCalGrid();
+  });
+  document.getElementById('calTodayBtn').addEventListener('click', function () {
+    var now = new Date();
+    CAL_YEAR = now.getFullYear(); CAL_MONTH = now.getMonth();
+    renderCalGrid();
+  });
+  document.getElementById('btnAddCalTask').addEventListener('click', function () { openTaskDrawer(null); });
+
   function buildAssigneePopup() {
     var pop = document.getElementById('tdAssPop');
     var items = '<button class="td-pop-item" data-id="" data-name="" type="button">' +
@@ -5216,12 +5452,12 @@ body{
   }
 
   // ── OPEN DRAWER ──
-  function openTaskDrawer(task, cardEl) {
+  function openTaskDrawer(task, cardEl, presetDate) {
     TD_EDIT_ID = task ? task.id : null;
     var isDone = task && task.status === 'done';
     document.getElementById('taskTitle').value = task ? task.title : '';
     document.getElementById('taskDesc').value = task ? (task.description || '') : '';
-    document.getElementById('taskDue').value = task && task.due_date ? task.due_date.split('T')[0] : '';
+    document.getElementById('taskDue').value = task && task.due_date ? task.due_date.split('T')[0] : (presetDate || '');
     document.getElementById('taskFormMsg').textContent = '';
     TD_START_DATE = task && task.start_date ? task.start_date.split('T')[0] : '';
     TD_CAL_MODE = TD_START_DATE ? 'dur' : 'date';
