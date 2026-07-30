@@ -831,23 +831,10 @@ body{
    gorizontal cho'zib yuboradi, garchi ichkarida overflow:auto bo'lsa ham */
 .admin-content{margin-left:224px;flex:1;min-width:0;min-height:100vh;padding-top:58px}
 
-/* Hamburger (mobile) */
-.sidebar-toggle{
-  display:none;position:fixed;top:14px;left:14px;z-index:30;
-  width:38px;height:38px;border-radius:8px;border:1px solid var(--line-2);
-  background:var(--surface);color:var(--gray);cursor:pointer;
-  align-items:center;justify-content:center;
-}
-.sidebar-toggle svg{width:18px;height:18px}
-.sidebar-backdrop{
-  display:none;position:fixed;inset:0;z-index:19;background:rgba(0,0,0,.5);
-}
-
 @media(max-width:768px){
-  .sidebar-toggle{display:flex}
-  .admin-sidebar{transform:translateX(-100%);transition:transform .25s var(--ease)}
-  .admin-sidebar.is-open{transform:translateX(0)}
-  .sidebar-backdrop.is-open{display:block}
+  /* Telefonda doimiy sidebar o'rniga pastki navigatsiya + "Ko'proq" sahifasi
+     ishlatiladi, shuning uchun sidebar butunlay ekrandan tashqarida qoladi */
+  .admin-sidebar{transform:translateX(-100%)}
   .admin-content{margin-left:0;padding-top:60px;padding-bottom:calc(70px + env(safe-area-inset-bottom))}
 }
 
@@ -868,6 +855,44 @@ body{
   .bottom-nav-item svg{width:20px;height:20px;flex-shrink:0}
   .bottom-nav-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
   .bottom-nav-item.is-active{color:var(--green-hi)}
+}
+
+/* ── "KO'PROQ" sahifasi (faqat telefonda "Ko'proq" tugmasi orqali ochiladi) ── */
+.more-profile{display:flex;align-items:center;gap:14px;padding:6px 4px 18px}
+.more-profile__ava{
+  width:52px;height:52px;border-radius:50%;flex-shrink:0;overflow:hidden;
+  background:rgba(var(--green-rgb),.13);border:1px solid rgba(var(--green-rgb),.22);
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+.more-profile__ava img{width:100%;height:100%;object-fit:cover}
+.more-profile__name{font-size:16.5px;font-weight:700}
+.more-profile__role{font-size:12.5px;color:var(--gray-dim);margin-top:2px}
+.more-section-label{
+  font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--gray-dim);margin:18px 4px 8px;
+}
+.more-list{
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;
+}
+[data-theme="light"] .more-list{background:#fff}
+.more-item{
+  display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;
+  background:none;border:0;border-bottom:1px solid var(--line);color:var(--white);
+  font-size:14.5px;font-weight:500;text-align:left;cursor:pointer;
+}
+[data-theme="light"] .more-item{color:#1a2117}
+.more-item:last-child{border-bottom:0}
+.more-item:active{background:rgba(var(--green-rgb),.07)}
+.more-item svg:first-child{width:18px;height:18px;flex-shrink:0;opacity:.7;color:var(--gray)}
+.more-item span{flex:1;min-width:0}
+.more-item .chev{width:16px;height:16px;opacity:.35;flex-shrink:0}
+.more-install{
+  width:100%;margin-top:22px;padding:13px;border-radius:12px;display:none;align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(135deg,var(--green-hi),var(--green));color:var(--green-ink);border:0;font-size:14px;font-weight:700;cursor:pointer;
+}
+.more-logout{
+  width:100%;margin-top:14px;padding:13px;border-radius:12px;background:none;
+  border:1px solid var(--line-2);color:var(--gray);font-size:14px;font-weight:600;cursor:pointer;
 }
 
 .admin-panel{
@@ -1270,6 +1295,31 @@ body{
 </head>
 <body>
 
+<!-- Sahifa yangilanganda, agar sessiya tokeni allaqachon mavjud bo'lsa, login ekrani
+     bir lahzaga "yaltirab" ko'rinib qolmasligi uchun — token bor-yo'qligi async JS
+     ishga tushishidan OLDIN, sinxron ravishda tekshiriladi va shu asosda "has-token"
+     klassi qo'yiladi (CSS orqali login ekranini boshidanoq yashiradi). -->
+<script>
+(function () {
+  try {
+    if (localStorage.getItem('exon_admin_token')) {
+      document.documentElement.classList.add('has-token');
+    }
+  } catch (e) {}
+})();
+</script>
+<style>
+  html.has-token .login-screen{display:none}
+  #appBootLoader{display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;background:var(--bg)}
+  html.has-token #appBootLoader{display:flex}
+  #appBootLoader img{height:40px;opacity:.9;animation:bootPulse 1.4s ease-in-out infinite}
+  @keyframes bootPulse{0%,100%{opacity:.55}50%{opacity:1}}
+</style>
+<div id="appBootLoader">
+  <img class="logo__img logo__img--dark" src="assets/img/logo-exon.png" alt="" />
+  <img class="logo__img logo__img--light" src="assets/img/logo-exon-light.png" alt="" />
+</div>
+
 <!-- ══════════ LOGIN ══════════ -->
 <div class="login-screen" id="loginScreen">
   <div class="auth-frame">
@@ -1368,12 +1418,6 @@ body{
 
 <!-- ══════════ ADMIN APP ══════════ -->
 <div class="admin-app" id="adminApp">
-
-  <!-- Hamburger (mobile) -->
-  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Menyu">
-    <svg viewBox="0 0 24 24" fill="none"><path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-  </button>
-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
   <!-- ── TEPA O'NG BURCHAK: bildirishnoma, mavzu, til ── -->
   <div class="admin-topbar" id="adminTopbar">
@@ -1774,6 +1818,66 @@ body{
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- KO'PROQ (faqat telefon — pastki navigatsiyadagi "Ko'proq" tugmasi shu yerga o'tadi) -->
+  <section class="admin-panel" id="panel-more">
+    <div class="more-profile">
+      <div class="more-profile__ava" id="moreProfileAva">👤</div>
+      <div class="more-profile__info">
+        <div class="more-profile__name" id="moreProfileName">Admin</div>
+        <div class="more-profile__role" id="moreProfileRole"></div>
+      </div>
+    </div>
+
+    <div class="more-section-label" id="moreSectionSite">Sayt boshqaruvi</div>
+    <div class="more-list" id="moreListSite">
+      <button type="button" class="more-item" data-tab="cases">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.7"/></svg>
+        <span>Keyslar</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="more-item" data-tab="posts">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" stroke="currentColor" stroke-width="1.7"/><path d="M14 2v6h6M16 13H8M16 17H8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Blog</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="more-item" data-tab="pricing">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z" stroke="currentColor" stroke-width="1.7"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg>
+        <span>Narxlar</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <div class="more-section-label">Boshqaruv</div>
+    <div class="more-list">
+      <button type="button" class="more-item kpi-tab" data-tab="kpi" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+        <span>KPI</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="more-item" data-tab="settings">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span>Sozlamalar</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="more-item superadmin-tab" data-tab="users" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.7"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Foydalanuvchilar</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="more-item superadmin-tab" data-tab="permissions" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <span>Ruxsatlar</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <button type="button" class="more-install" id="moreInstallBtn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 3v13M7 11l5 5 5-5M3 19h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Ilovani yuklash
+    </button>
+    <button type="button" class="more-logout" id="moreLogoutBtn">Chiqish</button>
   </section>
   </main><!-- /admin-content -->
 
@@ -2758,8 +2862,14 @@ body{
     return data;
   }
 
+  function hideBootLoader() {
+    var el = document.getElementById('appBootLoader');
+    if (el) el.style.display = 'none';
+  }
+
   // ── EKRANLAR ──
   async function showApp() {
+    hideBootLoader();
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('pendingScreen').classList.remove('is-active');
     document.getElementById('adminApp').classList.add('is-active');
@@ -2838,11 +2948,15 @@ body{
     } catch (err) { console.error(err); }
   }
   function showAuthScreen() {
+    hideBootLoader();
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('pendingScreen').classList.remove('is-active');
     document.getElementById('adminApp').classList.remove('is-active');
     applyLang();
   }
+  // "Kutish" ekranidagi "Kirish sahifasiga qaytish" tugmasi inline onclick orqali
+  // chaqiradi — bu funksiya closure ichida bo'lgani uchun global qilib chiqarish kerak
+  window.showAuthScreen = showAuthScreen;
   function showPending() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('pendingScreen').classList.add('is-active');
@@ -2854,6 +2968,7 @@ body{
     localStorage.removeItem('exon_admin_token');
     localStorage.removeItem('exon_admin_role');
     localStorage.removeItem('exon_admin_name');
+    document.documentElement.classList.remove('has-token');
     stopNotifPolling();
     NOTIFS = [];
     updateNotifBadge(0);
@@ -3105,27 +3220,22 @@ body{
       if (tab.dataset.tab === 'kpi') loadKpi();
       if (tab.dataset.tab === 'productivity') loadProductivity();
       if (tab.dataset.tab === 'attendance') loadAttendance();
-      // Mobil: sideberni yop
-      document.getElementById('adminSidebar').classList.remove('is-open');
-      document.getElementById('sidebarBackdrop').classList.remove('is-open');
       syncBottomNavActive(tab.dataset.tab);
     });
-  });
-
-  // ── MOBIL SIDEBAR TOGGLE ──
-  document.getElementById('sidebarToggle').addEventListener('click', function () {
-    document.getElementById('adminSidebar').classList.toggle('is-open');
-    document.getElementById('sidebarBackdrop').classList.toggle('is-open');
   });
 
   // ── PASTKI NAVIGATSIYA (faqat telefon) ──
   // Bottom-nav tugmalari mavjud sidebar-item'larni bosgandek ishlaydi — shu orqali
   // panel almashtirish, ma'lumot yuklash va ruxsat tekshiruvi bir joyda qoladi,
-  // ikki xil mantiq takrorlanmaydi.
+  // ikki xil mantiq takrorlanmaydi. "Ko'proq" esa alohida — u haqiqiy panelga
+  // (qolgan bo'limlar ro'yxati) o'tadi, suzuvchi oyna ochmaydi.
+  var BOTTOM_NAV_PRIMARY_TABS = ['dashboard', 'tasks', 'attendance', 'productivity'];
   function syncBottomNavActive(tabName) {
     document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(function (btn) {
       btn.classList.toggle('is-active', btn.dataset.tab === tabName);
     });
+    var moreBtn = document.getElementById('bottomNavMore');
+    if (moreBtn) moreBtn.classList.toggle('is-active', BOTTOM_NAV_PRIMARY_TABS.indexOf(tabName) === -1);
   }
   function syncBottomNavVisibility() {
     document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(function (btn) {
@@ -3134,6 +3244,7 @@ body{
     });
     var activeTab = document.querySelector('.sidebar-item[data-tab].is-active');
     syncBottomNavActive(activeTab ? activeTab.dataset.tab : null);
+    syncMoreListVisibility();
   }
   document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(function (btn) {
     btn.addEventListener('click', function () {
@@ -3141,14 +3252,45 @@ body{
       if (target) target.click();
     });
   });
-  document.getElementById('bottomNavMore').addEventListener('click', function () {
-    document.getElementById('adminSidebar').classList.add('is-open');
-    document.getElementById('sidebarBackdrop').classList.add('is-open');
+
+  // ── "KO'PROQ" — to'liq sahifa (suzuvchi oyna emas) ──
+  function openMorePanel() {
+    document.querySelectorAll('.sidebar-item[data-tab]').forEach(function (t) { t.classList.remove('is-active'); });
+    document.querySelectorAll('.admin-panel').forEach(function (p) { p.classList.remove('is-active'); });
+    document.getElementById('panel-more').classList.add('is-active');
+    document.getElementById('moreProfileName').textContent = USER_NAME || 'Admin';
+    document.getElementById('moreProfileRole').textContent = T('role.' + USER_ROLE) || USER_ROLE;
+    var installBtn = document.getElementById('adminInstallBtn');
+    var moreInstall = document.getElementById('moreInstallBtn');
+    if (installBtn && moreInstall) moreInstall.style.display = installBtn.classList.contains('is-visible') ? 'flex' : 'none';
+    syncBottomNavActive(null);
+  }
+  document.getElementById('bottomNavMore').addEventListener('click', openMorePanel);
+  document.querySelectorAll('.more-item[data-tab]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var target = document.querySelector('.sidebar-item[data-tab="' + btn.dataset.tab + '"]');
+      if (target) target.click();
+    });
   });
-  document.getElementById('sidebarBackdrop').addEventListener('click', function () {
-    document.getElementById('adminSidebar').classList.remove('is-open');
-    document.getElementById('sidebarBackdrop').classList.remove('is-open');
+  document.getElementById('moreInstallBtn').addEventListener('click', function () {
+    document.getElementById('adminInstallBtn').click();
   });
+  document.getElementById('moreLogoutBtn').addEventListener('click', function () {
+    document.getElementById('logoutBtn').click();
+  });
+  function syncMoreListVisibility() {
+    var anySiteVisible = false;
+    document.querySelectorAll('.more-item[data-tab]').forEach(function (btn) {
+      var target = document.querySelector('.sidebar-item[data-tab="' + btn.dataset.tab + '"]');
+      var visible = !!(target && target.style.display !== 'none');
+      btn.style.display = visible ? '' : 'none';
+      if (visible && ['cases', 'posts', 'pricing'].indexOf(btn.dataset.tab) !== -1) anySiteVisible = true;
+    });
+    var siteLabel = document.getElementById('moreSectionSite');
+    var siteList = document.getElementById('moreListSite');
+    if (siteLabel) siteLabel.style.display = anySiteVisible ? '' : 'none';
+    if (siteList) siteList.style.display = anySiteVisible ? '' : 'none';
+  }
 
   window.closeModal = function (id) { document.getElementById(id).classList.remove('is-active'); };
 
