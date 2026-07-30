@@ -217,14 +217,18 @@ router.put('/policy', auth.requireAuth, requireRole(POLICY_MANAGE_ROLES, "Bu ama
 });
 
 // ── BUGUNGI HOLAT ──
+// TEST REJIMIDA doim "hali kelmagan" holatni qaytaradi — shunda sahifa har safar
+// ochilganda/qayta yuklanganda "Keldim" tugmasi bilan boshidan boshlaydi, avvalgi
+// sinov urinishlarini ko'rsatmaydi. Haqiqiy yozuv baribir bazada saqlanadi —
+// bu faqat KO'RSATISHNI (frontendni) qayta boshlaydi.
 router.get('/today', auth.requireAuth, async (req, res) => {
   try {
     const today = tzDateStr(new Date());
-    const rec = await db.get(
+    const rec = TEST_MODE ? null : await db.get(
       'SELECT * FROM attendance_records WHERE employee_id = ? AND work_date = ?',
       [req.user.userId, today]
     );
-    res.json({ success: true, date: today, record: rec || null });
+    res.json({ success: true, date: today, record: rec || null, testMode: TEST_MODE });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

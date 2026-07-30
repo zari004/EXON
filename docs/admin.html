@@ -7,7 +7,7 @@
 <title>Admin — EXON</title>
 <link rel="stylesheet" href="assets/css/style.css?v=13" />
 <link rel="manifest" href="/admin-manifest.json" />
-<link rel="apple-touch-icon" href="assets/img/logo-exon.png" />
+<link rel="apple-touch-icon" href="assets/img/icon.svg" />
 <meta name="theme-color" content="#0BD16C" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1060,8 +1060,24 @@ body{
 
 @media(max-width:768px){
   .att-shell{flex-direction:column;min-height:0;min-width:0}
-  .att-nav{width:100%;min-width:0;flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
-  .att-content{padding:18px}
+  /* Sub-navigatsiya pastga tushiriladi (order orqali, DOM tartibi o'zgarmaydi),
+     scroll bo'lmasligi uchun har bir tugma teng ulushda (flex:1) joylashadi */
+  .att-nav{
+    width:100%;min-width:0;flex-direction:row;overflow-x:visible;
+    border-right:0;border-top:1px solid var(--line);padding:6px;order:2;gap:2px;
+  }
+  .att-content{padding:18px;order:1}
+  /* Bugun/Xodimlar kabi 5 tagacha bo'lim bitta qatorga sig'ishi uchun
+     ikonka-tepada/matn-pastda (asosiy pastki navigatsiyaga o'xshash) formatga o'tadi */
+  .att-nav-item{
+    flex:1;min-width:0;flex-direction:column;justify-content:center;
+    padding:7px 2px;gap:3px;text-align:center;
+  }
+  .att-nav-item svg{width:17px;height:17px}
+  .att-nav-item span{
+    font-size:10px;line-height:1.15;white-space:normal;overflow:hidden;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  }
 }
 
 .att-status-card{
@@ -1318,12 +1334,14 @@ body{
   html.has-token .login-screen{display:none}
   #appBootLoader{display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;background:var(--bg)}
   html.has-token #appBootLoader{display:flex}
-  #appBootLoader img{height:40px;opacity:.9;animation:bootPulse 1.4s ease-in-out infinite}
-  @keyframes bootPulse{0%,100%{opacity:.55}50%{opacity:1}}
+  #appBootLoader .logo{animation:bootPulse 1.4s ease-in-out infinite}
+  @keyframes bootPulse{0%,100%{opacity:.5}50%{opacity:1}}
 </style>
 <div id="appBootLoader">
-  <img class="logo__img logo__img--dark" src="assets/img/logo-exon.png" alt="" />
-  <img class="logo__img logo__img--light" src="assets/img/logo-exon-light.png" alt="" />
+  <span class="logo">
+    <img class="logo__img logo__img--dark" src="assets/img/logo-exon.png" alt="EXON" />
+    <img class="logo__img logo__img--light" src="assets/img/logo-exon-light.png" alt="EXON" />
+  </span>
 </div>
 
 <!-- ══════════ LOGIN ══════════ -->
@@ -5343,6 +5361,7 @@ body{
   // KELDI-KETDI (davomat) — GPS + kamera bilan tasdiqlash
   // ══════════════════════════════════════════════════════════
   var ATT_OFFICE_LOCATION = null;
+  var ATT_POLICY = null;
   var ATT_TODAY = null;
 
   var CAM_MODE = null;   // 'in' | 'out'
@@ -5600,12 +5619,24 @@ body{
     msgEl.textContent = 'Yuborilmoqda...';
     try {
       var path = CAM_MODE === 'in' ? '/api/attendance/check-in' : '/api/attendance/check-out';
-      await apiFetch(path, { method: 'POST', body: JSON.stringify({ latitude: CAM_LAT, longitude: CAM_LNG, photo: CAM_PHOTO }) });
+      var resp = await apiFetch(path, { method: 'POST', body: JSON.stringify({ latitude: CAM_LAT, longitude: CAM_LNG, photo: CAM_PHOTO }) });
+      // Natijani serverdan qayta so'ramasdan, to'g'ridan-to'g'ri javobdan yasaymiz —
+      // test rejimida GET /today doim "hali kelmagan" holatni qaytaradi (quyida
+      // izohlangan), shuning uchun qayta so'rov "Keldim" bosgan bo'lsak ham yana
+      // boshlang'ich holatni ko'rsatib qo'yishi mumkin edi.
+      if (CAM_MODE === 'in') {
+        ATT_TODAY = Object.assign({}, ATT_TODAY, {
+          check_in_at: resp.checkInAt, late_minutes: resp.lateMinutes, deduct_percent: resp.deductPercent,
+          check_in_photo: CAM_PHOTO, check_out_at: null, check_out_photo: null
+        });
+      } else {
+        ATT_TODAY = Object.assign({}, ATT_TODAY, { check_out_at: resp.checkOutAt, check_out_photo: CAM_PHOTO });
+      }
       CAM_OPEN = false;
       stopCameraStream();
       document.getElementById('camOverlay').classList.remove('is-active');
       CAM_MODE = null;
-      await loadAttToday();
+      renderAttToday();
     } catch (err) {
       msgEl.style.color = '#F2896F';
       msgEl.textContent = err.message === 'not_in_area'
