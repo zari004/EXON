@@ -603,17 +603,12 @@ body{
 .td-pop-item.is-sel{background:rgba(var(--green-rgb),.08)}
 .td-pop-check{margin-left:auto;color:var(--green);opacity:0}
 .td-pop-item.is-sel .td-pop-check{opacity:1}
-.td-store-add{display:flex;gap:6px;padding:4px 4px 8px;margin-bottom:4px;border-bottom:1px solid var(--line)}
-.td-store-add input{
-  flex:1;min-width:0;background:var(--surface);border:1px solid var(--line-2);border-radius:7px;
+.td-store-search{padding:4px 4px 8px;margin-bottom:4px;border-bottom:1px solid var(--line)}
+.td-store-search input{
+  width:100%;background:var(--surface);border:1px solid var(--line-2);border-radius:7px;
   padding:6px 9px;font-size:12.5px;color:var(--white);
 }
-[data-theme="light"] .td-store-add input{color:#1a2117}
-.td-store-add button{
-  flex-shrink:0;background:var(--green);color:var(--green-ink);border:0;border-radius:7px;
-  padding:0 11px;font-size:13px;font-weight:700;cursor:pointer;
-}
-.td-store-add button:hover{opacity:.85}
+[data-theme="light"] .td-store-search input{color:#1a2117}
 .td-pri-flag{width:14px;height:14px;border-radius:3px;flex-shrink:0}
 .td-pri-flag.urgent{background:#F2896F}
 .td-pri-flag.high{background:#F0A500}
@@ -1111,7 +1106,13 @@ body{
   background:var(--surface);border:1px solid var(--line-2);color:var(--white);font-size:14px;
 }
 [data-theme="light"] .store-add-row input[type="text"]{color:#1a2117}
-.store-add-row .btn-add{padding:0 22px;flex-shrink:0}
+.store-add-btn{
+  width:42px;height:42px;border-radius:10px;flex-shrink:0;border:0;cursor:pointer;padding:0;
+  background:linear-gradient(135deg,var(--green-hi),var(--green));color:var(--green-ink);
+  display:flex;align-items:center;justify-content:center;transition:opacity .15s;
+}
+.store-add-btn:hover{opacity:.88}
+.store-add-btn svg{width:18px;height:18px}
 .store-logo-pick{
   width:42px;height:42px;border-radius:10px;flex-shrink:0;overflow:hidden;
   background:var(--surface);border:1.5px dashed var(--line-2);cursor:pointer;
@@ -1903,7 +1904,9 @@ body{
       </button>
       <input type="file" id="storeLogoFile" accept="image/*" style="display:none" />
       <input type="text" id="storeNewNameInp" data-i18n-ph="stores.add.placeholder" placeholder="Yangi do'kon nomi..." maxlength="80" />
-      <button class="btn-add" id="storeAddBtn" type="button">+</button>
+      <button class="store-add-btn" id="storeAddBtn" type="button" title="Qo'shish">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
       <button type="button" class="store-add-cancel" id="storeEditCancelBtn" style="display:none" title="Bekor qilish">✕</button>
     </div>
     <div class="item-list" id="storesList"></div>
@@ -5147,21 +5150,20 @@ body{
   }
   function buildStorePopup() {
     var pop = document.getElementById('tdStorePop');
-    var addForm = TD_STORES_CAN_MANAGE
-      ? '<div class="td-store-add"><input type="text" id="tdStoreNewInp" placeholder="Yangi do\'kon nomi..." maxlength="80" />' +
-        '<button type="button" id="tdStoreAddBtn">+</button></div>'
-      : '';
+    // Do'kon qo'shish endi alohida "Do'konlar" bo'limida — bu yerda faqat
+    // mavjud ro'yxatdan qidirib tanlash uchun
+    var searchForm = '<div class="td-store-search"><input type="text" id="tdStoreSearchInp" placeholder="Qidirish..." maxlength="80" /></div>';
     var items = '<button class="td-pop-item" data-id="" data-name="" type="button">' +
       '<span class="td-ava" style="background:#6b7280;width:22px;height:22px;font-size:10px">🏬</span> Do\'kon yo\'q' +
       '<svg class="td-pop-check" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
       '</button>';
     TD_STORES.forEach(function (s) {
-      items += '<button class="td-pop-item" data-id="' + s.id + '" data-name="' + escHtml(s.name) + '" type="button">' +
+      items += '<button class="td-pop-item td-store-item" data-id="' + s.id + '" data-name="' + escHtml(s.name) + '" type="button">' +
         '<span class="td-ava" style="background:#6b7280;width:22px;height:22px;font-size:10px;overflow:hidden">' + storeThumbHTML(s.logo) + '</span> ' + escHtml(s.name) +
         '<svg class="td-pop-check" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
         '</button>';
     });
-    pop.innerHTML = addForm + items;
+    pop.innerHTML = searchForm + items;
     pop.querySelectorAll('.td-pop-item').forEach(function (item) {
       item.addEventListener('click', function () {
         var sameStore = item.dataset.id &&
@@ -5170,23 +5172,12 @@ body{
         closeAllPopups();
       });
     });
-    if (TD_STORES_CAN_MANAGE) {
-      var addNewStore = async function () {
-        var inp = document.getElementById('tdStoreNewInp');
-        var name = inp.value.trim();
-        if (!name) return;
-        try {
-          var res = await apiFetch('/api/admin/stores', { method: 'POST', body: JSON.stringify({ name: name }) });
-          TD_STORES.push(res.store);
-          buildStorePopup();
-          setStore(res.store.id, res.store.name);
-        } catch (err) { alert(err.message || "Do'kon qo'shib bo'lmadi"); }
-      };
-      document.getElementById('tdStoreAddBtn').addEventListener('click', addNewStore);
-      document.getElementById('tdStoreNewInp').addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') { e.preventDefault(); addNewStore(); }
+    document.getElementById('tdStoreSearchInp').addEventListener('input', function (e) {
+      var q = e.target.value.trim().toLowerCase();
+      pop.querySelectorAll('.td-store-item').forEach(function (item) {
+        item.style.display = item.dataset.name.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
       });
-    }
+    });
     setStore(TD_STORE_ID, TD_STORE_NAME);
   }
 
@@ -5203,6 +5194,8 @@ body{
   }
   var STORE_EDIT_ID = null;   // null = yangi qo'shish, aks holda shu id tahrirlanmoqda
   var STORE_NEW_LOGO_B64 = null;
+  var STORE_ICON_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+  var STORE_ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
   function resetStoreAddForm() {
     STORE_EDIT_ID = null;
@@ -5210,7 +5203,7 @@ body{
     document.getElementById('storeNewNameInp').value = '';
     document.getElementById('storeLogoFile').value = '';
     document.getElementById('storeLogoPickIcon').outerHTML = '<span id="storeLogoPickIcon">🏬</span>';
-    document.getElementById('storeAddBtn').textContent = '+';
+    document.getElementById('storeAddBtn').innerHTML = STORE_ICON_PLUS;
     document.getElementById('storeEditCancelBtn').style.display = 'none';
   }
 
@@ -5275,7 +5268,7 @@ body{
           document.getElementById('storeLogoPickIcon').outerHTML = s.logo
             ? '<img id="storeLogoPickIcon" src="' + s.logo + '" />'
             : '<span id="storeLogoPickIcon">🏬</span>';
-          document.getElementById('storeAddBtn').textContent = '✓';
+          document.getElementById('storeAddBtn').innerHTML = STORE_ICON_CHECK;
           document.getElementById('storeEditCancelBtn').style.display = '';
           document.getElementById('storeNewNameInp').focus();
         });
