@@ -1,0 +1,26 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="68" y1="42" x2="446" y2="474" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#10271B"/>
+      <stop offset="0.55" stop-color="#08170F"/>
+      <stop offset="1" stop-color="#041009"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(392 106) rotate(132) scale(310)">
+      <stop stop-color="#0BD16C" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#0BD16C" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="accent" x1="142" y1="0" x2="370" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0BD16C" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#20E985"/>
+      <stop offset="1" stop-color="#0BD16C" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="#06130C"/>
+  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="116" fill="url(#glow)"/>
+  <rect x="58" y="58" width="396" height="396" rx="96" stroke="#37E58D" stroke-opacity="0.14" stroke-width="2"/>
+  <rect x="142" y="124" width="228" height="5" rx="2.5" fill="url(#accent)"/>
+  <text x="256" y="292" font-family="Arial Black, Arial, sans-serif" font-size="112" font-weight="900" text-anchor="middle" letter-spacing="-4"><tspan fill="#F6FFF9">EX</tspan><tspan fill="#20E985">ON</tspan></text>
+  <text x="260" y="342" fill="#38E68F" font-family="Arial, sans-serif" font-size="25" font-weight="700" text-anchor="middle" letter-spacing="9">ADMIN</text>
+  <circle cx="256" cy="390" r="7" fill="#0BD16C"/>
+</svg>
