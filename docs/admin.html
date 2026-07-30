@@ -1099,6 +1099,12 @@ body{
 .att-late-badge.late{background:rgba(242,137,111,.15);color:#F2896F}
 .att-photos-row{display:flex;justify-content:center;gap:10px;margin-top:14px}
 .att-photo-thumb{width:64px;height:64px;border-radius:10px;object-fit:cover;border:1px solid var(--line-2);cursor:pointer}
+.att-retest-btn{
+  display:block;margin:18px auto 0;padding:8px 16px;border-radius:999px;
+  background:none;border:1px dashed var(--line-2);color:var(--gray-dim);
+  font-size:12px;font-weight:600;cursor:pointer;
+}
+.att-retest-btn:hover{color:var(--green-hi);border-color:var(--green-deep)}
 
 .att-history-row{
   display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:12px;
@@ -5452,7 +5458,13 @@ body{
       '<div class="att-photos-row">' +
         (r.check_in_photo ? '<img class="att-photo-thumb" src="' + esc(r.check_in_photo) + '" onclick="attShowPhoto(this.src)" />' : '') +
         (r.check_out_photo ? '<img class="att-photo-thumb" src="' + esc(r.check_out_photo) + '" onclick="attShowPhoto(this.src)" />' : '') +
-      '</div>';
+      '</div>' +
+      // Test rejimida backend qayta kelish/ketishga ruxsat beradi — shuning uchun
+      // bu yerda ham qayta urinish imkoni qoldiriladi (production rejimida bosilsa,
+      // backend tabiiy ravishda "allaqachon belgilangan" xatosini qaytaradi)
+      '<button type="button" class="att-retest-btn" id="attRetestBtn">🔁 Qayta boshlash (test)</button>';
+    var retestBtn = document.getElementById('attRetestBtn');
+    if (retestBtn) retestBtn.addEventListener('click', function () { startAttendanceFlow('in'); });
   }
 
   window.attShowPhoto = function (src) {

@@ -12,6 +12,13 @@ const VIEW_ALL_ROLES = ['menejer_bosh', 'seo', 'it_bolimi', 'superadmin'];
 // Xodimlarning keldi-ketdi vaqtini qo'lda tahrirlash
 const EDIT_ROLES = ['menejer_bosh', 'seo', 'it_bolimi', 'superadmin'];
 
+// TEST REJIMI — yoqilgan bo'lsa, bir kunda bir necha marta "Keldim/Ketdim"
+// bosish mumkin (har safar o'sha kunning yozuvi ustidan yoziladi). Funksiya
+// sinab ko'rilgach, Render'da ATTENDANCE_TEST_MODE=false qilib o'chirish kerak —
+// aks holda kechikish/maosh hisob-kitobi ma'nosini yo'qotadi (istalgan payt
+// qayta "kelib", kechikishni yo'qqa chiqarish mumkin bo'lib qoladi).
+const TEST_MODE = process.env.ATTENDANCE_TEST_MODE !== 'false';
+
 function requireRole(roles, msg) {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
@@ -241,7 +248,7 @@ router.post('/check-in', auth.requireAuth, async (req, res) => {
     const now = new Date();
     const workDate = tzDateStr(now);
     const existing = await db.get('SELECT * FROM attendance_records WHERE employee_id = ? AND work_date = ?', [req.user.userId, workDate]);
-    if (existing && existing.check_in_at) {
+    if (existing && existing.check_in_at && !TEST_MODE) {
       return res.status(400).json({ success: false, error: 'Bugun allaqachon kelganingiz belgilangan' });
     }
 
@@ -307,7 +314,7 @@ router.post('/check-out', auth.requireAuth, async (req, res) => {
     if (!existing || !existing.check_in_at) {
       return res.status(400).json({ success: false, error: "Avval kelganingizni belgilashingiz kerak" });
     }
-    if (existing.check_out_at) {
+    if (existing.check_out_at && !TEST_MODE) {
       return res.status(400).json({ success: false, error: 'Bugun allaqachon ketganingiz belgilangan' });
     }
 
