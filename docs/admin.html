@@ -1136,12 +1136,13 @@ body{
 [data-theme="light"] .cal-filters{background:#F7FAF8}
 .cal-filters__label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-dim);margin-bottom:10px}
 .cal-filter-item{
-  display:flex;align-items:center;gap:9px;padding:6px 2px;font-size:13.5px;
-  color:var(--gray);cursor:pointer;
+  display:flex;align-items:center;gap:9px;width:100%;padding:8px 9px;font-size:13.5px;
+  color:var(--gray);cursor:pointer;background:none;border:0;border-radius:8px;text-align:left;
+  transition:background .15s,color .15s;
 }
-.cal-filter-item:hover{color:var(--white)}
+.cal-filter-item:hover{background:rgba(var(--green-rgb),.07);color:var(--white)}
 [data-theme="light"] .cal-filter-item:hover{color:#1a2117}
-.cal-filter-item input{accent-color:var(--green-hi);width:15px;height:15px;flex-shrink:0}
+.cal-filter-item.is-active{background:rgba(var(--green-rgb),.14);color:var(--green-hi);font-weight:600}
 .cal-filter-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cal-filter-item img{width:16px;height:16px;border-radius:50%;object-fit:cover;flex-shrink:0}
 .cal-main{flex:1;min-width:0}
@@ -1170,21 +1171,25 @@ body{
 }
 .cal-day.is-today .cal-day__num{background:var(--green-hi);color:var(--green-ink);font-weight:700}
 .cal-day__tasks{display:flex;flex-direction:column;gap:2px;overflow:hidden}
+/* Bajarilmagan — ochroq (och) yashil, bajarilgan — to'q yashil (to'ldirilgan) */
 .cal-task-chip{
   display:flex;align-items:center;gap:4px;padding:2px 5px;border-radius:5px;
-  font-size:10.5px;background:rgba(var(--surface-2-rgb),.8);color:var(--gray);
+  font-size:10.5px;background:rgba(var(--green-rgb),.16);color:var(--green-hi);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;
+  transition:background .12s,color .12s;
 }
-.cal-task-chip:hover{background:rgba(var(--green-rgb),.12)}
+.cal-task-chip:hover{background:rgba(var(--green-rgb),.28)}
 .cal-task-chip__check{
-  width:11px;height:11px;border-radius:50%;border:1.5px solid var(--gray-dim);flex-shrink:0;
+  width:11px;height:11px;border-radius:50%;border:1.5px solid currentColor;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;color:transparent;
 }
-.cal-task-chip.is-done{opacity:.55}
-.cal-task-chip.is-done .cal-task-chip__check{background:var(--green);border-color:var(--green);color:#fff}
+.cal-task-chip.is-done{background:var(--green);color:var(--green-ink)}
+.cal-task-chip.is-done:hover{background:var(--green-hi)}
+.cal-task-chip.is-done .cal-task-chip__check{background:var(--green-ink);border-color:var(--green-ink);color:var(--green)}
 .cal-task-chip__title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cal-task-chip.is-done .cal-task-chip__title{text-decoration:line-through}
 .cal-day__more{font-size:10px;color:var(--gray-dim);padding:1px 5px}
+.cal-loading{grid-column:1/-1;padding:60px 10px;text-align:center;color:var(--gray-dim);font-size:13px}
 @media(max-width:900px){
   .cal-page{flex-direction:column}
   .cal-filters{width:100%}
@@ -1914,10 +1919,9 @@ body{
     <div class="cal-page">
       <aside class="cal-filters">
         <div class="cal-filters__label">Do'konlar</div>
-        <label class="cal-filter-item">
-          <input type="checkbox" id="calFilterAll" checked />
+        <button type="button" class="cal-filter-item is-active" id="calFilterAll" data-store-id="">
           <span>Barchasi</span>
-        </label>
+        </button>
         <div id="calFilterStores"></div>
       </aside>
       <div class="cal-main">
@@ -5317,48 +5321,53 @@ body{
       CAL_YEAR = now.getFullYear();
       CAL_MONTH = now.getMonth();
     }
+    // Server sovuq holatdan uyg'onayotgan bo'lsa bir necha soniya vaqt ketishi
+    // mumkin — shu payt oyna bo'sh ko'rinib qolmasligi uchun yuklanish holati
+    document.getElementById('calGrid').innerHTML = '<div class="cal-loading">Yuklanmoqda...</div>';
     await ensureStores();
     await loadTasks();
     renderCalFilters();
     renderCalGrid();
   }
 
+  // '' = "Barchasi" (hammasi ko'rinadi), aks holda shu id'dagi do'kon
+  // vazifalarigagina kirilgan (bir vaqtda faqat bittasi tanlanadi)
+  var CAL_ACTIVE_STORE = '';
+
+  function selectCalFilter(btn) {
+    CAL_ACTIVE_STORE = (btn && btn.dataset.storeId) || '';
+    document.querySelectorAll('.cal-filter-item').forEach(function (b) {
+      b.classList.toggle('is-active', b === btn);
+    });
+    renderCalGrid();
+  }
+  document.getElementById('calFilterAll').addEventListener('click', function () { selectCalFilter(this); });
+
   function renderCalFilters() {
     var container = document.getElementById('calFilterStores');
     container.innerHTML = TD_STORES.map(function (s) {
-      return '<label class="cal-filter-item" data-store-id="' + s.id + '">' +
-        '<input type="checkbox" checked />' +
+      return '<button type="button" class="cal-filter-item" data-store-id="' + s.id + '">' +
         (s.logo ? '<img src="' + s.logo + '" />' : '<span>🏬</span>') +
         '<span>' + escHtml(s.name) + '</span>' +
-      '</label>';
+      '</button>';
     }).join('');
-    container.querySelectorAll('.cal-filter-item input').forEach(function (cb) {
-      cb.addEventListener('change', function () {
-        var all = document.querySelectorAll('#calFilterStores input');
-        var allChecked = Array.prototype.every.call(all, function (c) { return c.checked; });
-        document.getElementById('calFilterAll').checked = allChecked;
-        renderCalGrid();
-      });
+    container.querySelectorAll('.cal-filter-item').forEach(function (btn) {
+      btn.addEventListener('click', function () { selectCalFilter(btn); });
+    });
+    // Har safar panel qayta ochilganda "Barchasi" holatiga qaytariladi
+    CAL_ACTIVE_STORE = '';
+    document.querySelectorAll('.cal-filter-item').forEach(function (b) {
+      b.classList.toggle('is-active', b === document.getElementById('calFilterAll'));
     });
   }
 
-  document.getElementById('calFilterAll').addEventListener('change', function () {
-    var checked = this.checked;
-    document.querySelectorAll('#calFilterStores input').forEach(function (cb) { cb.checked = checked; });
-    renderCalGrid();
-  });
-
   function renderCalGrid() {
     document.getElementById('calMonthTitle').textContent = UZ_MONTHS[CAL_MONTH] + ' ' + CAL_YEAR;
-    var checkedIds = {};
-    document.querySelectorAll('#calFilterStores input:checked').forEach(function (cb) {
-      checkedIds[cb.closest('.cal-filter-item').dataset.storeId] = true;
-    });
     var byDate = {};
     Object.keys(TASKS_MAP).forEach(function (id) {
       var t = TASKS_MAP[id];
       if (!t.due_date) return;
-      if (t.store_id && !checkedIds[String(t.store_id)]) return;
+      if (CAL_ACTIVE_STORE && String(t.store_id) !== CAL_ACTIVE_STORE) return;
       var d = t.due_date.split('T')[0];
       (byDate[d] = byDate[d] || []).push(t);
     });
