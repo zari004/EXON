@@ -3939,6 +3939,21 @@ body{
     td.classList.add('is-on');
     document.getElementById('tdBd').classList.add('is-on');
   }
+  // Xabar yozish (komment) qismi ochilganda, agar oyna ekranning pastki
+  // qismida joylashgani sabab pastda yetarli bo'sh joy qolmagan bo'lsa —
+  // oynani birozgina tepaga ko'tarib, kompozitsiya maydoniga joy ochamiz.
+  function tdMakeRoomForCompose() {
+    var td = document.getElementById('td');
+    var MARGIN = 12, MIN_ROOM = 260;
+    var vh = window.innerHeight;
+    var top = parseFloat(td.style.top) || 0;
+    var room = vh - top - MARGIN;
+    if (room < MIN_ROOM) {
+      top = Math.max(MARGIN, vh - MIN_ROOM - MARGIN);
+      td.style.top = Math.round(top) + 'px';
+      td.style.maxHeight = (vh - top - MARGIN) + 'px';
+    }
+  }
   function tdClose() {
     stopCommentsPolling();
     document.getElementById('td').classList.remove('is-on');
@@ -4602,7 +4617,13 @@ body{
       section.classList.toggle('is-compose-open', willOpen);
       this.classList.toggle('is-active', willOpen);
       this.setAttribute('aria-expanded', String(willOpen));
-      if (willOpen) setTimeout(function () { commentInput.focus(); }, 20);
+      if (willOpen) {
+        tdMakeRoomForCompose();
+        setTimeout(function () {
+          commentInput.focus();
+          section.scrollIntoView({ block: 'end', behavior: 'smooth' });
+        }, 20);
+      }
     });
     document.getElementById('tdCommentSend').addEventListener('click', sendTaskComment);
     document.getElementById('tdCommentEmoji').addEventListener('click', function () {
