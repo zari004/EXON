@@ -1171,21 +1171,21 @@ body{
 }
 .cal-day.is-today .cal-day__num{background:var(--green-hi);color:var(--green-ink);font-weight:700}
 .cal-day__tasks{display:flex;flex-direction:column;gap:2px;overflow:hidden}
-/* Bajarilmagan — ochroq (och) yashil, bajarilgan — to'q yashil (to'ldirilgan) */
+/* Bajarilmagan — to'q yashil (e'tiborni tortadi), bajarilgan — ochroq yashil (xira) */
 .cal-task-chip{
   display:flex;align-items:center;gap:4px;padding:2px 5px;border-radius:5px;
-  font-size:10.5px;background:rgba(var(--green-rgb),.16);color:var(--green-hi);
+  font-size:10.5px;background:var(--green);color:var(--green-ink);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;
   transition:background .12s,color .12s;
 }
-.cal-task-chip:hover{background:rgba(var(--green-rgb),.28)}
+.cal-task-chip:hover{background:var(--green-hi)}
 .cal-task-chip__check{
   width:11px;height:11px;border-radius:50%;border:1.5px solid currentColor;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;color:transparent;
 }
-.cal-task-chip.is-done{background:var(--green);color:var(--green-ink)}
-.cal-task-chip.is-done:hover{background:var(--green-hi)}
-.cal-task-chip.is-done .cal-task-chip__check{background:var(--green-ink);border-color:var(--green-ink);color:var(--green)}
+.cal-task-chip.is-done{background:rgba(var(--green-rgb),.16);color:var(--green-hi)}
+.cal-task-chip.is-done:hover{background:rgba(var(--green-rgb),.28)}
+.cal-task-chip.is-done .cal-task-chip__check{background:var(--green);border-color:var(--green);color:#fff}
 .cal-task-chip__title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cal-task-chip.is-done .cal-task-chip__title{text-decoration:line-through}
 .cal-day__more{font-size:10px;color:var(--gray-dim);padding:1px 5px}
@@ -4569,9 +4569,13 @@ body{
       left = vw - W - 24;
     }
 
-    // Ekran ichida ushlab turish
+    // Ekran ichida ushlab turish — oyna pastga yaqin joydan ochilsa ham
+    // (masalan kalendarning oxirgi qatoridagi kun), Saqlash tugmasi va
+    // savol-javob qismi ko'rinib turishi uchun kamida shuncha balandlik
+    // qoldiriladi (aks holda footer ekran tashqarisiga chiqib ketardi)
+    var MIN_DRAWER_H = 480;
     left = Math.min(Math.max(left, MARGIN), vw - W - MARGIN);
-    top = Math.min(Math.max(top, MARGIN), Math.max(vh - 220, MARGIN));
+    top = Math.min(Math.max(top, MARGIN), Math.max(vh - MIN_DRAWER_H, MARGIN));
 
     td.style.top = Math.round(top) + 'px';
     td.style.left = Math.round(left) + 'px';
