@@ -161,6 +161,9 @@ const init = async () => {
   await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS repeat_rule TEXT DEFAULT 'none'`);
   await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS due_soon_notified BOOLEAN DEFAULT false`);
   await pool.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS overdue_notified BOOLEAN DEFAULT false`);
+  // "review" statusi bekor qilindi (3 ta status qoldi: new/in_progress/done) —
+  // shu statusda qolib ketgan eski vazifalarni "in_progress"ga o'tkazamiz
+  await pool.query(`UPDATE tasks SET status = 'in_progress' WHERE status = 'review'`);
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS task_comments (

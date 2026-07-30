@@ -135,7 +135,7 @@ router.put('/:id', auth.requireAuth, async (req, res) => {
       return res.status(403).json({ success: false, error: "Bu vazifani to'liq tahrirlashga ruxsat yo'q" });
     }
     const { title, description, priority, status, due_date, start_date, due_time, reminder_minutes, repeat_rule, assigned_to, assigned_name } = req.body;
-    const VALID_STATUS = ['new', 'in_progress', 'review', 'done'];
+    const VALID_STATUS = ['new', 'in_progress', 'done'];
     if (!title || !title.trim()) {
       return res.status(400).json({ success: false, error: 'Sarlavha talab qilinadi' });
     }
@@ -183,7 +183,7 @@ router.put('/:id', auth.requireAuth, async (req, res) => {
 router.patch('/:id/status', auth.requireAuth, async (req, res) => {
   try {
     const { status } = req.body;
-    const VALID_STATUS = ['new', 'in_progress', 'review', 'done'];
+    const VALID_STATUS = ['new', 'in_progress', 'done'];
     if (!VALID_STATUS.includes(status)) {
       return res.status(400).json({ success: false, error: "Noto'g'ri status" });
     }

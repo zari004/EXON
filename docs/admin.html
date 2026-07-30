@@ -137,8 +137,8 @@ body{
 .btn-reject:hover{background:rgba(242,137,111,.2)}
 
 /* ── KANBAN BOARD ── */
-.kanban-board{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
-@media(max-width:1100px){.kanban-board{grid-template-columns:repeat(2,1fr)}}
+.kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+@media(max-width:900px){.kanban-board{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:580px){
   .kanban-col{min-height:0}
   .kanban-col__cards{min-height:0}
@@ -157,7 +157,6 @@ body{
 .kanban-col::before{content:"";display:block;height:3px;width:100%}
 .kanban-col[data-status="new"]::before{background:rgba(152,162,157,.4)}
 .kanban-col[data-status="in_progress"]::before{background:#3B82F6}
-.kanban-col[data-status="review"]::before{background:#F59E0B}
 .kanban-col[data-status="done"]::before{background:var(--green)}
 
 .kanban-col__head{
@@ -169,7 +168,6 @@ body{
   background:rgba(152,162,157,.5);
 }
 .kanban-col[data-status="in_progress"] .kanban-col__dot{background:#3B82F6}
-.kanban-col[data-status="review"] .kanban-col__dot{background:#F59E0B}
 .kanban-col[data-status="done"] .kanban-col__dot{background:var(--green)}
 
 .kanban-col__title{
@@ -177,7 +175,6 @@ body{
   text-transform:uppercase;color:var(--gray-dim);
 }
 .kanban-col[data-status="in_progress"] .kanban-col__title{color:#60A5FA}
-.kanban-col[data-status="review"] .kanban-col__title{color:#FBBF24}
 .kanban-col[data-status="done"] .kanban-col__title{color:var(--green-hi)}
 
 .kanban-col__count{
@@ -186,7 +183,6 @@ body{
   background:rgba(152,162,157,.1);color:var(--gray-dim);
 }
 .kanban-col[data-status="in_progress"] .kanban-col__count{background:rgba(59,130,246,.1);color:#60A5FA}
-.kanban-col[data-status="review"] .kanban-col__count{background:rgba(245,158,11,.1);color:#FBBF24}
 .kanban-col[data-status="done"] .kanban-col__count{background:rgba(var(--green-rgb),.1);color:var(--green-hi)}
 
 .kanban-col__cards{
@@ -1738,14 +1734,6 @@ body{
         </div>
         <div class="kanban-col__cards" id="kcol-in_progress"></div>
       </div>
-      <div class="kanban-col" data-status="review">
-        <div class="kanban-col__head">
-          <span class="kanban-col__dot"></span>
-          <span class="kanban-col__title">Ko'rib chiqishda</span>
-          <span class="kanban-col__count" id="kcount-review">0</span>
-        </div>
-        <div class="kanban-col__cards" id="kcol-review"></div>
-      </div>
       <div class="kanban-col" data-status="done">
         <div class="kanban-col__head">
           <span class="kanban-col__dot"></span>
@@ -1763,9 +1751,6 @@ body{
       </button>
       <button type="button" class="task-tab" data-status="in_progress">
         <span class="task-tab__label">Jarayonda</span><span class="task-tab__count" id="ttcount-in_progress">0</span>
-      </button>
-      <button type="button" class="task-tab" data-status="review">
-        <span class="task-tab__label">Ko'rib chiqishda</span><span class="task-tab__count" id="ttcount-review">0</span>
       </button>
       <button type="button" class="task-tab" data-status="done">
         <span class="task-tab__label">Bajarildi</span><span class="task-tab__count" id="ttcount-done">0</span>
@@ -2573,7 +2558,6 @@ body{
       'tasks.add': '+ Vazifa qo\'shish',
       'tasks.col.new': 'Yangi',
       'tasks.col.in_progress': 'Jarayonda',
-      'tasks.col.review': 'Ko\'rib chiqishda',
       'tasks.col.done': 'Bajarildi',
       'tasks.priority.none': 'Belgilanmagan',
       'tasks.priority.low': 'Kam',
@@ -2703,7 +2687,6 @@ body{
       'tasks.add': '+ Добавить задачу',
       'tasks.col.new': 'Новые',
       'tasks.col.in_progress': 'В работе',
-      'tasks.col.review': 'На проверке',
       'tasks.col.done': 'Выполнено',
       'tasks.priority.none': 'Не задано',
       'tasks.priority.low': 'Низкий',
@@ -2833,7 +2816,6 @@ body{
       'tasks.add': '+ Add task',
       'tasks.col.new': 'New',
       'tasks.col.in_progress': 'In progress',
-      'tasks.col.review': 'In review',
       'tasks.col.done': 'Done',
       'tasks.priority.none': 'Not set',
       'tasks.priority.low': 'Low',
@@ -2974,7 +2956,7 @@ body{
     var taskAddBtn = document.getElementById('btnAddTask');
     if (taskAddBtn) taskAddBtn.textContent = T('tasks.add');
     // Kanban column headers
-    ['new','in_progress','review','done'].forEach(function(s){
+    ['new','in_progress','done'].forEach(function(s){
       var el = document.querySelector('.kanban-col[data-status="'+s+'"] .kanban-col__title');
       if (el) el.textContent = T('tasks.col.'+s);
       var tabLbl = document.querySelector('.task-tab[data-status="'+s+'"] .task-tab__label');
@@ -3949,7 +3931,7 @@ body{
   var draggedTaskId = null;
   var draggedCard = null;
 
-  var KS = ['new', 'in_progress', 'review', 'done'];
+  var KS = ['new', 'in_progress', 'done'];
   var TASKS_GROUPED = {};
   var TASKS_CAN_MANAGE = false;
   var TASKS_MOBILE_STATUS = 'new';
