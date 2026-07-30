@@ -1919,6 +1919,16 @@ body{
       <h2>Kalendar</h2>
       <button class="btn-add" id="btnAddCalTask" type="button">+ Vazifa</button>
     </div>
+    <div class="cal-nav">
+      <button type="button" class="icon-btn" id="calPrevBtn" aria-label="Oldingi oy">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="cal-nav__title" id="calMonthTitle">—</div>
+      <button type="button" class="icon-btn" id="calNextBtn" aria-label="Keyingi oy">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="btn-add" id="calTodayBtn" style="padding:6px 16px;margin-left:10px">Bugun</button>
+    </div>
     <div class="cal-page">
       <aside class="cal-filters">
         <div class="cal-filters__label">Do'konlar</div>
@@ -1928,16 +1938,6 @@ body{
         <div id="calFilterStores"></div>
       </aside>
       <div class="cal-main">
-        <div class="cal-nav">
-          <button type="button" class="icon-btn" id="calPrevBtn" aria-label="Oldingi oy">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <div class="cal-nav__title" id="calMonthTitle">—</div>
-          <button type="button" class="icon-btn" id="calNextBtn" aria-label="Keyingi oy">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <button type="button" class="btn-add" id="calTodayBtn" style="padding:6px 16px;margin-left:10px">Bugun</button>
-        </div>
         <div class="cal-weekdays">
           <span>Du</span><span>Se</span><span>Cho</span><span>Pay</span><span>Ju</span><span>Sha</span><span>Ya</span>
         </div>
