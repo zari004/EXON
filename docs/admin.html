@@ -136,6 +136,34 @@ body{
 .btn-reject{background:rgba(242,137,111,.12);border:1px solid rgba(242,137,111,.3);color:#F2896F;padding:5px 12px;border-radius:6px;font-size:12.5px;cursor:pointer}
 .btn-reject:hover{background:rgba(242,137,111,.2)}
 
+/* ── XODIMLAR FILTRI (to'liq boardni ko'radigan rollar uchun) ── */
+.tasks-layout{display:flex;gap:20px;align-items:flex-start}
+.task-members{
+  display:none;flex-direction:column;width:200px;flex-shrink:0;padding:16px;
+  border-radius:14px;background:var(--surface);border:1px solid var(--line);
+}
+[data-theme="light"] .task-members{background:#F7FAF8}
+.task-members__label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-dim);margin-bottom:10px}
+.task-member-item{
+  display:flex;align-items:center;gap:9px;width:100%;padding:7px 9px;font-size:13.5px;
+  color:var(--gray);cursor:pointer;background:none;border:0;border-radius:8px;text-align:left;
+  transition:background .15s,color .15s;
+}
+.task-member-item:hover{background:rgba(var(--green-rgb),.07);color:var(--white)}
+[data-theme="light"] .task-member-item:hover{color:#1a2117}
+.task-member-item.is-active{background:rgba(var(--green-rgb),.14);color:var(--green-hi);font-weight:600}
+.task-member-item span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.task-member-item__ava{
+  width:20px;height:20px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;color:#fff;text-transform:uppercase;
+}
+.tasks-main{flex:1;min-width:0}
+@media(max-width:900px){
+  .tasks-layout{flex-direction:column}
+  .task-members{width:100%}
+}
+
 /* ── KANBAN BOARD ── */
 .kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
 @media(max-width:900px){.kanban-board{grid-template-columns:repeat(2,1fr)}}
@@ -1147,7 +1175,7 @@ body{
 .cal-filter-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cal-filter-item img{width:16px;height:16px;border-radius:50%;object-fit:cover;flex-shrink:0}
 .cal-main{flex:1;min-width:0}
-.cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.cal-nav{display:flex;align-items:center;gap:10px;margin-top:-8px;margin-bottom:14px}
 .cal-nav__title{font-size:16px;font-weight:700;min-width:130px}
 .cal-weekdays{
   display:grid;grid-template-columns:repeat(7,1fr);gap:1px;
@@ -1836,46 +1864,60 @@ body{
       <h2>Vazifalar</h2>
       <button class="btn-add" id="btnAddTask" onclick="openTaskModal()" style="display:none">+ Vazifa qo'shish</button>
     </div>
-    <div class="kanban-board">
-      <div class="kanban-col" data-status="new">
-        <div class="kanban-col__head">
-          <span class="kanban-col__dot"></span>
-          <span class="kanban-col__title">Yangi</span>
-          <span class="kanban-col__count" id="kcount-new">0</span>
+    <div class="tasks-layout">
+      <!-- Barcha vazifalarni ko'ra oladigan rollar (superadmin/IT bo'limi/SEO/bosh
+           menejer) uchun — xodimni tanlab, faqat o'sha odamning vazifalarini
+           ko'rish imkoni (JS orqali canManage bo'lsa ko'rsatiladi) -->
+      <aside class="task-members" id="taskMembers">
+        <div class="task-members__label">Xodimlar</div>
+        <button type="button" class="task-member-item is-active" id="taskMemberAll" data-user-id="">
+          <span>Barchasi</span>
+        </button>
+        <div id="taskMembersList"></div>
+      </aside>
+      <div class="tasks-main">
+        <div class="kanban-board">
+          <div class="kanban-col" data-status="new">
+            <div class="kanban-col__head">
+              <span class="kanban-col__dot"></span>
+              <span class="kanban-col__title">Yangi</span>
+              <span class="kanban-col__count" id="kcount-new">0</span>
+            </div>
+            <div class="kanban-col__cards" id="kcol-new"></div>
+          </div>
+          <div class="kanban-col" data-status="in_progress">
+            <div class="kanban-col__head">
+              <span class="kanban-col__dot"></span>
+              <span class="kanban-col__title">Jarayonda</span>
+              <span class="kanban-col__count" id="kcount-in_progress">0</span>
+            </div>
+            <div class="kanban-col__cards" id="kcol-in_progress"></div>
+          </div>
+          <div class="kanban-col" data-status="done">
+            <div class="kanban-col__head">
+              <span class="kanban-col__dot"></span>
+              <span class="kanban-col__title">Bajarildi</span>
+              <span class="kanban-col__count" id="kcount-done">0</span>
+            </div>
+            <div class="kanban-col__cards" id="kcol-done"></div>
+          </div>
         </div>
-        <div class="kanban-col__cards" id="kcol-new"></div>
-      </div>
-      <div class="kanban-col" data-status="in_progress">
-        <div class="kanban-col__head">
-          <span class="kanban-col__dot"></span>
-          <span class="kanban-col__title">Jarayonda</span>
-          <span class="kanban-col__count" id="kcount-in_progress">0</span>
-        </div>
-        <div class="kanban-col__cards" id="kcol-in_progress"></div>
-      </div>
-      <div class="kanban-col" data-status="done">
-        <div class="kanban-col__head">
-          <span class="kanban-col__dot"></span>
-          <span class="kanban-col__title">Bajarildi</span>
-          <span class="kanban-col__count" id="kcount-done">0</span>
-        </div>
-        <div class="kanban-col__cards" id="kcol-done"></div>
-      </div>
-    </div>
 
-    <!-- Telefon uchun: TickTick uslubidagi status tablari + vazifalar ro'yxati -->
-    <div class="task-tabs" id="taskTabs">
-      <button type="button" class="task-tab is-active" data-status="new">
-        <span class="task-tab__label">Yangi</span><span class="task-tab__count" id="ttcount-new">0</span>
-      </button>
-      <button type="button" class="task-tab" data-status="in_progress">
-        <span class="task-tab__label">Jarayonda</span><span class="task-tab__count" id="ttcount-in_progress">0</span>
-      </button>
-      <button type="button" class="task-tab" data-status="done">
-        <span class="task-tab__label">Bajarildi</span><span class="task-tab__count" id="ttcount-done">0</span>
-      </button>
+        <!-- Telefon uchun: TickTick uslubidagi status tablari + vazifalar ro'yxati -->
+        <div class="task-tabs" id="taskTabs">
+          <button type="button" class="task-tab is-active" data-status="new">
+            <span class="task-tab__label">Yangi</span><span class="task-tab__count" id="ttcount-new">0</span>
+          </button>
+          <button type="button" class="task-tab" data-status="in_progress">
+            <span class="task-tab__label">Jarayonda</span><span class="task-tab__count" id="ttcount-in_progress">0</span>
+          </button>
+          <button type="button" class="task-tab" data-status="done">
+            <span class="task-tab__label">Bajarildi</span><span class="task-tab__count" id="ttcount-done">0</span>
+          </button>
+        </div>
+        <div class="task-list-mobile" id="taskListMobile"></div>
+      </div>
     </div>
-    <div class="task-list-mobile" id="taskListMobile"></div>
     <button type="button" class="task-fab" id="taskFabAdd" onclick="openTaskModal()" aria-label="Vazifa qo'shish">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
@@ -4271,8 +4313,13 @@ body{
   }
 
   // ── LOAD ──
+  // '' = "Barchasi" (hammaning vazifasi), aks holda shu id'dagi xodimning
+  // o'ziga tayinlangan vazifalarigagina kirilgan
+  var TASKS_MEMBER_FILTER = '';
+
   async function loadTasks() {
     var canManage = isFullBoardRole();
+    TASKS_CAN_MANAGE = canManage;
     var addBtn = document.getElementById('btnAddTask');
     if (addBtn) addBtn.style.display = ''; // endi hamma vazifa qo'sha oladi
 
@@ -4287,24 +4334,16 @@ body{
       TASKS_MAP = {};
       tasks.forEach(function (t) { TASKS_MAP[t.id] = t; });
 
-      var grouped = {};
-      KS.forEach(function (s) { grouped[s] = []; });
-      tasks.forEach(function (t) { if (grouped[t.status]) grouped[t.status].push(t); });
-      TASKS_GROUPED = grouped;
-      TASKS_CAN_MANAGE = canManage;
+      // To'liq boardni ko'radigan rollar uchun — xodimlar bo'yicha filtr
+      document.getElementById('taskMembers').style.display = canManage ? 'flex' : 'none';
+      if (canManage) {
+        await ensureUsers();
+        renderTaskMembers();
+      } else {
+        TASKS_MEMBER_FILTER = '';
+      }
 
-      KS.forEach(function (s) {
-        var col = document.getElementById('kcol-' + s);
-        var items = grouped[s];
-        document.getElementById('kcount-' + s).textContent = items.length;
-        col.innerHTML = items.length
-          ? items.map(function (t) { return taskCardHTML(t, canManage); }).join('')
-          : '<div class="kanban-empty"><span class="kanban-empty__icon">📋</span>' + T('tasks.empty') + '</div>';
-      });
-
-      setupKanbanEvents();
-      updateTaskTabCounts();
-      renderMobileTaskList();
+      applyTaskMemberFilter();
     } catch (err) {
       KS.forEach(function (s) {
         document.getElementById('kcol-' + s).innerHTML = '<div class="kanban-empty" style="color:#F2896F">Yuklashda xato</div>';
@@ -4313,6 +4352,57 @@ body{
       if (mlist) mlist.innerHTML = '<div class="task-list-empty" style="color:#F2896F">Yuklashda xato</div>';
     }
   }
+
+  // Joriy TASKS_MEMBER_FILTER'ga qarab TASKS_MAP'dan qayta guruhlaydi va
+  // kanban/mobil ro'yxatni qayta chizadi — serverdan qayta so'ramasdan
+  function applyTaskMemberFilter() {
+    var grouped = {};
+    KS.forEach(function (s) { grouped[s] = []; });
+    Object.keys(TASKS_MAP).forEach(function (id) {
+      var t = TASKS_MAP[id];
+      if (TASKS_MEMBER_FILTER && String(t.assigned_to) !== TASKS_MEMBER_FILTER) return;
+      if (grouped[t.status]) grouped[t.status].push(t);
+    });
+    TASKS_GROUPED = grouped;
+
+    KS.forEach(function (s) {
+      var col = document.getElementById('kcol-' + s);
+      var items = grouped[s];
+      document.getElementById('kcount-' + s).textContent = items.length;
+      col.innerHTML = items.length
+        ? items.map(function (t) { return taskCardHTML(t, TASKS_CAN_MANAGE); }).join('')
+        : '<div class="kanban-empty"><span class="kanban-empty__icon">📋</span>' + T('tasks.empty') + '</div>';
+    });
+
+    setupKanbanEvents();
+    updateTaskTabCounts();
+    renderMobileTaskList();
+  }
+
+  function renderTaskMembers() {
+    var container = document.getElementById('taskMembersList');
+    container.innerHTML = TD_USERS.map(function (u) {
+      var c = avaColor(u.name); var l = avaLetter(u.name);
+      var active = String(u.id) === TASKS_MEMBER_FILTER ? ' is-active' : '';
+      return '<button type="button" class="task-member-item' + active + '" data-user-id="' + u.id + '">' +
+        '<span class="task-member-item__ava" style="background:' + c + '">' + l + '</span>' +
+        '<span>' + escHtml(u.name) + '</span>' +
+      '</button>';
+    }).join('');
+    container.querySelectorAll('.task-member-item').forEach(function (btn) {
+      btn.addEventListener('click', function () { selectTaskMember(btn); });
+    });
+    document.getElementById('taskMemberAll').classList.toggle('is-active', !TASKS_MEMBER_FILTER);
+  }
+
+  function selectTaskMember(btn) {
+    TASKS_MEMBER_FILTER = (btn && btn.dataset.userId) || '';
+    document.querySelectorAll('.task-member-item').forEach(function (b) {
+      b.classList.toggle('is-active', b === btn);
+    });
+    applyTaskMemberFilter();
+  }
+  document.getElementById('taskMemberAll').addEventListener('click', function () { selectTaskMember(this); });
 
   // ── DRAG & DROP (optimistic, no loading) ──
   function setupKanbanEvents() {
