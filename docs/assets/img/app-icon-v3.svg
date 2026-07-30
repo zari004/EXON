@@ -1,0 +1,11 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="66" y1="44" x2="450" y2="468" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#10271B"/>
+      <stop offset="0.58" stop-color="#07160E"/>
+      <stop offset="1" stop-color="#041009"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <text x="256" y="306" font-family="Arial Black, Arial, sans-serif" font-size="136" font-weight="900" text-anchor="middle" letter-spacing="-6"><tspan fill="#F6FFF9">EX</tspan><tspan fill="#20E985">ON</tspan></text>
+</svg>

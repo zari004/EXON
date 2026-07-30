@@ -1,4 +1,4 @@
-const CACHE = 'exon-v13';
+const CACHE = 'exon-v14';
 const STATIC = [
   '/',
   '/index.html',
@@ -21,7 +21,11 @@ const STATIC = [
   '/assets/img/app-icon-v2.svg',
   '/assets/img/app-icon-180.png',
   '/assets/img/app-icon-192.png',
-  '/assets/img/app-icon-512.png'
+  '/assets/img/app-icon-512.png',
+  '/assets/img/app-icon-v3.svg',
+  '/assets/img/app-icon-v3-180.png',
+  '/assets/img/app-icon-v3-192.png',
+  '/assets/img/app-icon-v3-512.png'
 ];
 
 self.addEventListener('install', (e) => {
