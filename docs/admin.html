@@ -2508,6 +2508,27 @@ body{
   let TOKEN = localStorage.getItem('exon_admin_token') || '';
   let USER_ROLE = localStorage.getItem('exon_admin_role') || '';
   let USER_NAME = localStorage.getItem('exon_admin_name') || '';
+  const ADMIN_VIEW_STATE_KEY = 'exon_admin_view_state';
+  var ADMIN_VIEW_RESTORING = false;
+
+  function readAdminViewState() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(ADMIN_VIEW_STATE_KEY) || '{}');
+      return saved && typeof saved === 'object' ? saved : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveAdminViewState(patch) {
+    if (ADMIN_VIEW_RESTORING) return;
+    var next = Object.assign(readAdminViewState(), patch || {});
+    try { localStorage.setItem(ADMIN_VIEW_STATE_KEY, JSON.stringify(next)); } catch (e) {}
+  }
+
+  function clearOpenTaskViewState() {
+    saveAdminViewState({ taskId: null });
+  }
   // Vazifalar bo'yicha to'liq boardni ko'radigan/boshqaradigan rollar
   // (sayt bo'limlari — Ruxsatlar paneli orqali — bundan mustaqil)
   var TASKS_FULL_BOARD_ROLES = ['superadmin', 'it_bolimi', 'seo', 'menejer_bosh'];
@@ -3076,6 +3097,7 @@ body{
     await applyPermissions();
     syncBottomNavVisibility();
     initNotifications();
+    await restoreAdminViewState();
   }
 
   // Joriy foydalanuvchi rolining ruxsatlarini yuklaydi va mos tablarni ko'rsatadi/yashiradi
@@ -3135,6 +3157,7 @@ body{
     localStorage.removeItem('exon_admin_token');
     localStorage.removeItem('exon_admin_role');
     localStorage.removeItem('exon_admin_name');
+    localStorage.removeItem(ADMIN_VIEW_STATE_KEY);
     document.documentElement.classList.remove('has-token');
     stopNotifPolling();
     NOTIFS = [];
@@ -3376,19 +3399,27 @@ body{
   }
 
   // ── TABS (sidebar) ──
+  async function activateAdminTab(tab, options) {
+    options = options || {};
+    if (!tab || tab.style.display === 'none') return false;
+    var panel = document.getElementById('panel-' + tab.dataset.tab);
+    if (!panel) return false;
+    document.querySelectorAll('.sidebar-item[data-tab]').forEach(function (t) { t.classList.remove('is-active'); });
+    document.querySelectorAll('.admin-panel').forEach(function (p) { p.classList.remove('is-active'); });
+    tab.classList.add('is-active');
+    panel.classList.add('is-active');
+    if (!options.skipSave) saveAdminViewState({ tab: tab.dataset.tab, taskId: null });
+    if (tab.dataset.tab === 'tasks') await loadTasks();
+    if (tab.dataset.tab === 'settings') await loadAccountSettings();
+    if (tab.dataset.tab === 'kpi') await loadKpi();
+    if (tab.dataset.tab === 'productivity') await loadProductivity();
+    if (tab.dataset.tab === 'attendance') await loadAttendance();
+    syncBottomNavActive(tab.dataset.tab);
+    return true;
+  }
+
   document.querySelectorAll('.sidebar-item[data-tab]').forEach(function (tab) {
-    tab.addEventListener('click', function () {
-      document.querySelectorAll('.sidebar-item[data-tab]').forEach(function (t) { t.classList.remove('is-active'); });
-      document.querySelectorAll('.admin-panel').forEach(function (p) { p.classList.remove('is-active'); });
-      tab.classList.add('is-active');
-      document.getElementById('panel-' + tab.dataset.tab).classList.add('is-active');
-      if (tab.dataset.tab === 'tasks') loadTasks();
-      if (tab.dataset.tab === 'settings') loadAccountSettings();
-      if (tab.dataset.tab === 'kpi') loadKpi();
-      if (tab.dataset.tab === 'productivity') loadProductivity();
-      if (tab.dataset.tab === 'attendance') loadAttendance();
-      syncBottomNavActive(tab.dataset.tab);
-    });
+    tab.addEventListener('click', function () { activateAdminTab(tab); });
   });
 
   // ── PASTKI NAVIGATSIYA (faqat telefon) ──
@@ -3431,6 +3462,7 @@ body{
     var moreInstall = document.getElementById('moreInstallBtn');
     if (installBtn && moreInstall) moreInstall.style.display = installBtn.classList.contains('is-visible') ? 'flex' : 'none';
     syncBottomNavActive(null);
+    saveAdminViewState({ tab: 'more', taskId: null });
   }
   document.getElementById('bottomNavMore').addEventListener('click', openMorePanel);
   document.querySelectorAll('.more-item[data-tab]').forEach(function (btn) {
@@ -3457,6 +3489,63 @@ body{
     var siteList = document.getElementById('moreListSite');
     if (siteLabel) siteLabel.style.display = anySiteVisible ? '' : 'none';
     if (siteList) siteList.style.display = anySiteVisible ? '' : 'none';
+  }
+
+  async function restoreAdminViewState() {
+    var state = readAdminViewState();
+    var requestedTab = state.tab || 'dashboard';
+    ADMIN_VIEW_RESTORING = true;
+    try {
+      if (requestedTab === 'more') {
+        openMorePanel();
+        return;
+      }
+
+      var tab = document.querySelector('.sidebar-item[data-tab="' + requestedTab + '"]');
+      if (!tab || tab.style.display === 'none') {
+        tab = document.querySelector('.sidebar-item[data-tab].is-active:not([style*="none"])') ||
+          document.querySelector('.sidebar-item[data-tab]:not([style*="none"])');
+      }
+      if (!tab) return;
+
+      if (tab.dataset.tab === 'tasks' && KS.indexOf(state.taskStatus) !== -1) {
+        TASKS_MOBILE_STATUS = state.taskStatus;
+        document.querySelectorAll('.task-tab').forEach(function (item) {
+          item.classList.toggle('is-active', item.dataset.status === TASKS_MOBILE_STATUS);
+        });
+      }
+
+      await activateAdminTab(tab, { skipSave: true });
+
+      if (tab.dataset.tab === 'settings' && state.settingsPane) {
+        var settingsPane = document.querySelector('.settings-nav-item[data-pane="' + state.settingsPane + '"]');
+        if (settingsPane) settingsPane.click();
+      }
+
+      if (tab.dataset.tab === 'attendance' && state.attendancePane) {
+        var attendancePane = document.querySelector('.att-nav-item[data-att-pane="' + state.attendancePane + '"]');
+        if (attendancePane && attendancePane.style.display !== 'none') attendancePane.click();
+      }
+
+      if (tab.dataset.tab === 'tasks' && state.taskId !== null && state.taskId !== undefined) {
+        if (state.taskId === 'new') {
+          openTaskDrawer(null, null);
+        } else {
+          var task = TASKS_MAP[Number(state.taskId)];
+          if (task) openTaskDrawer(task, null);
+        }
+      }
+    } finally {
+      ADMIN_VIEW_RESTORING = false;
+      var activeTab = document.querySelector('.sidebar-item[data-tab].is-active');
+      var normalizedTab = document.getElementById('panel-more').classList.contains('is-active')
+        ? 'more'
+        : (activeTab ? activeTab.dataset.tab : 'dashboard');
+      var openTaskId = document.getElementById('td').classList.contains('is-on')
+        ? (TD_EDIT_ID === null ? 'new' : Number(TD_EDIT_ID))
+        : null;
+      saveAdminViewState({ tab: normalizedTab, taskId: openTaskId });
+    }
   }
 
   window.closeModal = function (id) { document.getElementById(id).classList.remove('is-active'); };
@@ -4230,6 +4319,7 @@ body{
     var status = btn.dataset.status;
     if (status === TASKS_MOBILE_STATUS) return;
     TASKS_MOBILE_STATUS = status;
+    saveAdminViewState({ taskStatus: status });
     document.querySelectorAll('.task-tab').forEach(function (t) { t.classList.toggle('is-active', t.dataset.status === status); });
     renderMobileTaskList();
   });
@@ -4299,6 +4389,7 @@ body{
     document.getElementById('td').classList.remove('is-on');
     document.getElementById('tdBd').classList.remove('is-on');
     closeAllPopups();
+    clearOpenTaskViewState();
   }
   function closeAllPopups() {
     document.getElementById('tdPriPop').classList.remove('is-on');
@@ -4882,6 +4973,7 @@ body{
     delBtn.style.display = (TD_EDIT_ID && canEditFull) ? 'flex' : 'none';
     setupTaskComments(task);
     tdOpen(cardEl);
+    saveAdminViewState({ tab: 'tasks', taskId: task ? Number(task.id) : 'new' });
     setTimeout(function () { document.getElementById('taskTitle').focus(); }, 280);
   }
 
@@ -5246,6 +5338,7 @@ body{
       btn.classList.add('is-active');
       var pane = document.getElementById('setPane' + btn.dataset.pane.charAt(0).toUpperCase() + btn.dataset.pane.slice(1));
       if (pane) pane.classList.add('is-active');
+      saveAdminViewState({ settingsPane: btn.dataset.pane });
     });
   });
 
@@ -5766,6 +5859,7 @@ body{
       btn.classList.add('is-active');
       var paneId = 'attPane' + btn.dataset.attPane.charAt(0).toUpperCase() + btn.dataset.attPane.slice(1);
       document.getElementById(paneId).classList.add('is-active');
+      saveAdminViewState({ attendancePane: btn.dataset.attPane });
       if (btn.dataset.attPane === 'history') loadAttHistory();
       if (btn.dataset.attPane === 'team') loadAttTeam();
       if (btn.dataset.attPane === 'office') loadAttOfficeSettings();
