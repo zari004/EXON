@@ -825,7 +825,11 @@ body{
 .sidebar-controls .admin-install:hover{opacity:.88;transform:translateY(-1px)}
 .sidebar-controls .admin-install.is-visible{display:flex}
 
-.admin-content{margin-left:224px;flex:1;min-height:100vh;padding-top:58px}
+/* min-width:0 shart — aks holda .admin-app flex konteyneridagi bu yagona
+   flex-item o'zining ichidagi eng keng (masalan overflow-x:auto qatordagi)
+   kontentga qarab avtomatik minimal kenglik oladi va butun sahifani
+   gorizontal cho'zib yuboradi, garchi ichkarida overflow:auto bo'lsa ham */
+.admin-content{margin-left:224px;flex:1;min-width:0;min-height:100vh;padding-top:58px}
 
 /* Hamburger (mobile) */
 .sidebar-toggle{
