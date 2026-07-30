@@ -1455,15 +1455,8 @@ body{
   html.has-token .login-screen{display:none}
   #appBootLoader{display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;background:var(--bg)}
   html.has-token #appBootLoader{display:flex}
-  #appBootLoader .logo{animation:bootPulse 1.4s ease-in-out infinite}
-  @keyframes bootPulse{0%,100%{opacity:.5}50%{opacity:1}}
 </style>
-<div id="appBootLoader">
-  <span class="logo">
-    <img class="logo__img logo__img--dark" src="assets/img/logo-exon.png" alt="EXON" />
-    <img class="logo__img logo__img--light" src="assets/img/logo-exon-light.png" alt="EXON" />
-  </span>
-</div>
+<div id="appBootLoader" aria-hidden="true"></div>
 
 <!-- ══════════ LOGIN ══════════ -->
 <div class="login-screen" id="loginScreen">
