@@ -1930,6 +1930,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
         <span>KPI</span>
       </button>
+      <button class="sidebar-item salary-tab" data-tab="salary" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="2.3" stroke="currentColor" stroke-width="1.7"/><path d="M3 10h2M19 10h2M3 14h2M19 14h2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Oylik</span>
+      </button>
       <button class="sidebar-item" data-tab="productivity">
         <svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 15l4-5 3 3 5-7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>Ish unumdorligi</span>
@@ -2097,6 +2101,15 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     <div id="kpiAwardsPending"></div>
     <h3 class="prod-section-title">Xodimlar</h3>
     <div class="item-list" id="kpiEmployeeListEl"></div>
+  </section>
+
+  <!-- OYLIK — xodimlarning maoshi va ish kunlari jadvali (KPI'dan alohida) -->
+  <section class="admin-panel" id="panel-salary">
+    <div class="panel-head">
+      <h2>Oylik</h2>
+    </div>
+    <h3 class="prod-section-title">Xodimlar</h3>
+    <div class="item-list" id="salaryEmployeeListEl"></div>
   </section>
 
   <!-- DO'KONLAR — vazifani do'konga "tayinlash" uchun umumiy ro'yxat -->
@@ -2422,6 +2435,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         <span>KPI</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
+      <button type="button" class="more-item salary-tab" data-tab="salary" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="2.3" stroke="currentColor" stroke-width="1.7"/><path d="M3 10h2M19 10h2M3 14h2M19 14h2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Oylik</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <button type="button" class="more-item" data-tab="settings">
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
         <span>Sozlamalar</span>
@@ -2582,12 +2600,6 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     <h3 id="kpiEmpModalName">Xodim</h3>
     <div class="kpi-emp-section">
       <div class="kpi-emp-section__head">
-        <h4>Oylik</h4>
-      </div>
-      <div id="kpiEmpSalaryEl"></div>
-    </div>
-    <div class="kpi-emp-section">
-      <div class="kpi-emp-section__head">
         <h4>KPI</h4>
         <button type="button" class="btn-add" id="btnAddKpiAwardInEmp" style="padding:6px 14px;display:none">+ Yangi KPI</button>
       </div>
@@ -2595,6 +2607,19 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     </div>
     <div class="modal-actions">
       <button type="button" class="modal-cancel" onclick="closeModal('kpiEmployeeModal')">Yopish</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: XODIM OYLIK OYNASI ══════════ -->
+<div class="modal-overlay" id="salaryEmployeeModal">
+  <div class="modal-box kpi-emp-modal-box">
+    <h3 id="salaryEmpModalName">Xodim</h3>
+    <div class="kpi-emp-section">
+      <div id="salaryEmpEl"></div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="modal-cancel" onclick="closeModal('salaryEmployeeModal')">Yopish</button>
     </div>
   </div>
 </div>
@@ -3034,6 +3059,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tab.stores': 'Do\'konlar',
       'tab.calendar': 'Kalendar',
       'tab.kpi': 'KPI',
+      'tab.salary': 'Oylik',
       'tab.productivity': 'Ish unumdorligi',
       'tab.attendance': 'Keldi-ketdi',
       'tab.settings': 'Sozlamalar',
@@ -3179,6 +3205,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tab.stores': 'Магазины',
       'tab.calendar': 'Календарь',
       'tab.kpi': 'KPI',
+      'tab.salary': 'Зарплата',
       'tab.productivity': 'Продуктивность',
       'tab.attendance': 'Посещаемость',
       'tab.settings': 'Настройки',
@@ -3324,6 +3351,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tab.stores': 'Stores',
       'tab.calendar': 'Calendar',
       'tab.kpi': 'KPI',
+      'tab.salary': 'Salary',
       'tab.productivity': 'Productivity',
       'tab.attendance': 'Attendance',
       'tab.settings': 'Settings',
@@ -3589,6 +3617,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     // Ruxsatlar sahifasi orqali sozlanadi (applyPermissions) — bu yerda
     // faqat superadmin/IT bo'limi uchun boshlang'ich holat beriladi
     document.querySelectorAll('.kpi-tab').forEach(function (t) { t.style.display = isSuperLevel ? '' : 'none'; });
+    document.querySelectorAll('.salary-tab').forEach(function (t) { t.style.display = isSuperLevel ? '' : 'none'; });
     document.querySelectorAll('.calendar-tab').forEach(function (t) { t.style.display = isSuperLevel ? '' : 'none'; });
     // Keldi-ketdi ichki bo'limlari — rolga qarab
     var attTeamVisible = isSuperLevel || USER_ROLE === 'menejer_bosh' || USER_ROLE === 'seo';
@@ -3618,7 +3647,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var data = await apiFetch('/api/admin/my-permissions');
       var allowed = data.tabs || ['dashboard'];
       var siteTabs = ['dashboard', 'cases', 'posts', 'pricing'];
-      var boshqaruvTabs = ['tasks', 'stores', 'calendar', 'kpi', 'productivity', 'attendance', 'settings'];
+      var boshqaruvTabs = ['tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
       var anySiteVisible = false;
       siteTabs.concat(boshqaruvTabs).forEach(function (tab) {
         var btn = document.querySelector('.sidebar-item[data-tab="' + tab + '"]');
@@ -4041,6 +4070,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     if (tab.dataset.tab === 'calendar') await loadCalendar();
     if (tab.dataset.tab === 'settings') await loadAccountSettings();
     if (tab.dataset.tab === 'kpi') await loadKpi();
+    if (tab.dataset.tab === 'salary') await loadSalaryPage();
     if (tab.dataset.tab === 'productivity') { await loadMySalary(); await loadMyKpiAwards(); }
     if (tab.dataset.tab === 'attendance') await loadAttendance();
     syncBottomNavActive(tab.dataset.tab);
@@ -4526,7 +4556,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   // ══════════════════════════════════════════════════════════
   // RUXSATLAR (IT bo'limi)
   // ══════════════════════════════════════════════════════════
-  var PERM_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'tasks', 'stores', 'calendar', 'kpi', 'productivity', 'attendance', 'settings'];
+  var PERM_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
   var PERM_ROLES = ['seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
 
   async function loadPermissions() {
@@ -6820,15 +6850,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var totalCount = KPI_AWARDS_ALL.filter(function (a) { return a.employee_id === e.id; }).length;
       var countText = totalCount ? (totalCount + " ta KPI") : "KPI yo'q";
       var pendingBadge = pendingCount ? '<span class="kpi-award-badge kpi-award-badge--pending">' + pendingCount + ' kutilmoqda</span>' : '';
-      var sal = KPI_SALARY_MAP[e.id];
-      var subText = sal && sal.salary
-        ? 'Oylik: ' + fmtMoney(sal.salary) + ' · Qoladi: ' + fmtMoney(sal.remaining)
-        : (KPI_CAN_MANAGE ? 'Oylik belgilanmagan' : '');
       return '<div class="kpi-emp-row" data-kpi-emp="' + e.id + '">' +
         '<div class="item-row__thumb" style="background:' + avaColor(e.name) + '">' + avaLetter(e.name) + '</div>' +
         '<div class="kpi-emp-row__body">' +
           '<div class="kpi-emp-row__name">' + esc(e.name) + '</div>' +
-          (subText ? '<div class="kpi-emp-row__sub">' + subText + '</div>' : '') +
         '</div>' +
         '<div class="kpi-emp-row__badges">' +
           '<span class="kpi-emp-row__percent kpi-emp-row__percent--muted">' + countText + '</span>' +
@@ -6847,7 +6872,6 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     document.getElementById('kpiEmpModalName').textContent = emp.name;
     var addAwardInEmpBtn = document.getElementById('btnAddKpiAwardInEmp');
     addAwardInEmpBtn.style.display = KPI_CAN_MANAGE ? '' : 'none';
-    renderKpiEmpSalary(employeeId);
     renderKpiEmpAwards(employeeId);
     document.getElementById('kpiEmployeeModal').classList.add('is-active');
   };
@@ -6855,6 +6879,57 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   document.getElementById('btnAddKpiAwardInEmp').addEventListener('click', function () {
     openKpiAwardForm(KPI_ACTIVE_EMPLOYEE_ID);
   });
+
+  // ══════════════════════════════════════════════════════════
+  // OYLIK — xodimlar ro'yxati, har biriga kirib maosh va ish
+  // kunlari jadvalini ko'rish/belgilash (KPI'dan alohida bo'lim)
+  // ══════════════════════════════════════════════════════════
+  var SALARY_ACTIVE_EMPLOYEE_ID = null;
+
+  async function loadSalaryPage() {
+    KPI_CAN_MANAGE = KPI_MANAGE_ROLES.indexOf(USER_ROLE) !== -1;
+    var list = document.getElementById('salaryEmployeeListEl');
+    list.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
+    try {
+      await loadKpiData();
+      renderSalaryEmployeeList();
+    } catch (err) {
+      list.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
+    }
+  }
+
+  function renderSalaryEmployeeList() {
+    var list = document.getElementById('salaryEmployeeListEl');
+    if (!KPI_EMPLOYEES.length) {
+      list.innerHTML = '<div class="empty-state">Xodimlar topilmadi</div>';
+      return;
+    }
+    list.innerHTML = KPI_EMPLOYEES.map(function (e) {
+      var sal = KPI_SALARY_MAP[e.id];
+      var subText = sal && sal.salary
+        ? 'Oylik: ' + fmtMoney(sal.salary) + ' · Qoladi: ' + fmtMoney(sal.remaining)
+        : "Oylik belgilanmagan";
+      return '<div class="kpi-emp-row" data-salary-emp="' + e.id + '">' +
+        '<div class="item-row__thumb" style="background:' + avaColor(e.name) + '">' + avaLetter(e.name) + '</div>' +
+        '<div class="kpi-emp-row__body">' +
+          '<div class="kpi-emp-row__name">' + esc(e.name) + '</div>' +
+          '<div class="kpi-emp-row__sub">' + subText + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    list.querySelectorAll('[data-salary-emp]').forEach(function (row) {
+      row.addEventListener('click', function () { openSalaryEmployee(Number(row.dataset.salaryEmp)); });
+    });
+  }
+
+  window.openSalaryEmployee = function (employeeId) {
+    var emp = KPI_EMPLOYEES.find(function (e) { return e.id === employeeId; });
+    if (!emp) return;
+    SALARY_ACTIVE_EMPLOYEE_ID = employeeId;
+    document.getElementById('salaryEmpModalName').textContent = emp.name;
+    renderKpiEmpSalary(employeeId, 'salaryEmpEl');
+    document.getElementById('salaryEmployeeModal').classList.add('is-active');
+  };
 
   var WD_LABELS = { mon: 'Dush', tue: 'Sesh', wed: 'Chor', thu: 'Pay', fri: 'Jum', sun: 'Yak' };
   var WD_ORDER = ['mon', 'tue', 'wed', 'thu', 'fri', 'sun'];
@@ -6904,8 +6979,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     });
   }
 
-  async function renderKpiEmpSalary(employeeId) {
-    var el = document.getElementById('kpiEmpSalaryEl');
+  async function refreshSalaryUI() {
+    try { await loadKpiData(); } catch (err) { return; }
+    renderSalaryEmployeeList();
+  }
+
+  async function renderKpiEmpSalary(employeeId, containerId) {
+    var el = document.getElementById(containerId || 'salaryEmpEl');
     el.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
     try {
       var data = await apiFetch('/api/attendance/salary/' + employeeId);
@@ -6940,8 +7020,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
               apiFetch('/api/attendance/salary/' + employeeId, { method: 'PUT', body: JSON.stringify({ salary: salaryVal }) }),
               apiFetch('/api/attendance/work-schedule/' + employeeId, { method: 'PUT', body: JSON.stringify(schedule) })
             ]);
-            await renderKpiEmpSalary(employeeId);
-            await refreshKpiUI();
+            await renderKpiEmpSalary(employeeId, containerId);
+            await refreshSalaryUI();
           } catch (err) {
             alert(err.message);
           } finally {

@@ -241,7 +241,7 @@ router.delete('/users/:id', auth.requireAuth, auth.requireSuperAdmin, async (req
  */
 // IT bo'limi Ruxsatlar sahifasi orqali har bir rol uchun shu bo'limlarning
 // har birini alohida yoqib/o'chira oladi (sayt boshqaruvi ham shu jumladan)
-const ALL_PERM_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'tasks', 'stores', 'calendar', 'kpi', 'productivity', 'attendance', 'settings'];
+const ALL_PERM_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
 
 router.get('/my-permissions', auth.requireAuth, async (req, res) => {
   const role = req.user.role;
