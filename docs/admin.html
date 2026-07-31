@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="robots" content="noindex, nofollow" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Admin — EXON</title>
 <link rel="stylesheet" href="assets/css/style.css?v=14" />
 <link rel="manifest" href="/admin-manifest.json" />
@@ -109,6 +110,15 @@ body{
   text-decoration:underline;text-underline-offset:2px;
 }
 .forgot-link:hover{color:var(--green-hi) !important}
+.google-auth-block{display:none;margin-top:18px}
+.google-auth-block.is-ready{display:block}
+.auth-separator{
+  display:flex;align-items:center;gap:10px;margin:0 0 14px;
+  color:var(--gray-dim);font-size:12px;text-align:center;
+}
+.auth-separator::before,.auth-separator::after{content:"";height:1px;flex:1;background:var(--line)}
+.google-button-host{width:100%;min-height:44px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:999px}
+.google-button-host>div,.google-button-host iframe{max-width:100%!important}
 
 /* ── PENDING SCREEN ── */
 .pending-screen{
@@ -1746,6 +1756,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         </div>
         <button type="button" class="forgot-link" id="forgotPwdLink">Parolni unutdingizmi?</button>
         <button type="submit" id="loginSubmitBtn">Kirish</button>
+        <div class="google-auth-block" id="googleAuthBlock">
+          <div class="auth-separator"><span id="googleOrLabel">yoki</span></div>
+          <div class="google-button-host" id="googleButton"></div>
+        </div>
         <div class="login-error" id="loginError"></div>
         <div class="login-error" id="loginHint" style="color:var(--gray-dim)"></div>
       </form>
@@ -2926,6 +2940,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'login.btn': 'Kirish',
       'login.loading': 'Kirilmoqda...',
       'login.invalid': "Email yoki parol noto'g'ri",
+      'login.or': 'yoki',
+      'login.google.error': "Google orqali kirib bo'lmadi",
       'server.waking': "Server uyg'onmoqda",
       'server.timeout': "Server javob bermadi. Birozdan so'ng qayta urinib ko'ring.",
       'server.connection': "Serverga ulanib bo'lmadi: ",
@@ -3069,6 +3085,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'login.btn': 'Войти',
       'login.loading': 'Выполняется вход...',
       'login.invalid': 'Неверный email или пароль',
+      'login.or': 'или',
+      'login.google.error': 'Не удалось войти через Google',
       'server.waking': 'Сервер запускается',
       'server.timeout': 'Сервер не ответил. Попробуйте ещё раз через некоторое время.',
       'server.connection': 'Не удалось подключиться к серверу: ',
@@ -3212,6 +3230,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'login.btn': 'Sign in',
       'login.loading': 'Signing in...',
       'login.invalid': 'Incorrect email or password',
+      'login.or': 'or',
+      'login.google.error': 'Could not sign in with Google',
       'server.waking': 'Server is waking up',
       'server.timeout': 'The server did not respond. Please try again shortly.',
       'server.connection': 'Could not connect to the server: ',
@@ -3364,6 +3384,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     document.getElementById('loginEmail').placeholder = T('login.email');
     document.getElementById('loginPassword').placeholder = T('login.password');
     document.getElementById('loginSubmitBtn').textContent = T('login.btn');
+    document.getElementById('googleOrLabel').textContent = T('login.or');
+    if (GOOGLE_READY) renderGoogleButton();
     document.getElementById('regName').placeholder = T('reg.name');
     document.getElementById('regEmail').placeholder = T('reg.email');
     document.getElementById('regPassword').placeholder = T('reg.password');
@@ -3610,6 +3632,123 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
+  var GOOGLE_CLIENT_ID = '';
+  var GOOGLE_READY = false;
+  var googleScriptPromise = null;
+
+  function completeLogin(data) {
+    TOKEN = data.token;
+    USER_ROLE = data.role || 'menejer_oddiy';
+    USER_NAME = data.name || '';
+    localStorage.setItem('exon_admin_token', TOKEN);
+    localStorage.setItem('exon_admin_role', USER_ROLE);
+    localStorage.setItem('exon_admin_name', USER_NAME);
+    document.documentElement.classList.add('has-token');
+    showApp();
+  }
+
+  function loadGoogleScript() {
+    if (window.google && window.google.accounts && window.google.accounts.id) return Promise.resolve();
+    if (googleScriptPromise) return googleScriptPromise;
+    googleScriptPromise = new Promise(function (resolve, reject) {
+      var script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = resolve;
+      script.onerror = function () { reject(new Error('Google kutubxonasi yuklanmadi')); };
+      document.head.appendChild(script);
+    });
+    return googleScriptPromise;
+  }
+
+  function renderGoogleButton() {
+    if (!GOOGLE_READY || !window.google || !window.google.accounts) return;
+    var host = document.getElementById('googleButton');
+    if (!host) return;
+    host.innerHTML = '';
+    window.google.accounts.id.renderButton(host, {
+      type: 'standard',
+      theme: document.documentElement.getAttribute('data-theme') === 'light' ? 'outline' : 'filled_black',
+      size: 'large',
+      shape: 'pill',
+      text: 'continue_with',
+      width: Math.min(400, Math.max(220, Math.floor(host.clientWidth || 320))),
+      // Google tugmasida o'zbekcha locale mavjud bo'lmagan brauzerlarda
+      // tasodifan ruscha chiqmasligi uchun UZ interfeysida inglizcha fallback.
+      locale: LANG === 'uz' ? 'en' : LANG
+    });
+  }
+
+  async function googleLoginWithRetry(credential, hintEl, maxAttempts) {
+    for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+      const controller = new AbortController();
+      const abortTimer = setTimeout(function () { controller.abort(); }, 20000);
+      try {
+        const res = await fetch(API + '/api/auth/google', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: credential }), signal: controller.signal
+        });
+        clearTimeout(abortTimer);
+        return await res.json();
+      } catch (err) {
+        clearTimeout(abortTimer);
+        if (attempt === maxAttempts) throw err;
+        hintEl.textContent = T('server.waking') + ' (' + attempt + '/' + maxAttempts + ')...';
+        await wait(4000);
+      }
+    }
+  }
+
+  async function handleGoogleCredential(response) {
+    var errEl = document.getElementById('loginError');
+    var hintEl = document.getElementById('loginHint');
+    errEl.textContent = '';
+    hintEl.textContent = T('login.loading');
+    try {
+      var data = await googleLoginWithRetry(response.credential, hintEl, 6);
+      if (!data.success) { errEl.textContent = data.error || T('login.google.error'); return; }
+      completeLogin(data);
+    } catch (err) {
+      errEl.textContent = err.name === 'AbortError' ? T('server.timeout') : T('login.google.error');
+    } finally {
+      hintEl.textContent = '';
+    }
+  }
+
+  async function initGoogleSignIn() {
+    try {
+      var config = null;
+      for (var attempt = 1; attempt <= 6; attempt++) {
+        const controller = new AbortController();
+        const abortTimer = setTimeout(function () { controller.abort(); }, 20000);
+        try {
+          var res = await fetch(API + '/api/auth/google-config', { signal: controller.signal });
+          clearTimeout(abortTimer);
+          config = await res.json();
+          break;
+        } catch (err) {
+          clearTimeout(abortTimer);
+          if (attempt === 6) throw err;
+          await wait(4000);
+        }
+      }
+      if (!config.success || !config.configured || !config.clientId) return;
+      GOOGLE_CLIENT_ID = config.clientId;
+      await loadGoogleScript();
+      window.google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleGoogleCredential });
+      GOOGLE_READY = true;
+      document.getElementById('googleAuthBlock').classList.add('is-ready');
+      renderGoogleButton();
+    } catch (err) {
+      console.warn('Google login yuklanmadi:', err.message);
+    }
+  }
+  initGoogleSignIn();
+  new MutationObserver(function () {
+    if (GOOGLE_READY) renderGoogleButton();
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
   // Render uyg'onish boshida (0-15s) so'rovni butunlay rad etishi mumkin —
   // shuning uchun bir necha marta qayta uriniladi.
   async function loginWithRetry(email, password, hintEl, maxAttempts) {
@@ -3756,13 +3895,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         errEl.textContent = data.error || T('login.invalid');
         return;
       }
-      TOKEN = data.token;
-      USER_ROLE = data.role || 'menejer_oddiy';
-      USER_NAME = data.name || '';
-      localStorage.setItem('exon_admin_token', TOKEN);
-      localStorage.setItem('exon_admin_role', USER_ROLE);
-      localStorage.setItem('exon_admin_name', USER_NAME);
-      showApp();
+      completeLogin(data);
     } catch (err) {
       errEl.textContent = err.name === 'AbortError'
         ? T('server.timeout')

@@ -1,11 +1,70 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const { OAuth2Client } = require('google-auth-library');
 const auth = require('../services/auth');
 const db = require('../db');
 const mailer = require('../services/mailer');
 
 const VALID_ROLES = ['seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
+const googleClient = new OAuth2Client();
+const GOOGLE_ALLOWED_ORIGINS = [
+  /^https?:\/\/(www\.)?exon-marketing\.uz$/,
+  /^https:\/\/zari004\.github\.io$/,
+  /^http:\/\/localhost(:\d+)?$/,
+  /^http:\/\/127\.0\.0\.1(:\d+)?$/
+];
+
+/**
+ * GET /api/auth/google-config
+ * Google Client ID maxfiy kalit emas va brauzerga berilishi kerak.
+ */
+router.get('/google-config', (req, res) => {
+  const clientId = String(process.env.GOOGLE_CLIENT_ID || '').trim();
+  res.json({ success: true, configured: Boolean(clientId), clientId: clientId || null });
+});
+
+/**
+ * POST /api/auth/google
+ * Body: { credential } — Google Identity Services bergan ID token.
+ */
+router.post('/google', async (req, res) => {
+  try {
+    const origin = String(req.get('origin') || '');
+    if (!GOOGLE_ALLOWED_ORIGINS.some((pattern) => pattern.test(origin))) {
+      return res.status(403).json({ success: false, error: 'Ruxsat etilmagan manba' });
+    }
+    const clientId = String(process.env.GOOGLE_CLIENT_ID || '').trim();
+    if (!clientId) {
+      return res.status(503).json({ success: false, error: 'Google orqali kirish hali sozlanmagan' });
+    }
+    const credential = String(req.body.credential || '');
+    if (!credential) {
+      return res.status(400).json({ success: false, error: 'Google tasdiqlash tokeni yuborilmadi' });
+    }
+
+    const ticket = await googleClient.verifyIdToken({ idToken: credential, audience: clientId });
+    const payload = ticket.getPayload();
+    if (!payload || !payload.email || payload.email_verified !== true) {
+      return res.status(401).json({ success: false, error: 'Google email tasdiqlanmagan' });
+    }
+
+    const authoritativeEmail = payload.email.endsWith('@gmail.com') || Boolean(payload.hd);
+    const result = await auth.loginByGoogle({
+      email: payload.email,
+      name: payload.name,
+      sub: payload.sub,
+      authoritativeEmail
+    });
+    if (result.error) {
+      return res.status(403).json({ success: false, error: result.error, code: result.code });
+    }
+    res.json({ success: true, token: result.token, role: result.role, name: result.name });
+  } catch (err) {
+    console.error('Google login xatosi:', err.message);
+    res.status(401).json({ success: false, error: 'Google orqali kirishni tasdiqlab bo‘lmadi' });
+  }
+});
 
 /**
  * POST /api/auth/register

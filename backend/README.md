@@ -13,6 +13,7 @@ Node.js + Express + Supabase (Postgres) backend for EXON marketplace audit and l
    - Copy `.env.example` to `.env`
    - Set `DATABASE_URL` (Supabase Dashboard → Project Settings → Database → Connection string → URI)
    - Set `ADMIN_PASSWORD` (used to log into `docs/admin.html`)
+   - Set `GOOGLE_CLIENT_ID` (Google Cloud OAuth 2.0 Web Client ID; add `https://exon-marketing.uz` to Authorized JavaScript origins)
    - Set `TELEGRAM_BOT_TOKEN` (get from @BotFather on Telegram)
    - Set `TELEGRAM_ADMIN_ID` (your Telegram user ID)
 
@@ -143,7 +144,7 @@ backend/
 1. New Web Service → connect GitHub repo `zari004/EXON`
 2. Root Directory: `backend`
 3. Build Command: `npm install`, Start Command: `npm start`
-4. Add environment variables: `DATABASE_URL`, `ADMIN_PASSWORD`, `FRONTEND_URL`,
+4. Add environment variables: `DATABASE_URL`, `ADMIN_PASSWORD`, `GOOGLE_CLIENT_ID`, `FRONTEND_URL`,
    `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `NODE_ENV=production`
 
 For password-reset emails, enable 2-Step Verification on the sender Google

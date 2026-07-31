@@ -85,6 +85,54 @@ const loginByEmail = async (email, password) => {
   return { token, role: user.role, name: user.name };
 };
 
+// Google tasdiqlagan email orqali kirish. Yangi hisob avtomatik yaratilmaydi:
+// tashkilot paneliga faqat avval ro'yxatdan o'tgan va admin tasdiqlagan odam kiradi.
+const loginByGoogle = async ({ email, name, sub, authoritativeEmail }) => {
+  const cleanEmail = String(email || '').toLowerCase().trim();
+  const googleSub = String(sub || '').trim();
+  if (!cleanEmail || !googleSub) return { error: 'Google hisob ma’lumotlari to‘liq emas' };
+
+  let user = await db.get('SELECT * FROM admin_users WHERE google_sub = ?', [googleSub]);
+  if (!user) {
+    if (!authoritativeEmail) {
+      return { error: 'Bu email Gmail yoki Google Workspace orqali tasdiqlanmagan' };
+    }
+    user = await db.get('SELECT * FROM admin_users WHERE LOWER(email) = ?', [cleanEmail]);
+    if (user) {
+      await db.run('UPDATE admin_users SET google_sub = ? WHERE id = ?', [googleSub, user.id]);
+    }
+  }
+  if (user) {
+    if (user.status === 'pending') return { code: 'PENDING', error: 'Hisobingiz hali tasdiqlanmagan' };
+    if (user.status === 'rejected') return { code: 'REJECTED', error: 'Hisobingiz rad etildi' };
+    const token = await createSession({
+      userId: user.id,
+      role: user.role,
+      email: cleanEmail,
+      name: user.name || name || cleanEmail
+    });
+    return { token, role: user.role, name: user.name || name || cleanEmail };
+  }
+
+  // DB hisobi hali yaratilmagan eski superadmin ham o'zining ADMIN_EMAIL
+  // Google hisobi bilan kira oladi. Boshqa noma'lum emaillar qabul qilinmaydi.
+  const adminEmail = String(process.env.ADMIN_EMAIL || '').toLowerCase().trim();
+  if (authoritativeEmail && adminEmail && cleanEmail === adminEmail) {
+    const token = await createSession({
+      userId: null,
+      role: 'superadmin',
+      email: cleanEmail,
+      name: name || 'Admin'
+    });
+    return { token, role: 'superadmin', name: name || 'Admin' };
+  }
+
+  return {
+    code: 'NOT_REGISTERED',
+    error: "Bu Google email tizimda ro'yxatdan o'tmagan. Avval hisob yarating."
+  };
+};
+
 // Yangi foydalanuvchi ro'yxatdan o'tishi
 const registerUser = async (name, email, password, role, status = 'pending') => {
   const existing = await db.get('SELECT id FROM admin_users WHERE email = ?', [email]);
@@ -134,6 +182,6 @@ const requireSuperAdmin = (req, res, next) => {
 };
 
 module.exports = {
-  login, loginByEmail, registerUser, verify, updateTokenName, logout, requireAuth, requireSuperAdmin,
+  login, loginByEmail, loginByGoogle, registerUser, verify, updateTokenName, logout, requireAuth, requireSuperAdmin,
   createResetCode, verifyResetCode, clearResetCode
 };
