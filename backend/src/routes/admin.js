@@ -239,25 +239,21 @@ router.delete('/users/:id', auth.requireAuth, auth.requireSuperAdmin, async (req
 /**
  * GET /api/admin/my-permissions — joriy foydalanuvchi ko'ra oladigan tablar
  */
-// "Sayt boshqaruvi" (dashboard/cases/posts/pricing) endi faqat superadmin
-// va IT bo'limiga tegishli — boshqa hech bir rolga berilmaydi, hatto
-// role_permissions jadvalida yoqilgan bo'lsa ham
-const SITE_TABS = ['dashboard', 'cases', 'posts', 'pricing'];
+// IT bo'limi Ruxsatlar sahifasi orqali har bir rol uchun shu bo'limlarning
+// har birini alohida yoqib/o'chira oladi (sayt boshqaruvi ham shu jumladan)
+const ALL_PERM_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'tasks', 'stores', 'calendar', 'kpi', 'productivity', 'attendance', 'settings'];
 
 router.get('/my-permissions', auth.requireAuth, async (req, res) => {
   const role = req.user.role;
   if (role === 'superadmin' || role === 'it_bolimi') {
-    return res.json({ success: true, tabs: ['dashboard', 'cases', 'posts', 'pricing', 'tasks'] });
+    return res.json({ success: true, tabs: ALL_PERM_TABS });
   }
   try {
     const perm = await db.get('SELECT tabs FROM role_permissions WHERE role = ?', [role]);
-    let tabs = perm ? JSON.parse(perm.tabs) : [];
-    tabs = tabs.filter((t) => !SITE_TABS.includes(t));
-    // Vazifalar — har bir foydalanuvchining shaxsiy oynasi, admin ruxsatidan qat'i nazar har doim ochiq
-    if (!tabs.includes('tasks')) tabs.push('tasks');
+    const tabs = perm ? JSON.parse(perm.tabs) : ['dashboard', 'tasks'];
     res.json({ success: true, tabs });
   } catch (err) {
-    res.json({ success: true, tabs: ['tasks'] });
+    res.json({ success: true, tabs: ['dashboard', 'tasks'] });
   }
 });
 
@@ -278,14 +274,11 @@ router.get('/permissions', auth.requireAuth, auth.requireSuperAdmin, async (req,
  */
 router.put('/permissions/:role', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
   try {
-    // Sayt boshqaruvi (dashboard/cases/posts/pricing) endi bu yerdan
-    // sozlanmaydi — faqat superadmin/IT bo'limiga tegishli
-    const VALID_TABS = ['tasks'];
     const VALID_ROLES = ['seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
     if (!VALID_ROLES.includes(req.params.role)) {
       return res.status(400).json({ success: false, error: "Noto'g'ri rol" });
     }
-    const tabs = (req.body.tabs || []).filter(function(t) { return VALID_TABS.includes(t); });
+    const tabs = (req.body.tabs || []).filter(function(t) { return ALL_PERM_TABS.includes(t); });
     // "role_permissions" jadvalida "id" ustuni yo'q (asosiy kalit — role),
     // shu sabab db.run() avtomatik qo'shadigan "RETURNING id" xato berardi
     await db.run('INSERT INTO role_permissions (role, tabs) VALUES (?, ?) ON CONFLICT (role) DO UPDATE SET tabs = ? RETURNING role',
