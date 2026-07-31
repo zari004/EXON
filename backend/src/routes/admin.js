@@ -216,8 +216,31 @@ router.post('/users/:id/role', auth.requireAuth, auth.requireSuperAdmin, async (
 });
 
 /**
+ * DELETE /api/admin/users/:id — foydalanuvchini butunlay o'chirish (superadmin)
+ * Barcha faol sessiyalari ham bekor qilinadi — shu bilan tizimdan
+ * darhol (keyingi so'rovidayoq) chiqarib yuboriladi
+ */
+router.delete('/users/:id', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
+  try {
+    if (Number(req.params.id) === Number(req.user.userId)) {
+      return res.status(400).json({ success: false, error: "O'zingizni o'chira olmaysiz" });
+    }
+    await db.run('DELETE FROM sessions WHERE user_id = ?', [req.params.id]);
+    await db.run('DELETE FROM admin_users WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
  * GET /api/admin/my-permissions — joriy foydalanuvchi ko'ra oladigan tablar
  */
+// "Sayt boshqaruvi" (dashboard/cases/posts/pricing) endi faqat superadmin
+// va IT bo'limiga tegishli — boshqa hech bir rolga berilmaydi, hatto
+// role_permissions jadvalida yoqilgan bo'lsa ham
+const SITE_TABS = ['dashboard', 'cases', 'posts', 'pricing'];
+
 router.get('/my-permissions', auth.requireAuth, async (req, res) => {
   const role = req.user.role;
   if (role === 'superadmin' || role === 'it_bolimi') {
@@ -225,12 +248,13 @@ router.get('/my-permissions', auth.requireAuth, async (req, res) => {
   }
   try {
     const perm = await db.get('SELECT tabs FROM role_permissions WHERE role = ?', [role]);
-    const tabs = perm ? JSON.parse(perm.tabs) : ['dashboard'];
+    let tabs = perm ? JSON.parse(perm.tabs) : [];
+    tabs = tabs.filter((t) => !SITE_TABS.includes(t));
     // Vazifalar — har bir foydalanuvchining shaxsiy oynasi, admin ruxsatidan qat'i nazar har doim ochiq
     if (!tabs.includes('tasks')) tabs.push('tasks');
     res.json({ success: true, tabs });
   } catch (err) {
-    res.json({ success: true, tabs: ['dashboard', 'tasks'] });
+    res.json({ success: true, tabs: ['tasks'] });
   }
 });
 
@@ -251,7 +275,9 @@ router.get('/permissions', auth.requireAuth, auth.requireSuperAdmin, async (req,
  */
 router.put('/permissions/:role', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
   try {
-    const VALID_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'tasks'];
+    // Sayt boshqaruvi (dashboard/cases/posts/pricing) endi bu yerdan
+    // sozlanmaydi — faqat superadmin/IT bo'limiga tegishli
+    const VALID_TABS = ['tasks'];
     const VALID_ROLES = ['seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
     if (!VALID_ROLES.includes(req.params.role)) {
       return res.status(400).json({ success: false, error: "Noto'g'ri rol" });

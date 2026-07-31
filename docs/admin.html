@@ -858,7 +858,11 @@ body{
   display:flex;align-items:center;gap:8px;
 }
 @media(max-width:768px){
-  .admin-topbar{top:12px;right:14px}
+  /* iPhone'da notch/status bar ostiga yashirin hudud bor — shu hudud
+     hisobga olinmasa, sahifaning o'z belgilari (qo'ng'iroq, tema, til)
+     telefonning o'z soat/signal/batareya belgilari bilan ustma-ust tushib
+     qolardi (viewport-fit=cover shu hududni ham sahifaga qo'shib yuboradi) */
+  .admin-topbar{top:calc(12px + env(safe-area-inset-top));right:14px}
 }
 
 .notif-wrap{position:relative}
@@ -989,7 +993,7 @@ body{
   /* Telefonda doimiy sidebar o'rniga pastki navigatsiya + "Ko'proq" sahifasi
      ishlatiladi, shuning uchun sidebar butunlay ekrandan tashqarida qoladi */
   .admin-sidebar{transform:translateX(-100%)}
-  .admin-content{margin-left:0;padding-top:60px;padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+  .admin-content{margin-left:0;padding-top:calc(60px + env(safe-area-inset-top));padding-bottom:calc(70px + env(safe-area-inset-bottom))}
 }
 
 /* ── PASTKI NAVIGATSIYA (faqat telefon, "ilova"ga o'xshash tab-bar) ── */
@@ -1874,7 +1878,7 @@ body{
   <!-- RUXSATLAR (IT bo'limi) -->
   <section class="admin-panel" id="panel-permissions">
     <div class="panel-head"><h2 id="permTitle">Ruxsatlar sozlamalari</h2></div>
-    <p id="permDesc" style="color:var(--gray);font-size:13.5px;margin-bottom:20px">Har bir rol uchun qaysi bo'limlar ko'rinishini belgilang.</p>
+    <p id="permDesc" style="color:var(--gray);font-size:13.5px;margin-bottom:20px">Sayt boshqaruvi bo'limi endi faqat superadmin va IT bo'limiga tegishli.</p>
     <div id="permContent"></div>
   </section>
 
@@ -2860,7 +2864,7 @@ body{
       'tasks.field.assign': 'Tayinlash (xodim)',
       'tasks.confirm.del': 'Vazifani o\'chirishni tasdiqlaysizmi?',
       'perm.title': 'Ruxsatlar sozlamalari',
-      'perm.desc': "Har bir rol uchun qaysi bo'limlar ko'rinishini belgilang.",
+      'perm.desc': "Sayt boshqaruvi bo'limi endi faqat superadmin va IT bo'limiga tegishli.",
       'perm.role': 'Rol',
       'dash.title': 'Audit hisobotlari',
       'dash.total': 'Jami lidlar',
@@ -2897,6 +2901,8 @@ body{
       'users.reject': 'Rad etish',
       'users.block': 'Bloklash',
       'users.restore': 'Tiklash',
+      'users.delete': "O'chirish",
+      'users.confirm.del': "Bu foydalanuvchini butunlay o'chirasizmi? U darhol tizimdan chiqarib yuboriladi va bu amalni ortga qaytarib bo'lmaydi.",
       'item.edit': 'Tahrirlash',
       'item.delete': "O'chirish",
       'image.none': 'Rasm tanlanmagan',
@@ -2996,7 +3002,7 @@ body{
       'tasks.field.assign': 'Назначить (сотрудник)',
       'tasks.confirm.del': 'Удалить эту задачу?',
       'perm.title': 'Настройка доступов',
-      'perm.desc': 'Укажите, какие разделы видит каждая роль.',
+      'perm.desc': 'Раздел «Управление сайтом» теперь доступен только superadmin и IT-отделу.',
       'perm.role': 'Роль',
       'dash.title': 'Отчёты аудита',
       'dash.total': 'Всего лидов',
@@ -3033,6 +3039,8 @@ body{
       'users.reject': 'Отклонить',
       'users.block': 'Заблокировать',
       'users.restore': 'Восстановить',
+      'users.delete': 'Удалить',
+      'users.confirm.del': 'Удалить этого пользователя навсегда? Он будет немедленно выведен из системы, действие необратимо.',
       'item.edit': 'Редактировать',
       'item.delete': 'Удалить',
       'image.none': 'Изображение не выбрано',
@@ -3132,7 +3140,7 @@ body{
       'tasks.field.assign': 'Assign to',
       'tasks.confirm.del': 'Delete this task?',
       'perm.title': 'Permission settings',
-      'perm.desc': 'Choose which sections each role can see.',
+      'perm.desc': 'The "Site management" section is now available only to superadmin and IT.',
       'perm.role': 'Role',
       'dash.title': 'Audit reports',
       'dash.total': 'Total leads',
@@ -3169,6 +3177,8 @@ body{
       'users.reject': 'Reject',
       'users.block': 'Block',
       'users.restore': 'Restore',
+      'users.delete': 'Delete',
+      'users.confirm.del': 'Permanently delete this user? They will be logged out immediately and this cannot be undone.',
       'item.edit': 'Edit',
       'item.delete': 'Delete',
       'image.none': 'No image selected',
@@ -4154,6 +4164,9 @@ body{
             '<select class="role-select" onchange="changeUserRole(' + u.id + ', this.value)">' + roleOptions + '</select>' +
             '<span class="user-status ' + u.status + '">' + statusLabel + '</span>' +
             actions +
+            '<button class="icon-btn danger" title="' + T('users.delete') + '" onclick="deleteUser(' + u.id + ')">' +
+              '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            '</button>' +
           '</div></div>';
       }).join('') + '</div>';
     } catch (err) { console.error(err); }
@@ -4169,50 +4182,13 @@ body{
   // ══════════════════════════════════════════════════════════
   // RUXSATLAR (IT bo'limi)
   // ══════════════════════════════════════════════════════════
-  var PERM_TABS = ['dashboard', 'cases', 'posts', 'pricing'];
-  var PERM_ROLES = ['seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
-
   async function loadPermissions() {
-    try {
-      var data = await apiFetch('/api/admin/permissions');
-      var perms = data.permissions || [];
-      var permMap = {};
-      perms.forEach(function (p) { permMap[p.role] = p.tabs; });
-
-      document.getElementById('permContent').innerHTML =
-        '<div style="overflow-x:auto">' +
-        '<table class="admin-table">' +
-        '<thead><tr>' +
-          '<th style="min-width:160px">' + T('perm.role') + '</th>' +
-          PERM_TABS.map(function (t) { return '<th style="text-align:center">' + T('tab.' + t) + '</th>'; }).join('') +
-        '</tr></thead>' +
-        '<tbody>' +
-        PERM_ROLES.map(function (role) {
-          var allowed = permMap[role] || ['dashboard'];
-          return '<tr>' +
-            '<td><strong>' + T('role.' + role) + '</strong></td>' +
-            PERM_TABS.map(function (tab) {
-              var checked = allowed.indexOf(tab) !== -1 ? ' checked' : '';
-              return '<td style="text-align:center">' +
-                '<input type="checkbox" data-role="' + role + '" data-tab="' + tab + '"' + checked +
-                ' onchange="togglePermission(this)" style="width:18px;height:18px;cursor:pointer" />' +
-                '</td>';
-            }).join('') +
-            '</tr>';
-        }).join('') +
-        '</tbody></table></div>';
-    } catch (err) { console.error(err); }
+    // "Sayt boshqaruvi" (Hisobot/Keyslar/Blog/Narxlar) endi faqat
+    // superadmin va IT bo'limiga tegishli — boshqa hech bir rolga
+    // berilmaydi, shuning uchun bu yerda sozlanadigan narsa qolmadi
+    document.getElementById('permContent').innerHTML =
+      '<div class="empty-state">Sayt boshqaruvi bo\'limi (Hisobot, Keyslar, Blog, Narxlar) endi faqat superadmin va IT bo\'limiga tegishli — boshqa rollarga bu yerdan ruxsat berib bo\'lmaydi.</div>';
   }
-
-  window.togglePermission = async function (checkbox) {
-    var role = checkbox.dataset.role;
-    var checkboxes = document.querySelectorAll('input[data-role="' + role + '"]');
-    var tabs = [];
-    checkboxes.forEach(function (cb) { if (cb.checked) tabs.push(cb.dataset.tab); });
-    try {
-      await apiFetch('/api/admin/permissions/' + role, { method: 'PUT', body: JSON.stringify({ tabs: tabs }) });
-    } catch (err) { alert(err.message); loadPermissions(); }
-  };
 
   window.approveUser = async function (id) {
     try { await apiFetch('/api/admin/users/' + id + '/approve', { method: 'POST' }); loadUsers(); }
@@ -4221,6 +4197,12 @@ body{
 
   window.rejectUser = async function (id) {
     try { await apiFetch('/api/admin/users/' + id + '/reject', { method: 'POST' }); loadUsers(); }
+    catch (err) { alert(err.message); }
+  };
+
+  window.deleteUser = async function (id) {
+    if (!confirm(T('users.confirm.del'))) return;
+    try { await apiFetch('/api/admin/users/' + id, { method: 'DELETE' }); loadUsers(); }
     catch (err) { alert(err.message); }
   };
 
