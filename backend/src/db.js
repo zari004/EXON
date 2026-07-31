@@ -121,6 +121,8 @@ const init = async () => {
   // mumkin, shuning uchun bog'langan hisoblar "sub" orqali topiladi.
   await pool.query(`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS google_sub TEXT`);
   await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS admin_users_google_sub_idx ON admin_users(google_sub) WHERE google_sub IS NOT NULL`);
+  // Oylik asosiy maosh — kechikish uchun ushlab qolinadigan foizlar shundan hisoblanadi
+  await pool.query(`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS salary NUMERIC NOT NULL DEFAULT 0`);
 
   // Login tokenlari — avval faqat server xotirasida (Map) saqlanardi, shu
   // sabab Render bekor serverni har safar sovutib qo'yganda (cold start)

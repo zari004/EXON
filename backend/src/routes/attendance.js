@@ -14,6 +14,8 @@ const VIEW_ALL_ROLES = ['menejer_bosh', 'seo', 'it_bolimi', 'superadmin'];
 const EDIT_ROLES = ['menejer_bosh', 'seo', 'it_bolimi', 'superadmin'];
 // Hisobotni Excel fayl qilib yuklab olish — SEO'da yo'q
 const EXPORT_ROLES = ['menejer_bosh', 'it_bolimi', 'superadmin'];
+// Xodimning oylik maoshini belgilash/ko'rish
+const SALARY_MANAGE_ROLES = ['menejer_bosh', 'it_bolimi', 'superadmin'];
 
 function requireRole(roles, msg) {
   return (req, res, next) => {
@@ -507,6 +509,68 @@ router.put('/:id', auth.requireAuth, requireRole(EDIT_ROLES, "Bu yozuvni tahrirl
       `UPDATE attendance_records SET check_in_at=?, late_minutes=?, deduct_percent=?, check_out_at=?, edited_by=?, edited_at=NOW() WHERE id=?`,
       [checkInAt, lateMinutes, deductPercent, checkOutAt, req.user.userId, req.params.id]
     );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ── OYLIK MAOSH — kechikish uchun necha kunda qancha ushlab qolingani ──
+
+// Berilgan xodim va oy uchun: asosiy maosh, kechiktirilgan har bir kunning
+// ushlab qolingan summasi, jami ushlab qolingan va shu oy uchun qoladigan summa.
+async function computeSalaryBreakdown(employeeId, monthStr) {
+  const { start, end, monthStr: month } = monthRange(monthStr);
+  const user = await db.get('SELECT salary FROM admin_users WHERE id = ?', [employeeId]);
+  const salary = Number(user && user.salary) || 0;
+  const rows = await db.all(
+    `SELECT work_date, late_minutes, deduct_percent FROM attendance_records
+     WHERE employee_id = ? AND work_date >= ? AND work_date < ? AND deduct_percent > 0
+     ORDER BY work_date ASC`,
+    [employeeId, start, end]
+  );
+  const lateDays = rows.map((r) => {
+    const deductPercent = Number(r.deduct_percent) || 0;
+    return {
+      date: workDateStr(r.work_date),
+      late_minutes: r.late_minutes || 0,
+      deduct_percent: deductPercent,
+      deducted_amount: Math.round((salary * deductPercent) / 100)
+    };
+  });
+  const totalDeducted = Math.min(salary, lateDays.reduce((sum, d) => sum + d.deducted_amount, 0));
+  const remaining = Math.max(0, salary - totalDeducted);
+  return { salary, month, lateDays, totalDeducted, remaining };
+}
+
+// GET /api/attendance/my-salary?month=YYYY-MM — joriy foydalanuvchining o'z maoshi
+router.get('/my-salary', auth.requireAuth, async (req, res) => {
+  try {
+    const data = await computeSalaryBreakdown(req.user.userId, req.query.month);
+    res.json(Object.assign({ success: true }, data));
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/attendance/salary/:employeeId?month=YYYY-MM — boshqaruv ko'rinishi
+router.get('/salary/:employeeId', auth.requireAuth, requireRole(SALARY_MANAGE_ROLES, "Bu bo'limni ko'rishga ruxsat yo'q"), async (req, res) => {
+  try {
+    const data = await computeSalaryBreakdown(req.params.employeeId, req.query.month);
+    res.json(Object.assign({ success: true }, data));
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PUT /api/attendance/salary/:employeeId — asosiy oylik maoshni belgilash
+router.put('/salary/:employeeId', auth.requireAuth, requireRole(SALARY_MANAGE_ROLES, "Bu amalni bajarishga ruxsat yo'q"), async (req, res) => {
+  try {
+    const salary = Number(req.body.salary) || 0;
+    if (salary < 0) return res.status(400).json({ success: false, error: "Maosh manfiy bo'lishi mumkin emas" });
+    const employee = await db.get("SELECT id FROM admin_users WHERE id = ? AND role != 'superadmin'", [req.params.employeeId]);
+    if (!employee) return res.status(404).json({ success: false, error: 'Xodim topilmadi' });
+    await db.run('UPDATE admin_users SET salary = ? WHERE id = ?', [salary, req.params.employeeId]);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });

@@ -2146,14 +2146,15 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     </div>
   </section>
 
-  <!-- ISH UNUMDORLIGI (shaxsiy KPI) -->
+  <!-- ISH UNUMDORLIGI (shaxsiy oylik + KPI) -->
   <section class="admin-panel" id="panel-productivity">
     <div class="panel-head">
       <h2>Ish unumdorligi</h2>
       <input type="month" id="prodMonthInput" />
     </div>
+    <h3 class="prod-section-title">Oylik</h3>
+    <div id="prodSalaryEl"></div>
     <div id="prodAwardsEl"></div>
-    <div id="prodContent"></div>
   </section>
 
   <!-- KELDI-KETDI (davomat) -->
@@ -2575,7 +2576,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     <h3 id="kpiEmpModalName">Xodim</h3>
     <div class="kpi-emp-section">
       <div class="kpi-emp-section__head">
-        <h4>KPI topshiriqlari</h4>
+        <h4>Oylik</h4>
+      </div>
+      <div id="kpiEmpSalaryEl"></div>
+    </div>
+    <div class="kpi-emp-section">
+      <div class="kpi-emp-section__head">
+        <h4>KPI</h4>
         <button type="button" class="btn-add" id="btnAddKpiAwardInEmp" style="padding:6px 14px;display:none">+ Yangi KPI</button>
       </div>
       <div id="kpiEmpAwardsEl"></div>
@@ -4028,7 +4035,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     if (tab.dataset.tab === 'calendar') await loadCalendar();
     if (tab.dataset.tab === 'settings') await loadAccountSettings();
     if (tab.dataset.tab === 'kpi') await loadKpi();
-    if (tab.dataset.tab === 'productivity') { await loadProductivity(); await loadMyKpiAwards(); }
+    if (tab.dataset.tab === 'productivity') { await loadMySalary(); await loadMyKpiAwards(); }
     if (tab.dataset.tab === 'attendance') await loadAttendance();
     syncBottomNavActive(tab.dataset.tab);
     return true;
@@ -6724,10 +6731,6 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     return (v < 0 ? '-' : '') + parts.join(' ') + " so'm";
   }
 
-  function kpiLateReasonText(reason) {
-    return reason === 'overdue' ? "Muddati o'tgan" : 'Kechikib bajarilgan';
-  }
-
   async function loadKpiData() {
     var empData = await apiFetch('/api/kpi/employees');
     KPI_EMPLOYEES = empData.employees || [];
@@ -6814,6 +6817,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     document.getElementById('kpiEmpModalName').textContent = emp.name;
     var addAwardInEmpBtn = document.getElementById('btnAddKpiAwardInEmp');
     addAwardInEmpBtn.style.display = KPI_CAN_MANAGE ? '' : 'none';
+    renderKpiEmpSalary(employeeId);
     renderKpiEmpAwards(employeeId);
     document.getElementById('kpiEmployeeModal').classList.add('is-active');
   };
@@ -6821,6 +6825,42 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   document.getElementById('btnAddKpiAwardInEmp').addEventListener('click', function () {
     openKpiAwardForm(KPI_ACTIVE_EMPLOYEE_ID);
   });
+
+  async function renderKpiEmpSalary(employeeId) {
+    var el = document.getElementById('kpiEmpSalaryEl');
+    el.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
+    try {
+      var data = await apiFetch('/api/attendance/salary/' + employeeId);
+      var editHtml = KPI_CAN_MANAGE
+        ? '<div class="field-row" style="align-items:flex-end;margin-bottom:12px">' +
+            '<div class="field" style="margin-bottom:0"><label>Oylik maosh (so\'m)</label><input type="number" id="kpiEmpSalaryInput" min="0" step="10000" value="' + data.salary + '" /></div>' +
+            '<button type="button" class="btn-add" id="kpiEmpSalarySaveBtn" style="padding:9px 16px;height:38px">Saqlash</button>' +
+          '</div>'
+        : '';
+      var summaryHtml = data.salary > 0
+        ? '<div class="kpi-card__meta-row">Qoladi: <b style="color:var(--green-hi)">' + fmtMoney(data.remaining) + '</b> / ' + fmtMoney(data.salary) + (data.totalDeducted > 0 ? ' · -' + fmtMoney(data.totalDeducted) + ' ushlab qolindi' : '') + '</div>' +
+          '<div class="kpi-card__tasks is-on" style="margin-top:10px">' + renderSalaryLateRows(data.lateDays) + '</div>'
+        : '<div class="empty-state">Bu xodimga oylik maosh belgilanmagan</div>';
+      el.innerHTML = editHtml + summaryHtml;
+      var saveBtn = document.getElementById('kpiEmpSalarySaveBtn');
+      if (saveBtn) {
+        saveBtn.addEventListener('click', async function () {
+          var val = Number(document.getElementById('kpiEmpSalaryInput').value) || 0;
+          saveBtn.disabled = true;
+          try {
+            await apiFetch('/api/attendance/salary/' + employeeId, { method: 'PUT', body: JSON.stringify({ salary: val }) });
+            await renderKpiEmpSalary(employeeId);
+          } catch (err) {
+            alert(err.message);
+          } finally {
+            saveBtn.disabled = false;
+          }
+        });
+      }
+    } catch (err) {
+      el.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
+    }
+  }
 
   function renderKpiEmpAwards(employeeId) {
     var el = document.getElementById('kpiEmpAwardsEl');
@@ -6972,60 +7012,52 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   }
 
   // ══════════════════════════════════════════════════════════
-  // ISH UNUMDORLIGI (xodimning shaxsiy KPI oynasi)
+  // ISH UNUMDORLIGI (xodimning shaxsiy oylik+KPI oynasi)
   // ══════════════════════════════════════════════════════════
-  async function loadProductivity() {
+  async function loadMySalary() {
     var monthInput = document.getElementById('prodMonthInput');
     if (!monthInput.value) monthInput.value = kpiDefaultMonth();
-    var el = document.getElementById('prodContent');
+    var el = document.getElementById('prodSalaryEl');
     el.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
     try {
-      var data = await apiFetch('/api/kpi/my-stats?month=' + encodeURIComponent(monthInput.value));
-      if (!data.hasPlan) {
-        el.innerHTML = '<div class="empty-state">Sizga hali KPI rejasi biriktirilmagan</div>';
-        return;
-      }
-      renderProductivity(data.kpi);
+      var data = await apiFetch('/api/attendance/my-salary?month=' + encodeURIComponent(monthInput.value));
+      renderMySalary(data);
     } catch (err) {
       el.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
     }
   }
 
   document.getElementById('prodMonthInput').addEventListener('change', function () {
-    if (document.getElementById('panel-productivity').classList.contains('is-active')) loadProductivity();
+    if (document.getElementById('panel-productivity').classList.contains('is-active')) loadMySalary();
   });
 
-  function renderProductivity(k) {
-    var el = document.getElementById('prodContent');
-    var pct = Math.min(100, Math.max(0, k.percent));
-    var barColor = k.percent >= 100 ? 'var(--green-hi)' : (k.percent >= 60 ? '#F0A500' : '#F2896F');
-    var lateRows = k.late_tasks.length
-      ? k.late_tasks.map(function (t) {
+  function renderSalaryLateRows(lateDays) {
+    return lateDays.length
+      ? lateDays.map(function (d) {
           return '<div class="kpi-task-row">' +
-            '<span class="td-pri-flag ' + t.priority + '"></span>' +
-            '<span class="kpi-task-row__title">' + esc(t.title) + '</span>' +
-            '<span class="kpi-task-row__pts" style="color:#F2896F">-' + t.points + ' ball</span>' +
-            '<span class="kpi-task-row__date">' + kpiLateReasonText(t.reason) + '</span>' +
+            '<span class="kpi-task-row__title">' + d.date + '</span>' +
+            '<span class="kpi-task-row__date">' + d.late_minutes + ' daq kechikish · -' + d.deduct_percent + '%</span>' +
+            '<span class="kpi-task-row__pts" style="color:#F2896F">-' + fmtMoney(d.deducted_amount) + '</span>' +
           '</div>';
         }).join('')
-      : '<div class="kpi-task-row kpi-task-row--empty">Ball ayirilgan vazifa yo\'q — barchasi o\'z vaqtida!</div>';
+      : '<div class="kpi-task-row kpi-task-row--empty">Bu oy kechikish yo\'q — maosh to\'liq!</div>';
+  }
 
+  function renderMySalary(data) {
+    var el = document.getElementById('prodSalaryEl');
+    if (!data.salary) {
+      el.innerHTML = '<div class="empty-state">Sizga hali oylik maosh belgilanmagan</div>';
+      return;
+    }
     el.innerHTML =
       '<div class="prod-summary">' +
-        '<div class="prod-percent" style="color:' + barColor + '">' + k.percent + '%</div>' +
         '<div class="prod-summary__body">' +
-          '<div class="kpi-progress"><div class="kpi-progress__fill" style="width:' + pct + '%;background:' + barColor + '"></div></div>' +
-          '<div class="kpi-card__meta-row">' + (Math.round(k.earned_points * 10) / 10) + ' / ' + k.target_points + ' ball' + (k.deducted_points > 0 ? ' · -' + k.deducted_points + ' ball ayirildi' : '') + '</div>' +
-          (k.bonus_amount > 0 ? '<div class="prod-bonus">Bu oylik bonus: <b>' + fmtMoney(k.bonus_earned) + '</b> / ' + fmtMoney(k.bonus_amount) + '</div>' : '') +
+          '<div class="prod-bonus">Qoladigan maosh: <b>' + fmtMoney(data.remaining) + '</b> / ' + fmtMoney(data.salary) + '</div>' +
+          (data.totalDeducted > 0 ? '<div class="kpi-card__meta-row" style="color:#F2896F">Jami ushlab qolindi: -' + fmtMoney(data.totalDeducted) + '</div>' : '') +
         '</div>' +
       '</div>' +
-      '<div class="prod-stats-row">' +
-        '<div class="prod-stat"><b style="color:var(--green-hi)">' + k.on_time_count + '</b><span>o\'z vaqtida</span></div>' +
-        '<div class="prod-stat"><b style="color:#F2896F">' + k.late_count + '</b><span>kechiktirilgan</span></div>' +
-        '<div class="prod-stat"><b style="color:var(--gray-dim)">' + k.pending_count + '</b><span>kutilmoqda</span></div>' +
-      '</div>' +
-      '<h3 class="prod-section-title">Ball ayirilgan vazifalar</h3>' +
-      '<div class="kpi-card__tasks is-on">' + lateRows + '</div>';
+      '<h3 class="prod-section-title" style="margin-top:16px">Kechikkan kunlar</h3>' +
+      '<div class="kpi-card__tasks is-on">' + renderSalaryLateRows(data.lateDays) + '</div>';
   }
 
   // ══════════════════════════════════════════════════════════
