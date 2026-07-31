@@ -545,6 +545,14 @@ ol,ul{list-style:none}
     .lang__btn{padding:4px 6px;font-size:10px}
   }
 
+  /* 320px ekranlarda to'liq logo + tema + 3 ta til + burger bir qatorga
+     sig'maydi. Asosiy amallar (til va menyu) doim bosiladigan hududda qoladi. */
+  @media (max-width:360px){
+    .nav__inner{padding-left:12px;padding-right:12px;gap:8px}
+    .logo{height:30px}
+    .nav__right>.theme-toggle{display:none}
+  }
+
   /* Egri chiziqsiz kontent past bo'ladi — 100svh majburlansa, ostida
      katta bo'sh maydon qoladi. Shuning uchun balandlik erkin qo'yiladi. */
   .hero{min-height:auto;padding-bottom:clamp(24px,4vh,44px)}
