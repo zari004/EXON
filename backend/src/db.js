@@ -121,8 +121,11 @@ const init = async () => {
   // mumkin, shuning uchun bog'langan hisoblar "sub" orqali topiladi.
   await pool.query(`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS google_sub TEXT`);
   await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS admin_users_google_sub_idx ON admin_users(google_sub) WHERE google_sub IS NOT NULL`);
-  // Oylik asosiy maosh — kechikish uchun ushlab qolinadigan foizlar shundan hisoblanadi
+  // Oylik asosiy maosh — kunlik summa shu va oy ichidagi ish kunlari soniga bo'lib chiqariladi
   await pool.query(`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS salary NUMERIC NOT NULL DEFAULT 0`);
+  // Xodimning individual ish kunlari jadvali (JSON) — masalan ba'zi xodimlarda
+  // shanba navbat bilan (har ikkinchi haftada) ish kuni bo'ladi
+  await pool.query(`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS work_schedule TEXT NOT NULL DEFAULT '{"mon":true,"tue":true,"wed":true,"thu":true,"fri":true,"sun":false,"saturday":"none"}'`);
 
   // Login tokenlari — avval faqat server xotirasida (Map) saqlanardi, shu
   // sabab Render bekor serverni har safar sovutib qo'yganda (cold start)

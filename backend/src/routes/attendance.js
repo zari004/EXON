@@ -515,32 +515,76 @@ router.put('/:id', auth.requireAuth, requireRole(EDIT_ROLES, "Bu yozuvni tahrirl
   }
 });
 
-// ── OYLIK MAOSH — kechikish uchun necha kunda qancha ushlab qolingani ──
+// ── OYLIK MAOSH — ish kunlariga bo'lingan kunlik summa, kechikish/kelmaslik uchun ushlab qolish ──
 
-// Berilgan xodim va oy uchun: asosiy maosh, kechiktirilgan har bir kunning
-// ushlab qolingan summasi, jami ushlab qolingan va shu oy uchun qoladigan summa.
+const WEEKDAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+const DEFAULT_SCHEDULE = { mon: true, tue: true, wed: true, thu: true, fri: true, sun: false, saturday: 'none' };
+const SATURDAY_MODES = ['none', 'all', 'odd', 'even'];
+
+function parseSchedule(raw) {
+  let s = {};
+  try { s = JSON.parse(raw || '{}'); } catch (e) { s = {}; }
+  const out = {};
+  ['mon', 'tue', 'wed', 'thu', 'fri', 'sun'].forEach((k) => { out[k] = typeof s[k] === 'boolean' ? s[k] : DEFAULT_SCHEDULE[k]; });
+  out.saturday = SATURDAY_MODES.includes(s.saturday) ? s.saturday : DEFAULT_SCHEDULE.saturday;
+  return out;
+}
+
+// Berilgan kun (UTC devor-sana sifatida) xodimning individual ish jadvali bo'yicha
+// ish kunimi-yo'qmi aniqlaydi. Shanba uchun "toq/juft" rejimi — oydagi shu shanba
+// necha-nchi ekaniga qarab (1-,3-,5-shanba = toq; 2-,4-shanba = juft) navbat bilan ishlaydi.
+function isWorkDay(schedule, d) {
+  const weekday = d.getUTCDay(); // 0=Yak ... 6=Shan
+  if (weekday === 6) {
+    if (schedule.saturday === 'none') return false;
+    if (schedule.saturday === 'all') return true;
+    const occurrence = Math.ceil(d.getUTCDate() / 7);
+    return schedule.saturday === 'odd' ? occurrence % 2 === 1 : occurrence % 2 === 0;
+  }
+  return !!schedule[WEEKDAY_KEYS[weekday]];
+}
+
+// Berilgan xodim va oy uchun: oy ichidagi ish kunlari soni, kunlik summa,
+// har bir ushlab qolingan/kelinmagan kun ro'yxati, jami ushlab qolingan va qoladigan summa.
 async function computeSalaryBreakdown(employeeId, monthStr) {
   const { start, end, monthStr: month } = monthRange(monthStr);
-  const user = await db.get('SELECT salary FROM admin_users WHERE id = ?', [employeeId]);
+  const user = await db.get('SELECT salary, work_schedule FROM admin_users WHERE id = ?', [employeeId]);
   const salary = Number(user && user.salary) || 0;
+  const schedule = parseSchedule(user && user.work_schedule);
+
+  const [sy, sm] = start.split('-').map(Number);
+  const [ey, em] = end.split('-').map(Number);
+  const endDate = new Date(Date.UTC(ey, em - 1, 1));
+  const workDates = [];
+  for (let d = new Date(Date.UTC(sy, sm - 1, 1)); d < endDate; d.setUTCDate(d.getUTCDate() + 1)) {
+    if (isWorkDay(schedule, d)) workDates.push(workDateStr(d));
+  }
+  const totalWorkDays = workDates.length;
+  const dailyRate = totalWorkDays > 0 ? salary / totalWorkDays : 0;
+
   const rows = await db.all(
-    `SELECT work_date, late_minutes, deduct_percent FROM attendance_records
-     WHERE employee_id = ? AND work_date >= ? AND work_date < ? AND deduct_percent > 0
-     ORDER BY work_date ASC`,
+    `SELECT work_date, check_in_at, late_minutes, deduct_percent FROM attendance_records
+     WHERE employee_id = ? AND work_date >= ? AND work_date < ?`,
     [employeeId, start, end]
   );
-  const lateDays = rows.map((r) => {
-    const deductPercent = Number(r.deduct_percent) || 0;
-    return {
-      date: workDateStr(r.work_date),
-      late_minutes: r.late_minutes || 0,
-      deduct_percent: deductPercent,
-      deducted_amount: Math.round((salary * deductPercent) / 100)
-    };
+  const recordByDate = {};
+  rows.forEach((r) => { recordByDate[workDateStr(r.work_date)] = r; });
+
+  const todayStr = tzDateStr(new Date());
+  const deductions = [];
+  workDates.forEach((dateStr) => {
+    if (dateStr > todayStr) return; // kelajakdagi ish kuni hali baholanmaydi
+    const rec = recordByDate[dateStr];
+    if (!rec || !rec.check_in_at) {
+      deductions.push({ date: dateStr, type: 'absent', late_minutes: 0, deduct_percent: 100, deducted_amount: Math.round(dailyRate) });
+    } else if (Number(rec.deduct_percent) > 0) {
+      const pct = Number(rec.deduct_percent);
+      deductions.push({ date: dateStr, type: 'late', late_minutes: rec.late_minutes || 0, deduct_percent: pct, deducted_amount: Math.round((dailyRate * pct) / 100) });
+    }
   });
-  const totalDeducted = Math.min(salary, lateDays.reduce((sum, d) => sum + d.deducted_amount, 0));
+  const totalDeducted = Math.min(salary, deductions.reduce((sum, d) => sum + d.deducted_amount, 0));
   const remaining = Math.max(0, salary - totalDeducted);
-  return { salary, month, lateDays, totalDeducted, remaining };
+  return { salary, month, schedule, totalWorkDays, dailyRate: Math.round(dailyRate), deductions, totalDeducted, remaining };
 }
 
 // GET /api/attendance/my-salary?month=YYYY-MM — joriy foydalanuvchining o'z maoshi
@@ -572,6 +616,19 @@ router.put('/salary/:employeeId', auth.requireAuth, requireRole(SALARY_MANAGE_RO
     if (!employee) return res.status(404).json({ success: false, error: 'Xodim topilmadi' });
     await db.run('UPDATE admin_users SET salary = ? WHERE id = ?', [salary, req.params.employeeId]);
     res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PUT /api/attendance/work-schedule/:employeeId — xodimning individual ish kunlari jadvalini belgilash
+router.put('/work-schedule/:employeeId', auth.requireAuth, requireRole(SALARY_MANAGE_ROLES, "Bu amalni bajarishga ruxsat yo'q"), async (req, res) => {
+  try {
+    const employee = await db.get("SELECT id FROM admin_users WHERE id = ? AND role != 'superadmin'", [req.params.employeeId]);
+    if (!employee) return res.status(404).json({ success: false, error: 'Xodim topilmadi' });
+    const schedule = parseSchedule(JSON.stringify(req.body || {}));
+    await db.run('UPDATE admin_users SET work_schedule = ? WHERE id = ?', [JSON.stringify(schedule), req.params.employeeId]);
+    res.json({ success: true, schedule });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

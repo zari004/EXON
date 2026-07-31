@@ -1369,6 +1369,13 @@ body{
 .kpi-emp-section__head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
 .kpi-emp-section__head h4{font-size:12.5px;font-weight:600;color:var(--gray-dim);margin:0;text-transform:uppercase;letter-spacing:.03em}
 
+.wd-row{display:flex;gap:6px;flex-wrap:wrap}
+.wd-btn{
+  padding:7px 11px;border-radius:8px;border:1px solid var(--line-2);background:var(--surface);
+  color:var(--gray);font-size:12px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;
+}
+.wd-btn.is-on{background:rgba(var(--green-rgb),.15);border-color:rgba(var(--green-rgb),.4);color:var(--green-hi);font-weight:600}
+
 /* ── ISH UNUMDORLIGI ── */
 .prod-summary{
   display:flex;align-items:center;gap:22px;padding:22px;border-radius:16px;margin-bottom:20px;
@@ -6826,29 +6833,59 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     openKpiAwardForm(KPI_ACTIVE_EMPLOYEE_ID);
   });
 
+  var WD_LABELS = { mon: 'Dush', tue: 'Sesh', wed: 'Chor', thu: 'Pay', fri: 'Jum', sun: 'Yak' };
+  var WD_ORDER = ['mon', 'tue', 'wed', 'thu', 'fri', 'sun'];
+
+  function renderSaturdaySelectOptions(mode) {
+    var opts = [
+      ['none', "Ishlamaydi"],
+      ['all', "Har doim ishlaydi"],
+      ['odd', "Navbat bilan (1-,3-,5-shanba)"],
+      ['even', "Navbat bilan (2-,4-shanba)"]
+    ];
+    return opts.map(function (o) {
+      return '<option value="' + o[0] + '"' + (mode === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
+    }).join('');
+  }
+
   async function renderKpiEmpSalary(employeeId) {
     var el = document.getElementById('kpiEmpSalaryEl');
     el.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
     try {
       var data = await apiFetch('/api/attendance/salary/' + employeeId);
       var editHtml = KPI_CAN_MANAGE
-        ? '<div class="field-row" style="align-items:flex-end;margin-bottom:12px">' +
-            '<div class="field" style="margin-bottom:0"><label>Oylik maosh (so\'m)</label><input type="number" id="kpiEmpSalaryInput" min="0" step="10000" value="' + data.salary + '" /></div>' +
-            '<button type="button" class="btn-add" id="kpiEmpSalarySaveBtn" style="padding:9px 16px;height:38px">Saqlash</button>' +
-          '</div>'
+        ? '<div class="field"><label>Oylik maosh (so\'m)</label><input type="number" id="kpiEmpSalaryInput" min="0" step="10000" value="' + data.salary + '" /></div>' +
+          '<div class="field"><label>Ish kunlari</label><div class="wd-row" id="kpiEmpWdRow">' +
+            WD_ORDER.map(function (k) {
+              return '<button type="button" class="wd-btn' + (data.schedule[k] ? ' is-on' : '') + '" data-wd="' + k + '">' + WD_LABELS[k] + '</button>';
+            }).join('') +
+          '</div></div>' +
+          '<div class="field"><label>Shanba</label><select id="kpiEmpSaturdaySelect">' + renderSaturdaySelectOptions(data.schedule.saturday) + '</select></div>' +
+          '<button type="button" class="btn-add" id="kpiEmpSalarySaveBtn" style="padding:9px 16px;margin-bottom:14px">Saqlash</button>'
         : '';
       var summaryHtml = data.salary > 0
-        ? '<div class="kpi-card__meta-row">Qoladi: <b style="color:var(--green-hi)">' + fmtMoney(data.remaining) + '</b> / ' + fmtMoney(data.salary) + (data.totalDeducted > 0 ? ' · -' + fmtMoney(data.totalDeducted) + ' ushlab qolindi' : '') + '</div>' +
-          '<div class="kpi-card__tasks is-on" style="margin-top:10px">' + renderSalaryLateRows(data.lateDays) + '</div>'
+        ? '<div class="kpi-card__meta-row">Ish kunlari: ' + data.totalWorkDays + ' kun · Kunlik: ' + fmtMoney(data.dailyRate) + '</div>' +
+          '<div class="kpi-card__meta-row">Qoladi: <b style="color:var(--green-hi)">' + fmtMoney(data.remaining) + '</b> / ' + fmtMoney(data.salary) + (data.totalDeducted > 0 ? ' · -' + fmtMoney(data.totalDeducted) + ' ushlab qolindi' : '') + '</div>' +
+          '<div class="kpi-card__tasks is-on" style="margin-top:10px">' + renderSalaryDeductionRows(data.deductions) + '</div>'
         : '<div class="empty-state">Bu xodimga oylik maosh belgilanmagan</div>';
       el.innerHTML = editHtml + summaryHtml;
+      el.querySelectorAll('.wd-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () { btn.classList.toggle('is-on'); });
+      });
       var saveBtn = document.getElementById('kpiEmpSalarySaveBtn');
       if (saveBtn) {
         saveBtn.addEventListener('click', async function () {
-          var val = Number(document.getElementById('kpiEmpSalaryInput').value) || 0;
+          var salaryVal = Number(document.getElementById('kpiEmpSalaryInput').value) || 0;
+          var schedule = { saturday: document.getElementById('kpiEmpSaturdaySelect').value };
+          WD_ORDER.forEach(function (k) {
+            schedule[k] = el.querySelector('[data-wd="' + k + '"]').classList.contains('is-on');
+          });
           saveBtn.disabled = true;
           try {
-            await apiFetch('/api/attendance/salary/' + employeeId, { method: 'PUT', body: JSON.stringify({ salary: val }) });
+            await Promise.all([
+              apiFetch('/api/attendance/salary/' + employeeId, { method: 'PUT', body: JSON.stringify({ salary: salaryVal }) }),
+              apiFetch('/api/attendance/work-schedule/' + employeeId, { method: 'PUT', body: JSON.stringify(schedule) })
+            ]);
             await renderKpiEmpSalary(employeeId);
           } catch (err) {
             alert(err.message);
@@ -7031,16 +7068,17 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     if (document.getElementById('panel-productivity').classList.contains('is-active')) loadMySalary();
   });
 
-  function renderSalaryLateRows(lateDays) {
-    return lateDays.length
-      ? lateDays.map(function (d) {
+  function renderSalaryDeductionRows(deductions) {
+    return deductions.length
+      ? deductions.map(function (d) {
+          var statusText = d.type === 'absent' ? 'Kelmagan' : (d.late_minutes + ' daq kechikish · -' + d.deduct_percent + '%');
           return '<div class="kpi-task-row">' +
             '<span class="kpi-task-row__title">' + d.date + '</span>' +
-            '<span class="kpi-task-row__date">' + d.late_minutes + ' daq kechikish · -' + d.deduct_percent + '%</span>' +
+            '<span class="kpi-task-row__date">' + statusText + '</span>' +
             '<span class="kpi-task-row__pts" style="color:#F2896F">-' + fmtMoney(d.deducted_amount) + '</span>' +
           '</div>';
         }).join('')
-      : '<div class="kpi-task-row kpi-task-row--empty">Bu oy kechikish yo\'q — maosh to\'liq!</div>';
+      : '<div class="kpi-task-row kpi-task-row--empty">Bu oy ushlab qolish yo\'q — maosh to\'liq!</div>';
   }
 
   function renderMySalary(data) {
@@ -7052,12 +7090,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     el.innerHTML =
       '<div class="prod-summary">' +
         '<div class="prod-summary__body">' +
+          '<div class="kpi-card__meta-row">Ish kunlari: ' + data.totalWorkDays + ' kun · Kunlik: ' + fmtMoney(data.dailyRate) + '</div>' +
           '<div class="prod-bonus">Qoladigan maosh: <b>' + fmtMoney(data.remaining) + '</b> / ' + fmtMoney(data.salary) + '</div>' +
           (data.totalDeducted > 0 ? '<div class="kpi-card__meta-row" style="color:#F2896F">Jami ushlab qolindi: -' + fmtMoney(data.totalDeducted) + '</div>' : '') +
         '</div>' +
       '</div>' +
-      '<h3 class="prod-section-title" style="margin-top:16px">Kechikkan kunlar</h3>' +
-      '<div class="kpi-card__tasks is-on">' + renderSalaryLateRows(data.lateDays) + '</div>';
+      '<h3 class="prod-section-title" style="margin-top:16px">Ushlab qolingan kunlar</h3>' +
+      '<div class="kpi-card__tasks is-on">' + renderSalaryDeductionRows(data.deductions) + '</div>';
   }
 
   // ══════════════════════════════════════════════════════════
