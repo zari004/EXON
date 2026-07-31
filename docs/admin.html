@@ -1878,7 +1878,7 @@ body{
   <!-- RUXSATLAR (IT bo'limi) -->
   <section class="admin-panel" id="panel-permissions">
     <div class="panel-head"><h2 id="permTitle">Ruxsatlar sozlamalari</h2></div>
-    <p id="permDesc" style="color:var(--gray);font-size:13.5px;margin-bottom:20px">Sayt boshqaruvi bo'limi endi faqat superadmin va IT bo'limiga tegishli.</p>
+    <p id="permDesc" style="color:var(--gray);font-size:13.5px;margin-bottom:20px">Sayt boshqaruvi bo'limiga boshqa rollarga bu yerdan ruxsat berib bo'lmaydi.</p>
     <div id="permContent"></div>
   </section>
 
@@ -2864,7 +2864,7 @@ body{
       'tasks.field.assign': 'Tayinlash (xodim)',
       'tasks.confirm.del': 'Vazifani o\'chirishni tasdiqlaysizmi?',
       'perm.title': 'Ruxsatlar sozlamalari',
-      'perm.desc': "Sayt boshqaruvi bo'limi endi faqat superadmin va IT bo'limiga tegishli.",
+      'perm.desc': "Sayt boshqaruvi bo'limiga boshqa rollarga bu yerdan ruxsat berib bo'lmaydi.",
       'perm.role': 'Rol',
       'dash.title': 'Audit hisobotlari',
       'dash.total': 'Jami lidlar',
@@ -3002,7 +3002,7 @@ body{
       'tasks.field.assign': 'Назначить (сотрудник)',
       'tasks.confirm.del': 'Удалить эту задачу?',
       'perm.title': 'Настройка доступов',
-      'perm.desc': 'Раздел «Управление сайтом» теперь доступен только superadmin и IT-отделу.',
+      'perm.desc': 'Доступ к разделу «Управление сайтом» отсюда предоставить другим ролям нельзя.',
       'perm.role': 'Роль',
       'dash.title': 'Отчёты аудита',
       'dash.total': 'Всего лидов',
@@ -3140,7 +3140,7 @@ body{
       'tasks.field.assign': 'Assign to',
       'tasks.confirm.del': 'Delete this task?',
       'perm.title': 'Permission settings',
-      'perm.desc': 'The "Site management" section is now available only to superadmin and IT.',
+      'perm.desc': 'Access to "Site management" can no longer be granted to other roles from here.',
       'perm.role': 'Role',
       'dash.title': 'Audit reports',
       'dash.total': 'Total leads',
@@ -4187,7 +4187,7 @@ body{
     // superadmin va IT bo'limiga tegishli — boshqa hech bir rolga
     // berilmaydi, shuning uchun bu yerda sozlanadigan narsa qolmadi
     document.getElementById('permContent').innerHTML =
-      '<div class="empty-state">Sayt boshqaruvi bo\'limi (Hisobot, Keyslar, Blog, Narxlar) endi faqat superadmin va IT bo\'limiga tegishli — boshqa rollarga bu yerdan ruxsat berib bo\'lmaydi.</div>';
+      '<div class="empty-state">Sayt boshqaruvi bo\'limi (Hisobot, Keyslar, Blog, Narxlar) uchun boshqa rollarga bu yerdan ruxsat berib bo\'lmaydi.</div>';
   }
 
   window.approveUser = async function (id) {
@@ -4432,6 +4432,14 @@ body{
     applyTaskMemberFilter();
   }
   document.getElementById('taskMemberAll').addEventListener('click', function () { selectTaskMember(this); });
+
+  // Xodimlar filtrida bitta odam tanlangan bo'lsa, shu yerdan yaratilgan
+  // yangi vazifa avtomatik o'sha odamga tayinlanadi
+  function activeTaskMember() {
+    if (!TASKS_MEMBER_FILTER) return null;
+    var u = TD_USERS.find(function (x) { return String(x.id) === TASKS_MEMBER_FILTER; });
+    return u ? { id: u.id, name: u.name } : null;
+  }
 
   // ── DRAG & DROP (optimistic, no loading) ──
   function setupKanbanEvents() {
@@ -5531,8 +5539,15 @@ body{
       });
     });
     grid.querySelectorAll('.cal-day:not(.is-muted)').forEach(function (dayEl) {
-      dayEl.addEventListener('click', function () { openTaskDrawer(null, dayEl, dayEl.dataset.date); });
+      dayEl.addEventListener('click', function () { openTaskDrawer(null, dayEl, { dueDate: dayEl.dataset.date, store: activeCalStore() }); });
     });
+  }
+
+  // Kalendarda bitta do'kon tanlangan bo'lsa, shu yerdan yaratilgan yangi
+  // vazifa avtomatik o'sha do'konga tayinlanadi (qayta tanlash shart emas)
+  function activeCalStore() {
+    if (!CAL_ACTIVE_STORE) return null;
+    return TD_STORES.find(function (s) { return String(s.id) === CAL_ACTIVE_STORE; }) || null;
   }
 
   document.getElementById('calPrevBtn').addEventListener('click', function () {
@@ -5548,7 +5563,7 @@ body{
     CAL_YEAR = now.getFullYear(); CAL_MONTH = now.getMonth();
     renderCalGrid();
   });
-  document.getElementById('btnAddCalTask').addEventListener('click', function () { openTaskDrawer(null); });
+  document.getElementById('btnAddCalTask').addEventListener('click', function () { openTaskDrawer(null, null, { store: activeCalStore() }); });
 
   function buildAssigneePopup() {
     var pop = document.getElementById('tdAssPop');
@@ -5577,12 +5592,18 @@ body{
   }
 
   // ── OPEN DRAWER ──
-  function openTaskDrawer(task, cardEl, presetDate) {
+  // opts (faqat yangi vazifa yaratishda ishlatiladi, task=null bo'lganda):
+  //  { dueDate, store: {id,name,logo}, assignee: {id,name} } — masalan
+  //  Kalendarda bitta do'kon yoki Vazifalarda bitta xodim filtrlangan
+  //  bo'lsa, o'sha yerdan yaratilgan vazifa avtomatik shu qiymatlarga
+  //  tayinlanadi, qayta tanlash shart bo'lmaydi
+  function openTaskDrawer(task, cardEl, opts) {
+    opts = opts || {};
     TD_EDIT_ID = task ? task.id : null;
     var isDone = task && task.status === 'done';
     document.getElementById('taskTitle').value = task ? task.title : '';
     document.getElementById('taskDesc').value = task ? (task.description || '') : '';
-    document.getElementById('taskDue').value = task && task.due_date ? task.due_date.split('T')[0] : (presetDate || '');
+    document.getElementById('taskDue').value = task && task.due_date ? task.due_date.split('T')[0] : (opts.dueDate || '');
     document.getElementById('taskFormMsg').textContent = '';
     TD_START_DATE = task && task.start_date ? task.start_date.split('T')[0] : '';
     TD_CAL_MODE = TD_START_DATE ? 'dur' : 'date';
@@ -5605,8 +5626,15 @@ body{
     document.getElementById('taskDesc').disabled = !canEditFull;
     document.getElementById('tdPriBtn').disabled = !canEditFull;
     document.getElementById('tdDateBtn').disabled = !canEditFull;
-    setAssignee(task ? task.assigned_to : null, task ? task.assigned_name : null);
-    setStore(task ? task.store_id : null, task ? task.store_name : null, task ? task.store_logo : null);
+    setAssignee(
+      task ? task.assigned_to : (opts.assignee ? opts.assignee.id : null),
+      task ? task.assigned_name : (opts.assignee ? opts.assignee.name : null)
+    );
+    setStore(
+      task ? task.store_id : (opts.store ? opts.store.id : null),
+      task ? task.store_name : (opts.store ? opts.store.name : null),
+      task ? task.store_logo : (opts.store ? opts.store.logo : null)
+    );
     // "Kimga" footer — to'liq board yoki shu vazifani yaratgan odamga ko'rinadi.
     // Faqat tayinlangan (lekin yaratmagan) kishiga — bu doim o'zi bo'lgani uchun ko'rsatilmaydi.
     document.getElementById('tdAssDisplay').style.display = canEditFull ? 'flex' : 'none';
@@ -5999,7 +6027,7 @@ body{
   })();
 
   // Expose for "+" button in panel header
-  window.openTaskModal = function () { openTaskDrawer(null); };
+  window.openTaskModal = function () { openTaskDrawer(null, null, { assignee: activeTaskMember() }); };
   window.deleteTask = async function (id) {
     if (!confirm(T('tasks.confirm.del') || "O'chirishni tasdiqlaysizmi?")) return;
     try { await apiFetch('/api/tasks/' + id, { method: 'DELETE' }); await loadTasks(); }

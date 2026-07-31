@@ -128,7 +128,9 @@ async function computeEmployeeKpi(plan, month) {
 // GET /api/kpi/employees — KPI rejasi biriktirilishi mumkin bo'lgan xodimlar
 router.get('/employees', auth.requireAuth, requireKpiView, async (req, res) => {
   try {
-    const rows = await db.all("SELECT id, name, role FROM admin_users WHERE status = 'approved' ORDER BY name");
+    // superadmin hisobi hech kimga ko'rinmasligi kerak (KPI'ni SEO ham
+    // ko'radi), shu sabab bu ro'yxatdan chiqarib tashlanadi
+    const rows = await db.all("SELECT id, name, role FROM admin_users WHERE status = 'approved' AND role != 'superadmin' ORDER BY name");
     res.json({ success: true, employees: rows });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -141,6 +143,7 @@ router.get('/plans', auth.requireAuth, requireKpiView, async (req, res) => {
     const rows = await db.all(`
       SELECT p.*, u.name AS employee_name, u.role AS employee_role
       FROM kpi_plans p JOIN admin_users u ON u.id = p.employee_id
+      WHERE u.role != 'superadmin'
       ORDER BY u.name
     `);
     res.json({ success: true, plans: rows });
@@ -202,6 +205,7 @@ router.get('/stats', auth.requireAuth, requireKpiView, async (req, res) => {
     const plans = await db.all(`
       SELECT p.*, u.name AS employee_name, u.role AS employee_role
       FROM kpi_plans p JOIN admin_users u ON u.id = p.employee_id
+      WHERE u.role != 'superadmin'
       ORDER BY u.name
     `);
     const result = [];

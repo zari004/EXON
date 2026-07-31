@@ -165,8 +165,11 @@ router.delete('/stores/:id', auth.requireAuth, async (req, res) => {
  */
 router.get('/users', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
   try {
+    // Bu ro'yxatni IT bo'limi ham ko'radi (requireSuperAdmin ikkalasiga ham
+    // ruxsat beradi) — superadmin hisobi hech kimga (IT bo'limiga ham)
+    // ko'rinmasligi kerak, shu sabab bu yerdan chiqarib tashlanadi
     const users = await db.all(
-      'SELECT id, name, email, role, status, created_at FROM admin_users ORDER BY created_at DESC'
+      "SELECT id, name, email, role, status, created_at FROM admin_users WHERE role != 'superadmin' ORDER BY created_at DESC"
     );
     res.json({ success: true, users });
   } catch (err) {

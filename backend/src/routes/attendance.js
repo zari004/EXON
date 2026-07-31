@@ -356,7 +356,7 @@ router.get('/all', auth.requireAuth, requireRole(VIEW_ALL_ROLES, "Bu bo'limni ko
        r.work_date, r.check_in_at, r.late_minutes, r.deduct_percent, r.check_out_at,
        r.check_in_photo, r.check_out_photo, r.edited_by, r.edited_at
        FROM attendance_records r JOIN admin_users u ON u.id = r.employee_id
-       WHERE r.work_date >= ? AND r.work_date < ? ORDER BY u.name, r.work_date DESC`,
+       WHERE r.work_date >= ? AND r.work_date < ? AND u.role != 'superadmin' ORDER BY u.name, r.work_date DESC`,
       [start, end]
     );
     res.json({ success: true, month: monthStr, records: rows });
