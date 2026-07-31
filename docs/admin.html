@@ -6738,6 +6738,15 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     return (v < 0 ? '-' : '') + parts.join(' ') + " so'm";
   }
 
+  function fmtDuration(totalMinutes) {
+    var m = Math.round(totalMinutes) || 0;
+    var h = Math.floor(m / 60);
+    var rem = m % 60;
+    if (h <= 0) return rem + ' daqiqa';
+    if (rem <= 0) return h + ' soat';
+    return h + ' soat ' + rem + ' daqiqa';
+  }
+
   async function loadKpiData() {
     var empData = await apiFetch('/api/kpi/employees');
     KPI_EMPLOYEES = empData.employees || [];
@@ -6868,7 +6877,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     var count = data.deductions.length;
     var rowsHtml = count
       ? data.deductions.map(function (d) {
-          var statusText = d.type === 'absent' ? 'Kelmagan' : (d.late_minutes + ' daq kechikish · -' + d.deduct_percent + '%');
+          var statusText = d.type === 'absent' ? 'Kelmagan' : (fmtDuration(d.late_minutes) + ' kechikish · -' + d.deduct_percent + '%');
           return '<div class="salary-day-row">' +
             '<span class="salary-day-row__date">' + d.date + '</span>' +
             '<span class="salary-day-row__status">' + statusText + '</span>' +
@@ -7218,7 +7227,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         '<div class="att-status-title">Ish jarayonida</div>' +
         '<div class="att-times-row"><div class="att-time-block"><b>' + attFmtTime(r.check_in_at) + '</b><span>Keldi</span></div></div>' +
         '<div class="att-late-badge ' + (isLate ? 'late' : 'ontime') + '">' +
-          (isLate ? '⏰ ' + r.late_minutes + " daq kechikish · -" + r.deduct_percent + '%' : "✓ O'z vaqtida") +
+          (isLate ? '⏰ ' + fmtDuration(r.late_minutes) + " kechikish · -" + r.deduct_percent + '%' : "✓ O'z vaqtida") +
         '</div>' +
         (r.check_in_photo ? '<div class="att-photos-row"><img class="att-photo-thumb" src="' + esc(r.check_in_photo) + '" onclick="attShowPhoto(this.src)" /></div>' : '') +
         '<div style="margin-top:20px"><button type="button" class="att-big-btn att-big-btn--out" id="attCheckOutBtn">🚪 Ketdim</button></div>';
@@ -7236,7 +7245,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         '<div class="att-time-block"><b>' + attFmtTime(r.check_out_at) + '</b><span>Ketdi</span></div>' +
       '</div>' +
       '<div class="att-late-badge ' + (isLate2 ? 'late' : 'ontime') + '">' +
-        (isLate2 ? '⏰ ' + r.late_minutes + " daq kechikish · -" + r.deduct_percent + '%' : "✓ O'z vaqtida kelgan") +
+        (isLate2 ? '⏰ ' + fmtDuration(r.late_minutes) + " kechikish · -" + r.deduct_percent + '%' : "✓ O'z vaqtida kelgan") +
       '</div>' +
       '<div class="att-photos-row">' +
         (r.check_in_photo ? '<img class="att-photo-thumb" src="' + esc(r.check_in_photo) + '" onclick="attShowPhoto(this.src)" />' : '') +
@@ -7490,7 +7499,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         '<div class="att-history-times">' +
           '<span>Keldi: <b>' + attFmtTime(r.check_in_at) + '</b></span>' +
           '<span>Ketdi: <b>' + attFmtTime(r.check_out_at) + '</b></span>' +
-          (late ? '<span style="color:#F2896F">-' + r.deduct_percent + '% (' + r.late_minutes + ' daq)</span>' : '<span style="color:var(--green-hi)">O\'z vaqtida</span>') +
+          (late ? '<span style="color:#F2896F">-' + r.deduct_percent + '% (' + fmtDuration(r.late_minutes) + ')</span>' : '<span style="color:var(--green-hi)">O\'z vaqtida</span>') +
         '</div>' +
         '<div class="att-history-thumbs">' +
           (r.check_in_photo ? '<img src="' + esc(r.check_in_photo) + '" onclick="attShowPhoto(this.src)" />' : '') +
@@ -7529,7 +7538,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         '<td data-label="Xodim">' + esc(r.employee_name) + '</td>' +
         '<td data-label="Sana">' + attFmtDateShort(r.work_date) + '</td>' +
         '<td data-label="Keldi"><input type="time" class="att-edit-input" data-field="check_in_time" value="' + attTimeValue(r.check_in_at) + '" /></td>' +
-        '<td data-label="Kechikish">' + (r.late_minutes > 0 ? r.late_minutes + ' daq' : '—') + '</td>' +
+        '<td data-label="Kechikish">' + (r.late_minutes > 0 ? fmtDuration(r.late_minutes) : '—') + '</td>' +
         '<td data-label="Ushlab qolindi"><span class="att-deduct-pill" style="' + pillStyle + '">' + r.deduct_percent + '%</span></td>' +
         '<td data-label="Ketdi"><input type="time" class="att-edit-input" data-field="check_out_time" value="' + attTimeValue(r.check_out_at) + '" /></td>' +
         '<td data-label=""><button type="button" class="icon-btn att-save-row" title="Saqlash">💾</button></td>' +
