@@ -7045,36 +7045,23 @@ body{
     return { start: fmt(start), end: fmt(endExclusive), label: 'haftalik_' + fmt(start) + '_' + fmt(today) };
   }
 
-  function buildAttendanceCsvString(records) {
-    var header = ['Xodim', 'Sana', 'Keldi', "Kechikish (daq)", "Ushlab qolindi (%)", 'Ketdi'];
-    var rows = records.map(function (r) {
-      return [
-        r.employee_name,
-        attFmtDateShort(r.work_date),
-        attTimeValue(r.check_in_at),
-        r.late_minutes || 0,
-        r.deduct_percent || 0,
-        attTimeValue(r.check_out_at)
-      ];
+  // Backend haqiqiy .xlsx fayl qilib beradi (chiroyli sarlavha, ustun
+  // kengligi, chegaralar) — shu sabab bu yerda faylni faqat yuklab olamiz
+  async function downloadAttendanceXlsx(range) {
+    var res = await fetch(API + '/api/attendance/export?start=' + range.start + '&end=' + range.end, {
+      headers: authHeaders()
     });
-    var csvLines = [header].concat(rows).map(function (row) {
-      return row.map(function (cell) {
-        var s = String(cell === null || cell === undefined ? '' : cell);
-        if (/["\n,]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
-        return s;
-      }).join(',');
-    });
-    return csvLines.join('\r\n');
-  }
-
-  function downloadAttendanceCsv(records, label) {
-    if (!records.length) { alert("Bu davr uchun yozuv topilmadi"); return; }
-    // BOM — Excel'da o'zbekcha/kirillcha harflar to'g'ri ko'rinishi uchun
-    var blob = new Blob(['﻿' + buildAttendanceCsvString(records)], { type: 'text/csv;charset=utf-8;' });
+    if (res.status === 401) { logout(); throw new Error('Sessiya tugagan, qayta kiring'); }
+    if (!res.ok) {
+      var errData = null;
+      try { errData = await res.json(); } catch (e) {}
+      throw new Error((errData && errData.error) || 'Yuklab bo\'lmadi');
+    }
+    var blob = await res.blob();
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = 'keldi-ketdi_' + label + '.csv';
+    a.download = 'keldi-ketdi_' + range.label + '.xlsx';
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -7088,8 +7075,7 @@ body{
       var originalText = btn.textContent;
       btn.disabled = true; btn.textContent = 'Yuklanmoqda...';
       try {
-        var data = await apiFetch('/api/attendance/all?start=' + range.start + '&end=' + range.end);
-        downloadAttendanceCsv(data.records || [], range.label);
+        await downloadAttendanceXlsx(range);
       } catch (err) {
         alert(err.message || 'Xato');
       } finally {

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const ExcelJS = require('exceljs');
 const db = require('../db');
 const auth = require('../services/auth');
 
@@ -11,6 +12,8 @@ const POLICY_MANAGE_ROLES = ['menejer_bosh', 'superadmin'];
 const VIEW_ALL_ROLES = ['menejer_bosh', 'seo', 'it_bolimi', 'superadmin'];
 // Xodimlarning keldi-ketdi vaqtini qo'lda tahrirlash
 const EDIT_ROLES = ['menejer_bosh', 'seo', 'it_bolimi', 'superadmin'];
+// Hisobotni Excel fayl qilib yuklab olish — SEO'da yo'q
+const EXPORT_ROLES = ['menejer_bosh', 'it_bolimi', 'superadmin'];
 
 function requireRole(roles, msg) {
   return (req, res, next) => {
@@ -363,6 +366,92 @@ router.get('/all', auth.requireAuth, requireRole(VIEW_ALL_ROLES, "Bu bo'limni ko
       [start, end]
     );
     res.json({ success: true, month: monthStr, records: rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Berilgan ISO vaqtni Toshkent devor-soatiga o'girib "HH:MM" qilib qaytaradi
+function tzTimeStr(iso) {
+  if (!iso) return '';
+  const mins = tzMinutesOfDay(new Date(iso));
+  const h = Math.floor(mins / 60), m = mins % 60;
+  return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+}
+
+// ── HISOBOTNI EXCEL (.xlsx) FAYL QILIB YUKLAB OLISH ──
+router.get('/export', auth.requireAuth, requireRole(EXPORT_ROLES, "Bu amalni bajarishga ruxsat yo'q"), async (req, res) => {
+  try {
+    const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+    let start, end, label;
+    if (DATE_RE.test(req.query.start || '') && DATE_RE.test(req.query.end || '')) {
+      start = req.query.start;
+      end = req.query.end;
+      label = start + '_' + end;
+    } else {
+      const mr = monthRange(req.query.month);
+      start = mr.start; end = mr.end; label = mr.monthStr;
+    }
+    const rows = await db.all(
+      `SELECT u.name AS employee_name, r.work_date, r.check_in_at, r.late_minutes, r.deduct_percent, r.check_out_at
+       FROM attendance_records r JOIN admin_users u ON u.id = r.employee_id
+       WHERE r.work_date >= ? AND r.work_date < ? AND u.role != 'superadmin'
+       ORDER BY u.name, r.work_date DESC`,
+      [start, end]
+    );
+
+    const wb = new ExcelJS.Workbook();
+    wb.creator = 'EXON';
+    const ws = wb.addWorksheet('Keldi-ketdi', { views: [{ state: 'frozen', ySplit: 1 }] });
+    ws.columns = [
+      { header: 'Xodim', key: 'name', width: 26 },
+      { header: 'Sana', key: 'date', width: 14 },
+      { header: 'Keldi', key: 'checkin', width: 10 },
+      { header: 'Kechikish (daq)', key: 'late', width: 16 },
+      { header: 'Ushlab qolindi (%)', key: 'deduct', width: 18 },
+      { header: 'Ketdi', key: 'checkout', width: 10 }
+    ];
+
+    rows.forEach((r) => {
+      ws.addRow({
+        name: r.employee_name,
+        date: new Date(r.work_date),
+        checkin: tzTimeStr(r.check_in_at),
+        late: r.late_minutes || 0,
+        deduct: r.deduct_percent || 0,
+        checkout: tzTimeStr(r.check_out_at)
+      });
+    });
+
+    // Sarlavha qatori — brend rangida, oq va qalin matn
+    const headerRow = ws.getRow(1);
+    headerRow.height = 22;
+    headerRow.eachCell((cell) => {
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0BD16C' } };
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
+      cell.border = { bottom: { style: 'thin', color: { argb: 'FF0A9E5C' } } };
+    });
+
+    ws.getColumn('date').numFmt = 'dd-mmm-yyyy';
+    ws.getColumn('date').alignment = { horizontal: 'center' };
+    ['checkin', 'checkout'].forEach((key) => { ws.getColumn(key).alignment = { horizontal: 'center' }; });
+    ['late', 'deduct'].forEach((key) => { ws.getColumn(key).alignment = { horizontal: 'center' }; });
+
+    // Har qatorga nozik pastki chiziq + juft qatorlarga xira fon —
+    // ma'lumot o'qilishi osonroq bo'lishi uchun
+    for (let i = 2; i <= ws.rowCount; i++) {
+      const row = ws.getRow(i);
+      row.eachCell((cell) => {
+        cell.border = { bottom: { style: 'thin', color: { argb: 'FFE4EBE6' } } };
+        if (i % 2 === 0) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF7FAF8' } };
+      });
+    }
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename="keldi-ketdi_' + label + '.xlsx"');
+    await wb.xlsx.write(res);
+    res.end();
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
