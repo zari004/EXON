@@ -53,4 +53,31 @@ async function checkDueSoonAndOverdue() {
   }
 }
 
-module.exports = { checkDueSoonAndOverdue };
+// Muddati ertaga tugaydigan (yoki allaqachon tugagan) va hali hal qilinmagan
+// KPI topshiriqlari uchun bosh menejerlarga bir martalik bildirishnoma yuboradi.
+async function checkKpiAwardsDue() {
+  try {
+    const rows = await db.all(`
+      SELECT ka.id, ka.reason, ka.amount, to_char(ka.due_date, 'YYYY-MM-DD') AS due_date, u.name AS employee_name
+      FROM kpi_awards ka JOIN admin_users u ON u.id = ka.employee_id
+      WHERE ka.status = 'pending' AND ka.manager_notified = false
+        AND ka.due_date <= (CURRENT_DATE + INTERVAL '1 day')
+    `);
+    if (!rows.length) return;
+    const managers = await db.all("SELECT id FROM admin_users WHERE role = 'menejer_bosh' AND status = 'approved'");
+    for (const award of rows) {
+      for (const mgr of managers) {
+        await notifications.notify(
+          mgr.id, 'kpi_award_review',
+          'KPI tasdiqlash kerak: ' + award.employee_name,
+          '"' + award.reason + '" vazifasi (' + award.due_date + ') bajarildimi? KPI bo\'limida tasdiqlang.'
+        );
+      }
+      await db.run('UPDATE kpi_awards SET manager_notified = true WHERE id = ?', [award.id]);
+    }
+  } catch (err) {
+    console.error('KPI topshiriqlari bildirishnomasini tekshirishda xato:', err.message);
+  }
+}
+
+module.exports = { checkDueSoonAndOverdue, checkKpiAwardsDue };

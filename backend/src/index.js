@@ -69,6 +69,9 @@ db.init()
     // Muddati yaqinlashgan/o'tib ketgan vazifalar uchun bildirishnomalar — har 5 daqiqada
     notificationScheduler.checkDueSoonAndOverdue();
     setInterval(notificationScheduler.checkDueSoonAndOverdue, 5 * 60 * 1000);
+    // Muddati yaqinlashgan KPI topshiriqlari uchun bosh menejerga bildirishnoma
+    notificationScheduler.checkKpiAwardsDue();
+    setInterval(notificationScheduler.checkKpiAwardsDue, 5 * 60 * 1000);
   }).catch(err => {
     console.error('❌ Database error:', err);
     process.exit(1);

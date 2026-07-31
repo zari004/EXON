@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const auth = require('../services/auth');
+const notifications = require('../services/notifications');
 
 // KPI rejalarini yaratish/tahrirlash/o'chirish huquqi — bosh menejer, superadmin, IT bo'limi
 const KPI_MANAGE_ROLES = ['superadmin', 'it_bolimi', 'menejer_bosh'];
@@ -228,6 +229,116 @@ router.get('/my-stats', auth.requireAuth, async (req, res) => {
     if (!plan) return res.json({ success: true, month, hasPlan: false });
     const stat = await computeEmployeeKpi(plan, month);
     res.json({ success: true, month, hasPlan: true, kpi: stat });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+function fmtAmount(n) {
+  var v = Math.round(Number(n) || 0);
+  var s = String(Math.abs(v));
+  var parts = [];
+  while (s.length > 3) { parts.unshift(s.slice(-3)); s = s.slice(0, -3); }
+  parts.unshift(s);
+  return (v < 0 ? '-' : '') + parts.join(' ') + " so'm";
+}
+
+// ══════════════════════════════════════════════════════════
+// KPI TOPSHIRIQLARI — xodimga aniq maqsad+muddat bilan beriladigan alohida
+// KPI, bosh menejer tomonidan muddat oxirida bajarilgandan qo'lda tasdiqlanadi
+// ══════════════════════════════════════════════════════════
+
+// GET /api/kpi/awards — barcha KPI topshiriqlari (boshqaruv ko'rinishi)
+router.get('/awards', auth.requireAuth, requireKpiView, async (req, res) => {
+  try {
+    const rows = await db.all(`
+      SELECT ka.id, ka.employee_id, ka.amount, ka.reason, ka.status,
+             to_char(ka.due_date, 'YYYY-MM-DD') AS due_date,
+             ka.decided_by, ka.decided_at, ka.created_at, u.name AS employee_name
+      FROM kpi_awards ka JOIN admin_users u ON u.id = ka.employee_id
+      WHERE u.role != 'superadmin'
+      ORDER BY (ka.status = 'pending') DESC, ka.due_date ASC
+    `);
+    res.json({ success: true, awards: rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/kpi/my-awards — joriy foydalanuvchining o'ziga tegishli KPI topshiriqlari
+router.get('/my-awards', auth.requireAuth, async (req, res) => {
+  try {
+    const rows = await db.all(`
+      SELECT id, amount, reason, status, to_char(due_date, 'YYYY-MM-DD') AS due_date, decided_at
+      FROM kpi_awards WHERE employee_id = ?
+      ORDER BY (status = 'pending') DESC, due_date DESC
+    `, [req.user.userId]);
+    res.json({ success: true, awards: rows });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/kpi/awards — yangi KPI topshirig'i yaratish
+router.post('/awards', auth.requireAuth, requireKpiManage, async (req, res) => {
+  try {
+    const employeeId = Number(req.body.employee_id);
+    const amount = Number(req.body.amount) || 0;
+    const reason = String(req.body.reason || '').trim();
+    const dueDate = String(req.body.due_date || '');
+    if (!employeeId || !reason || !/^\d{4}-\d{2}-\d{2}$/.test(dueDate)) {
+      return res.status(400).json({ success: false, error: "Barcha maydonlarni to'ldiring" });
+    }
+    const employee = await db.get("SELECT id, name FROM admin_users WHERE id = ? AND role != 'superadmin'", [employeeId]);
+    if (!employee) return res.status(404).json({ success: false, error: 'Xodim topilmadi' });
+
+    const inserted = await db.run(
+      `INSERT INTO kpi_awards (employee_id, amount, reason, due_date, created_by) VALUES (?, ?, ?, ?, ?)`,
+      [employeeId, amount, reason, dueDate, req.user.userId]
+    );
+    await notifications.notify(
+      employeeId, 'kpi_award_pending', 'Yangi KPI belgilandi',
+      '"' + reason + '" — ' + dueDate + ' sanasigacha shu natijaga erishsangiz, sizga ' + fmtAmount(amount) + ' miqdorida KPI beriladi.'
+    );
+    res.json({ success: true, id: inserted.id });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/kpi/awards/:id/decide — bosh menejer vazifa bajarilganmi deb belgilaydi
+router.post('/awards/:id/decide', auth.requireAuth, requireKpiManage, async (req, res) => {
+  try {
+    const award = await db.get('SELECT * FROM kpi_awards WHERE id = ?', [req.params.id]);
+    if (!award) return res.status(404).json({ success: false, error: 'Topilmadi' });
+    if (award.status !== 'pending') {
+      return res.status(400).json({ success: false, error: 'Bu topshiriq allaqachon hal qilingan' });
+    }
+    const approved = !!req.body.approved;
+    const status = approved ? 'approved' : 'rejected';
+    await db.run(
+      'UPDATE kpi_awards SET status = ?, decided_by = ?, decided_at = NOW(), updated_at = NOW() WHERE id = ?',
+      [status, req.user.userId, req.params.id]
+    );
+    await notifications.notify(
+      award.employee_id,
+      approved ? 'kpi_award_approved' : 'kpi_award_rejected',
+      approved ? 'KPI tasdiqlandi' : 'KPI berilmadi',
+      approved
+        ? 'Bu oy "' + award.reason + '" vazifasi uchun ' + fmtAmount(award.amount) + ' miqdorida KPI sizga beriladi.'
+        : 'Bu oy "' + award.reason + '" vazifasi uchun KPI sizga berilmaydi. Sababi: siz ushbu vazifani bajarmadingiz.'
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE /api/kpi/awards/:id — KPI topshirig'ini bekor qilish
+router.delete('/awards/:id', auth.requireAuth, requireKpiManage, async (req, res) => {
+  try {
+    await db.run('DELETE FROM kpi_awards WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

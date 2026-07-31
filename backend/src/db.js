@@ -254,6 +254,29 @@ const init = async () => {
   `);
   await pool.query(`ALTER TABLE kpi_plans ADD COLUMN IF NOT EXISTS bonus_amount NUMERIC NOT NULL DEFAULT 0`);
 
+  // KPI topshiriqlari — bosh menejer/superadmin/IT bo'limi tomonidan xodimga
+  // beriladigan alohida maqsad: miqdori, sababi va muddati bilan. Muddatidan
+  // bir kun oldin bosh menejerga vazifa bajarildimi deb tasdiqlash so'raladi.
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS kpi_awards (
+      id SERIAL PRIMARY KEY,
+      employee_id INTEGER NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+      amount NUMERIC NOT NULL DEFAULT 0,
+      reason TEXT NOT NULL,
+      due_date DATE NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      manager_notified BOOLEAN NOT NULL DEFAULT false,
+      decided_by INTEGER,
+      decided_at TIMESTAMP,
+      created_by INTEGER,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_kpi_awards_employee ON kpi_awards(employee_id, due_date DESC)
+  `);
+
   // ── KELDI-KETDI (davomat) ──
   // Ishxona hududi — IT bo'limi/superadmin belgilaydi, GPS geofencing uchun (bitta qator, id=1)
   await pool.query(`
