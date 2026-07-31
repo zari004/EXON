@@ -276,6 +276,9 @@ const init = async () => {
   await pool.query(`
     CREATE INDEX IF NOT EXISTS idx_kpi_awards_employee ON kpi_awards(employee_id, due_date DESC)
   `);
+  // 'once' — bir martalik, 'monthly' — har oyda avtomatik takrorlanadi
+  // (bosh menejer har safar tasdiqlagach/rad etgach navbatdagi oy uchun avtomatik yangi topshiriq ochiladi)
+  await pool.query(`ALTER TABLE kpi_awards ADD COLUMN IF NOT EXISTS recurrence TEXT NOT NULL DEFAULT 'once'`);
 
   // ── KELDI-KETDI (davomat) ──
   // Ishxona hududi — IT bo'limi/superadmin belgilaydi, GPS geofencing uchun (bitta qator, id=1)

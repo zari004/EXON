@@ -1326,16 +1326,6 @@ body{
 .kpi-task-row__date{color:var(--gray-dim);font-size:11px;flex-shrink:0}
 .kpi-task-row--empty{color:var(--gray-dim);font-style:italic}
 
-.kpi-modal-box{max-width:480px}
-.kpi-weight-section{margin-top:6px;padding:14px;border-radius:12px;background:rgba(var(--surface-2-rgb),.5);border:1px solid var(--line)}
-.kpi-weight-section__label{font-size:12px;color:var(--gray-dim);margin-bottom:12px;line-height:1.4}
-.kpi-weight-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
-.kpi-weight-item{display:flex;align-items:center;gap:7px;position:relative}
-.kpi-weight-item label{font-size:12px;color:var(--gray);flex-shrink:0;margin-right:auto}
-.kpi-weight-item input{
-  width:60px;height:34px;padding:0 8px;border-radius:7px;background:var(--bg-2);
-  border:1px solid var(--line-2);color:var(--white);font-size:13px;text-align:center;margin-bottom:0!important;
-}
 .kpi-modal-hint{font-size:11.5px;color:var(--gray-dim);line-height:1.5;margin:12px 0 4px}
 
 .kpi-award-card{
@@ -1361,6 +1351,23 @@ body{
 .kpi-award-card__del{background:none;border:0;color:var(--gray-dim);cursor:pointer;font-size:13px;flex-shrink:0}
 .kpi-award-card__del:hover{color:#F2896F}
 .kpi-awards-section{margin-bottom:26px}
+.kpi-award-badge--recurring{background:rgba(var(--green-rgb),.12);color:var(--green-hi)}
+
+.kpi-emp-row{
+  display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:12px;margin-bottom:8px;cursor:pointer;
+  background:var(--surface);border:1px solid var(--line);transition:border-color .15s;
+}
+.kpi-emp-row:hover{border-color:rgba(var(--green-rgb),.4)}
+.kpi-emp-row__name{font-weight:600;font-size:13px;color:var(--white);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+[data-theme="light"] .kpi-emp-row__name{color:#1a2117}
+.kpi-emp-row__percent{font-weight:700;font-size:13px;flex-shrink:0}
+.kpi-emp-row__percent--muted{color:var(--gray-dim);font-weight:500;font-size:11.5px}
+
+.kpi-emp-modal-box{max-width:600px;max-height:82vh;overflow-y:auto}
+.kpi-emp-section{margin-top:20px}
+.kpi-emp-section:first-of-type{margin-top:4px}
+.kpi-emp-section__head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.kpi-emp-section__head h4{font-size:12.5px;font-weight:600;color:var(--gray-dim);margin:0;text-transform:uppercase;letter-spacing:.03em}
 
 /* ── ISH UNUMDORLIGI ── */
 .prod-summary{
@@ -2078,20 +2085,12 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   <!-- KPI STATISTIKASI -->
   <section class="admin-panel" id="panel-kpi">
     <div class="panel-head">
-      <h2>KPI statistikasi</h2>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <input type="month" id="kpiMonthInput" />
-        <button class="btn-add" id="btnAddKpiAward" onclick="openKpiAwardForm()" style="display:none">+ Yangi KPI topshirig'i</button>
-        <button class="btn-add" id="btnAddKpi" onclick="openKpiForm(null)" style="display:none">+ Yangi KPI rejasi</button>
-      </div>
+      <h2>KPI</h2>
+      <button class="btn-add" id="btnAddKpiAward" onclick="openKpiAwardForm()" style="display:none">+ Yangi KPI topshirig'i</button>
     </div>
-    <div class="kpi-awards-section" id="kpiAwardsSection" style="display:none">
-      <div id="kpiAwardsPending"></div>
-      <h3 class="prod-section-title">KPI topshiriqlari</h3>
-      <div class="item-list" id="kpiAwardsListEl"></div>
-    </div>
-    <h3 class="prod-section-title">KPI rejalari (avtomatik)</h3>
-    <div class="item-list" id="kpiList"></div>
+    <div id="kpiAwardsPending"></div>
+    <h3 class="prod-section-title">Xodimlar</h3>
+    <div class="item-list" id="kpiEmployeeListEl"></div>
   </section>
 
   <!-- DO'KONLAR — vazifani do'konga "tayinlash" uchun umumiy ro'yxat -->
@@ -2536,43 +2535,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   </div>
 </div>
 
-<!-- ══════════ MODAL: KPI REJASI ══════════ -->
-<div class="modal-overlay" id="kpiModal">
-  <div class="modal-box kpi-modal-box">
-    <h3 id="kpiModalTitle">Yangi KPI rejasi</h3>
-    <form id="kpiForm">
-      <div class="field">
-        <label>Xodim</label>
-        <select id="kpiEmployeeSelect" required></select>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Boshlang'ich ball (oylik)</label><input type="number" id="kpiTarget" min="0" step="1" required /></div>
-        <div class="field"><label>Oylik bonus summasi (so'm)</label><input type="number" id="kpiBonus" min="0" step="1000" placeholder="0" /></div>
-      </div>
-      <div class="kpi-weight-section">
-        <div class="kpi-weight-section__label">Kechiktirilgan vazifa uchun muhimligiga qarab necha ball ayiriladi</div>
-        <div class="kpi-weight-grid">
-          <div class="kpi-weight-item"><span class="td-pri-flag urgent"></span><label>Shoshilinch</label><input type="number" id="kpiWUrgent" min="0" step="0.5" /></div>
-          <div class="kpi-weight-item"><span class="td-pri-flag high"></span><label>Yuqori</label><input type="number" id="kpiWHigh" min="0" step="0.5" /></div>
-          <div class="kpi-weight-item"><span class="td-pri-flag medium"></span><label>O'rtacha</label><input type="number" id="kpiWMedium" min="0" step="0.5" /></div>
-          <div class="kpi-weight-item"><span class="td-pri-flag low"></span><label>Kam</label><input type="number" id="kpiWLow" min="0" step="0.5" /></div>
-          <div class="kpi-weight-item"><span class="td-pri-flag none"></span><label>Belgilanmagan</label><input type="number" id="kpiWNone" min="0" step="0.5" /></div>
-        </div>
-      </div>
-      <p class="kpi-modal-hint">Muddatida bajarilgan vazifalar uchun ball ayirilmaydi. Oy oxirida qolgan ball foizi qancha bo'lsa, bonus summasining o'shancha foizi xodimga belgilanadi.</p>
-      <div class="form-msg" id="kpiFormMsg"></div>
-      <div class="modal-actions">
-        <button type="button" class="modal-cancel" onclick="closeModal('kpiModal')">Bekor qilish</button>
-        <button type="submit" class="modal-save">Saqlash</button>
-      </div>
-    </form>
-  </div>
-</div>
-
 <!-- ══════════ MODAL: KPI TOPSHIRIG'I ══════════ -->
 <div class="modal-overlay" id="kpiAwardModal">
   <div class="modal-box">
-    <h3>Yangi KPI topshirig'i</h3>
+    <h3 id="kpiAwardModalTitle">Yangi KPI topshirig'i</h3>
     <form id="kpiAwardForm">
       <div class="field">
         <label>Xodim</label>
@@ -2586,13 +2552,37 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         <label>Nima uchun (sabab)</label>
         <textarea id="kpiAwardReason" rows="3" required placeholder="Masalan: shu oyda 20 ta yangi mijoz jalb qilish"></textarea>
       </div>
-      <p class="kpi-modal-hint">Saqlagach xodimga bildirishnoma boradi. Belgilangan sanadan bir kun oldin sizga ushbu vazifa bajarildimi deb so'raladi.</p>
+      <div class="field">
+        <label>Takrorlanishi</label>
+        <select id="kpiAwardRecurrence">
+          <option value="once">Bir martalik</option>
+          <option value="monthly">Har oy avtomatik takrorlansin</option>
+        </select>
+      </div>
+      <p class="kpi-modal-hint">Saqlagach xodimga bildirishnoma boradi. Belgilangan sanadan bir kun oldin sizga ushbu vazifa bajarildimi deb so'raladi. "Har oy avtomatik" tanlansa, har safar tasdiqlagach/rad etgach navbatdagi oy uchun avtomatik yangi topshiriq ochiladi.</p>
       <div class="form-msg" id="kpiAwardFormMsg"></div>
       <div class="modal-actions">
         <button type="button" class="modal-cancel" onclick="closeModal('kpiAwardModal')">Bekor qilish</button>
         <button type="submit" class="modal-save">Saqlash</button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- ══════════ MODAL: XODIM KPI OYNASI ══════════ -->
+<div class="modal-overlay" id="kpiEmployeeModal">
+  <div class="modal-box kpi-emp-modal-box">
+    <h3 id="kpiEmpModalName">Xodim</h3>
+    <div class="kpi-emp-section">
+      <div class="kpi-emp-section__head">
+        <h4>KPI topshiriqlari</h4>
+        <button type="button" class="btn-add" id="btnAddKpiAwardInEmp" style="padding:6px 14px;display:none">+ Yangi KPI</button>
+      </div>
+      <div id="kpiEmpAwardsEl"></div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="modal-cancel" onclick="closeModal('kpiEmployeeModal')">Yopish</button>
+    </div>
   </div>
 </div>
 
@@ -6709,12 +6699,16 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   });
 
   // ══════════════════════════════════════════════════════════
-  // KPI STATISTIKASI
+  // KPI — xodimlar ro'yxati, har biriga kirib alohida KPI
+  // topshiriqlarini ko'rish/qo'shish/tahrirlash/o'chirish
   // ══════════════════════════════════════════════════════════
   var KPI_MANAGE_ROLES = ['superadmin', 'it_bolimi', 'menejer_bosh'];
   var KPI_CAN_MANAGE = false;
   var KPI_EMPLOYEES = [];
-  var KPI_PLANS = [];
+  var KPI_AWARDS_ALL = [];
+  var KPI_ACTIVE_EMPLOYEE_ID = null;
+  var KPI_AWARD_EDIT_ID = null;
+  var KPI_AWARD_STATUS_LABEL = { pending: 'Kutilmoqda', approved: 'Tasdiqlandi', rejected: "Berilmadi" };
 
   function kpiDefaultMonth() {
     var now = new Date();
@@ -6734,40 +6728,41 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     return reason === 'overdue' ? "Muddati o'tgan" : 'Kechikib bajarilgan';
   }
 
+  async function loadKpiData() {
+    var empData = await apiFetch('/api/kpi/employees');
+    KPI_EMPLOYEES = empData.employees || [];
+    var awardsData = await apiFetch('/api/kpi/awards');
+    KPI_AWARDS_ALL = awardsData.awards || [];
+  }
+
   async function loadKpi() {
     KPI_CAN_MANAGE = KPI_MANAGE_ROLES.indexOf(USER_ROLE) !== -1;
-    var addBtn = document.getElementById('btnAddKpi');
-    if (addBtn) addBtn.style.display = KPI_CAN_MANAGE ? '' : 'none';
     var addAwardBtn = document.getElementById('btnAddKpiAward');
     if (addAwardBtn) addAwardBtn.style.display = KPI_CAN_MANAGE ? '' : 'none';
-    document.getElementById('kpiAwardsSection').style.display = KPI_CAN_MANAGE ? '' : 'none';
-    var monthInput = document.getElementById('kpiMonthInput');
-    if (!monthInput.value) monthInput.value = kpiDefaultMonth();
 
-    var list = document.getElementById('kpiList');
+    var list = document.getElementById('kpiEmployeeListEl');
     list.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
     try {
-      var empData = await apiFetch('/api/kpi/employees');
-      KPI_EMPLOYEES = empData.employees || [];
-      var plansData = await apiFetch('/api/kpi/plans');
-      KPI_PLANS = plansData.plans || [];
-      var statsData = await apiFetch('/api/kpi/stats?month=' + encodeURIComponent(monthInput.value));
-      renderKpiList(statsData.kpis || []);
+      await loadKpiData();
+      renderKpiPendingPanel();
+      renderKpiEmployeeList();
     } catch (err) {
       list.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
     }
-    if (KPI_CAN_MANAGE) await loadKpiAwards();
   }
 
-  document.getElementById('kpiMonthInput').addEventListener('change', function () {
-    if (document.getElementById('panel-kpi').classList.contains('is-active')) loadKpi();
-  });
-
-  // ══════════════════════════════════════════════════════════
-  // KPI TOPSHIRIQLARI — aniq maqsad+muddat+sabab bilan beriladigan alohida
-  // KPI, muddat yaqinlashganda bosh menejer tomonidan tasdiqlanadi
-  // ══════════════════════════════════════════════════════════
-  var KPI_AWARD_STATUS_LABEL = { pending: 'Kutilmoqda', approved: 'Tasdiqlandi', rejected: "Berilmadi" };
+  // Har qanday KPI o'zgarishidan keyin (qo'shish/tahrirlash/o'chirish/tasdiqlash)
+  // ma'lumotni qayta yuklaydi va hozir ochiq bo'lgan barcha ko'rinishlarni yangilaydi
+  async function refreshKpiUI() {
+    try {
+      await loadKpiData();
+    } catch (err) { return; }
+    renderKpiPendingPanel();
+    renderKpiEmployeeList();
+    if (KPI_ACTIVE_EMPLOYEE_ID && document.getElementById('kpiEmployeeModal').classList.contains('is-active')) {
+      renderKpiEmpAwards(KPI_ACTIVE_EMPLOYEE_ID);
+    }
+  }
 
   function kpiAwardIsDueSoon(a) {
     if (a.status !== 'pending') return false;
@@ -6778,30 +6773,73 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     return due.getTime() <= tomorrow.getTime();
   }
 
-  async function loadKpiAwards() {
-    var pendingEl = document.getElementById('kpiAwardsPending');
-    var listEl = document.getElementById('kpiAwardsListEl');
-    try {
-      var data = await apiFetch('/api/kpi/awards');
-      var awards = data.awards || [];
-      var dueSoon = awards.filter(kpiAwardIsDueSoon);
-      pendingEl.innerHTML = dueSoon.length
-        ? dueSoon.map(renderKpiAwardCard).join('')
-        : '';
-      listEl.innerHTML = awards.length
-        ? awards.map(function (a) { return renderKpiAwardCard(a); }).join('')
-        : '<div class="empty-state">Hali birorta KPI topshirig\'i yaratilmagan</div>';
-      wireKpiAwardCards(pendingEl);
-      wireKpiAwardCards(listEl);
-    } catch (err) {
-      listEl.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
+  function renderKpiPendingPanel() {
+    var el = document.getElementById('kpiAwardsPending');
+    if (!KPI_CAN_MANAGE) { el.innerHTML = ''; return; }
+    var dueSoon = KPI_AWARDS_ALL.filter(kpiAwardIsDueSoon);
+    el.innerHTML = dueSoon.length
+      ? '<h3 class="prod-section-title">Tasdiqlash kutilmoqda</h3>' + dueSoon.map(renderKpiAwardCard).join('')
+      : '';
+    wireKpiAwardCards(el);
+  }
+
+  function renderKpiEmployeeList() {
+    var list = document.getElementById('kpiEmployeeListEl');
+    if (!KPI_EMPLOYEES.length) {
+      list.innerHTML = '<div class="empty-state">Xodimlar topilmadi</div>';
+      return;
     }
+    list.innerHTML = KPI_EMPLOYEES.map(function (e) {
+      var pendingCount = KPI_AWARDS_ALL.filter(function (a) { return a.employee_id === e.id && a.status === 'pending'; }).length;
+      var totalCount = KPI_AWARDS_ALL.filter(function (a) { return a.employee_id === e.id; }).length;
+      var countHtml = totalCount
+        ? '<span class="kpi-emp-row__percent kpi-emp-row__percent--muted">' + totalCount + " ta KPI</span>"
+        : '<span class="kpi-emp-row__percent kpi-emp-row__percent--muted">KPI yo\'q</span>';
+      var pendingBadge = pendingCount ? '<span class="kpi-award-badge kpi-award-badge--pending">' + pendingCount + ' kutilmoqda</span>' : '';
+      return '<div class="kpi-emp-row" data-kpi-emp="' + e.id + '">' +
+        '<div class="item-row__thumb" style="background:' + avaColor(e.name) + '">' + avaLetter(e.name) + '</div>' +
+        '<span class="kpi-emp-row__name">' + esc(e.name) + '</span>' +
+        countHtml + pendingBadge +
+      '</div>';
+    }).join('');
+    list.querySelectorAll('[data-kpi-emp]').forEach(function (row) {
+      row.addEventListener('click', function () { openKpiEmployee(Number(row.dataset.kpiEmp)); });
+    });
+  }
+
+  window.openKpiEmployee = function (employeeId) {
+    var emp = KPI_EMPLOYEES.find(function (e) { return e.id === employeeId; });
+    if (!emp) return;
+    KPI_ACTIVE_EMPLOYEE_ID = employeeId;
+    document.getElementById('kpiEmpModalName').textContent = emp.name;
+    var addAwardInEmpBtn = document.getElementById('btnAddKpiAwardInEmp');
+    addAwardInEmpBtn.style.display = KPI_CAN_MANAGE ? '' : 'none';
+    renderKpiEmpAwards(employeeId);
+    document.getElementById('kpiEmployeeModal').classList.add('is-active');
+  };
+
+  document.getElementById('btnAddKpiAwardInEmp').addEventListener('click', function () {
+    openKpiAwardForm(KPI_ACTIVE_EMPLOYEE_ID);
+  });
+
+  function renderKpiEmpAwards(employeeId) {
+    var el = document.getElementById('kpiEmpAwardsEl');
+    var awards = KPI_AWARDS_ALL.filter(function (a) { return a.employee_id === employeeId; });
+    el.innerHTML = awards.length
+      ? awards.map(renderKpiAwardCard).join('')
+      : '<div class="empty-state">Hali KPI topshirig\'i yo\'q</div>';
+    wireKpiAwardCards(el);
   }
 
   function renderKpiAwardCard(a) {
     var badgeClass = 'kpi-award-badge--' + a.status;
     var cardClass = 'kpi-award-card' + (kpiAwardIsDueSoon(a) ? ' kpi-award-card--pending-review' : '');
-    var actions = a.status === 'pending'
+    var recurringBadge = a.recurrence === 'monthly' ? '<span class="kpi-award-badge kpi-award-badge--recurring">↻ har oy</span>' : '';
+    var manageTools = (a.status === 'pending' && KPI_CAN_MANAGE)
+      ? '<button type="button" class="kpi-award-card__del" data-kpi-award-edit="' + a.id + '" title="Tahrirlash">✎</button>' +
+        '<button type="button" class="kpi-award-card__del" data-kpi-award-del="' + a.id + '" title="Bekor qilish">✕</button>'
+      : '';
+    var actions = (a.status === 'pending' && KPI_CAN_MANAGE)
       ? '<div class="kpi-award-card__actions">' +
           '<button type="button" class="kpi-award-btn kpi-award-btn--yes" data-kpi-award-decide="' + a.id + '" data-approved="1">Ha, bajarildi</button>' +
           '<button type="button" class="kpi-award-btn kpi-award-btn--no" data-kpi-award-decide="' + a.id + '" data-approved="0">Yo\'q</button>' +
@@ -6809,14 +6847,15 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       : '';
     return '<div class="' + cardClass + '" data-kpi-award-card="' + a.id + '">' +
       '<div class="kpi-award-card__top">' +
-        '<span class="kpi-award-card__name">' + esc(a.employee_name) + '</span>' +
+        '<span class="kpi-award-card__name">' + esc(a.employee_name || '') + '</span>' +
         '<span class="kpi-award-card__amount">' + fmtMoney(a.amount) + '</span>' +
       '</div>' +
       '<div class="kpi-award-card__reason">' + esc(a.reason) + '</div>' +
       '<div class="kpi-award-card__meta">' +
         '<span class="kpi-award-badge ' + badgeClass + '">' + KPI_AWARD_STATUS_LABEL[a.status] + '</span>' +
+        recurringBadge +
         '<span>Muddat: ' + a.due_date + '</span>' +
-        (a.status === 'pending' ? '<button type="button" class="kpi-award-card__del" data-kpi-award-del="' + a.id + '" title="Bekor qilish">✕</button>' : '') +
+        manageTools +
       '</div>' +
       actions +
     '</div>';
@@ -6833,13 +6872,19 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         deleteKpiAward(Number(btn.dataset.kpiAwardDel));
       });
     });
+    root.querySelectorAll('[data-kpi-award-edit]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var award = KPI_AWARDS_ALL.find(function (a) { return a.id === Number(btn.dataset.kpiAwardEdit); });
+        if (award) openKpiAwardForm(award.employee_id, award);
+      });
+    });
   }
 
   async function decideKpiAward(id, approved) {
     if (!confirm(approved ? 'Xodim bu vazifani bajargani tasdiqlanadi. Davom etasizmi?' : "Xodim bu vazifani bajarmagan deb belgilanadi. Davom etasizmi?")) return;
     try {
       await apiFetch('/api/kpi/awards/' + id + '/decide', { method: 'POST', body: JSON.stringify({ approved: approved }) });
-      await loadKpiAwards();
+      await refreshKpiUI();
     } catch (err) { alert(err.message); }
   }
 
@@ -6847,19 +6892,24 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     if (!confirm("KPI topshirig'ini bekor qilishni tasdiqlaysizmi?")) return;
     try {
       await apiFetch('/api/kpi/awards/' + id, { method: 'DELETE' });
-      await loadKpiAwards();
+      await refreshKpiUI();
     } catch (err) { alert(err.message); }
   }
 
-  window.openKpiAwardForm = function () {
+  window.openKpiAwardForm = function (employeeId, editAward) {
+    KPI_AWARD_EDIT_ID = editAward ? editAward.id : null;
+    document.getElementById('kpiAwardModalTitle').textContent = editAward ? "KPI topshirig'ini tahrirlash" : "Yangi KPI topshirig'i";
     document.getElementById('kpiAwardFormMsg').textContent = '';
     var sel = document.getElementById('kpiAwardEmployeeSelect');
     sel.innerHTML = KPI_EMPLOYEES.map(function (e) {
       return '<option value="' + e.id + '">' + esc(e.name) + '</option>';
     }).join('');
-    document.getElementById('kpiAwardAmount').value = '';
-    document.getElementById('kpiAwardDate').value = '';
-    document.getElementById('kpiAwardReason').value = '';
+    if (employeeId) sel.value = String(employeeId);
+    sel.disabled = !!editAward;
+    document.getElementById('kpiAwardAmount').value = editAward ? editAward.amount : '';
+    document.getElementById('kpiAwardDate').value = editAward ? editAward.due_date : '';
+    document.getElementById('kpiAwardReason').value = editAward ? editAward.reason : '';
+    document.getElementById('kpiAwardRecurrence').value = editAward ? (editAward.recurrence || 'once') : 'once';
     document.getElementById('kpiAwardModal').classList.add('is-active');
   };
 
@@ -6871,12 +6921,18 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       employee_id: Number(document.getElementById('kpiAwardEmployeeSelect').value),
       amount: Number(document.getElementById('kpiAwardAmount').value) || 0,
       due_date: document.getElementById('kpiAwardDate').value,
-      reason: document.getElementById('kpiAwardReason').value.trim()
+      reason: document.getElementById('kpiAwardReason').value.trim(),
+      recurrence: document.getElementById('kpiAwardRecurrence').value
     };
     try {
-      await apiFetch('/api/kpi/awards', { method: 'POST', body: JSON.stringify(body) });
+      if (KPI_AWARD_EDIT_ID) {
+        await apiFetch('/api/kpi/awards/' + KPI_AWARD_EDIT_ID, { method: 'PUT', body: JSON.stringify(body) });
+      } else {
+        await apiFetch('/api/kpi/awards', { method: 'POST', body: JSON.stringify(body) });
+      }
       closeModal('kpiAwardModal');
-      await loadKpiAwards();
+      KPI_AWARD_EDIT_ID = null;
+      await refreshKpiUI();
     } catch (err) {
       msg.textContent = err.message;
     }
@@ -6897,6 +6953,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   function renderMyKpiAwardCard(a) {
     var badgeClass = 'kpi-award-badge--' + a.status;
+    var recurringBadge = a.recurrence === 'monthly' ? '<span class="kpi-award-badge kpi-award-badge--recurring">↻ har oy</span>' : '';
     var extra = a.status === 'pending'
       ? '<div class="kpi-award-card__reason">Agar shu natijaga erishsangiz, ushbu KPI sizga beriladi.</div>'
       : (a.status === 'rejected' ? '<div class="kpi-award-card__reason">Sababi: siz ushbu vazifani bajarmadingiz.</div>' : '');
@@ -6907,134 +6964,12 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       '</div>' +
       '<div class="kpi-award-card__meta">' +
         '<span class="kpi-award-badge ' + badgeClass + '">' + KPI_AWARD_STATUS_LABEL[a.status] + '</span>' +
+        recurringBadge +
         '<span>Muddat: ' + a.due_date + '</span>' +
       '</div>' +
       extra +
     '</div>';
   }
-
-  function renderKpiList(kpis) {
-    var list = document.getElementById('kpiList');
-    if (!kpis.length) {
-      list.innerHTML = '<div class="empty-state">Hali birorta KPI rejasi yaratilmagan</div>';
-      return;
-    }
-    list.innerHTML = kpis.map(function (k) {
-      var pct = Math.min(100, Math.max(0, k.percent));
-      var barColor = k.percent >= 100 ? 'var(--green-hi)' : (k.percent >= 60 ? '#F0A500' : '#F2896F');
-      var actions = KPI_CAN_MANAGE
-        ? '<div class="item-row__actions">' +
-            '<button class="icon-btn" data-kpi-edit="' + k.employee_id + '" title="Tahrirlash">✎</button>' +
-            '<button class="icon-btn danger" data-kpi-del="' + k.employee_id + '" title="O\'chirish">✕</button>' +
-          '</div>'
-        : '';
-      var taskRows = k.late_tasks.length
-        ? k.late_tasks.map(function (t) {
-            return '<div class="kpi-task-row">' +
-              '<span class="td-pri-flag ' + t.priority + '"></span>' +
-              '<span class="kpi-task-row__title">' + esc(t.title) + '</span>' +
-              '<span class="kpi-task-row__pts" style="color:#F2896F">-' + t.points + ' ball</span>' +
-              '<span class="kpi-task-row__date">' + kpiLateReasonText(t.reason) + '</span>' +
-            '</div>';
-          }).join('')
-        : '<div class="kpi-task-row kpi-task-row--empty">Ball ayirilgan vazifa yo\'q — barchasi o\'z vaqtida!</div>';
-      var bonusLine = k.bonus_amount > 0
-        ? '<div class="kpi-card__meta-row">Bonus: ' + fmtMoney(k.bonus_earned) + ' / ' + fmtMoney(k.bonus_amount) + '</div>'
-        : '';
-      return '<div class="kpi-card">' +
-        '<div class="kpi-card__head">' +
-          '<div class="item-row__thumb" style="background:' + avaColor(k.employee_name) + '">' + avaLetter(k.employee_name) + '</div>' +
-          '<div class="item-row__body">' +
-            '<div class="item-row__title">' + esc(k.employee_name) + '</div>' +
-            '<div class="item-row__meta">' + esc(T('role.' + k.employee_role) || k.employee_role) + ' · ' + k.on_time_count + " ta o'z vaqtida · " + k.late_count + ' ta kechiktirilgan</div>' +
-          '</div>' +
-          '<div class="kpi-card__percent" style="color:' + barColor + '">' + k.percent + '%</div>' +
-          actions +
-        '</div>' +
-        '<div class="kpi-progress"><div class="kpi-progress__fill" style="width:' + pct + '%;background:' + barColor + '"></div></div>' +
-        '<div class="kpi-card__meta-row">' + (Math.round(k.earned_points * 10) / 10) + ' / ' + k.target_points + ' ball' + (k.deducted_points > 0 ? ' · -' + k.deducted_points + ' ball ayirildi' : '') + '</div>' +
-        bonusLine +
-        '<button type="button" class="kpi-card__toggle">Ball ayirilgan vazifalar ▾</button>' +
-        '<div class="kpi-card__tasks">' + taskRows + '</div>' +
-      '</div>';
-    }).join('');
-
-    list.querySelectorAll('.kpi-card__toggle').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var tasksEl = btn.nextElementSibling;
-        var isOn = tasksEl.classList.toggle('is-on');
-        btn.textContent = isOn ? "Vazifalarni yashirish ▴" : "Vazifalar ro'yxati ▾";
-      });
-    });
-    list.querySelectorAll('[data-kpi-edit]').forEach(function (btn) {
-      btn.addEventListener('click', function () { openKpiForm(Number(btn.dataset.kpiEdit)); });
-    });
-    list.querySelectorAll('[data-kpi-del]').forEach(function (btn) {
-      btn.addEventListener('click', function () { deleteKpiPlan(Number(btn.dataset.kpiDel)); });
-    });
-  }
-
-  window.openKpiForm = function (employeeId) {
-    var editing = !!employeeId;
-    document.getElementById('kpiModalTitle').textContent = editing ? 'KPI rejasini tahrirlash' : 'Yangi KPI rejasi';
-    document.getElementById('kpiFormMsg').textContent = '';
-    var sel = document.getElementById('kpiEmployeeSelect');
-    sel.innerHTML = KPI_EMPLOYEES.map(function (e) {
-      var hasPlan = KPI_PLANS.some(function (p) { return p.employee_id === e.id; });
-      return '<option value="' + e.id + '">' + esc(e.name) + (hasPlan ? " (rejasi mavjud)" : '') + '</option>';
-    }).join('');
-    var plan = editing ? KPI_PLANS.find(function (p) { return p.employee_id === employeeId; }) : null;
-    if (editing) {
-      sel.value = String(employeeId);
-      sel.disabled = true;
-    } else {
-      sel.disabled = false;
-    }
-    document.getElementById('kpiTarget').value = plan ? plan.target_points : 100;
-    document.getElementById('kpiBonus').value = plan ? plan.bonus_amount : 0;
-    document.getElementById('kpiWNone').value = plan ? plan.weight_none : 0;
-    document.getElementById('kpiWLow').value = plan ? plan.weight_low : 5;
-    document.getElementById('kpiWMedium').value = plan ? plan.weight_medium : 10;
-    document.getElementById('kpiWHigh').value = plan ? plan.weight_high : 15;
-    document.getElementById('kpiWUrgent').value = plan ? plan.weight_urgent : 20;
-    document.getElementById('kpiModal').classList.add('is-active');
-  };
-
-  window.deleteKpiPlan = async function (employeeId) {
-    if (!confirm("KPI rejasini o'chirishni tasdiqlaysizmi?")) return;
-    try {
-      await apiFetch('/api/kpi/plans/' + employeeId, { method: 'DELETE' });
-      await loadKpi();
-    } catch (err) { alert(err.message || 'Xato'); }
-  };
-
-  document.getElementById('kpiForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
-    var msg = document.getElementById('kpiFormMsg');
-    msg.textContent = '';
-    var employeeId = Number(document.getElementById('kpiEmployeeSelect').value);
-    if (!employeeId) { msg.textContent = 'Xodimni tanlang'; return; }
-    var body = {
-      target_points: Number(document.getElementById('kpiTarget').value) || 0,
-      bonus_amount: Number(document.getElementById('kpiBonus').value) || 0,
-      weight_none: Number(document.getElementById('kpiWNone').value) || 0,
-      weight_low: Number(document.getElementById('kpiWLow').value) || 0,
-      weight_medium: Number(document.getElementById('kpiWMedium').value) || 0,
-      weight_high: Number(document.getElementById('kpiWHigh').value) || 0,
-      weight_urgent: Number(document.getElementById('kpiWUrgent').value) || 0
-    };
-    var btn = e.target.querySelector('.modal-save');
-    btn.disabled = true;
-    try {
-      await apiFetch('/api/kpi/plans/' + employeeId, { method: 'PUT', body: JSON.stringify(body) });
-      closeModal('kpiModal');
-      await loadKpi();
-    } catch (err) {
-      msg.textContent = err.message || 'Xato';
-    } finally {
-      btn.disabled = false;
-    }
-  });
 
   // ══════════════════════════════════════════════════════════
   // ISH UNUMDORLIGI (xodimning shaxsiy KPI oynasi)

@@ -248,11 +248,13 @@ function fmtAmount(n) {
 // KPI, bosh menejer tomonidan muddat oxirida bajarilgandan qo'lda tasdiqlanadi
 // ══════════════════════════════════════════════════════════
 
+const KPI_AWARD_RECURRENCES = ['once', 'monthly'];
+
 // GET /api/kpi/awards — barcha KPI topshiriqlari (boshqaruv ko'rinishi)
 router.get('/awards', auth.requireAuth, requireKpiView, async (req, res) => {
   try {
     const rows = await db.all(`
-      SELECT ka.id, ka.employee_id, ka.amount, ka.reason, ka.status,
+      SELECT ka.id, ka.employee_id, ka.amount, ka.reason, ka.status, ka.recurrence,
              to_char(ka.due_date, 'YYYY-MM-DD') AS due_date,
              ka.decided_by, ka.decided_at, ka.created_at, u.name AS employee_name
       FROM kpi_awards ka JOIN admin_users u ON u.id = ka.employee_id
@@ -269,7 +271,7 @@ router.get('/awards', auth.requireAuth, requireKpiView, async (req, res) => {
 router.get('/my-awards', auth.requireAuth, async (req, res) => {
   try {
     const rows = await db.all(`
-      SELECT id, amount, reason, status, to_char(due_date, 'YYYY-MM-DD') AS due_date, decided_at
+      SELECT id, amount, reason, status, recurrence, to_char(due_date, 'YYYY-MM-DD') AS due_date, decided_at
       FROM kpi_awards WHERE employee_id = ?
       ORDER BY (status = 'pending') DESC, due_date DESC
     `, [req.user.userId]);
@@ -279,22 +281,27 @@ router.get('/my-awards', auth.requireAuth, async (req, res) => {
   }
 });
 
+function parseAwardBody(body) {
+  const employeeId = Number(body.employee_id);
+  const amount = Number(body.amount) || 0;
+  const reason = String(body.reason || '').trim();
+  const dueDate = String(body.due_date || '');
+  const recurrence = KPI_AWARD_RECURRENCES.includes(body.recurrence) ? body.recurrence : 'once';
+  const valid = employeeId && reason && /^\d{4}-\d{2}-\d{2}$/.test(dueDate);
+  return { employeeId, amount, reason, dueDate, recurrence, valid };
+}
+
 // POST /api/kpi/awards — yangi KPI topshirig'i yaratish
 router.post('/awards', auth.requireAuth, requireKpiManage, async (req, res) => {
   try {
-    const employeeId = Number(req.body.employee_id);
-    const amount = Number(req.body.amount) || 0;
-    const reason = String(req.body.reason || '').trim();
-    const dueDate = String(req.body.due_date || '');
-    if (!employeeId || !reason || !/^\d{4}-\d{2}-\d{2}$/.test(dueDate)) {
-      return res.status(400).json({ success: false, error: "Barcha maydonlarni to'ldiring" });
-    }
+    const { employeeId, amount, reason, dueDate, recurrence, valid } = parseAwardBody(req.body);
+    if (!valid) return res.status(400).json({ success: false, error: "Barcha maydonlarni to'ldiring" });
     const employee = await db.get("SELECT id, name FROM admin_users WHERE id = ? AND role != 'superadmin'", [employeeId]);
     if (!employee) return res.status(404).json({ success: false, error: 'Xodim topilmadi' });
 
     const inserted = await db.run(
-      `INSERT INTO kpi_awards (employee_id, amount, reason, due_date, created_by) VALUES (?, ?, ?, ?, ?)`,
-      [employeeId, amount, reason, dueDate, req.user.userId]
+      `INSERT INTO kpi_awards (employee_id, amount, reason, due_date, recurrence, created_by) VALUES (?, ?, ?, ?, ?, ?)`,
+      [employeeId, amount, reason, dueDate, recurrence, req.user.userId]
     );
     await notifications.notify(
       employeeId, 'kpi_award_pending', 'Yangi KPI belgilandi',
@@ -306,7 +313,29 @@ router.post('/awards', auth.requireAuth, requireKpiManage, async (req, res) => {
   }
 });
 
-// POST /api/kpi/awards/:id/decide — bosh menejer vazifa bajarilganmi deb belgilaydi
+// PUT /api/kpi/awards/:id — hali hal qilinmagan KPI topshirig'ini tahrirlash
+router.put('/awards/:id', auth.requireAuth, requireKpiManage, async (req, res) => {
+  try {
+    const award = await db.get('SELECT * FROM kpi_awards WHERE id = ?', [req.params.id]);
+    if (!award) return res.status(404).json({ success: false, error: 'Topilmadi' });
+    if (award.status !== 'pending') {
+      return res.status(400).json({ success: false, error: 'Hal qilingan topshiriqni tahrirlab bo\'lmaydi' });
+    }
+    const { amount, reason, dueDate, recurrence, valid } = parseAwardBody(Object.assign({}, req.body, { employee_id: award.employee_id }));
+    if (!valid) return res.status(400).json({ success: false, error: "Barcha maydonlarni to'ldiring" });
+    await db.run(
+      'UPDATE kpi_awards SET amount = ?, reason = ?, due_date = ?, recurrence = ?, updated_at = NOW() WHERE id = ?',
+      [amount, reason, dueDate, recurrence, req.params.id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/kpi/awards/:id/decide — bosh menejer vazifa bajarilganmi deb belgilaydi.
+// "Har oy takrorlansin" belgilangan bo'lsa, navbatdagi oy uchun avtomatik yangi
+// (kutilmoqda holatidagi) topshiriq yaratiladi — bosh menejer qayta qo'lda kiritmasin deb.
 router.post('/awards/:id/decide', auth.requireAuth, requireKpiManage, async (req, res) => {
   try {
     const award = await db.get('SELECT * FROM kpi_awards WHERE id = ?', [req.params.id]);
@@ -328,6 +357,17 @@ router.post('/awards/:id/decide', auth.requireAuth, requireKpiManage, async (req
         ? 'Bu oy "' + award.reason + '" vazifasi uchun ' + fmtAmount(award.amount) + ' miqdorida KPI sizga beriladi.'
         : 'Bu oy "' + award.reason + '" vazifasi uchun KPI sizga berilmaydi. Sababi: siz ushbu vazifani bajarmadingiz.'
     );
+    if (award.recurrence === 'monthly') {
+      const next = await db.get("SELECT to_char(due_date + INTERVAL '1 month', 'YYYY-MM-DD') AS next_date FROM kpi_awards WHERE id = ?", [award.id]);
+      const inserted = await db.run(
+        `INSERT INTO kpi_awards (employee_id, amount, reason, due_date, recurrence, created_by) VALUES (?, ?, ?, ?, 'monthly', ?)`,
+        [award.employee_id, award.amount, award.reason, next.next_date, award.created_by]
+      );
+      await notifications.notify(
+        award.employee_id, 'kpi_award_pending', 'Yangi KPI belgilandi',
+        '"' + award.reason + '" — ' + next.next_date + ' sanasigacha shu natijaga erishsangiz, sizga ' + fmtAmount(award.amount) + ' miqdorida KPI beriladi.'
+      );
+    }
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
