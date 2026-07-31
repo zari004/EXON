@@ -1483,6 +1483,31 @@ body{
 .cam-confirm{background:linear-gradient(140deg,var(--green-hi),var(--green));color:var(--green-ink)}
 .cam-msg{position:absolute;top:calc(68px + env(safe-area-inset-top));left:16px;right:16px;color:#F2896F;font-size:13px;text-align:center;z-index:2}
 
+/* ── DAVOMAT RASMINI TO'LIQ EKRANDA KO'RISH ── */
+.att-photo-viewer{
+  display:none;position:fixed;inset:0;z-index:320;background:rgba(0,0,0,.97);
+  width:100%;height:100vh;height:100dvh;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  box-sizing:border-box;overscroll-behavior:contain;
+}
+.att-photo-viewer.is-active{display:flex}
+.att-photo-viewer__stage{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  overflow:auto;-webkit-overflow-scrolling:touch;padding:12px;box-sizing:border-box;
+}
+.att-photo-viewer__image{
+  display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;
+  user-select:none;-webkit-user-select:none;touch-action:pinch-zoom;
+}
+.att-photo-viewer__close{
+  position:fixed;top:calc(12px + env(safe-area-inset-top));right:calc(12px + env(safe-area-inset-right));
+  z-index:2;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.24);
+  background:rgba(0,0,0,.62);color:#fff;font-size:24px;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);
+}
+.att-photo-viewer__close svg{width:22px;height:22px}
+html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
+
 /* ── MODAL FORM ── */
 .modal-overlay{
   display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.6);
@@ -2494,6 +2519,16 @@ body{
       <button type="button" class="cam-retake" id="camRetakeBtn" style="display:none">Qayta olish</button>
       <button type="button" class="cam-confirm" id="camConfirmBtn" style="display:none">Tasdiqlash</button>
     </div>
+  </div>
+</div>
+
+<!-- DAVOMAT RASMI: ilova ichidagi fullscreen ko'ruvchi -->
+<div class="att-photo-viewer" id="attPhotoViewer" role="dialog" aria-modal="true" aria-label="Davomat rasmi" aria-hidden="true">
+  <button type="button" class="att-photo-viewer__close" id="attPhotoViewerClose" aria-label="Rasmni yopish">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <div class="att-photo-viewer__stage" id="attPhotoViewerStage">
+    <img class="att-photo-viewer__image" id="attPhotoViewerImage" alt="Davomatda olingan rasm" />
   </div>
 </div>
 
@@ -6811,10 +6846,51 @@ body{
     if (retestBtn) retestBtn.addEventListener('click', function () { startAttendanceFlow('in'); });
   }
 
+  var ATT_PHOTO_VIEWER_PUSHED = false;
+
+  function closeAttendancePhoto(fromHistory) {
+    var viewer = document.getElementById('attPhotoViewer');
+    if (!viewer.classList.contains('is-active')) return;
+    if (!fromHistory && ATT_PHOTO_VIEWER_PUSHED) {
+      history.back();
+      return;
+    }
+    viewer.classList.remove('is-active');
+    viewer.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('att-photo-viewer-open');
+    document.getElementById('attPhotoViewerImage').removeAttribute('src');
+    ATT_PHOTO_VIEWER_PUSHED = false;
+  }
+
   window.attShowPhoto = function (src) {
-    var w = window.open('', '_blank');
-    if (w) { w.document.write('<img src="' + esc(src) + '" style="max-width:100%">'); }
+    if (!src) return;
+    var viewer = document.getElementById('attPhotoViewer');
+    document.getElementById('attPhotoViewerImage').src = src;
+    if (!viewer.classList.contains('is-active')) {
+      viewer.classList.add('is-active');
+      viewer.setAttribute('aria-hidden', 'false');
+      document.documentElement.classList.add('att-photo-viewer-open');
+      history.pushState({ attPhotoViewer: true }, '', window.location.href);
+      ATT_PHOTO_VIEWER_PUSHED = true;
+    }
+    document.getElementById('attPhotoViewerClose').focus();
   };
+
+  document.getElementById('attPhotoViewerClose').addEventListener('click', function () {
+    closeAttendancePhoto(false);
+  });
+  document.getElementById('attPhotoViewerStage').addEventListener('click', function (e) {
+    if (e.target === this) closeAttendancePhoto(false);
+  });
+  window.addEventListener('popstate', function () {
+    if (document.getElementById('attPhotoViewer').classList.contains('is-active')) closeAttendancePhoto(true);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && document.getElementById('attPhotoViewer').classList.contains('is-active')) {
+      e.preventDefault();
+      closeAttendancePhoto(false);
+    }
+  });
 
   // ── GEOLOKATSIYA + KAMERA OQIMI ──
   function attDistanceMeters(lat1, lng1, lat2, lng2) {
