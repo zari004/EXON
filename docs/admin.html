@@ -6870,10 +6870,8 @@ body{
     try {
       var path = CAM_MODE === 'in' ? '/api/attendance/check-in' : '/api/attendance/check-out';
       var resp = await apiFetch(path, { method: 'POST', body: JSON.stringify({ latitude: CAM_LAT, longitude: CAM_LNG, photo: CAM_PHOTO }) });
-      // Natijani serverdan qayta so'ramasdan, to'g'ridan-to'g'ri javobdan yasaymiz —
-      // test rejimida GET /today doim "hali kelmagan" holatni qaytaradi (quyida
-      // izohlangan), shuning uchun qayta so'rov "Keldim" bosgan bo'lsak ham yana
-      // boshlang'ich holatni ko'rsatib qo'yishi mumkin edi.
+      // Natijani serverdan qayta so'ramasdan, to'g'ridan-to'g'ri javobdan
+      // yasaymiz — bir qo'shimcha so'rovni tejaydi
       if (CAM_MODE === 'in') {
         ATT_TODAY = Object.assign({}, ATT_TODAY, {
           check_in_at: resp.checkInAt, late_minutes: resp.lateMinutes, deduct_percent: resp.deductPercent,
