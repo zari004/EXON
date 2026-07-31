@@ -37,6 +37,34 @@ router.get('/me', auth.requireAuth, (req, res) => {
 });
 
 /**
+ * GET /api/admin/database-usage — Supabase/Postgres baza hajmi
+ * (faqat IT bo'limi va superadmin ko'ra oladi)
+ */
+router.get('/database-usage', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
+  try {
+    const row = await db.get(
+      'SELECT COALESCE(SUM(pg_database_size(datname)), 0)::bigint AS used_bytes FROM pg_database'
+    );
+    const usedBytes = Number(row && row.used_bytes) || 0;
+    const limitBytes = 500 * 1024 * 1024;
+    const percent = Math.round((usedBytes / limitBytes) * 1000) / 10;
+
+    res.json({
+      success: true,
+      usage: {
+        usedBytes,
+        limitBytes,
+        remainingBytes: Math.max(0, limitBytes - usedBytes),
+        percent,
+        measuredAt: new Date().toISOString()
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
  * GET /api/admin/assignable-users — vazifa tayinlash uchun minimal ro'yxat
  * (istalgan tizimga kirgan foydalanuvchi chaqira oladi — endi hamma
  * boshqalarga vazifa bera olishi kerak, shuning uchun email/rol kabi

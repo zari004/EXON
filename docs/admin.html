@@ -1553,11 +1553,27 @@ body{
   border:1px solid var(--line-2);color:var(--white);font-size:14px;font-family:inherit;outline:none;
 }
 [data-theme="light"] .settings-field input{background:#fff;color:#1a2117}
+.db-usage-card{margin-top:18px;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--bg-2)}
+[data-theme="light"] .db-usage-card{background:#fff;border-color:#e4e8e6}
+.db-usage-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:13px}
+.db-usage-percent{font-size:30px;line-height:1;font-weight:700;color:var(--green-hi)}
+.db-usage-state{font-size:12px;color:var(--gray)}
+.db-usage-bar{height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+.db-usage-fill{height:100%;width:0;border-radius:inherit;background:var(--green);transition:width .35s ease,background .2s}
+.db-usage-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.db-usage-stat{padding:11px;border:1px solid var(--line);border-radius:9px}
+.db-usage-stat span{display:block;font-size:11px;color:var(--gray-dim);margin-bottom:4px}
+.db-usage-stat strong{font-size:14px;color:var(--white)}
+[data-theme="light"] .db-usage-stat strong{color:#1a2117}
+.db-usage-refresh{margin-top:16px;background:none;border:1px solid var(--line-2);border-radius:8px;padding:8px 13px;color:var(--gray);font:inherit;font-size:12.5px;cursor:pointer}
+.db-usage-refresh:hover{color:var(--white);border-color:var(--green-deep)}
+[data-theme="light"] .db-usage-refresh:hover{color:#1a2117}
 
 @media (max-width:640px){
   .settings-shell{flex-direction:column;min-height:0;min-width:0}
   .settings-nav{width:100%;min-width:0;flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
   .settings-content{padding:20px}
+  .db-usage-meta{grid-template-columns:1fr}
 }
 
 /* ── AUTH FRAME (kirish / kutish ekranlari) ── */
@@ -2109,6 +2125,10 @@ body{
           <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="11" width="16" height="9" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="1.7"/></svg>
           <span>Xavfsizlik</span>
         </button>
+        <button type="button" class="settings-nav-item db-usage-tab" data-pane="database" style="display:none">
+          <svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="5" rx="8" ry="3" stroke="currentColor" stroke-width="1.7"/><path d="M4 5v7c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12v7c0 1.7 3.6 3 8 3s8-1.3 8-3v-7" stroke="currentColor" stroke-width="1.7"/></svg>
+          <span>Baza hajmi</span>
+        </button>
       </div>
 
       <div class="settings-content">
@@ -2172,6 +2192,28 @@ body{
           <button type="button" class="settings-save-btn" id="setPassSaveBtn">Parolni almashtirish</button>
           <div class="form-msg" id="setPassMsg"></div>
           <button type="button" class="forgot-link" id="setForgotPwdLink" style="text-align:left;margin:14px 0 0 !important;display:inline-block !important">Joriy parolni bilmayman — kod orqali tiklash</button>
+        </div>
+
+        <!-- SUPABASE BAZA HAJMI (faqat IT / superadmin) -->
+        <div class="settings-content-pane" id="setPaneDatabase">
+          <h3>Supabase bazasi</h3>
+          <p class="hint">Bepul tarifdagi 500 MB database limitining joriy ishlatilishi.</p>
+          <div class="db-usage-card">
+            <div class="db-usage-head">
+              <div class="db-usage-percent" id="dbUsagePercent">—</div>
+              <div class="db-usage-state" id="dbUsageState">Yuklanmoqda...</div>
+            </div>
+            <div class="db-usage-bar" role="progressbar" aria-label="Database ishlatilishi" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="dbUsageBar">
+              <div class="db-usage-fill" id="dbUsageFill"></div>
+            </div>
+            <div class="db-usage-meta">
+              <div class="db-usage-stat"><span>Ishlatilgan</span><strong id="dbUsageUsed">—</strong></div>
+              <div class="db-usage-stat"><span>Qolgan</span><strong id="dbUsageRemaining">—</strong></div>
+              <div class="db-usage-stat"><span>Umumiy limit</span><strong id="dbUsageLimit">500 MB</strong></div>
+            </div>
+            <button type="button" class="db-usage-refresh" id="dbUsageRefresh">Yangilash</button>
+            <div class="form-msg" id="dbUsageMsg"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -3306,6 +3348,7 @@ body{
     var superTabs = document.querySelectorAll('.superadmin-tab');
     var isSuperLevel = USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi';
     superTabs.forEach(function (t) { t.style.display = isSuperLevel ? '' : 'none'; });
+    document.querySelectorAll('.db-usage-tab').forEach(function (t) { t.style.display = isSuperLevel ? '' : 'none'; });
     // Admin/it_bolimi har doim "Sayt boshqaruvi" bo'limini to'liq ko'radi —
     // oldingi (oddiy foydalanuvchi) sessiyasidan qolgan "yashirin" holatni tozalaydi
     if (isSuperLevel) {
@@ -3763,7 +3806,7 @@ body{
 
       if (tab.dataset.tab === 'settings' && state.settingsPane) {
         var settingsPane = document.querySelector('.settings-nav-item[data-pane="' + state.settingsPane + '"]');
-        if (settingsPane) settingsPane.click();
+        if (settingsPane && settingsPane.style.display !== 'none') settingsPane.click();
       }
 
       if (tab.dataset.tab === 'attendance' && state.attendancePane) {
@@ -5991,8 +6034,45 @@ body{
       var pane = document.getElementById('setPane' + btn.dataset.pane.charAt(0).toUpperCase() + btn.dataset.pane.slice(1));
       if (pane) pane.classList.add('is-active');
       saveAdminViewState({ settingsPane: btn.dataset.pane });
+      if (btn.dataset.pane === 'database') loadDatabaseUsage();
     });
   });
+
+  function formatDatabaseBytes(bytes) {
+    var mb = Number(bytes || 0) / (1024 * 1024);
+    return (mb < 10 ? mb.toFixed(2) : mb.toFixed(1)) + ' MB';
+  }
+
+  async function loadDatabaseUsage() {
+    if (USER_ROLE !== 'superadmin' && USER_ROLE !== 'it_bolimi') return;
+    var msg = document.getElementById('dbUsageMsg');
+    var state = document.getElementById('dbUsageState');
+    msg.className = 'form-msg';
+    msg.textContent = '';
+    state.textContent = 'Yuklanmoqda...';
+    try {
+      var data = await apiFetch('/api/admin/database-usage');
+      var usage = data.usage || {};
+      var percent = Number(usage.percent || 0);
+      var visualPercent = Math.max(0, Math.min(100, percent));
+      var color = percent >= 90 ? '#F25F5C' : (percent >= 80 ? '#F0A500' : 'var(--green)');
+      document.getElementById('dbUsagePercent').textContent = percent.toFixed(1) + '%';
+      document.getElementById('dbUsageUsed').textContent = formatDatabaseBytes(usage.usedBytes);
+      document.getElementById('dbUsageRemaining').textContent = formatDatabaseBytes(usage.remainingBytes);
+      document.getElementById('dbUsageLimit').textContent = formatDatabaseBytes(usage.limitBytes);
+      document.getElementById('dbUsageFill').style.width = visualPercent + '%';
+      document.getElementById('dbUsageFill').style.background = color;
+      document.getElementById('dbUsagePercent').style.color = color;
+      document.getElementById('dbUsageBar').setAttribute('aria-valuenow', String(Math.round(visualPercent)));
+      state.textContent = percent >= 100 ? 'Limit tugagan' : (percent >= 90 ? 'Juda kam joy qoldi' : (percent >= 80 ? 'Limitga yaqin' : 'Holati yaxshi'));
+    } catch (err) {
+      state.textContent = 'Ma’lumot olinmadi';
+      msg.className = 'form-msg error';
+      msg.textContent = err.message || 'Baza hajmini yuklashda xato';
+    }
+  }
+
+  document.getElementById('dbUsageRefresh').addEventListener('click', loadDatabaseUsage);
 
   function setAvatarPreview(name, avatarUrl) {
     var el = document.getElementById('setAvatarPreview');
