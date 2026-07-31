@@ -11,7 +11,7 @@
 <meta name="theme-color" content="#0BD16C" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <meta name="apple-mobile-web-app-title" content="EXON Admin" />
 <style>
 /* Skroll paydo bo'lib/yo'qolib turishi (masalan xodim filtri natijasida
@@ -29,7 +29,8 @@ body{
 
 /* ── LOGIN ── */
 .login-screen{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 20px;
+  min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;
+  padding:calc(24px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(20px + env(safe-area-inset-left));
 }
 .login-box{
   position:relative;overflow:hidden;
@@ -110,7 +111,8 @@ body{
 
 /* ── PENDING SCREEN ── */
 .pending-screen{
-  min-height:100vh;display:none;align-items:center;justify-content:center;padding:20px;
+  min-height:100vh;min-height:100dvh;display:none;align-items:center;justify-content:center;
+  padding:calc(20px + env(safe-area-inset-top)) calc(20px + env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) calc(20px + env(safe-area-inset-left));
 }
 .pending-screen.is-active{display:flex}
 .pending-box{
@@ -607,7 +609,13 @@ body{
 .td-comments__error:not(:empty){padding-bottom:8px}
 .td-comments:not(.is-compose-open) .td-comments__error{display:none}
 @media(max-width:480px){
-  .td{width:calc(100vw - 16px);max-width:none;border-radius:12px}
+  .td{
+    top:calc(8px + env(safe-area-inset-top)) !important;
+    left:calc(8px + env(safe-area-inset-left)) !important;right:auto !important;
+    width:calc(100vw - 16px - env(safe-area-inset-left) - env(safe-area-inset-right));max-width:none;
+    max-height:calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    border-radius:12px;
+  }
   .td-body{min-height:220px}
   .td-title-inp{padding-left:17px;padding-right:17px}
   .td-desc-inp{padding-left:17px;padding-right:17px}
@@ -857,12 +865,19 @@ body{
   position:fixed;top:16px;right:24px;z-index:18;
   display:flex;align-items:center;gap:8px;
 }
+.admin-refresh.is-refreshing svg{animation:adminRefreshSpin .7s linear infinite}
+@keyframes adminRefreshSpin{to{transform:rotate(360deg)}}
 @media(max-width:768px){
   /* iPhone'da notch/status bar ostiga yashirin hudud bor — shu hudud
      hisobga olinmasa, sahifaning o'z belgilari (qo'ng'iroq, tema, til)
      telefonning o'z soat/signal/batareya belgilari bilan ustma-ust tushib
      qolardi (viewport-fit=cover shu hududni ham sahifaga qo'shib yuboradi) */
-  .admin-topbar{top:calc(12px + env(safe-area-inset-top));right:14px}
+  .admin-topbar{
+    top:calc(10px + env(safe-area-inset-top));
+    left:calc(14px + env(safe-area-inset-left));
+    right:calc(14px + env(safe-area-inset-right));
+    justify-content:flex-end;
+  }
 }
 
 .notif-wrap{position:relative}
@@ -888,7 +903,10 @@ body{
   box-shadow:0 24px 60px -24px rgba(0,0,0,.75);z-index:50;overflow:hidden;
 }
 @media(max-width:768px){
-  .notif-dropdown{top:56px;right:14px}
+  .notif-dropdown{
+    top:calc(54px + env(safe-area-inset-top));
+    right:calc(14px + env(safe-area-inset-right));
+  }
 }
 [data-theme="light"] .notif-dropdown{background:#fff;box-shadow:0 24px 60px -28px rgba(0,0,0,.25)}
 .notif-dropdown.is-on{display:block}
@@ -1048,6 +1066,14 @@ body{
   width:100%;margin-top:22px;padding:13px;border-radius:12px;display:none;align-items:center;justify-content:center;gap:8px;
   background:linear-gradient(135deg,var(--green-hi),var(--green));color:var(--green-ink);border:0;font-size:14px;font-weight:700;cursor:pointer;
 }
+.more-refresh{
+  width:100%;margin-top:22px;padding:13px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--surface);border:1px solid var(--line-2);color:var(--white);
+  font-size:14px;font-weight:650;cursor:pointer;
+}
+[data-theme="light"] .more-refresh{background:#fff;color:#1a2117}
+.more-refresh.is-refreshing svg{animation:adminRefreshSpin .7s linear infinite}
 .more-logout{
   width:100%;margin-top:14px;padding:13px;border-radius:12px;background:none;
   border:1px solid var(--line-2);color:var(--gray);font-size:14px;font-weight:600;cursor:pointer;
@@ -1433,30 +1459,36 @@ body{
 .cam-overlay{
   display:none;position:fixed;inset:0;z-index:200;background:#000;
   align-items:center;justify-content:center;
+  width:100%;height:100vh;height:100dvh;
+  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);
+  box-sizing:border-box;
 }
 .cam-overlay.is-active{display:flex}
-.cam-box{width:100%;height:100%;max-width:520px;display:flex;flex-direction:column;position:relative}
+.cam-box{width:100%;height:100%;max-width:520px;display:flex;flex-direction:column;position:relative;overflow:hidden}
 .cam-head{
-  display:flex;align-items:center;justify-content:space-between;padding:16px;color:#fff;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:calc(14px + env(safe-area-inset-top)) 16px 18px;color:#fff;
   position:absolute;top:0;left:0;right:0;z-index:2;background:linear-gradient(180deg,rgba(0,0,0,.6),transparent);
 }
-.cam-head span{font-size:14px;font-weight:600}
+.cam-head span{font-size:16px;font-weight:600;line-height:1.3;padding-right:12px}
 .cam-close{background:rgba(255,255,255,.15);border:0;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px}
 #camVideo,#camPreview{flex:1;width:100%;height:100%;object-fit:cover;background:#000}
 .cam-actions{
-  position:absolute;bottom:0;left:0;right:0;padding:22px;display:flex;gap:12px;justify-content:center;align-items:center;
+  position:absolute;bottom:0;left:0;right:0;padding:22px 22px calc(22px + env(safe-area-inset-bottom));display:flex;gap:12px;justify-content:center;align-items:center;
   background:linear-gradient(0deg,rgba(0,0,0,.7),transparent);z-index:2;
 }
 .cam-shoot{width:68px;height:68px;border-radius:50%;background:#fff;border:4px solid rgba(255,255,255,.4);cursor:pointer}
 .cam-retake,.cam-confirm{padding:0 22px;height:44px;border-radius:999px;border:0;font-size:14px;font-weight:600;cursor:pointer}
 .cam-retake{background:rgba(255,255,255,.15);color:#fff}
 .cam-confirm{background:linear-gradient(140deg,var(--green-hi),var(--green));color:var(--green-ink)}
-.cam-msg{position:absolute;top:60px;left:16px;right:16px;color:#F2896F;font-size:13px;text-align:center;z-index:2}
+.cam-msg{position:absolute;top:calc(68px + env(safe-area-inset-top));left:16px;right:16px;color:#F2896F;font-size:13px;text-align:center;z-index:2}
 
 /* ── MODAL FORM ── */
 .modal-overlay{
   display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.6);
-  align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;
+  align-items:flex-start;justify-content:center;
+  padding:calc(24px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+  overflow-y:auto;
 }
 .modal-overlay.is-active{display:flex}
 .modal-box{
@@ -1728,6 +1760,9 @@ body{
 
   <!-- ── TEPA O'NG BURCHAK: bildirishnoma, mavzu, til ── -->
   <div class="admin-topbar" id="adminTopbar">
+    <button class="notif-bell admin-refresh" id="adminRefreshBtn" type="button" aria-label="Ilovani yangilash" title="Yangilash">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M20 6v5h-5M4 18v-5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.4 9A7 7 0 0 0 6.1 6.1L4 8m2 7a7 7 0 0 0 11.9 2.9L20 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
     <div class="notif-wrap">
       <button class="notif-bell" id="notifBellBtn" type="button" aria-label="Bildirishnomalar">
         <svg viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
@@ -2307,6 +2342,10 @@ body{
       </button>
     </div>
 
+    <button type="button" class="more-refresh" id="moreRefreshBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6v5h-5M4 18v-5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.4 9A7 7 0 0 0 6.1 6.1L4 8m2 7a7 7 0 0 0 11.9 2.9L20 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Ilovani yangilash
+    </button>
     <button type="button" class="more-install" id="moreInstallBtn">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 3v13M7 11l5 5 5-5M3 19h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Ilovani yuklash
@@ -3810,6 +3849,22 @@ body{
   document.getElementById('moreLogoutBtn').addEventListener('click', function () {
     document.getElementById('logoutBtn').click();
   });
+
+  async function refreshAdminApp(button) {
+    if (button) {
+      button.disabled = true;
+      button.classList.add('is-refreshing');
+    }
+    try {
+      if ('serviceWorker' in navigator) {
+        var registration = await navigator.serviceWorker.getRegistration();
+        if (registration) await registration.update();
+      }
+    } catch (e) {}
+    window.location.reload();
+  }
+  document.getElementById('adminRefreshBtn').addEventListener('click', function () { refreshAdminApp(this); });
+  document.getElementById('moreRefreshBtn').addEventListener('click', function () { refreshAdminApp(this); });
   function syncMoreListVisibility() {
     var anySiteVisible = false;
     document.querySelectorAll('.more-item[data-tab]').forEach(function (btn) {
