@@ -341,9 +341,19 @@ router.get('/my', auth.requireAuth, async (req, res) => {
 });
 
 // ── BARCHA XODIMLAR ──
+// start/end (YYYY-MM-DD) berilsa aniq oraliq ishlatiladi (haftalik/yillik
+// hisobot yuklab olish uchun) — aks holda oddiy oylik ko'rinish (month)
 router.get('/all', auth.requireAuth, requireRole(VIEW_ALL_ROLES, "Bu bo'limni ko'rishga ruxsat yo'q"), async (req, res) => {
   try {
-    const { start, end, monthStr } = monthRange(req.query.month);
+    const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+    let start, end, monthStr;
+    if (DATE_RE.test(req.query.start || '') && DATE_RE.test(req.query.end || '')) {
+      start = req.query.start;
+      end = req.query.end;
+      monthStr = start + '_' + end;
+    } else {
+      ({ start, end, monthStr } = monthRange(req.query.month));
+    }
     const rows = await db.all(
       `SELECT r.id, r.employee_id, u.name AS employee_name, u.role AS employee_role,
        r.work_date, r.check_in_at, r.late_minutes, r.deduct_percent, r.check_out_at,
