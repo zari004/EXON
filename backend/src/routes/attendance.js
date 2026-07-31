@@ -597,6 +597,22 @@ router.get('/my-salary', auth.requireAuth, async (req, res) => {
   }
 });
 
+// GET /api/attendance/salary-summary?month=YYYY-MM — KPI xodimlar ro'yxatida
+// har bir kishining oylik holatini bir so'rovda ko'rsatish uchun qisqa hisobot
+router.get('/salary-summary', auth.requireAuth, requireRole(SALARY_MANAGE_ROLES, "Bu bo'limni ko'rishga ruxsat yo'q"), async (req, res) => {
+  try {
+    const employees = await db.all("SELECT id FROM admin_users WHERE role != 'superadmin' AND status = 'approved'");
+    const summaries = [];
+    for (const e of employees) {
+      const data = await computeSalaryBreakdown(e.id, req.query.month);
+      summaries.push({ employee_id: e.id, salary: data.salary, remaining: data.remaining, totalDeducted: data.totalDeducted });
+    }
+    res.json({ success: true, summaries });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // GET /api/attendance/salary/:employeeId?month=YYYY-MM — boshqaruv ko'rinishi
 router.get('/salary/:employeeId', auth.requireAuth, requireRole(SALARY_MANAGE_ROLES, "Bu bo'limni ko'rishga ruxsat yo'q"), async (req, res) => {
   try {
