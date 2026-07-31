@@ -2,7 +2,9 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const db = require('../db');
 
-const tokens = new Map(); // token -> { expiresAt, role, userId, email, name }
+// Sessiyalar bazada saqlanadi (jadval: sessions) — server qayta ishga
+// tushsa ham (masalan Render sovuqdan uyg'onganda) foydalanuvchilar
+// tizimdan chiqarilib yuborilmaydi.
 const TOKEN_TTL_MS = 12 * 60 * 60 * 1000; // 12 soat
 
 const resetCodes = new Map(); // email -> { code, expiresAt }
@@ -24,13 +26,28 @@ const verifyResetCode = (email, code) => {
 
 const clearResetCode = (email) => { resetCodes.delete(email); };
 
+// Eski, muddati o'tgan sessiyalarni tozalaydi — jadval cheksiz o'smasligi uchun
+const pruneExpiredSessions = () => db.run('DELETE FROM sessions WHERE expires_at < NOW()').catch(() => {});
+
+const createSession = async (row) => {
+  const expiresAt = new Date(Date.now() + TOKEN_TTL_MS);
+  const token = crypto.randomBytes(32).toString('hex');
+  await pruneExpiredSessions();
+  await db.run(
+    // "sessions" jadvalida "id" ustuni yo'q (asosiy kalit — token), shu
+    // sabab db.run() avtomatik qo'shadigan "RETURNING id" xato berardi —
+    // shuning uchun bu yerda o'zimiz aniq "RETURNING token" yozamiz
+    'INSERT INTO sessions (token, user_id, role, email, name, expires_at) VALUES (?, ?, ?, ?, ?, ?) RETURNING token',
+    [token, row.userId, row.role, row.email, row.name, expiresAt]
+  );
+  return token;
+};
+
 // Eski parol-only login — superadmin uchun backward compat
-const login = (password) => {
+const login = async (password) => {
   const expected = process.env.ADMIN_PASSWORD;
   if (!expected || password !== expected) return null;
-  const token = crypto.randomBytes(32).toString('hex');
-  tokens.set(token, { expiresAt: Date.now() + TOKEN_TTL_MS, role: 'superadmin', userId: null, email: process.env.ADMIN_EMAIL || 'admin', name: 'Admin' });
-  return token;
+  return createSession({ userId: null, role: 'superadmin', email: process.env.ADMIN_EMAIL || 'admin', name: 'Admin' });
 };
 
 // Email + parol orqali kirish (superadmin yoki ro'yxatdagi foydalanuvchi)
@@ -43,16 +60,15 @@ const loginByEmail = async (email, password) => {
   // - ADMIN_EMAIL sozlanmagan bo'lsa: istalgan email + ADMIN_PASSWORD (legacy/migration)
   const isSuperAdminAttempt = adminEmail ? email === adminEmail : true;
   if (isSuperAdminAttempt && adminPassword && password === adminPassword) {
-    const token = crypto.randomBytes(32).toString('hex');
     // Agar shu email bilan DB'da haqiqiy hisob mavjud bo'lsa — o'sha profilga bog'laymiz,
     // shunda Sozlamalar orqali ism/parol/rasm tahrirlash ishlaydi (userId null bo'lmaydi).
     // Aks holda (hali birorta hisob yaratilmagan bo'lsa) — eski "anonim" superadmin.
     const existing = await db.get('SELECT * FROM admin_users WHERE email = ?', [email]);
     if (existing && (existing.role === 'superadmin' || existing.role === 'it_bolimi')) {
-      tokens.set(token, { expiresAt: Date.now() + TOKEN_TTL_MS, role: existing.role, userId: existing.id, email, name: existing.name });
+      const token = await createSession({ userId: existing.id, role: existing.role, email, name: existing.name });
       return { token, role: existing.role, name: existing.name };
     }
-    tokens.set(token, { expiresAt: Date.now() + TOKEN_TTL_MS, role: 'superadmin', userId: null, email, name: 'Admin' });
+    const token = await createSession({ userId: null, role: 'superadmin', email, name: 'Admin' });
     return { token, role: 'superadmin', name: 'Admin' };
   }
 
@@ -65,8 +81,7 @@ const loginByEmail = async (email, password) => {
   const match = await bcrypt.compare(password, user.password_hash);
   if (!match) return { error: "Email yoki parol noto'g'ri" };
 
-  const token = crypto.randomBytes(32).toString('hex');
-  tokens.set(token, { expiresAt: Date.now() + TOKEN_TTL_MS, role: user.role, userId: user.id, email, name: user.name });
+  const token = await createSession({ userId: user.id, role: user.role, email, name: user.name });
   return { token, role: user.role, name: user.name };
 };
 
@@ -81,30 +96,36 @@ const registerUser = async (name, email, password, role, status = 'pending') => 
   );
 };
 
-const verify = (token) => {
-  const data = tokens.get(token);
-  if (!data) return false;
-  if (Date.now() > data.expiresAt) { tokens.delete(token); return false; }
-  return data;
+const verify = async (token) => {
+  const row = await db.get('SELECT * FROM sessions WHERE token = ?', [token]);
+  if (!row) return false;
+  if (Date.now() > new Date(row.expires_at).getTime()) {
+    await db.run('DELETE FROM sessions WHERE token = ?', [token]);
+    return false;
+  }
+  return { role: row.role, userId: row.user_id, email: row.email, name: row.name };
 };
 
 // Profil tahrirlangandan so'ng joriy sessiyadagi ismni yangilaydi —
 // qayta login qilmasdan turib created_name kabi joylarda yangi ism ko'rinsin
-const updateTokenName = (token, name) => {
-  const data = tokens.get(token);
-  if (data) data.name = name;
+const updateTokenName = async (token, name) => {
+  await db.run('UPDATE sessions SET name = ? WHERE token = ?', [name, token]);
 };
 
-const logout = (token) => { tokens.delete(token); };
+const logout = async (token) => { await db.run('DELETE FROM sessions WHERE token = ?', [token]); };
 
-const requireAuth = (req, res, next) => {
-  const header = req.headers.authorization || '';
-  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
-  const data = token ? verify(token) : false;
-  if (!data) return res.status(401).json({ success: false, error: 'Avtorizatsiya talab qilinadi' });
-  req.user = data;
-  req.token = token;
-  next();
+const requireAuth = async (req, res, next) => {
+  try {
+    const header = req.headers.authorization || '';
+    const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+    const data = token ? await verify(token) : false;
+    if (!data) return res.status(401).json({ success: false, error: 'Avtorizatsiya talab qilinadi' });
+    req.user = data;
+    req.token = token;
+    next();
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 };
 
 const requireSuperAdmin = (req, res, next) => {

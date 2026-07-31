@@ -41,7 +41,7 @@ router.put('/profile', auth.requireAuth, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Bu email boshqa hisobda band' });
     }
     await db.run('UPDATE admin_users SET name = ?, email = ?, avatar = ? WHERE id = ?', [name.trim(), cleanEmail, avatar || null, req.user.userId]);
-    auth.updateTokenName(req.token, name.trim());
+    await auth.updateTokenName(req.token, name.trim());
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -92,9 +92,11 @@ router.put('/site-settings', auth.requireAuth, auth.requireSuperAdmin, async (re
     for (const s of settings) {
       const key = (s.key || '').trim();
       if (!key) continue;
+      // "site_settings" jadvalida "id" ustuni yo'q (asosiy kalit — key),
+      // shu sabab db.run() avtomatik qo'shadigan "RETURNING id" xato berardi
       await db.run(
         `INSERT INTO site_settings (key, value, updated_at) VALUES (?, ?, NOW())
-         ON CONFLICT (key) DO UPDATE SET value = ?, updated_at = NOW()`,
+         ON CONFLICT (key) DO UPDATE SET value = ?, updated_at = NOW() RETURNING key`,
         [key, s.value || '', s.value || '']
       );
     }

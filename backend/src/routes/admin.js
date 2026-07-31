@@ -7,10 +7,10 @@ const auth = require('../services/auth');
  * POST /api/admin/login
  * Body: { password }
  */
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const { password } = req.body;
-    const token = auth.login(password);
+    const token = await auth.login(password);
     if (!token) {
       return res.status(401).json({ success: false, error: "Parol noto'g'ri" });
     }
@@ -23,9 +23,9 @@ router.post('/login', (req, res) => {
 /**
  * POST /api/admin/logout
  */
-router.post('/logout', auth.requireAuth, (req, res) => {
+router.post('/logout', auth.requireAuth, async (req, res) => {
   const token = req.headers.authorization.slice(7);
-  auth.logout(token);
+  await auth.logout(token);
   res.json({ success: true });
 });
 
@@ -257,7 +257,9 @@ router.put('/permissions/:role', auth.requireAuth, auth.requireSuperAdmin, async
       return res.status(400).json({ success: false, error: "Noto'g'ri rol" });
     }
     const tabs = (req.body.tabs || []).filter(function(t) { return VALID_TABS.includes(t); });
-    await db.run('INSERT INTO role_permissions (role, tabs) VALUES (?, ?) ON CONFLICT (role) DO UPDATE SET tabs = ?',
+    // "role_permissions" jadvalida "id" ustuni yo'q (asosiy kalit — role),
+    // shu sabab db.run() avtomatik qo'shadigan "RETURNING id" xato berardi
+    await db.run('INSERT INTO role_permissions (role, tabs) VALUES (?, ?) ON CONFLICT (role) DO UPDATE SET tabs = ? RETURNING role',
       [req.params.role, JSON.stringify(tabs), JSON.stringify(tabs)]);
     res.json({ success: true });
   } catch (err) {

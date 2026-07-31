@@ -118,6 +118,21 @@ const init = async () => {
   // Eski jadvallarga avatar ustunini qo'shish (agar hali yo'q bo'lsa)
   await pool.query(`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS avatar TEXT`);
 
+  // Login tokenlari — avval faqat server xotirasida (Map) saqlanardi, shu
+  // sabab Render bekor serverni har safar sovutib qo'yganda (cold start)
+  // barcha foydalanuvchilar kutilmaganda tizimdan chiqarilib yuborilardi.
+  // Endi bazada saqlanadi — server qayta ishga tushsa ham sessiya saqlanib qoladi.
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS sessions (
+      token TEXT PRIMARY KEY,
+      user_id INTEGER,
+      role TEXT NOT NULL,
+      email TEXT,
+      name TEXT,
+      expires_at TIMESTAMP NOT NULL
+    )
+  `);
+
   await pool.query(`
     CREATE TABLE IF NOT EXISTS site_settings (
       key TEXT PRIMARY KEY,
