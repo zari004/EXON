@@ -338,17 +338,18 @@ router.put('/awards/:id', auth.requireAuth, requireKpiManage, async (req, res) =
 // (kutilmoqda holatidagi) topshiriq yaratiladi — bosh menejer qayta qo'lda kiritmasin deb.
 router.post('/awards/:id/decide', auth.requireAuth, requireKpiManage, async (req, res) => {
   try {
-    const award = await db.get('SELECT * FROM kpi_awards WHERE id = ?', [req.params.id]);
-    if (!award) return res.status(404).json({ success: false, error: 'Topilmadi' });
-    if (award.status !== 'pending') {
-      return res.status(400).json({ success: false, error: 'Bu topshiriq allaqachon hal qilingan' });
-    }
     const approved = !!req.body.approved;
     const status = approved ? 'approved' : 'rejected';
-    await db.run(
-      'UPDATE kpi_awards SET status = ?, decided_by = ?, decided_at = NOW(), updated_at = NOW() WHERE id = ?',
+
+    const award = await db.get(
+      'UPDATE kpi_awards SET status = ?, decided_by = ?, decided_at = NOW(), updated_at = NOW() WHERE id = ? AND status = \'pending\' RETURNING *',
       [status, req.user.userId, req.params.id]
     );
+    if (!award) {
+      const existing = await db.get('SELECT id, status FROM kpi_awards WHERE id = ?', [req.params.id]);
+      if (!existing) return res.status(404).json({ success: false, error: 'Topilmadi' });
+      return res.status(400).json({ success: false, error: 'Bu topshiriq allaqachon hal qilingan' });
+    }
     await notifications.notify(
       award.employee_id,
       approved ? 'kpi_award_approved' : 'kpi_award_rejected',
@@ -358,7 +359,10 @@ router.post('/awards/:id/decide', auth.requireAuth, requireKpiManage, async (req
         : 'Bu oy "' + award.reason + '" vazifasi uchun KPI sizga berilmaydi. Sababi: siz ushbu vazifani bajarmadingiz.'
     );
     if (award.recurrence === 'monthly') {
-      const next = await db.get("SELECT to_char(due_date + INTERVAL '1 month', 'YYYY-MM-DD') AS next_date FROM kpi_awards WHERE id = ?", [award.id]);
+      const next = await db.get(
+        "SELECT to_char(($1::date + INTERVAL '1 month')::date, 'YYYY-MM-DD') AS next_date",
+        [award.due_date]
+      );
       const inserted = await db.run(
         `INSERT INTO kpi_awards (employee_id, amount, reason, due_date, recurrence, created_by) VALUES (?, ?, ?, ?, 'monthly', ?)`,
         [award.employee_id, award.amount, award.reason, next.next_date, award.created_by]

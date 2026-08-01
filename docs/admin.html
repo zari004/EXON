@@ -3577,6 +3577,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   async function apiFetch(path, opts) {
     opts = opts || {};
     opts.headers = authHeaders();
+    if (!opts.cache && (!opts.method || String(opts.method).toUpperCase() === 'GET')) {
+      opts.cache = 'no-store';
+    }
     const res = await fetch(API + path, opts);
     if (res.status === 401) { logout(); throw new Error('Sessiya tugagan, qayta kiring'); }
     const data = await res.json();
@@ -6217,9 +6220,27 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       }
     });
 
-    // Done checkbox
-    document.getElementById('tdChk').addEventListener('click', function () {
-      this.classList.toggle('is-done');
+    // Done checkbox — bosilganda darhol saqlanadi (Vazifalar va Kalendar
+    // bo'limlarining ikkalasida ham "bajarildi" holati birdek yangilanishi uchun)
+    document.getElementById('tdChk').addEventListener('click', async function () {
+      var chk = this;
+      chk.classList.toggle('is-done');
+      if (!TD_EDIT_ID) return; // hali saqlanmagan yangi vazifa — faqat vizual holat
+      var isDone = chk.classList.contains('is-done');
+      var currentStatus = TASKS_MAP[TD_EDIT_ID] ? TASKS_MAP[TD_EDIT_ID].status : 'new';
+      var nextStatus = isDone ? 'done' : (currentStatus === 'done' ? 'new' : currentStatus);
+      chk.disabled = true;
+      try {
+        await apiFetch('/api/tasks/' + TD_EDIT_ID + '/status', { method: 'PATCH', body: JSON.stringify({ status: nextStatus }) });
+        tdClose();
+        await loadTasks();
+        if (document.getElementById('panel-calendar').classList.contains('is-active')) renderCalGrid();
+      } catch (err) {
+        chk.classList.toggle('is-done');
+        alert(err.message || 'Xato');
+      } finally {
+        chk.disabled = false;
+      }
     });
 
     // Date button → custom kalendar popup
@@ -6758,6 +6779,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   var KPI_SALARY_MAP = {};
   var KPI_ACTIVE_EMPLOYEE_ID = null;
   var KPI_AWARD_EDIT_ID = null;
+  var KPI_AWARD_DECIDE_LOCKS = {};
   var KPI_AWARD_STATUS_LABEL = { pending: 'Kutilmoqda', approved: 'Tasdiqlandi', rejected: "Berilmadi" };
 
   function kpiDefaultMonth() {
@@ -7099,11 +7121,31 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   }
 
   async function decideKpiAward(id, approved) {
+    if (KPI_AWARD_DECIDE_LOCKS[id]) return;
+    KPI_AWARD_DECIDE_LOCKS[id] = true;
+    var card = document.querySelector('[data-kpi-award-card="' + id + '"]');
+    if (card) {
+      card.querySelectorAll('button').forEach(function (btn) { btn.disabled = true; });
+    }
     if (!confirm(approved ? 'Xodim bu vazifani bajargani tasdiqlanadi. Davom etasizmi?' : "Xodim bu vazifani bajarmagan deb belgilanadi. Davom etasizmi?")) return;
     try {
       await apiFetch('/api/kpi/awards/' + id + '/decide', { method: 'POST', body: JSON.stringify({ approved: approved }) });
+      KPI_AWARDS_ALL = KPI_AWARDS_ALL.map(function (a) {
+        return a.id === id ? Object.assign({}, a, { status: approved ? 'approved' : 'rejected' }) : a;
+      });
+      renderKpiPendingPanel();
+      renderKpiEmployeeList();
+      if (KPI_ACTIVE_EMPLOYEE_ID && document.getElementById('kpiEmployeeModal').classList.contains('is-active')) {
+        renderKpiEmpAwards(KPI_ACTIVE_EMPLOYEE_ID);
+      }
       await refreshKpiUI();
     } catch (err) { alert(err.message); }
+    finally {
+      delete KPI_AWARD_DECIDE_LOCKS[id];
+      if (card) {
+        card.querySelectorAll('button').forEach(function (btn) { btn.disabled = false; });
+      }
+    }
   }
 
   async function deleteKpiAward(id) {
