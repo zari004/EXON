@@ -341,8 +341,14 @@ router.post('/awards/:id/decide', auth.requireAuth, requireKpiManage, async (req
     const approved = !!req.body.approved;
     const status = approved ? 'approved' : 'rejected';
 
+    // due_date to_char orqali matn sifatida qaytariladi — pg'ning DATE ustunini
+    // JS Date obyektiga aylantirishi server TZ'siga bog'liq bo'lib, keyingi
+    // oy hisoblanganda sana bir kun surilib ketishi mumkin edi (shu tufayli
+    // yangi topshiriq "muddati yaqin" bo'lib darhol qayta chiqib ketardi)
     const award = await db.get(
-      'UPDATE kpi_awards SET status = ?, decided_by = ?, decided_at = NOW(), updated_at = NOW() WHERE id = ? AND status = \'pending\' RETURNING *',
+      `UPDATE kpi_awards SET status = ?, decided_by = ?, decided_at = NOW(), updated_at = NOW()
+       WHERE id = ? AND status = 'pending'
+       RETURNING *, to_char(due_date, 'YYYY-MM-DD') AS due_date_str`,
       [status, req.user.userId, req.params.id]
     );
     if (!award) {
@@ -360,8 +366,8 @@ router.post('/awards/:id/decide', auth.requireAuth, requireKpiManage, async (req
     );
     if (award.recurrence === 'monthly') {
       const next = await db.get(
-        "SELECT to_char(($1::date + INTERVAL '1 month')::date, 'YYYY-MM-DD') AS next_date",
-        [award.due_date]
+        "SELECT to_char((?::date + INTERVAL '1 month')::date, 'YYYY-MM-DD') AS next_date",
+        [award.due_date_str]
       );
       const inserted = await db.run(
         `INSERT INTO kpi_awards (employee_id, amount, reason, due_date, recurrence, created_by) VALUES (?, ?, ?, ?, 'monthly', ?)`,

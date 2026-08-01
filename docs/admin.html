@@ -2097,11 +2097,21 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   <section class="admin-panel" id="panel-kpi">
     <div class="panel-head">
       <h2>KPI</h2>
-      <button class="btn-add" id="btnAddKpiAward" onclick="openKpiAwardForm()" style="display:none">+ Yangi KPI topshirig'i</button>
+      <button class="btn-add" id="btnAddKpiAward" style="display:none">+ Yangi KPI topshirig'i</button>
     </div>
     <div id="kpiAwardsPending"></div>
-    <h3 class="prod-section-title">Xodimlar</h3>
-    <div class="item-list" id="kpiEmployeeListEl"></div>
+    <div class="tasks-layout">
+      <aside class="task-members" id="kpiMembers" style="display:flex">
+        <div class="task-members__label">Xodimlar</div>
+        <button type="button" class="task-member-item is-active" id="kpiMemberAll">
+          <span>Barchasi</span>
+        </button>
+        <div id="kpiMembersList"></div>
+      </aside>
+      <div class="tasks-main">
+        <div class="item-list" id="kpiAwardsMainEl"></div>
+      </div>
+    </div>
   </section>
 
   <!-- OYLIK — xodimlarning maoshi va ish kunlari jadvali (KPI'dan alohida) -->
@@ -2592,23 +2602,6 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         <button type="submit" class="modal-save">Saqlash</button>
       </div>
     </form>
-  </div>
-</div>
-
-<!-- ══════════ MODAL: XODIM KPI OYNASI ══════════ -->
-<div class="modal-overlay" id="kpiEmployeeModal">
-  <div class="modal-box kpi-emp-modal-box">
-    <div class="modal-head-row">
-      <h3 id="kpiEmpModalName">Xodim</h3>
-      <button type="button" class="icon-btn" onclick="closeModal('kpiEmployeeModal')" aria-label="Yopish">✕</button>
-    </div>
-    <div class="kpi-emp-section">
-      <div class="kpi-emp-section__head">
-        <h4>KPI</h4>
-        <button type="button" class="btn-add" id="btnAddKpiAwardInEmp" style="padding:6px 14px;display:none">+ Yangi KPI</button>
-      </div>
-      <div id="kpiEmpAwardsEl"></div>
-    </div>
   </div>
 </div>
 
@@ -4229,7 +4222,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   window.closeModal = function (id) { document.getElementById(id).classList.remove('is-active'); };
 
-  ['kpiEmployeeModal', 'salaryEmployeeModal'].forEach(function (id) {
+  ['salaryEmployeeModal'].forEach(function (id) {
     var overlay = document.getElementById(id);
     if (overlay) overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(id); });
   });
@@ -6777,7 +6770,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   var KPI_EMPLOYEES = [];
   var KPI_AWARDS_ALL = [];
   var KPI_SALARY_MAP = {};
-  var KPI_ACTIVE_EMPLOYEE_ID = null;
+  var KPI_MEMBER_FILTER = '';
   var KPI_AWARD_EDIT_ID = null;
   var KPI_AWARD_DECIDE_LOCKS = {};
   var KPI_AWARD_STATUS_LABEL = { pending: 'Kutilmoqda', approved: 'Tasdiqlandi', rejected: "Berilmadi" };
@@ -6824,12 +6817,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     var addAwardBtn = document.getElementById('btnAddKpiAward');
     if (addAwardBtn) addAwardBtn.style.display = KPI_CAN_MANAGE ? '' : 'none';
 
-    var list = document.getElementById('kpiEmployeeListEl');
+    var list = document.getElementById('kpiAwardsMainEl');
     list.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
     try {
       await loadKpiData();
       renderKpiPendingPanel();
-      renderKpiEmployeeList();
+      renderKpiMembers();
+      renderKpiAwardsMain();
     } catch (err) {
       list.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
     }
@@ -6842,10 +6836,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       await loadKpiData();
     } catch (err) { return; }
     renderKpiPendingPanel();
-    renderKpiEmployeeList();
-    if (KPI_ACTIVE_EMPLOYEE_ID && document.getElementById('kpiEmployeeModal').classList.contains('is-active')) {
-      renderKpiEmpAwards(KPI_ACTIVE_EMPLOYEE_ID);
-    }
+    renderKpiMembers();
+    renderKpiAwardsMain();
   }
 
   function kpiAwardIsDueSoon(a) {
@@ -6862,51 +6854,51 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     if (!KPI_CAN_MANAGE) { el.innerHTML = ''; return; }
     var dueSoon = KPI_AWARDS_ALL.filter(kpiAwardIsDueSoon);
     el.innerHTML = dueSoon.length
-      ? '<h3 class="prod-section-title">Tasdiqlash kutilmoqda</h3>' + dueSoon.map(renderKpiAwardCard).join('')
+      ? '<h3 class="prod-section-title">Tasdiqlash kutilmoqda</h3>' + dueSoon.map(function (a) { return renderKpiAwardCard(a); }).join('')
       : '';
     wireKpiAwardCards(el);
   }
 
-  function renderKpiEmployeeList() {
-    var list = document.getElementById('kpiEmployeeListEl');
-    if (!KPI_EMPLOYEES.length) {
-      list.innerHTML = '<div class="empty-state">Xodimlar topilmadi</div>';
-      return;
-    }
-    list.innerHTML = KPI_EMPLOYEES.map(function (e) {
-      var pendingCount = KPI_AWARDS_ALL.filter(function (a) { return a.employee_id === e.id && a.status === 'pending'; }).length;
-      var totalCount = KPI_AWARDS_ALL.filter(function (a) { return a.employee_id === e.id; }).length;
-      var countText = totalCount ? (totalCount + " ta KPI") : "KPI yo'q";
-      var pendingBadge = pendingCount ? '<span class="kpi-award-badge kpi-award-badge--pending">' + pendingCount + ' kutilmoqda</span>' : '';
-      return '<div class="kpi-emp-row" data-kpi-emp="' + e.id + '">' +
-        '<div class="item-row__thumb" style="background:' + avaColor(e.name) + '">' + avaLetter(e.name) + '</div>' +
-        '<div class="kpi-emp-row__body">' +
-          '<div class="kpi-emp-row__name">' + esc(e.name) + '</div>' +
-        '</div>' +
-        '<div class="kpi-emp-row__badges">' +
-          '<span class="kpi-emp-row__percent kpi-emp-row__percent--muted">' + countText + '</span>' +
-          pendingBadge +
-        '</div>' +
-      '</div>';
+  // Chapdagi "Xodimlar" filtri — Vazifalar bo'limidagi xuddi shu uslubda:
+  // "Barchasi" yoki bitta xodimni tanlab, faqat o'sha kishining KPI'lari ko'rsatiladi
+  function renderKpiMembers() {
+    var container = document.getElementById('kpiMembersList');
+    container.innerHTML = KPI_EMPLOYEES.map(function (e) {
+      var active = String(e.id) === KPI_MEMBER_FILTER ? ' is-active' : '';
+      return '<button type="button" class="task-member-item' + active + '" data-emp-id="' + e.id + '">' +
+        '<span class="task-member-item__ava" style="background:' + avaColor(e.name) + '">' + avaLetter(e.name) + '</span>' +
+        '<span>' + esc(e.name) + '</span>' +
+      '</button>';
     }).join('');
-    list.querySelectorAll('[data-kpi-emp]').forEach(function (row) {
-      row.addEventListener('click', function () { openKpiEmployee(Number(row.dataset.kpiEmp)); });
+    container.querySelectorAll('.task-member-item').forEach(function (btn) {
+      btn.addEventListener('click', function () { selectKpiMember(btn); });
     });
+    document.getElementById('kpiMemberAll').classList.toggle('is-active', !KPI_MEMBER_FILTER);
   }
-  window.openKpiEmployee = function (employeeId) {
-    var emp = KPI_EMPLOYEES.find(function (e) { return e.id === employeeId; });
-    if (!emp) return;
-    KPI_ACTIVE_EMPLOYEE_ID = employeeId;
-    document.getElementById('kpiEmpModalName').textContent = emp.name;
-    var addAwardInEmpBtn = document.getElementById('btnAddKpiAwardInEmp');
-    addAwardInEmpBtn.style.display = KPI_CAN_MANAGE ? '' : 'none';
-    renderKpiEmpAwards(employeeId);
-    document.getElementById('kpiEmployeeModal').classList.add('is-active');
-  };
 
-  document.getElementById('btnAddKpiAwardInEmp').addEventListener('click', function () {
-    openKpiAwardForm(KPI_ACTIVE_EMPLOYEE_ID);
+  function selectKpiMember(btn) {
+    KPI_MEMBER_FILTER = (btn && btn.dataset.empId) || '';
+    document.querySelectorAll('#kpiMembers .task-member-item').forEach(function (b) {
+      b.classList.toggle('is-active', b === btn);
+    });
+    renderKpiAwardsMain();
+  }
+  document.getElementById('kpiMemberAll').addEventListener('click', function () { selectKpiMember(this); });
+
+  document.getElementById('btnAddKpiAward').addEventListener('click', function () {
+    openKpiAwardForm(KPI_MEMBER_FILTER ? Number(KPI_MEMBER_FILTER) : undefined);
   });
+
+  function renderKpiAwardsMain() {
+    var list = document.getElementById('kpiAwardsMainEl');
+    var filtered = KPI_MEMBER_FILTER
+      ? KPI_AWARDS_ALL.filter(function (a) { return String(a.employee_id) === KPI_MEMBER_FILTER; })
+      : KPI_AWARDS_ALL;
+    list.innerHTML = filtered.length
+      ? filtered.map(function (a) { return renderKpiAwardCard(a, { hideName: !!KPI_MEMBER_FILTER }); }).join('')
+      : '<div class="empty-state">Hali KPI topshirig\'i yo\'q</div>';
+    wireKpiAwardCards(list);
+  }
 
   // ══════════════════════════════════════════════════════════
   // OYLIK — xodimlar ro'yxati, har biriga kirib maosh va ish
@@ -7062,16 +7054,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     }
   }
 
-  function renderKpiEmpAwards(employeeId) {
-    var el = document.getElementById('kpiEmpAwardsEl');
-    var awards = KPI_AWARDS_ALL.filter(function (a) { return a.employee_id === employeeId; });
-    el.innerHTML = awards.length
-      ? awards.map(renderKpiAwardCard).join('')
-      : '<div class="empty-state">Hali KPI topshirig\'i yo\'q</div>';
-    wireKpiAwardCards(el);
-  }
-
-  function renderKpiAwardCard(a) {
+  function renderKpiAwardCard(a, opts) {
+    opts = opts || {};
     var badgeClass = 'kpi-award-badge--' + a.status;
     var cardClass = 'kpi-award-card' + (kpiAwardIsDueSoon(a) ? ' kpi-award-card--pending-review' : '');
     var recurringBadge = a.recurrence === 'monthly' ? '<span class="kpi-award-badge kpi-award-badge--recurring">↻ har oy</span>' : '';
@@ -7085,12 +7069,16 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
           '<button type="button" class="kpi-award-btn kpi-award-btn--no" data-kpi-award-decide="' + a.id + '" data-approved="0">Yo\'q</button>' +
         '</div>'
       : '';
+    // Bitta xodim tanlangan bo'lsa (chapdagi filtr), ism har kartada takrorlanmasin —
+    // o'rniga sabab sarlavha sifatida chiqadi; "Barchasi"da esa xodim ismi ko'rinadi
+    var titleText = opts.hideName ? a.reason : (a.employee_name || '');
+    var reasonRow = opts.hideName ? '' : ('<div class="kpi-award-card__reason">' + esc(a.reason) + '</div>');
     return '<div class="' + cardClass + '" data-kpi-award-card="' + a.id + '">' +
       '<div class="kpi-award-card__top">' +
-        '<span class="kpi-award-card__name">' + esc(a.employee_name || '') + '</span>' +
+        '<span class="kpi-award-card__name">' + esc(titleText) + '</span>' +
         '<span class="kpi-award-card__amount">' + fmtMoney(a.amount) + '</span>' +
       '</div>' +
-      '<div class="kpi-award-card__reason">' + esc(a.reason) + '</div>' +
+      reasonRow +
       '<div class="kpi-award-card__meta">' +
         '<span class="kpi-award-badge ' + badgeClass + '">' + KPI_AWARD_STATUS_LABEL[a.status] + '</span>' +
         recurringBadge +
@@ -7122,22 +7110,19 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   async function decideKpiAward(id, approved) {
     if (KPI_AWARD_DECIDE_LOCKS[id]) return;
+    if (!confirm(approved ? 'Xodim bu vazifani bajargani tasdiqlanadi. Davom etasizmi?' : "Xodim bu vazifani bajarmagan deb belgilanadi. Davom etasizmi?")) return;
     KPI_AWARD_DECIDE_LOCKS[id] = true;
     var card = document.querySelector('[data-kpi-award-card="' + id + '"]');
     if (card) {
       card.querySelectorAll('button').forEach(function (btn) { btn.disabled = true; });
     }
-    if (!confirm(approved ? 'Xodim bu vazifani bajargani tasdiqlanadi. Davom etasizmi?' : "Xodim bu vazifani bajarmagan deb belgilanadi. Davom etasizmi?")) return;
     try {
       await apiFetch('/api/kpi/awards/' + id + '/decide', { method: 'POST', body: JSON.stringify({ approved: approved }) });
       KPI_AWARDS_ALL = KPI_AWARDS_ALL.map(function (a) {
         return a.id === id ? Object.assign({}, a, { status: approved ? 'approved' : 'rejected' }) : a;
       });
       renderKpiPendingPanel();
-      renderKpiEmployeeList();
-      if (KPI_ACTIVE_EMPLOYEE_ID && document.getElementById('kpiEmployeeModal').classList.contains('is-active')) {
-        renderKpiEmpAwards(KPI_ACTIVE_EMPLOYEE_ID);
-      }
+      renderKpiAwardsMain();
       await refreshKpiUI();
     } catch (err) { alert(err.message); }
     finally {
