@@ -2097,14 +2097,14 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   <section class="admin-panel" id="panel-kpi">
     <div class="panel-head">
       <h2>KPI</h2>
-      <button class="btn-add" id="btnAddKpiAward" style="display:none">+ Yangi KPI topshirig'i</button>
+      <button class="btn-add" id="btnAddKpiAward" data-i18n="kpi.add" style="display:none">+ Yangi KPI topshirig'i</button>
     </div>
     <div id="kpiAwardsPending"></div>
     <div class="tasks-layout">
       <aside class="task-members" id="kpiMembers" style="display:flex">
-        <div class="task-members__label">Xodimlar</div>
+        <div class="task-members__label" data-i18n="members.label">Xodimlar</div>
         <button type="button" class="task-member-item is-active" id="kpiMemberAll">
-          <span>Barchasi</span>
+          <span data-i18n="members.all">Barchasi</span>
         </button>
         <div id="kpiMembersList"></div>
       </aside>
@@ -2117,9 +2117,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   <!-- OYLIK — xodimlarning maoshi va ish kunlari jadvali (KPI'dan alohida) -->
   <section class="admin-panel" id="panel-salary">
     <div class="panel-head">
-      <h2>Oylik</h2>
+      <h2 data-i18n="tab.salary">Oylik</h2>
     </div>
-    <h3 class="prod-section-title">Xodimlar</h3>
+    <h3 class="prod-section-title" data-i18n="members.label">Xodimlar</h3>
     <div class="item-list" id="salaryEmployeeListEl"></div>
   </section>
 
@@ -2146,8 +2146,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
        (faqat superadmin/IT bo'limi/bosh menejer) -->
   <section class="admin-panel" id="panel-calendar">
     <div class="panel-head">
-      <h2>Kalendar</h2>
-      <button class="btn-add" id="btnAddCalTask" type="button">+ Vazifa</button>
+      <h2 data-i18n="cal.title">Kalendar</h2>
+      <button class="btn-add" id="btnAddCalTask" type="button" data-i18n="cal.add">+ Vazifa</button>
     </div>
     <div class="cal-nav">
       <button type="button" class="icon-btn" id="calPrevBtn" aria-label="Oldingi oy">
@@ -2157,19 +2157,19 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       <button type="button" class="icon-btn" id="calNextBtn" aria-label="Keyingi oy">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <button type="button" class="btn-add" id="calTodayBtn" style="padding:6px 16px;margin-left:10px">Bugun</button>
+      <button type="button" class="btn-add" id="calTodayBtn" data-i18n="cal.today" style="padding:6px 16px;margin-left:10px">Bugun</button>
     </div>
     <div class="cal-page">
       <aside class="cal-filters">
-        <div class="cal-filters__label">Do'konlar</div>
+        <div class="cal-filters__label" data-i18n="tab.stores">Do'konlar</div>
         <button type="button" class="cal-filter-item is-active" id="calFilterAll" data-store-id="">
-          <span>Barchasi</span>
+          <span data-i18n="members.all">Barchasi</span>
         </button>
         <div id="calFilterStores"></div>
       </aside>
       <div class="cal-main">
         <div class="cal-weekdays">
-          <span>Du</span><span>Se</span><span>Cho</span><span>Pay</span><span>Ju</span><span>Sha</span><span>Ya</span>
+          <span data-i18n="cal.weekday.mon">Du</span><span data-i18n="cal.weekday.tue">Se</span><span data-i18n="cal.weekday.wed">Cho</span><span data-i18n="cal.weekday.thu">Pay</span><span data-i18n="cal.weekday.fri">Ju</span><span data-i18n="cal.weekday.sat">Sha</span><span data-i18n="cal.weekday.sun">Ya</span>
         </div>
         <div class="cal-grid" id="calGrid"></div>
       </div>
@@ -2179,38 +2179,38 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   <!-- ISH UNUMDORLIGI (shaxsiy oylik + KPI) -->
   <section class="admin-panel" id="panel-productivity">
     <div class="panel-head">
-      <h2>Ish unumdorligi</h2>
+      <h2 data-i18n="tab.productivity">Ish unumdorligi</h2>
       <input type="month" id="prodMonthInput" />
     </div>
-    <h3 class="prod-section-title">Oylik</h3>
+    <h3 class="prod-section-title" data-i18n="tab.salary">Oylik</h3>
     <div id="prodSalaryEl"></div>
     <div id="prodAwardsEl"></div>
   </section>
 
   <!-- KELDI-KETDI (davomat) -->
   <section class="admin-panel" id="panel-attendance">
-    <div class="panel-head"><h2>Keldi-ketdi</h2></div>
+    <div class="panel-head"><h2 data-i18n="tab.attendance">Keldi-ketdi</h2></div>
     <div class="att-shell">
       <div class="att-nav">
         <button type="button" class="att-nav-item is-active" data-att-pane="today">
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/></svg>
-          <span>Bugun</span>
+          <span data-i18n="att.nav.today">Bugun</span>
         </button>
         <button type="button" class="att-nav-item" data-att-pane="history">
           <svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 15l4-5 3 3 5-7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Mening tarixim</span>
+          <span data-i18n="att.nav.history">Mening tarixim</span>
         </button>
         <button type="button" class="att-nav-item att-team-tab" data-att-pane="team" style="display:none">
           <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.7"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-          <span>Xodimlar</span>
+          <span data-i18n="att.nav.team">Xodimlar</span>
         </button>
         <button type="button" class="att-nav-item att-office-tab" data-att-pane="office" style="display:none">
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.7"/></svg>
-          <span>Ishxona hududi</span>
+          <span data-i18n="att.nav.office">Ishxona hududi</span>
         </button>
         <button type="button" class="att-nav-item att-policy-tab" data-att-pane="policy" style="display:none">
           <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Kechikish siyosati</span>
+          <span data-i18n="att.nav.policy">Kechikish siyosati</span>
         </button>
       </div>
 
@@ -2223,7 +2223,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         <!-- MENING TARIXIM -->
         <div class="att-pane" id="attPaneHistory">
           <div class="panel-head" style="margin-bottom:14px">
-            <h3>Mening tarixim</h3>
+            <h3 data-i18n="att.history.title">Mening tarixim</h3>
             <input type="month" id="attMyMonthInput" />
           </div>
           <div id="attMyList"></div>
@@ -2232,19 +2232,19 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         <!-- XODIMLAR (menejer_bosh / seo / it_bolimi / superadmin) -->
         <div class="att-pane" id="attPaneTeam">
           <div class="panel-head" style="margin-bottom:14px">
-            <h3>Barcha xodimlar</h3>
+            <h3 data-i18n="att.team.title">Barcha xodimlar</h3>
             <input type="month" id="attTeamMonthInput" />
           </div>
           <!-- Hisobotni yuklab olish — faqat bosh menejer/IT bo'limi/superadmin -->
           <div class="att-export-row" id="attExportRow" style="display:none">
-            <span class="att-export-label">Hisobotni yuklab olish:</span>
-            <button type="button" class="att-export-btn" data-period="week">Haftalik</button>
-            <button type="button" class="att-export-btn" data-period="month">Oylik</button>
-            <button type="button" class="att-export-btn" data-period="year">Yillik</button>
+            <span class="att-export-label" data-i18n="att.export.label">Hisobotni yuklab olish:</span>
+            <button type="button" class="att-export-btn" data-period="week" data-i18n="att.export.week">Haftalik</button>
+            <button type="button" class="att-export-btn" data-period="month" data-i18n="att.export.month">Oylik</button>
+            <button type="button" class="att-export-btn" data-period="year" data-i18n="att.export.year">Yillik</button>
           </div>
           <div style="overflow-x:auto">
             <table class="admin-table admin-table--responsive" id="attTeamTable">
-              <thead><tr><th>Xodim</th><th>Sana</th><th>Keldi</th><th>Kechikish</th><th>Ushlab qolindi</th><th>Ketdi</th><th></th></tr></thead>
+              <thead><tr><th data-i18n="att.table.employee">Xodim</th><th data-i18n="att.table.date">Sana</th><th data-i18n="att.table.checkin">Keldi</th><th data-i18n="att.table.late">Kechikish</th><th data-i18n="att.table.deducted">Ushlab qolindi</th><th data-i18n="att.table.checkout">Ketdi</th><th></th></tr></thead>
               <tbody id="attTeamBody"></tbody>
             </table>
           </div>
@@ -2252,40 +2252,40 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
         <!-- ISHXONA HUDUDI (it_bolimi / superadmin) -->
         <div class="att-pane" id="attPaneOffice">
-          <h3 style="margin-bottom:4px">Ishxona hududi</h3>
-          <p class="hint" style="color:var(--gray-dim);font-size:12.5px;margin-bottom:18px">Xodimlar shu koordinata atrofidagi radiusda bo'lsagina "Keldim/Ketdim"ni tasdiqlay oladi.</p>
+          <h3 style="margin-bottom:4px" data-i18n="att.office.title">Ishxona hududi</h3>
+          <p class="hint" style="color:var(--gray-dim);font-size:12.5px;margin-bottom:18px" data-i18n="att.office.hint">Xodimlar shu koordinata atrofidagi radiusda bo'lsagina "Keldim/Ketdim"ni tasdiqlay oladi.</p>
           <form class="att-form" id="attOfficeForm">
-            <div class="field"><label>Nomi</label><input type="text" id="attOfficeName" placeholder="Bosh ofis" /></div>
+            <div class="field"><label data-i18n="att.office.name">Nomi</label><input type="text" id="attOfficeName" data-i18n-ph="att.office.name.ph" placeholder="Bosh ofis" /></div>
             <div class="field-row">
-              <div class="field"><label>Kenglik (latitude)</label><input type="number" id="attOfficeLat" step="0.000001" required /></div>
-              <div class="field"><label>Uzunlik (longitude)</label><input type="number" id="attOfficeLng" step="0.000001" required /></div>
+              <div class="field"><label data-i18n="att.office.lat">Kenglik (latitude)</label><input type="number" id="attOfficeLat" step="0.000001" required /></div>
+              <div class="field"><label data-i18n="att.office.lng">Uzunlik (longitude)</label><input type="number" id="attOfficeLng" step="0.000001" required /></div>
             </div>
-            <div class="field"><label>Radius (metr)</label><input type="number" id="attOfficeRadius" min="10" max="5000" step="1" required /></div>
-            <button type="button" class="att-locate-btn" id="attOfficeLocateBtn">📍 Joriy joylashuvimni ishlatish</button>
+            <div class="field"><label data-i18n="att.office.radius">Radius (metr)</label><input type="number" id="attOfficeRadius" min="10" max="5000" step="1" required /></div>
+            <button type="button" class="att-locate-btn" id="attOfficeLocateBtn"><span data-i18n="att.office.locate">📍 Joriy joylashuvimni ishlatish</span></button>
             <div class="form-msg" id="attOfficeMsg"></div>
             <div class="modal-actions" style="margin-top:0">
-              <button type="submit" class="modal-save-static">Saqlash</button>
+              <button type="submit" class="modal-save-static" data-i18n="att.save">Saqlash</button>
             </div>
           </form>
         </div>
 
         <!-- KECHIKISH SIYOSATI (menejer_bosh / superadmin) -->
         <div class="att-pane" id="attPanePolicy">
-          <h3 style="margin-bottom:4px">Kechikish siyosati</h3>
-          <p class="hint" style="color:var(--gray-dim);font-size:12.5px;margin-bottom:18px">Ish boshlanish vaqtidan necha daqiqa o'tgach qancha foiz ushlab qolinishini belgilang.</p>
+          <h3 style="margin-bottom:4px" data-i18n="att.policy.title">Kechikish siyosati</h3>
+          <p class="hint" style="color:var(--gray-dim);font-size:12.5px;margin-bottom:18px" data-i18n="att.policy.hint">Ish boshlanish vaqtidan necha daqiqa o'tgach qancha foiz ushlab qolinishini belgilang.</p>
           <form class="att-form" id="attPolicyForm">
             <div class="field-row">
-              <div class="field"><label>Ish boshlanish vaqti</label><input type="time" id="attPolicyStart" required /></div>
-              <div class="field"><label>Imtiyoz (daqiqa)</label><input type="number" id="attPolicyGrace" min="0" max="240" step="1" required /></div>
+              <div class="field"><label data-i18n="att.policy.start">Ish boshlanish vaqti</label><input type="time" id="attPolicyStart" required /></div>
+              <div class="field"><label data-i18n="att.policy.grace">Imtiyoz (daqiqa)</label><input type="number" id="attPolicyGrace" min="0" max="240" step="1" required /></div>
             </div>
             <div>
-              <label style="font-size:12.5px;color:var(--gray);display:block;margin-bottom:8px">Kechikish bosqichlari</label>
+              <label style="font-size:12.5px;color:var(--gray);display:block;margin-bottom:8px" data-i18n="att.policy.tiers">Kechikish bosqichlari</label>
               <div id="attTiersList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px"></div>
-              <button type="button" class="att-tier-add" id="attTierAddBtn">+ Bosqich qo'shish</button>
+              <button type="button" class="att-tier-add" id="attTierAddBtn" data-i18n="att.policy.addtier">+ Bosqich qo'shish</button>
             </div>
             <div class="form-msg" id="attPolicyMsg"></div>
             <div class="modal-actions" style="margin-top:0">
-              <button type="submit" class="modal-save-static">Saqlash</button>
+              <button type="submit" class="modal-save-static" data-i18n="att.save">Saqlash</button>
             </div>
           </form>
         </div>
@@ -2295,55 +2295,55 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   <!-- SOZLAMALAR (Account settings) -->
   <section class="admin-panel" id="panel-settings">
-    <div class="panel-head"><h2>Sozlamalar</h2></div>
+    <div class="panel-head"><h2 data-i18n="tab.settings">Sozlamalar</h2></div>
     <div class="settings-shell">
       <div class="settings-nav">
         <button type="button" class="settings-nav-item is-active" data-pane="profile">
           <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-          <span>Profil</span>
+          <span data-i18n="settings.nav.profile">Profil</span>
         </button>
         <button type="button" class="settings-nav-item" data-pane="security">
           <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="11" width="16" height="9" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="1.7"/></svg>
-          <span>Xavfsizlik</span>
+          <span data-i18n="settings.nav.security">Xavfsizlik</span>
         </button>
         <button type="button" class="settings-nav-item db-usage-tab" data-pane="database" style="display:none">
           <svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="5" rx="8" ry="3" stroke="currentColor" stroke-width="1.7"/><path d="M4 5v7c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12v7c0 1.7 3.6 3 8 3s8-1.3 8-3v-7" stroke="currentColor" stroke-width="1.7"/></svg>
-          <span>Baza hajmi</span>
+          <span data-i18n="settings.nav.database">Baza hajmi</span>
         </button>
       </div>
 
       <div class="settings-content">
         <!-- PROFIL -->
         <div class="settings-content-pane is-active" id="setPaneProfile">
-          <h3>Profil</h3>
-          <p class="hint">Rasmingiz va ismingiz butun tizimda shu ko'rinishda chiqadi.</p>
+          <h3 data-i18n="settings.profile.title">Profil</h3>
+          <p class="hint" data-i18n="settings.profile.hint">Rasmingiz va ismingiz butun tizimda shu ko'rinishda chiqadi.</p>
 
           <div class="settings-row">
-            <span class="settings-row__label">Rasm</span>
+            <span class="settings-row__label" data-i18n="settings.profile.photo">Rasm</span>
             <div class="settings-row__control">
               <div class="settings-avatar" id="setAvatarPreview">—</div>
-              <button type="button" class="settings-avatar-btn" id="setAvatarBtn">O'zgartirish</button>
+              <button type="button" class="settings-avatar-btn" id="setAvatarBtn" data-i18n="settings.profile.change">O'zgartirish</button>
               <input type="file" id="setAvatarFile" accept="image/*" style="display:none" />
             </div>
           </div>
           <div class="settings-row">
-            <span class="settings-row__label">Ism familiya</span>
-            <div class="settings-row__control"><input type="text" id="setName" placeholder="Ism familiya" /></div>
+            <span class="settings-row__label" data-i18n="settings.profile.name">Ism familiya</span>
+            <div class="settings-row__control"><input type="text" id="setName" data-i18n-ph="settings.profile.name" placeholder="Ism familiya" /></div>
           </div>
           <div class="settings-row">
-            <span class="settings-row__label">Email</span>
-            <div class="settings-row__control"><input type="text" id="setEmail" placeholder="Email" /></div>
+            <span class="settings-row__label" data-i18n="settings.profile.email">Email</span>
+            <div class="settings-row__control"><input type="text" id="setEmail" data-i18n-ph="settings.profile.email" placeholder="Email" /></div>
           </div>
 
-          <button type="button" class="settings-save-btn" id="setProfileSaveBtn">Profilni saqlash</button>
+          <button type="button" class="settings-save-btn" id="setProfileSaveBtn" data-i18n="settings.profile.save">Profilni saqlash</button>
           <div class="form-msg" id="setProfileMsg"></div>
         </div>
 
         <!-- XAVFSIZLIK / PAROL -->
         <div class="settings-content-pane" id="setPaneSecurity">
-          <h3>Parolni almashtirish</h3>
-          <p class="hint">Xavfsizlik uchun joriy parolingizni tasdiqlashingiz kerak.</p>
-          <div class="settings-field"><label>Joriy parol</label>
+          <h3 data-i18n="settings.security.title">Parolni almashtirish</h3>
+          <p class="hint" data-i18n="settings.security.hint">Xavfsizlik uchun joriy parolingizni tasdiqlashingiz kerak.</p>
+          <div class="settings-field"><label data-i18n="settings.security.current">Joriy parol</label>
             <div class="pwd-field">
               <input type="password" id="setCurPass" autocomplete="current-password" />
               <button type="button" class="pwd-eye" data-target="setCurPass" aria-label="Parolni ko'rsatish">
@@ -2352,7 +2352,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
               </button>
             </div>
           </div>
-          <div class="settings-field"><label>Yangi parol</label>
+          <div class="settings-field"><label data-i18n="settings.security.new">Yangi parol</label>
             <div class="pwd-field">
               <input type="password" id="setNewPass" autocomplete="new-password" />
               <button type="button" class="pwd-eye" data-target="setNewPass" aria-label="Parolni ko'rsatish">
@@ -2361,7 +2361,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
               </button>
             </div>
           </div>
-          <div class="settings-field"><label>Yangi parolni tasdiqlang</label>
+          <div class="settings-field"><label data-i18n="settings.security.confirm">Yangi parolni tasdiqlang</label>
             <div class="pwd-field">
               <input type="password" id="setNewPass2" autocomplete="new-password" />
               <button type="button" class="pwd-eye" data-target="setNewPass2" aria-label="Parolni ko'rsatish">
@@ -2370,29 +2370,29 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
               </button>
             </div>
           </div>
-          <button type="button" class="settings-save-btn" id="setPassSaveBtn">Parolni almashtirish</button>
+          <button type="button" class="settings-save-btn" id="setPassSaveBtn" data-i18n="settings.security.save">Parolni almashtirish</button>
           <div class="form-msg" id="setPassMsg"></div>
-          <button type="button" class="forgot-link" id="setForgotPwdLink" style="text-align:left;margin:14px 0 0 !important;display:inline-block !important">Joriy parolni bilmayman — kod orqali tiklash</button>
+          <button type="button" class="forgot-link" id="setForgotPwdLink" data-i18n="settings.security.forgot" style="text-align:left;margin:14px 0 0 !important;display:inline-block !important">Joriy parolni bilmayman — kod orqali tiklash</button>
         </div>
 
         <!-- SUPABASE BAZA HAJMI (faqat IT / superadmin) -->
         <div class="settings-content-pane" id="setPaneDatabase">
-          <h3>Supabase bazasi</h3>
-          <p class="hint">Bepul tarifdagi 500 MB database limitining joriy ishlatilishi.</p>
+          <h3 data-i18n="settings.db.title">Supabase bazasi</h3>
+          <p class="hint" data-i18n="settings.db.hint">Bepul tarifdagi 500 MB database limitining joriy ishlatilishi.</p>
           <div class="db-usage-card">
             <div class="db-usage-head">
               <div class="db-usage-percent" id="dbUsagePercent">—</div>
-              <div class="db-usage-state" id="dbUsageState">Yuklanmoqda...</div>
+              <div class="db-usage-state" id="dbUsageState" data-i18n="settings.db.loading">Yuklanmoqda...</div>
             </div>
             <div class="db-usage-bar" role="progressbar" aria-label="Database ishlatilishi" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="dbUsageBar">
               <div class="db-usage-fill" id="dbUsageFill"></div>
             </div>
             <div class="db-usage-meta">
-              <div class="db-usage-stat"><span>Ishlatilgan</span><strong id="dbUsageUsed">—</strong></div>
-              <div class="db-usage-stat"><span>Qolgan</span><strong id="dbUsageRemaining">—</strong></div>
-              <div class="db-usage-stat"><span>Umumiy limit</span><strong id="dbUsageLimit">500 MB</strong></div>
+              <div class="db-usage-stat"><span data-i18n="settings.db.used">Ishlatilgan</span><strong id="dbUsageUsed">—</strong></div>
+              <div class="db-usage-stat"><span data-i18n="settings.db.remaining">Qolgan</span><strong id="dbUsageRemaining">—</strong></div>
+              <div class="db-usage-stat"><span data-i18n="settings.db.total">Umumiy limit</span><strong id="dbUsageLimit">500 MB</strong></div>
             </div>
-            <button type="button" class="db-usage-refresh" id="dbUsageRefresh">Yangilash</button>
+            <button type="button" class="db-usage-refresh" id="dbUsageRefresh" data-i18n="settings.db.refresh">Yangilash</button>
             <div class="form-msg" id="dbUsageMsg"></div>
           </div>
         </div>
@@ -2410,35 +2410,35 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       </div>
     </div>
 
-    <div class="more-section-label" id="moreSectionSite">Sayt boshqaruvi</div>
+    <div class="more-section-label" id="moreSectionSite" data-i18n="more.section.site">Sayt boshqaruvi</div>
     <div class="more-list" id="moreListSite">
       <button type="button" class="more-item" data-tab="cases">
         <svg viewBox="0 0 24 24" fill="none"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.7"/></svg>
-        <span>Keyslar</span>
+        <span data-i18n="tab.cases">Keyslar</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="more-item" data-tab="posts">
         <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" stroke="currentColor" stroke-width="1.7"/><path d="M14 2v6h6M16 13H8M16 17H8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-        <span>Blog</span>
+        <span data-i18n="tab.posts">Blog</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="more-item" data-tab="pricing">
         <svg viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z" stroke="currentColor" stroke-width="1.7"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg>
-        <span>Narxlar</span>
+        <span data-i18n="tab.pricing">Narxlar</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
     </div>
 
-    <div class="more-section-label">Boshqaruv</div>
+    <div class="more-section-label" data-i18n="more.section.manage">Boshqaruv</div>
     <div class="more-list">
       <button type="button" class="more-item" data-tab="stores">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 9.5 5 4h14l1 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 9.5v10h15v-10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 19.5v-6h5v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Do'konlar</span>
+        <span data-i18n="tab.stores">Do'konlar</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="more-item calendar-tab" data-tab="calendar" style="display:none">
         <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M3 9h18M8 2v4M16 2v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-        <span>Kalendar</span>
+        <span data-i18n="tab.calendar">Kalendar</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="more-item kpi-tab" data-tab="kpi" style="display:none">
@@ -2448,35 +2448,35 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       </button>
       <button type="button" class="more-item salary-tab" data-tab="salary" style="display:none">
         <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="2.3" stroke="currentColor" stroke-width="1.7"/><path d="M3 10h2M19 10h2M3 14h2M19 14h2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-        <span>Oylik</span>
+        <span data-i18n="tab.salary">Oylik</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="more-item" data-tab="settings">
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-        <span>Sozlamalar</span>
+        <span data-i18n="tab.settings">Sozlamalar</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="more-item superadmin-tab" data-tab="users" style="display:none">
         <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.7"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-        <span>Foydalanuvchilar</span>
+        <span data-i18n="tab.users">Foydalanuvchilar</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <button type="button" class="more-item superadmin-tab" data-tab="permissions" style="display:none">
         <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 7v5c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
-        <span>Ruxsatlar</span>
+        <span data-i18n="tab.permissions">Ruxsatlar</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
     </div>
 
     <button type="button" class="more-refresh" id="moreRefreshBtn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6v5h-5M4 18v-5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.4 9A7 7 0 0 0 6.1 6.1L4 8m2 7a7 7 0 0 0 11.9 2.9L20 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Ilovani yangilash
+      <span data-i18n="more.refresh">Ilovani yangilash</span>
     </button>
     <button type="button" class="more-install" id="moreInstallBtn">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 3v13M7 11l5 5 5-5M3 19h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Ilovani yuklash
+      <span data-i18n="more.install">Ilovani yuklash</span>
     </button>
-    <button type="button" class="more-logout" id="moreLogoutBtn">Chiqish</button>
+    <button type="button" class="more-logout" id="moreLogoutBtn" data-i18n="admin.logout">Chiqish</button>
   </section>
   </main><!-- /admin-content -->
 
@@ -2484,23 +2484,23 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   <nav class="bottom-nav" id="bottomNav">
     <button type="button" class="bottom-nav-item" data-tab="dashboard">
       <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="10" y="8" width="4" height="13" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="17" y="3" width="4" height="18" rx="1" stroke="currentColor" stroke-width="1.7"/></svg>
-      <span>Bosh sahifa</span>
+      <span data-i18n="bottom.home">Bosh sahifa</span>
     </button>
     <button type="button" class="bottom-nav-item" data-tab="tasks">
       <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-      <span>Vazifalar</span>
+      <span data-i18n="bottom.tasks">Vazifalar</span>
     </button>
     <button type="button" class="bottom-nav-item" data-tab="attendance">
       <svg viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/></svg>
-      <span>Keldi-ketdi</span>
+      <span data-i18n="bottom.attendance">Keldi-ketdi</span>
     </button>
     <button type="button" class="bottom-nav-item" data-tab="productivity">
       <svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 15l4-5 3 3 5-7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span>Unumdorlik</span>
+      <span data-i18n="bottom.productivity">Unumdorlik</span>
     </button>
     <button type="button" class="bottom-nav-item" id="bottomNavMore">
       <svg viewBox="0 0 24 24" fill="none"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>
-      <span>Ko'proq</span>
+      <span data-i18n="bottom.more">Ko'proq</span>
     </button>
   </nav>
 </div><!-- /admin-app -->
@@ -2577,25 +2577,25 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     <h3 id="kpiAwardModalTitle">Yangi KPI topshirig'i</h3>
     <form id="kpiAwardForm">
       <div class="field">
-        <label>Xodim</label>
+        <label data-i18n="kpi.field.employee">Xodim</label>
         <select id="kpiAwardEmployeeSelect" required></select>
       </div>
       <div class="field-row">
-        <div class="field"><label>Miqdori (so'm)</label><input type="number" id="kpiAwardAmount" min="0" step="1000" placeholder="0" required /></div>
-        <div class="field"><label>Sana (qachongacha)</label><input type="date" id="kpiAwardDate" required /></div>
+        <div class="field"><label data-i18n="kpi.field.amount">Miqdori (so'm)</label><input type="number" id="kpiAwardAmount" min="0" step="1000" placeholder="0" required /></div>
+        <div class="field"><label data-i18n="kpi.field.dueDate">Sana (qachongacha)</label><input type="date" id="kpiAwardDate" required /></div>
       </div>
       <div class="field">
-        <label>Nima uchun (sabab)</label>
-        <textarea id="kpiAwardReason" rows="3" required placeholder="Masalan: shu oyda 20 ta yangi mijoz jalb qilish"></textarea>
+        <label data-i18n="kpi.field.reason">Nima uchun (sabab)</label>
+        <textarea id="kpiAwardReason" rows="3" required data-i18n-ph="kpi.field.reason.ph" placeholder="Masalan: shu oyda 20 ta yangi mijoz jalb qilish"></textarea>
       </div>
       <div class="field">
-        <label>Takrorlanishi</label>
+        <label data-i18n="kpi.field.recurrence">Takrorlanishi</label>
         <select id="kpiAwardRecurrence">
-          <option value="once">Bir martalik</option>
-          <option value="monthly">Har oy avtomatik takrorlansin</option>
+          <option value="once" data-i18n="kpi.recurrence.once">Bir martalik</option>
+          <option value="monthly" data-i18n="kpi.recurrence.monthly">Har oy avtomatik takrorlansin</option>
         </select>
       </div>
-      <p class="kpi-modal-hint">Saqlagach xodimga bildirishnoma boradi. Belgilangan sanadan bir kun oldin sizga ushbu vazifa bajarildimi deb so'raladi. "Har oy avtomatik" tanlansa, har safar tasdiqlagach/rad etgach navbatdagi oy uchun avtomatik yangi topshiriq ochiladi.</p>
+      <p class="kpi-modal-hint" data-i18n="kpi.hint">Saqlagach xodimga bildirishnoma boradi. Belgilangan sanadan bir kun oldin sizga ushbu vazifa bajarildimi deb so'raladi. "Har oy avtomatik" tanlansa, har safar tasdiqlagach/rad etgach navbatdagi oy uchun avtomatik yangi topshiriq ochiladi.</p>
       <div class="form-msg" id="kpiAwardFormMsg"></div>
       <div class="modal-actions">
         <button type="button" class="modal-cancel" onclick="closeModal('kpiAwardModal')">Bekor qilish</button>
@@ -2686,24 +2686,24 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 <!-- ══════════ MODAL: PAROLNI TIKLASH (email kod orqali) ══════════ -->
 <div class="modal-overlay" id="resetPwdModal">
   <div class="modal-box" style="max-width:400px">
-    <h3>Parolni tiklash</h3>
+    <h3 data-i18n="reset.title">Parolni tiklash</h3>
 
     <!-- 1-QADAM: email kiritish -->
     <div id="resetStep1">
-      <p style="color:var(--gray);font-size:13px;margin-bottom:16px">Ro'yxatdan o'tgan emailingizni kiriting — tasdiqlash kodi yuboriladi.</p>
-      <div class="field"><label>Email</label><input type="text" id="resetEmail" placeholder="email@misol.com" /></div>
+      <p style="color:var(--gray);font-size:13px;margin-bottom:16px" data-i18n="reset.step1.hint">Ro'yxatdan o'tgan emailingizni kiriting — tasdiqlash kodi yuboriladi.</p>
+      <div class="field"><label data-i18n="login.email">Email</label><input type="text" id="resetEmail" placeholder="email@misol.com" /></div>
       <div class="form-msg" id="resetStep1Msg"></div>
       <div class="modal-actions">
         <button type="button" class="modal-cancel" onclick="closeModal('resetPwdModal')">Bekor qilish</button>
-        <button type="button" class="modal-save-static" id="resetSendCodeBtn">Kod yuborish</button>
+        <button type="button" class="modal-save-static" id="resetSendCodeBtn" data-i18n="reset.send">Kod yuborish</button>
       </div>
     </div>
 
     <!-- 2-QADAM: kod + yangi parol -->
     <div id="resetStep2" style="display:none">
-      <p style="color:var(--gray);font-size:13px;margin-bottom:16px"><span id="resetEmailLabel"></span> manziliga yuborilgan 6 xonali kodni kiriting.</p>
-      <div class="field"><label>Tasdiqlash kodi</label><input type="text" id="resetCode" placeholder="000000" maxlength="6" inputmode="numeric" /></div>
-      <div class="field"><label>Yangi parol</label>
+      <p style="color:var(--gray);font-size:13px;margin-bottom:16px"><span id="resetEmailLabel"></span> <span data-i18n="reset.step2.hint.suffix">manziliga yuborilgan 6 xonali kodni kiriting.</span></p>
+      <div class="field"><label data-i18n="reset.code">Tasdiqlash kodi</label><input type="text" id="resetCode" placeholder="000000" maxlength="6" inputmode="numeric" /></div>
+      <div class="field"><label data-i18n="reset.newpass">Yangi parol</label>
         <div class="pwd-field">
           <input type="password" id="resetNewPass" autocomplete="new-password" />
           <button type="button" class="pwd-eye" data-target="resetNewPass" aria-label="Parolni ko'rsatish">
@@ -2712,7 +2712,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
           </button>
         </div>
       </div>
-      <div class="field"><label>Yangi parolni tasdiqlang</label>
+      <div class="field"><label data-i18n="reset.newpass2">Yangi parolni tasdiqlang</label>
         <div class="pwd-field">
           <input type="password" id="resetNewPass2" autocomplete="new-password" />
           <button type="button" class="pwd-eye" data-target="resetNewPass2" aria-label="Parolni ko'rsatish">
@@ -2724,7 +2724,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       <div class="form-msg" id="resetStep2Msg"></div>
       <div class="modal-actions">
         <button type="button" class="modal-cancel" onclick="closeModal('resetPwdModal')">Bekor qilish</button>
-        <button type="button" class="modal-save-static" id="resetConfirmBtn">Parolni tiklash</button>
+        <button type="button" class="modal-save-static" id="resetConfirmBtn" data-i18n="reset.confirm">Parolni tiklash</button>
       </div>
     </div>
   </div>
@@ -3077,6 +3077,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tasks.date.label': 'Sana va eslatma',
       'tasks.field.assign': 'Tayinlash (xodim)',
       'tasks.confirm.del': 'Vazifani o\'chirishni tasdiqlaysizmi?',
+      'tasks.comment.confirm.del': 'Bu xabarni o\'chirasizmi?',
       'perm.title': 'Ruxsatlar sozlamalari',
       'perm.desc': "Har bir rol uchun qaysi bo'limlar ko'rinishini belgilang.",
       'perm.role': 'Rol',
@@ -3157,6 +3158,185 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'role.menejer_oddiy': 'Menejer',
       'role.dizayner_bosh': 'Bosh dizayner',
       'role.dizayner_oddiy': 'Dizayner',
+      'more.section.site': 'Sayt boshqaruvi',
+      'more.section.manage': 'Boshqaruv',
+      'common.loading': 'Yuklanmoqda...',
+      'common.load_error': 'Yuklashda xato: ',
+      'common.error': 'Xato',
+      'members.label': 'Xodimlar',
+      'members.all': 'Barchasi',
+      'cal.title': 'Kalendar',
+      'cal.add': '+ Vazifa',
+      'cal.today': 'Bugun',
+      'cal.weekday.mon': 'Du', 'cal.weekday.tue': 'Se', 'cal.weekday.wed': 'Cho', 'cal.weekday.thu': 'Pay',
+      'cal.weekday.fri': 'Ju', 'cal.weekday.sat': 'Sha', 'cal.weekday.sun': 'Ya',
+      'month.0': 'Yanvar', 'month.1': 'Fevral', 'month.2': 'Mart', 'month.3': 'Aprel',
+      'month.4': 'May', 'month.5': 'Iyun', 'month.6': 'Iyul', 'month.7': 'Avgust',
+      'month.8': 'Sentabr', 'month.9': 'Oktabr', 'month.10': 'Noyabr', 'month.11': 'Dekabr',
+      'cal.more': 'ta yana',
+      'kpi.add': "+ Yangi KPI topshirig'i",
+      'kpi.pending.title': 'Tasdiqlash kutilmoqda',
+      'kpi.empty': "Hali KPI topshirig'i yo'q",
+      'kpi.employees.empty': 'Xodimlar topilmadi',
+      'kpi.status.pending': 'Kutilmoqda',
+      'kpi.status.approved': 'Tasdiqlandi',
+      'kpi.status.rejected': 'Berilmadi',
+      'kpi.recurring': '↻ har oy',
+      'kpi.due': 'Muddat',
+      'kpi.count': 'ta KPI',
+      'kpi.decide.yes': 'Ha, bajarildi',
+      'kpi.decide.no': "Yo'q",
+      'kpi.edit.title': 'Tahrirlash',
+      'kpi.del.title': "O'chirish",
+      'kpi.confirm.approve': 'Xodim bu vazifani bajargani tasdiqlanadi. Davom etasizmi?',
+      'kpi.confirm.reject': "Xodim bu vazifani bajarmagan deb belgilanadi. Davom etasizmi?",
+      'kpi.confirm.del': "KPI topshirig'ini o'chirishni tasdiqlaysizmi?",
+      'kpi.modal.new': "Yangi KPI topshirig'i",
+      'kpi.modal.edit': "KPI topshirig'ini tahrirlash",
+      'kpi.field.employee': 'Xodim',
+      'kpi.field.amount': "Miqdori (so'm)",
+      'kpi.field.dueDate': 'Sana (qachongacha)',
+      'kpi.field.reason': 'Nima uchun (sabab)',
+      'kpi.field.reason.ph': "Masalan: shu oyda 20 ta yangi mijoz jalb qilish",
+      'kpi.field.recurrence': 'Takrorlanishi',
+      'kpi.recurrence.once': 'Bir martalik',
+      'kpi.recurrence.monthly': 'Har oy avtomatik takrorlansin',
+      'kpi.hint': 'Saqlagach xodimga bildirishnoma boradi. Belgilangan sanadan bir kun oldin sizga ushbu vazifa bajarildimi deb so\'raladi. "Har oy avtomatik" tanlansa, har safar tasdiqlagach/rad etgach navbatdagi oy uchun avtomatik yangi topshiriq ochiladi.',
+      'salary.notset': 'Oylik maosh belgilanmagan',
+      'salary.remaining': 'Qoladi',
+      'salary.notset.employee': 'Bu xodimga oylik maosh belgilanmagan',
+      'salary.notset.mine': 'Sizga hali oylik maosh belgilanmagan',
+      'salary.field.amount': "Oylik maosh (so'm)",
+      'salary.field.workdays': 'Ish kunlari',
+      'salary.field.saturday': 'Shanba',
+      'salary.saturday.none': 'Ishlamaydi',
+      'salary.saturday.all': 'Har doim ishlaydi',
+      'salary.saturday.odd': 'Navbat bilan (1-,3-,5-shanba)',
+      'salary.saturday.even': 'Navbat bilan (2-,4-shanba)',
+      'salary.save': 'Saqlash',
+      'salary.delete': "O'chirish",
+      'salary.confirm.del': "Bu xodimning oylik maoshini o'chirishni tasdiqlaysizmi?",
+      'salary.from': "dan",
+      'salary.deducted': 'ushlab qolindi',
+      'salary.workdays': 'ish kuni',
+      'salary.daily': 'kunlik',
+      'salary.days.toggle': "Kunlar ro'yxati",
+      'salary.days.empty': "Bu oy ushlab qolish yo'q — maosh to'liq!",
+      'salary.day.absent': 'Kelmagan',
+      'salary.day.late': 'daq kechikish',
+      'wd.mon': 'Dush', 'wd.tue': 'Sesh', 'wd.wed': 'Chor', 'wd.thu': 'Pay', 'wd.fri': 'Jum', 'wd.sun': 'Yak',
+      'prod.title': 'Ish unumdorligi',
+      'prod.salary.title': 'Oylik',
+      'prod.kpi.title': 'KPI topshiriqlarim',
+      'prod.kpi.pending': 'Agar shu natijaga erishsangiz, ushbu KPI sizga beriladi.',
+      'prod.kpi.rejected': 'Sababi: siz ushbu vazifani bajarmadingiz.',
+      'att.nav.today': 'Bugun',
+      'att.nav.history': 'Mening tarixim',
+      'att.nav.team': 'Xodimlar',
+      'att.nav.office': 'Ishxona hududi',
+      'att.nav.policy': 'Kechikish siyosati',
+      'att.history.title': 'Mening tarixim',
+      'att.team.title': 'Barcha xodimlar',
+      'att.export.label': 'Hisobotni yuklab olish:',
+      'att.export.week': 'Haftalik',
+      'att.export.month': 'Oylik',
+      'att.export.year': 'Yillik',
+      'att.table.employee': 'Xodim',
+      'att.table.date': 'Sana',
+      'att.table.checkin': 'Keldi',
+      'att.table.late': 'Kechikish',
+      'att.table.deducted': 'Ushlab qolindi',
+      'att.table.checkout': 'Ketdi',
+      'att.office.title': 'Ishxona hududi',
+      'att.office.hint': 'Xodimlar shu koordinata atrofidagi radiusda bo\'lsagina "Keldim/Ketdim"ni tasdiqlay oladi.',
+      'att.office.name': 'Nomi',
+      'att.office.name.ph': 'Bosh ofis',
+      'att.office.lat': 'Kenglik (latitude)',
+      'att.office.lng': 'Uzunlik (longitude)',
+      'att.office.radius': 'Radius (metr)',
+      'att.office.locate': '📍 Joriy joylashuvimni ishlatish',
+      'att.policy.title': 'Kechikish siyosati',
+      'att.policy.hint': "Ish boshlanish vaqtidan necha daqiqa o'tgach qancha foiz ushlab qolinishini belgilang.",
+      'att.policy.start': 'Ish boshlanish vaqti',
+      'att.policy.grace': 'Imtiyoz (daqiqa)',
+      'att.policy.tiers': 'Kechikish bosqichlari',
+      'att.policy.addtier': "+ Bosqich qo'shish",
+      'att.save': 'Saqlash',
+      'att.ontime': "O'z vaqtida",
+      'att.checkin.btn': 'Keldim',
+      'att.checkout.btn': 'Ketdim',
+      'att.status.notyet': "Hali kelmadingiz",
+      'att.status.checkedin': 'Kelgansiz',
+      'att.status.checkedout': "Bugungi ish kuni yakunlandi",
+      'att.late.by': 'Kechikish',
+      'att.gps.checking': 'Joylashuv tekshirilmoqda...',
+      'att.gps.outside': 'Siz ishxona hududidan tashqaridasiz',
+      'att.gps.error': "Joylashuvni aniqlab bo'lmadi",
+      'att.cam.title': 'Ishxonani suratga oling',
+      'att.cam.retake': 'Qayta olish',
+      'att.cam.confirm': 'Tasdiqlash',
+      'att.cam.error': "Kamerani ochib bo'lmadi",
+      'att.status.notyet.sub': "Ishga kelganingizda joylashuvingizni va ishxona suratini tasdiqlash uchun tugmani bosing.",
+      'att.status.working': 'Ish jarayonida',
+      'att.status.finished': 'Bugungi ish yakunlandi',
+      'att.retry.test': "🔁 Qayta boshlash (test)",
+      'att.gps.unsupported': "Brauzeringiz joylashuvni aniqlashni qo'llab-quvvatlamaydi",
+      'att.gps.outside.prefix': 'Siz ishxona hududida emassiz (taxminan',
+      'att.gps.outside.suffix': "metr uzoqdasiz). Tasdiqlash rad etildi.",
+      'att.gps.denied': 'Joylashuvga ruxsat berilmadi. Brauzer sozlamalaridan ruxsat bering.',
+      'att.gps.timeout': "Joylashuvni aniqlash vaqti tugadi, qayta urinib ko'ring",
+      'att.cam.title.in': 'Ishxonani suratga oling (kelish)',
+      'att.cam.title.out': 'Ishxonani suratga oling (ketish)',
+      'att.cam.denied': 'Kameraga ruxsat berilmadi yoki kamera topilmadi',
+      'att.sending': 'Yuborilmoqda...',
+      'att.cam.outside.msg': "Siz ishxona hududida emassiz. Iltimos, ishxonaga yaqinroq joyda qayta urinib ko'ring.",
+      'att.history.empty': "Bu oyda yozuv yo'q",
+      'att.time.checkin': 'Keldi:',
+      'att.time.checkout': 'Ketdi:',
+      'att.tiers.empty': "Bosqich yo'q — kechikish uchun ball ayirilmaydi",
+      'att.tier.late': 'Kechikish >',
+      'att.tier.minutes': 'daq →',
+      'att.policy.saved': 'Saqlandi',
+      'reset.title': 'Parolni tiklash',
+      'reset.step1.hint': "Ro'yxatdan o'tgan emailingizni kiriting — tasdiqlash kodi yuboriladi.",
+      'reset.send': 'Kod yuborish',
+      'reset.step2.hint.suffix': 'manziliga yuborilgan 6 xonali kodni kiriting.',
+      'reset.code': 'Tasdiqlash kodi',
+      'reset.newpass': 'Yangi parol',
+      'reset.newpass2': 'Yangi parolni tasdiqlang',
+      'reset.confirm': 'Parolni tiklash',
+      'more.refresh': 'Ilovani yangilash',
+      'more.install': 'Ilovani yuklash',
+      'bottom.home': 'Bosh sahifa',
+      'bottom.tasks': 'Vazifalar',
+      'bottom.attendance': 'Keldi-ketdi',
+      'bottom.productivity': 'Unumdorlik',
+      'bottom.more': "Ko'proq",
+      'settings.nav.profile': 'Profil',
+      'settings.nav.security': 'Xavfsizlik',
+      'settings.nav.database': 'Baza hajmi',
+      'settings.profile.title': 'Profil',
+      'settings.profile.hint': "Rasmingiz va ismingiz butun tizimda shu ko'rinishda chiqadi.",
+      'settings.profile.photo': 'Rasm',
+      'settings.profile.change': "O'zgartirish",
+      'settings.profile.name': 'Ism familiya',
+      'settings.profile.email': 'Email',
+      'settings.profile.save': 'Profilni saqlash',
+      'settings.security.title': 'Parolni almashtirish',
+      'settings.security.hint': 'Xavfsizlik uchun joriy parolingizni tasdiqlashingiz kerak.',
+      'settings.security.current': 'Joriy parol',
+      'settings.security.new': 'Yangi parol',
+      'settings.security.confirm': 'Yangi parolni tasdiqlang',
+      'settings.security.save': 'Parolni almashtirish',
+      'settings.security.forgot': 'Joriy parolni bilmayman — kod orqali tiklash',
+      'settings.db.title': 'Supabase bazasi',
+      'settings.db.hint': 'Bepul tarifdagi 500 MB database limitining joriy ishlatilishi.',
+      'settings.db.loading': 'Yuklanmoqda...',
+      'settings.db.used': 'Ishlatilgan',
+      'settings.db.remaining': 'Qolgan',
+      'settings.db.total': 'Umumiy limit',
+      'settings.db.refresh': 'Yangilash',
+      'settings.avatar.error': "Rasmni o'qishda xato",
     },
     ru: {
       'login.tab.kirish': 'Войти',
@@ -3223,6 +3403,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tasks.date.label': 'Дата и напоминание',
       'tasks.field.assign': 'Назначить (сотрудник)',
       'tasks.confirm.del': 'Удалить эту задачу?',
+      'tasks.comment.confirm.del': 'Удалить это сообщение?',
       'perm.title': 'Настройка доступов',
       'perm.desc': 'Укажите, какие разделы видит каждая роль.',
       'perm.role': 'Роль',
@@ -3303,6 +3484,185 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'role.menejer_oddiy': 'Менеджер',
       'role.dizayner_bosh': 'Главный дизайнер',
       'role.dizayner_oddiy': 'Дизайнер',
+      'more.section.site': 'Управление сайтом',
+      'more.section.manage': 'Управление',
+      'common.loading': 'Загрузка...',
+      'common.load_error': 'Ошибка загрузки: ',
+      'common.error': 'Ошибка',
+      'members.label': 'Сотрудники',
+      'members.all': 'Все',
+      'cal.title': 'Календарь',
+      'cal.add': '+ Задача',
+      'cal.today': 'Сегодня',
+      'cal.weekday.mon': 'Пн', 'cal.weekday.tue': 'Вт', 'cal.weekday.wed': 'Ср', 'cal.weekday.thu': 'Чт',
+      'cal.weekday.fri': 'Пт', 'cal.weekday.sat': 'Сб', 'cal.weekday.sun': 'Вс',
+      'month.0': 'Январь', 'month.1': 'Февраль', 'month.2': 'Март', 'month.3': 'Апрель',
+      'month.4': 'Май', 'month.5': 'Июнь', 'month.6': 'Июль', 'month.7': 'Август',
+      'month.8': 'Сентябрь', 'month.9': 'Октябрь', 'month.10': 'Ноябрь', 'month.11': 'Декабрь',
+      'cal.more': 'ещё',
+      'kpi.add': '+ Новое задание KPI',
+      'kpi.pending.title': 'Ожидает подтверждения',
+      'kpi.empty': 'Пока нет заданий KPI',
+      'kpi.employees.empty': 'Сотрудники не найдены',
+      'kpi.status.pending': 'Ожидает',
+      'kpi.status.approved': 'Подтверждено',
+      'kpi.status.rejected': 'Не выполнено',
+      'kpi.recurring': '↻ ежемесячно',
+      'kpi.due': 'Срок',
+      'kpi.count': 'KPI',
+      'kpi.decide.yes': 'Да, выполнено',
+      'kpi.decide.no': 'Нет',
+      'kpi.edit.title': 'Редактировать',
+      'kpi.del.title': 'Удалить',
+      'kpi.confirm.approve': 'Сотруднику будет подтверждено выполнение задания. Продолжить?',
+      'kpi.confirm.reject': 'Сотрудник будет отмечен как не выполнивший задание. Продолжить?',
+      'kpi.confirm.del': 'Удалить это задание KPI?',
+      'kpi.modal.new': 'Новое задание KPI',
+      'kpi.modal.edit': 'Редактировать задание KPI',
+      'kpi.field.employee': 'Сотрудник',
+      'kpi.field.amount': 'Сумма (сум)',
+      'kpi.field.dueDate': 'Срок (до какого числа)',
+      'kpi.field.reason': 'За что (причина)',
+      'kpi.field.reason.ph': 'Например: привлечь 20 новых клиентов в этом месяце',
+      'kpi.field.recurrence': 'Повторение',
+      'kpi.recurrence.once': 'Разовое',
+      'kpi.recurrence.monthly': 'Повторять автоматически каждый месяц',
+      'kpi.hint': 'После сохранения сотруднику придёт уведомление. За день до указанной даты у вас спросят, выполнено ли задание. При выборе "Каждый месяц" после каждого решения автоматически создаётся новое задание на следующий месяц.',
+      'salary.notset': 'Зарплата не установлена',
+      'salary.remaining': 'Осталось',
+      'salary.notset.employee': 'Зарплата этого сотрудника не установлена',
+      'salary.notset.mine': 'Ваша зарплата ещё не установлена',
+      'salary.field.amount': 'Зарплата в месяц (сум)',
+      'salary.field.workdays': 'Рабочие дни',
+      'salary.field.saturday': 'Суббота',
+      'salary.saturday.none': 'Не работает',
+      'salary.saturday.all': 'Работает всегда',
+      'salary.saturday.odd': 'По очереди (1-я, 3-я, 5-я суббота)',
+      'salary.saturday.even': 'По очереди (2-я, 4-я суббота)',
+      'salary.save': 'Сохранить',
+      'salary.delete': 'Удалить',
+      'salary.confirm.del': 'Удалить зарплату этого сотрудника?',
+      'salary.from': 'из',
+      'salary.deducted': 'удержано',
+      'salary.workdays': 'рабочих дней',
+      'salary.daily': 'в день',
+      'salary.days.toggle': 'Список дней',
+      'salary.days.empty': 'Удержаний нет — зарплата полностью!',
+      'salary.day.absent': 'Отсутствовал',
+      'salary.day.late': 'мин опоздание',
+      'wd.mon': 'Пн', 'wd.tue': 'Вт', 'wd.wed': 'Ср', 'wd.thu': 'Чт', 'wd.fri': 'Пт', 'wd.sun': 'Вс',
+      'prod.title': 'Продуктивность',
+      'prod.salary.title': 'Зарплата',
+      'prod.kpi.title': 'Мои задания KPI',
+      'prod.kpi.pending': 'Если вы достигнете этого результата, KPI будет вам начислен.',
+      'prod.kpi.rejected': 'Причина: вы не выполнили это задание.',
+      'att.nav.today': 'Сегодня',
+      'att.nav.history': 'Моя история',
+      'att.nav.team': 'Сотрудники',
+      'att.nav.office': 'Зона офиса',
+      'att.nav.policy': 'Политика опозданий',
+      'att.history.title': 'Моя история',
+      'att.team.title': 'Все сотрудники',
+      'att.export.label': 'Скачать отчёт:',
+      'att.export.week': 'За неделю',
+      'att.export.month': 'За месяц',
+      'att.export.year': 'За год',
+      'att.table.employee': 'Сотрудник',
+      'att.table.date': 'Дата',
+      'att.table.checkin': 'Пришёл',
+      'att.table.late': 'Опоздание',
+      'att.table.deducted': 'Удержано',
+      'att.table.checkout': 'Ушёл',
+      'att.office.title': 'Зона офиса',
+      'att.office.hint': 'Сотрудники смогут подтвердить "Пришёл/Ушёл" только находясь в радиусе этой координаты.',
+      'att.office.name': 'Название',
+      'att.office.name.ph': 'Головной офис',
+      'att.office.lat': 'Широта (latitude)',
+      'att.office.lng': 'Долгота (longitude)',
+      'att.office.radius': 'Радиус (метр)',
+      'att.office.locate': '📍 Использовать моё текущее местоположение',
+      'att.policy.title': 'Политика опозданий',
+      'att.policy.hint': 'Укажите, через сколько минут после начала работы и какой процент удерживается.',
+      'att.policy.start': 'Время начала работы',
+      'att.policy.grace': 'Льгота (минут)',
+      'att.policy.tiers': 'Уровни опоздания',
+      'att.policy.addtier': '+ Добавить уровень',
+      'att.save': 'Сохранить',
+      'att.ontime': 'Вовремя',
+      'att.checkin.btn': 'Пришёл',
+      'att.checkout.btn': 'Ушёл',
+      'att.status.notyet': 'Вы ещё не пришли',
+      'att.status.checkedin': 'Вы пришли',
+      'att.status.checkedout': 'Сегодняшний рабочий день завершён',
+      'att.late.by': 'Опоздание',
+      'att.gps.checking': 'Проверка местоположения...',
+      'att.gps.outside': 'Вы находитесь вне зоны офиса',
+      'att.gps.error': 'Не удалось определить местоположение',
+      'att.cam.title': 'Сфотографируйте офис',
+      'att.cam.retake': 'Переснять',
+      'att.cam.confirm': 'Подтвердить',
+      'att.cam.error': 'Не удалось открыть камеру',
+      'att.status.notyet.sub': 'Когда придёте на работу, нажмите кнопку, чтобы подтвердить местоположение и сфотографировать офис.',
+      'att.status.working': 'В процессе работы',
+      'att.status.finished': 'Сегодняшний рабочий день завершён',
+      'att.retry.test': '🔁 Начать заново (тест)',
+      'att.gps.unsupported': 'Ваш браузер не поддерживает определение местоположения',
+      'att.gps.outside.prefix': 'Вы находитесь вне зоны офиса (примерно в',
+      'att.gps.outside.suffix': 'метрах). Подтверждение отклонено.',
+      'att.gps.denied': 'Доступ к местоположению запрещён. Разрешите в настройках браузера.',
+      'att.gps.timeout': 'Время определения местоположения истекло, попробуйте снова',
+      'att.cam.title.in': 'Сфотографируйте офис (приход)',
+      'att.cam.title.out': 'Сфотографируйте офис (уход)',
+      'att.cam.denied': 'Доступ к камере запрещён или камера не найдена',
+      'att.sending': 'Отправка...',
+      'att.cam.outside.msg': 'Вы находитесь вне зоны офиса. Пожалуйста, подойдите ближе к офису и попробуйте снова.',
+      'att.history.empty': 'В этом месяце нет записей',
+      'att.time.checkin': 'Пришёл:',
+      'att.time.checkout': 'Ушёл:',
+      'att.tiers.empty': 'Нет уровней — за опоздание ничего не удерживается',
+      'att.tier.late': 'Опоздание >',
+      'att.tier.minutes': 'мин →',
+      'att.policy.saved': 'Сохранено',
+      'reset.title': 'Восстановление пароля',
+      'reset.step1.hint': 'Введите зарегистрированный email — будет отправлен код подтверждения.',
+      'reset.send': 'Отправить код',
+      'reset.step2.hint.suffix': 'на этот адрес отправлен 6-значный код, введите его.',
+      'reset.code': 'Код подтверждения',
+      'reset.newpass': 'Новый пароль',
+      'reset.newpass2': 'Подтвердите новый пароль',
+      'reset.confirm': 'Восстановить пароль',
+      'more.refresh': 'Обновить приложение',
+      'more.install': 'Установить приложение',
+      'bottom.home': 'Главная',
+      'bottom.tasks': 'Задачи',
+      'bottom.attendance': 'Посещаемость',
+      'bottom.productivity': 'Продуктивность',
+      'bottom.more': 'Ещё',
+      'settings.nav.profile': 'Профиль',
+      'settings.nav.security': 'Безопасность',
+      'settings.nav.database': 'Размер базы',
+      'settings.profile.title': 'Профиль',
+      'settings.profile.hint': 'Ваше фото и имя будут отображаться в таком виде по всей системе.',
+      'settings.profile.photo': 'Фото',
+      'settings.profile.change': 'Изменить',
+      'settings.profile.name': 'Имя и фамилия',
+      'settings.profile.email': 'Email',
+      'settings.profile.save': 'Сохранить профиль',
+      'settings.security.title': 'Смена пароля',
+      'settings.security.hint': 'Для безопасности подтвердите текущий пароль.',
+      'settings.security.current': 'Текущий пароль',
+      'settings.security.new': 'Новый пароль',
+      'settings.security.confirm': 'Подтвердите новый пароль',
+      'settings.security.save': 'Сменить пароль',
+      'settings.security.forgot': 'Не помню текущий пароль — восстановить по коду',
+      'settings.db.title': 'База данных Supabase',
+      'settings.db.hint': 'Текущее использование лимита в 500 МБ на бесплатном тарифе.',
+      'settings.db.loading': 'Загрузка...',
+      'settings.db.used': 'Использовано',
+      'settings.db.remaining': 'Осталось',
+      'settings.db.total': 'Общий лимит',
+      'settings.db.refresh': 'Обновить',
+      'settings.avatar.error': 'Ошибка при чтении изображения',
     },
     en: {
       'login.tab.kirish': 'Sign in',
@@ -3369,6 +3729,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tasks.date.label': 'Date and reminder',
       'tasks.field.assign': 'Assign to',
       'tasks.confirm.del': 'Delete this task?',
+      'tasks.comment.confirm.del': 'Delete this comment?',
       'perm.title': 'Permission settings',
       'perm.desc': 'Choose which sections each role can see.',
       'perm.role': 'Role',
@@ -3449,6 +3810,185 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'role.menejer_oddiy': 'Manager',
       'role.dizayner_bosh': 'Lead designer',
       'role.dizayner_oddiy': 'Designer',
+      'more.section.site': 'Site management',
+      'more.section.manage': 'Management',
+      'common.loading': 'Loading...',
+      'common.load_error': 'Load error: ',
+      'common.error': 'Error',
+      'members.label': 'Employees',
+      'members.all': 'All',
+      'cal.title': 'Calendar',
+      'cal.add': '+ Task',
+      'cal.today': 'Today',
+      'cal.weekday.mon': 'Mo', 'cal.weekday.tue': 'Tu', 'cal.weekday.wed': 'We', 'cal.weekday.thu': 'Th',
+      'cal.weekday.fri': 'Fr', 'cal.weekday.sat': 'Sa', 'cal.weekday.sun': 'Su',
+      'month.0': 'January', 'month.1': 'February', 'month.2': 'March', 'month.3': 'April',
+      'month.4': 'May', 'month.5': 'June', 'month.6': 'July', 'month.7': 'August',
+      'month.8': 'September', 'month.9': 'October', 'month.10': 'November', 'month.11': 'December',
+      'cal.more': 'more',
+      'kpi.add': '+ New KPI assignment',
+      'kpi.pending.title': 'Awaiting confirmation',
+      'kpi.empty': 'No KPI assignments yet',
+      'kpi.employees.empty': 'No employees found',
+      'kpi.status.pending': 'Pending',
+      'kpi.status.approved': 'Approved',
+      'kpi.status.rejected': 'Not given',
+      'kpi.recurring': '↻ monthly',
+      'kpi.due': 'Due',
+      'kpi.count': 'KPIs',
+      'kpi.decide.yes': 'Yes, completed',
+      'kpi.decide.no': 'No',
+      'kpi.edit.title': 'Edit',
+      'kpi.del.title': 'Delete',
+      'kpi.confirm.approve': 'The employee will be confirmed as having completed this task. Continue?',
+      'kpi.confirm.reject': 'The employee will be marked as not having completed this task. Continue?',
+      'kpi.confirm.del': 'Delete this KPI assignment?',
+      'kpi.modal.new': 'New KPI assignment',
+      'kpi.modal.edit': 'Edit KPI assignment',
+      'kpi.field.employee': 'Employee',
+      'kpi.field.amount': 'Amount (so\'m)',
+      'kpi.field.dueDate': 'Date (due by)',
+      'kpi.field.reason': 'Reason (why)',
+      'kpi.field.reason.ph': 'E.g.: bring in 20 new customers this month',
+      'kpi.field.recurrence': 'Recurrence',
+      'kpi.recurrence.once': 'One-time',
+      'kpi.recurrence.monthly': 'Repeat automatically every month',
+      'kpi.hint': 'Once saved, the employee gets notified. One day before the due date, you\'ll be asked whether the task was completed. If "monthly" is selected, a new assignment for the next month is created automatically after each decision.',
+      'salary.notset': 'Salary not set',
+      'salary.remaining': 'Remaining',
+      'salary.notset.employee': 'This employee has no salary set',
+      'salary.notset.mine': 'Your salary has not been set yet',
+      'salary.field.amount': 'Monthly salary (so\'m)',
+      'salary.field.workdays': 'Work days',
+      'salary.field.saturday': 'Saturday',
+      'salary.saturday.none': 'Off',
+      'salary.saturday.all': 'Always works',
+      'salary.saturday.odd': 'Alternating (1st, 3rd, 5th Saturday)',
+      'salary.saturday.even': 'Alternating (2nd, 4th Saturday)',
+      'salary.save': 'Save',
+      'salary.delete': 'Delete',
+      'salary.confirm.del': "Delete this employee's salary?",
+      'salary.from': 'of',
+      'salary.deducted': 'deducted',
+      'salary.workdays': 'work days',
+      'salary.daily': 'daily',
+      'salary.days.toggle': 'Day list',
+      'salary.days.empty': 'No deductions this month — full salary!',
+      'salary.day.absent': 'Absent',
+      'salary.day.late': 'min late',
+      'wd.mon': 'Mon', 'wd.tue': 'Tue', 'wd.wed': 'Wed', 'wd.thu': 'Thu', 'wd.fri': 'Fri', 'wd.sun': 'Sun',
+      'prod.title': 'Productivity',
+      'prod.salary.title': 'Salary',
+      'prod.kpi.title': 'My KPI assignments',
+      'prod.kpi.pending': "If you reach this result, this KPI will be given to you.",
+      'prod.kpi.rejected': "Reason: you didn't complete this task.",
+      'att.nav.today': 'Today',
+      'att.nav.history': 'My history',
+      'att.nav.team': 'Employees',
+      'att.nav.office': 'Office area',
+      'att.nav.policy': 'Lateness policy',
+      'att.history.title': 'My history',
+      'att.team.title': 'All employees',
+      'att.export.label': 'Download report:',
+      'att.export.week': 'Weekly',
+      'att.export.month': 'Monthly',
+      'att.export.year': 'Yearly',
+      'att.table.employee': 'Employee',
+      'att.table.date': 'Date',
+      'att.table.checkin': 'Check-in',
+      'att.table.late': 'Lateness',
+      'att.table.deducted': 'Deducted',
+      'att.table.checkout': 'Check-out',
+      'att.office.title': 'Office area',
+      'att.office.hint': 'Employees can confirm "Check-in/Check-out" only within the radius of this location.',
+      'att.office.name': 'Name',
+      'att.office.name.ph': 'Head office',
+      'att.office.lat': 'Latitude',
+      'att.office.lng': 'Longitude',
+      'att.office.radius': 'Radius (meters)',
+      'att.office.locate': '📍 Use my current location',
+      'att.policy.title': 'Lateness policy',
+      'att.policy.hint': 'Set how many minutes after the work start time and what percentage gets deducted.',
+      'att.policy.start': 'Work start time',
+      'att.policy.grace': 'Grace period (minutes)',
+      'att.policy.tiers': 'Lateness tiers',
+      'att.policy.addtier': '+ Add tier',
+      'att.save': 'Save',
+      'att.ontime': 'On time',
+      'att.checkin.btn': 'Check in',
+      'att.checkout.btn': 'Check out',
+      'att.status.notyet': "You haven't checked in yet",
+      'att.status.checkedin': "You're checked in",
+      'att.status.checkedout': "Today's work day is finished",
+      'att.late.by': 'Lateness',
+      'att.gps.checking': 'Checking location...',
+      'att.gps.outside': "You're outside the office area",
+      'att.gps.error': 'Could not determine location',
+      'att.cam.title': 'Take a photo of the office',
+      'att.cam.retake': 'Retake',
+      'att.cam.confirm': 'Confirm',
+      'att.cam.error': 'Could not open the camera',
+      'att.status.notyet.sub': 'When you arrive at work, press the button to confirm your location and photograph the office.',
+      'att.status.working': 'Working',
+      'att.status.finished': "Today's work day is finished",
+      'att.retry.test': '🔁 Start over (test)',
+      'att.gps.unsupported': "Your browser doesn't support location detection",
+      'att.gps.outside.prefix': "You're not in the office area (about",
+      'att.gps.outside.suffix': 'meters away). Confirmation rejected.',
+      'att.gps.denied': 'Location access denied. Please allow it in your browser settings.',
+      'att.gps.timeout': 'Location detection timed out, please try again',
+      'att.cam.title.in': 'Take a photo of the office (check-in)',
+      'att.cam.title.out': 'Take a photo of the office (check-out)',
+      'att.cam.denied': 'Camera access denied or camera not found',
+      'att.sending': 'Sending...',
+      'att.cam.outside.msg': "You're outside the office area. Please move closer to the office and try again.",
+      'att.history.empty': 'No records this month',
+      'att.time.checkin': 'Check-in:',
+      'att.time.checkout': 'Check-out:',
+      'att.tiers.empty': 'No tiers — nothing is deducted for lateness',
+      'att.tier.late': 'Lateness >',
+      'att.tier.minutes': 'min →',
+      'att.policy.saved': 'Saved',
+      'reset.title': 'Reset password',
+      'reset.step1.hint': "Enter your registered email — a confirmation code will be sent.",
+      'reset.send': 'Send code',
+      'reset.step2.hint.suffix': 'the 6-digit code sent to this address, enter it below.',
+      'reset.code': 'Confirmation code',
+      'reset.newpass': 'New password',
+      'reset.newpass2': 'Confirm new password',
+      'reset.confirm': 'Reset password',
+      'more.refresh': 'Refresh app',
+      'more.install': 'Install app',
+      'bottom.home': 'Home',
+      'bottom.tasks': 'Tasks',
+      'bottom.attendance': 'Attendance',
+      'bottom.productivity': 'Productivity',
+      'bottom.more': 'More',
+      'settings.nav.profile': 'Profile',
+      'settings.nav.security': 'Security',
+      'settings.nav.database': 'Database size',
+      'settings.profile.title': 'Profile',
+      'settings.profile.hint': 'Your photo and name appear this way across the whole system.',
+      'settings.profile.photo': 'Photo',
+      'settings.profile.change': 'Change',
+      'settings.profile.name': 'Full name',
+      'settings.profile.email': 'Email',
+      'settings.profile.save': 'Save profile',
+      'settings.security.title': 'Change password',
+      'settings.security.hint': 'For security, please confirm your current password.',
+      'settings.security.current': 'Current password',
+      'settings.security.new': 'New password',
+      'settings.security.confirm': 'Confirm new password',
+      'settings.security.save': 'Change password',
+      'settings.security.forgot': "Don't remember current password — reset via code",
+      'settings.db.title': 'Supabase database',
+      'settings.db.hint': 'Current usage of the 500 MB limit on the free tier.',
+      'settings.db.loading': 'Loading...',
+      'settings.db.used': 'Used',
+      'settings.db.remaining': 'Remaining',
+      'settings.db.total': 'Total limit',
+      'settings.db.refresh': 'Refresh',
+      'settings.avatar.error': 'Error reading the image',
     }
   };
 
@@ -3551,6 +4091,15 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     if (document.getElementById('adminApp').classList.contains('is-active')) {
       loadDashboard(); loadCases(); loadPosts(); loadPricing();
       if (USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi') { loadUsers(); loadPermissions(); }
+      // Hozir ochiq bo'lgan bo'limning dinamik (JS orqali chizilgan) kontenti
+      // ham yangi tilda qayta chiziladi
+      var activePanel = document.querySelector('.admin-panel.is-active');
+      var activeTab = activePanel ? activePanel.id.replace('panel-', '') : '';
+      if (activeTab === 'kpi') loadKpi();
+      else if (activeTab === 'salary') loadSalaryPage();
+      else if (activeTab === 'productivity') { loadMySalary(); loadMyKpiAwards(); }
+      else if (activeTab === 'calendar') loadCalendar();
+      else if (activeTab === 'attendance' && typeof renderAttToday === 'function') { renderAttToday(); }
     }
   }
 
@@ -3925,7 +4474,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         body: JSON.stringify({ email: email })
       });
       var data = await res.json();
-      if (!data.success) { msg.className = 'form-msg error'; msg.textContent = data.error || 'Xato'; return; }
+      if (!data.success) { msg.className = 'form-msg error'; msg.textContent = data.error || T('common.error'); return; }
       msg.className = 'form-msg'; msg.textContent = '';
       document.getElementById('resetEmailLabel').textContent = email;
       document.getElementById('resetStep1').style.display = 'none';
@@ -3958,7 +4507,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         body: JSON.stringify({ email: email, code: code, newPassword: n1 })
       });
       var data = await res.json();
-      if (!data.success) { msg.className = 'form-msg error'; msg.textContent = data.error || 'Xato'; return; }
+      if (!data.success) { msg.className = 'form-msg error'; msg.textContent = data.error || T('common.error'); return; }
       msg.className = 'form-msg ok'; msg.textContent = 'Parol tiklandi! Endi yangi parol bilan kiring.';
       setTimeout(function () { closeModal('resetPwdModal'); }, 1500);
     } catch (err) {
@@ -4668,7 +5217,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     // Brauzer o'zbek lokalida oy nomini "M07" ko'rinishida qaytarishi mumkin,
     // shuning uchun oy nomlari qo'lda yoziladi: "30-iyul"
     var dt = new Date(d);
-    return dt.getDate() + '-' + UZ_MONTHS[dt.getMonth()].toLowerCase();
+    return dt.getDate() + '-' + monthName(dt.getMonth()).toLowerCase();
   }
   function isOverdue(due, status) {
     if (!due || status === 'done') return false;
@@ -4788,10 +5337,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       applyTaskMemberFilter();
     } catch (err) {
       KS.forEach(function (s) {
-        document.getElementById('kcol-' + s).innerHTML = '<div class="kanban-empty" style="color:#F2896F">Yuklashda xato</div>';
+        document.getElementById('kcol-' + s).innerHTML = '<div class="kanban-empty" style="color:#F2896F">' + T('common.load_error') + '</div>';
       });
       var mlist = document.getElementById('taskListMobile');
-      if (mlist) mlist.innerHTML = '<div class="task-list-empty" style="color:#F2896F">Yuklashda xato</div>';
+      if (mlist) mlist.innerHTML = '<div class="task-list-empty" style="color:#F2896F">' + T('common.load_error') + '</div>';
     }
   }
 
@@ -5255,7 +5804,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   // ── DATE UI — overdue detection ──
   // ── CUSTOM KALENDAR ──
   var TD_CAL_YEAR, TD_CAL_MONTH; // hozir ko'rsatilayotgan oy/yil (oy 0-indeksli)
-  var UZ_MONTHS = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'];
+  function monthName(i) { return T('month.' + i); }
   function pad2(n) { return n < 10 ? '0' + n : '' + n; }
 
   function tdRefreshLabel() {
@@ -5264,7 +5813,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   }
 
   function renderCalendar() {
-    document.getElementById('tdCalTitle').textContent = UZ_MONTHS[TD_CAL_MONTH] + ' ' + TD_CAL_YEAR;
+    document.getElementById('tdCalTitle').textContent = monthName(TD_CAL_MONTH) + ' ' + TD_CAL_YEAR;
     var grid = document.getElementById('tdCalGrid');
     var firstDay = new Date(TD_CAL_YEAR, TD_CAL_MONTH, 1);
     var startOffset = (firstDay.getDay() + 6) % 7; // Dushanba = 0
@@ -5657,7 +6206,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   }
 
   async function deleteTaskComment(commentId) {
-    if (!confirm('Bu xabarni o‘chirasizmi?')) return;
+    if (!confirm(T('tasks.comment.confirm.del'))) return;
     var error = document.getElementById('tdCommentsError');
     try {
       await apiFetch('/api/tasks/' + TD_EDIT_ID + '/comments/' + commentId, { method: 'DELETE' });
@@ -5758,7 +6307,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       TD_STORES_LOADED = true;
     } catch (e) {
       TD_STORES_CAN_MANAGE = false;
-      list.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato</div>';
+      list.innerHTML = '<div class="empty-state" style="color:#F2896F">' + T('common.load_error') + '</div>';
       return;
     }
     document.getElementById('storeAddRow').style.display = TD_STORES_CAN_MANAGE ? 'flex' : 'none';
@@ -5793,7 +6342,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
           TD_STORES = TD_STORES.filter(function (s) { return String(s.id) !== String(id); });
           if (STORE_EDIT_ID && String(STORE_EDIT_ID) === String(id)) resetStoreAddForm();
           renderStoresList();
-        } catch (err) { alert(err.message || 'Xato'); }
+        } catch (err) { alert(err.message || T('common.error')); }
       });
     });
     if (TD_STORES_CAN_MANAGE) {
@@ -5860,7 +6409,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     }
     // Server sovuq holatdan uyg'onayotgan bo'lsa bir necha soniya vaqt ketishi
     // mumkin — shu payt oyna bo'sh ko'rinib qolmasligi uchun yuklanish holati
-    document.getElementById('calGrid').innerHTML = '<div class="cal-loading">Yuklanmoqda...</div>';
+    document.getElementById('calGrid').innerHTML = '<div class="cal-loading">' + T('common.loading') + '</div>';
     await ensureStores();
     await loadTasks();
     renderCalFilters();
@@ -5899,7 +6448,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   }
 
   function renderCalGrid() {
-    document.getElementById('calMonthTitle').textContent = UZ_MONTHS[CAL_MONTH] + ' ' + CAL_YEAR;
+    document.getElementById('calMonthTitle').textContent = monthName(CAL_MONTH) + ' ' + CAL_YEAR;
     var byDate = {};
     Object.keys(TASKS_MAP).forEach(function (id) {
       var t = TASKS_MAP[id];
@@ -5931,7 +6480,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
           (done ? '<svg viewBox="0 0 24 24" width="7" height="7" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '') +
           '</span><span class="cal-task-chip__title">' + escHtml(t.title) + '</span></div>';
       }).join('');
-      var more = dayTasks.length > CAL_MAX_CHIPS ? '<div class="cal-day__more">+' + (dayTasks.length - CAL_MAX_CHIPS) + ' ta yana</div>' : '';
+      var more = dayTasks.length > CAL_MAX_CHIPS ? '<div class="cal-day__more">+' + (dayTasks.length - CAL_MAX_CHIPS) + ' ' + esc(T('cal.more')) + '</div>' : '';
       html += '<div class="cal-day' + (dateStr === todayStr ? ' is-today' : '') + '" data-date="' + dateStr + '">' +
         '<div class="cal-day__num">' + d + '</div>' +
         '<div class="cal-day__tasks">' + chips + more + '</div>' +
@@ -6117,7 +6666,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       tdClose();
       await loadTasks();
     } catch (err) {
-      msg.textContent = err.message || 'Xato';
+      msg.textContent = err.message || T('common.error');
     } finally {
       btn.disabled = false; btn.textContent = 'Saqlash';
     }
@@ -6230,7 +6779,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         if (document.getElementById('panel-calendar').classList.contains('is-active')) renderCalGrid();
       } catch (err) {
         chk.classList.toggle('is-done');
-        alert(err.message || 'Xato');
+        alert(err.message || T('common.error'));
       } finally {
         chk.disabled = false;
       }
@@ -6425,7 +6974,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         await apiFetch('/api/tasks/' + TD_EDIT_ID, { method: 'DELETE' });
         tdClose();
         await loadTasks();
-      } catch (err) { alert(err.message || 'Xato'); }
+      } catch (err) { alert(err.message || T('common.error')); }
     });
 
     // Drawer ichida eng ustki popupdan tashqariga bosilsa ham faqat o'sha
@@ -6462,7 +7011,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   window.deleteTask = async function (id) {
     if (!confirm(T('tasks.confirm.del') || "O'chirishni tasdiqlaysizmi?")) return;
     try { await apiFetch('/api/tasks/' + id, { method: 'DELETE' }); await loadTasks(); }
-    catch (err) { alert(err.message || 'Xato'); }
+    catch (err) { alert(err.message || T('common.error')); }
   };
 
   // ══════════════════════════════════════════════════════════
@@ -6494,7 +7043,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     var state = document.getElementById('dbUsageState');
     msg.className = 'form-msg';
     msg.textContent = '';
-    state.textContent = 'Yuklanmoqda...';
+    state.textContent = T('settings.db.loading');
     try {
       var data = await apiFetch('/api/admin/database-usage');
       var usage = data.usage || {};
@@ -6558,7 +7107,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         document.getElementById('setPassSaveBtn').disabled = true;
       }
     } catch (err) {
-      document.getElementById('setProfileMsg').textContent = err.message || 'Yuklashda xato';
+      document.getElementById('setProfileMsg').textContent = err.message || T('common.load_error');
     }
   }
 
@@ -6572,7 +7121,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     try {
       SET_AVATAR_B64 = await fileToResizedBase64(file, 256);
       setAvatarPreview(document.getElementById('setName').value, SET_AVATAR_B64);
-    } catch (err) { alert("Rasmni o'qishda xato"); }
+    } catch (err) { alert(T('settings.avatar.error')); }
   });
 
   // ── Profilni saqlash ──
@@ -6593,7 +7142,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       if (sideAva) sideAva.innerHTML = SET_AVATAR_B64 ? '<img src="' + SET_AVATAR_B64 + '" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%" />' : '👤';
       msg.className = 'form-msg ok'; msg.textContent = 'Saqlandi';
     } catch (err) {
-      msg.className = 'form-msg error'; msg.textContent = err.message || 'Xato';
+      msg.className = 'form-msg error'; msg.textContent = err.message || T('common.error');
     } finally {
       btn.disabled = false;
     }
@@ -6618,7 +7167,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       document.getElementById('setNewPass2').value = '';
       msg.className = 'form-msg ok'; msg.textContent = 'Parol almashtirildi';
     } catch (err) {
-      msg.className = 'form-msg error'; msg.textContent = err.message || 'Xato';
+      msg.className = 'form-msg error'; msg.textContent = err.message || T('common.error');
     } finally {
       btn.disabled = false;
     }
@@ -6773,7 +7322,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   var KPI_MEMBER_FILTER = '';
   var KPI_AWARD_EDIT_ID = null;
   var KPI_AWARD_DECIDE_LOCKS = {};
-  var KPI_AWARD_STATUS_LABEL = { pending: 'Kutilmoqda', approved: 'Tasdiqlandi', rejected: "Berilmadi" };
+  function kpiAwardStatusLabel(status) { return T('kpi.status.' + status); }
 
   function kpiDefaultMonth() {
     var now = new Date();
@@ -6818,14 +7367,14 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     if (addAwardBtn) addAwardBtn.style.display = KPI_CAN_MANAGE ? '' : 'none';
 
     var list = document.getElementById('kpiAwardsMainEl');
-    list.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
+    list.innerHTML = '<div class="empty-state">' + T('common.loading') + '</div>';
     try {
       await loadKpiData();
       renderKpiPendingPanel();
       renderKpiMembers();
       renderKpiAwardsMain();
     } catch (err) {
-      list.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
+      list.innerHTML = '<div class="empty-state" style="color:#F2896F">' + T('common.load_error') + esc(err.message || '') + '</div>';
     }
   }
 
@@ -6854,7 +7403,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     if (!KPI_CAN_MANAGE) { el.innerHTML = ''; return; }
     var dueSoon = KPI_AWARDS_ALL.filter(kpiAwardIsDueSoon);
     el.innerHTML = dueSoon.length
-      ? '<h3 class="prod-section-title">Tasdiqlash kutilmoqda</h3>' + dueSoon.map(function (a) { return renderKpiAwardCard(a); }).join('')
+      ? '<h3 class="prod-section-title">' + esc(T('kpi.pending.title')) + '</h3>' + dueSoon.map(function (a) { return renderKpiAwardCard(a); }).join('')
       : '';
     wireKpiAwardCards(el);
   }
@@ -6896,7 +7445,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       : KPI_AWARDS_ALL;
     list.innerHTML = filtered.length
       ? filtered.map(function (a) { return renderKpiAwardCard(a, { hideName: !!KPI_MEMBER_FILTER }); }).join('')
-      : '<div class="empty-state">Hali KPI topshirig\'i yo\'q</div>';
+      : '<div class="empty-state">' + esc(T('kpi.empty')) + '</div>';
     wireKpiAwardCards(list);
   }
 
@@ -6909,26 +7458,26 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   async function loadSalaryPage() {
     KPI_CAN_MANAGE = KPI_MANAGE_ROLES.indexOf(USER_ROLE) !== -1;
     var list = document.getElementById('salaryEmployeeListEl');
-    list.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
+    list.innerHTML = '<div class="empty-state">' + T('common.loading') + '</div>';
     try {
       await loadKpiData();
       renderSalaryEmployeeList();
     } catch (err) {
-      list.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
+      list.innerHTML = '<div class="empty-state" style="color:#F2896F">' + T('common.load_error') + esc(err.message || '') + '</div>';
     }
   }
 
   function renderSalaryEmployeeList() {
     var list = document.getElementById('salaryEmployeeListEl');
     if (!KPI_EMPLOYEES.length) {
-      list.innerHTML = '<div class="empty-state">Xodimlar topilmadi</div>';
+      list.innerHTML = '<div class="empty-state">' + esc(T('kpi.employees.empty')) + '</div>';
       return;
     }
     list.innerHTML = KPI_EMPLOYEES.map(function (e) {
       var sal = KPI_SALARY_MAP[e.id];
       var subText = sal && sal.salary
-        ? 'Oylik: ' + fmtMoney(sal.salary) + ' · Qoladi: ' + fmtMoney(sal.remaining)
-        : "Oylik belgilanmagan";
+        ? T('tab.salary') + ': ' + fmtMoney(sal.salary) + ' · ' + T('salary.remaining') + ': ' + fmtMoney(sal.remaining)
+        : T('salary.notset');
       return '<div class="kpi-emp-row" data-salary-emp="' + e.id + '">' +
         '<div class="item-row__thumb" style="background:' + avaColor(e.name) + '">' + avaLetter(e.name) + '</div>' +
         '<div class="kpi-emp-row__body">' +
@@ -6951,41 +7500,41 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     document.getElementById('salaryEmployeeModal').classList.add('is-active');
   };
 
-  var WD_LABELS = { mon: 'Dush', tue: 'Sesh', wed: 'Chor', thu: 'Pay', fri: 'Jum', sun: 'Yak' };
+  function wdLabel(k) { return T('wd.' + k); }
   var WD_ORDER = ['mon', 'tue', 'wed', 'thu', 'fri', 'sun'];
 
   function renderSaturdaySelectOptions(mode) {
     var opts = [
-      ['none', "Ishlamaydi"],
-      ['all', "Har doim ishlaydi"],
-      ['odd', "Navbat bilan (1-,3-,5-shanba)"],
-      ['even', "Navbat bilan (2-,4-shanba)"]
+      ['none', T('salary.saturday.none')],
+      ['all', T('salary.saturday.all')],
+      ['odd', T('salary.saturday.odd')],
+      ['even', T('salary.saturday.even')]
     ];
     return opts.map(function (o) {
-      return '<option value="' + o[0] + '"' + (mode === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
+      return '<option value="' + o[0] + '"' + (mode === o[0] ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
     }).join('');
   }
 
   function renderSalarySummaryHtml(data) {
-    if (!data.salary) return '<div class="empty-state">Oylik maosh belgilanmagan</div>';
+    if (!data.salary) return '<div class="empty-state">' + esc(T('salary.notset')) + '</div>';
     var color = data.totalDeducted <= 0 ? 'var(--green-hi)' : (data.remaining > 0 ? '#F0A500' : '#F2896F');
     var count = data.deductions.length;
     var rowsHtml = count
       ? data.deductions.map(function (d) {
-          var statusText = d.type === 'absent' ? 'Kelmagan' : (fmtDuration(d.late_minutes) + ' kechikish · -' + d.deduct_percent + '%');
+          var statusText = d.type === 'absent' ? T('salary.day.absent') : (fmtDuration(d.late_minutes) + ' ' + T('salary.day.late') + ' · -' + d.deduct_percent + '%');
           return '<div class="salary-day-row">' +
             '<span class="salary-day-row__date">' + d.date + '</span>' +
-            '<span class="salary-day-row__status">' + statusText + '</span>' +
+            '<span class="salary-day-row__status">' + esc(statusText) + '</span>' +
             '<span class="salary-day-row__amount">-' + fmtMoney(d.deducted_amount) + '</span>' +
           '</div>';
         }).join('')
-      : '<div class="salary-day-row salary-day-row--empty">Ushlab qolish yo\'q — maosh to\'liq!</div>';
+      : '<div class="salary-day-row salary-day-row--empty">' + esc(T('salary.days.empty')) + '</div>';
     return '<div class="salary-summary">' +
         '<div class="salary-summary__amount" style="color:' + color + '">' + fmtMoney(data.remaining) + '</div>' +
-        '<div class="salary-summary__sub">' + fmtMoney(data.salary) + " dan" + (data.totalDeducted > 0 ? ' · -' + fmtMoney(data.totalDeducted) + ' ushlab qolindi' : '') + '</div>' +
-        '<div class="salary-summary__meta">' + data.totalWorkDays + ' ish kuni · kunlik ' + fmtMoney(data.dailyRate) + '</div>' +
+        '<div class="salary-summary__sub">' + fmtMoney(data.salary) + ' ' + esc(T('salary.from')) + (data.totalDeducted > 0 ? ' · -' + fmtMoney(data.totalDeducted) + ' ' + esc(T('salary.deducted')) : '') + '</div>' +
+        '<div class="salary-summary__meta">' + data.totalWorkDays + ' ' + esc(T('salary.workdays')) + ' · ' + esc(T('salary.daily')) + ' ' + fmtMoney(data.dailyRate) + '</div>' +
       '</div>' +
-      '<button type="button" class="salary-days-toggle" data-salary-toggle>' + (count ? ('Kunlar ro\'yxati (' + count + ') ▾') : 'Kunlar ro\'yxati ▾') + '</button>' +
+      '<button type="button" class="salary-days-toggle" data-salary-toggle>' + esc(T('salary.days.toggle')) + (count ? (' (' + count + ')') : '') + ' ▾</button>' +
       '<div class="salary-days-list" data-salary-list>' + rowsHtml + '</div>';
   }
 
@@ -7006,21 +7555,21 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   async function renderKpiEmpSalary(employeeId, containerId) {
     var el = document.getElementById(containerId || 'salaryEmpEl');
-    el.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
+    el.innerHTML = '<div class="empty-state">' + T('common.loading') + '</div>';
     try {
       var data = await apiFetch('/api/attendance/salary/' + employeeId);
       var editHtml = KPI_CAN_MANAGE
         ? '<div class="salary-edit">' +
-            '<div class="field"><label>Oylik maosh (so\'m)</label><input type="number" id="kpiEmpSalaryInput" min="0" step="10000" value="' + data.salary + '" /></div>' +
-            '<div class="field"><label>Ish kunlari</label><div class="wd-row" id="kpiEmpWdRow">' +
+            '<div class="field"><label>' + esc(T('salary.field.amount')) + '</label><input type="number" id="kpiEmpSalaryInput" min="0" step="10000" value="' + data.salary + '" /></div>' +
+            '<div class="field"><label>' + esc(T('salary.field.workdays')) + '</label><div class="wd-row" id="kpiEmpWdRow">' +
               WD_ORDER.map(function (k) {
-                return '<button type="button" class="wd-btn' + (data.schedule[k] ? ' is-on' : '') + '" data-wd="' + k + '">' + WD_LABELS[k] + '</button>';
+                return '<button type="button" class="wd-btn' + (data.schedule[k] ? ' is-on' : '') + '" data-wd="' + k + '">' + esc(wdLabel(k)) + '</button>';
               }).join('') +
             '</div></div>' +
-            '<div class="field"><label>Shanba</label><select id="kpiEmpSaturdaySelect">' + renderSaturdaySelectOptions(data.schedule.saturday) + '</select></div>' +
+            '<div class="field"><label>' + esc(T('salary.field.saturday')) + '</label><select id="kpiEmpSaturdaySelect">' + renderSaturdaySelectOptions(data.schedule.saturday) + '</select></div>' +
             '<div style="display:flex;gap:8px">' +
-              '<button type="button" class="btn-add" id="kpiEmpSalarySaveBtn" style="padding:9px 16px">Saqlash</button>' +
-              (data.salary > 0 ? '<button type="button" class="kpi-award-btn kpi-award-btn--no" id="kpiEmpSalaryDelBtn" style="flex:0 0 auto;padding:9px 16px">O\'chirish</button>' : '') +
+              '<button type="button" class="btn-add" id="kpiEmpSalarySaveBtn" style="padding:9px 16px">' + esc(T('salary.save')) + '</button>' +
+              (data.salary > 0 ? '<button type="button" class="kpi-award-btn kpi-award-btn--no" id="kpiEmpSalaryDelBtn" style="flex:0 0 auto;padding:9px 16px">' + esc(T('salary.delete')) + '</button>' : '') +
             '</div>' +
           '</div>'
         : '';
@@ -7055,7 +7604,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var delBtn = document.getElementById('kpiEmpSalaryDelBtn');
       if (delBtn) {
         delBtn.addEventListener('click', async function () {
-          if (!confirm("Bu xodimning oylik maoshini o'chirishni tasdiqlaysizmi?")) return;
+          if (!confirm(T('salary.confirm.del'))) return;
           delBtn.disabled = true;
           try {
             await apiFetch('/api/attendance/salary/' + employeeId, { method: 'PUT', body: JSON.stringify({ salary: 0 }) });
@@ -7069,7 +7618,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         });
       }
     } catch (err) {
-      el.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
+      el.innerHTML = '<div class="empty-state" style="color:#F2896F">' + T('common.load_error') + esc(err.message || '') + '</div>';
     }
   }
 
@@ -7077,15 +7626,15 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     opts = opts || {};
     var badgeClass = 'kpi-award-badge--' + a.status;
     var cardClass = 'kpi-award-card' + (kpiAwardIsDueSoon(a) ? ' kpi-award-card--pending-review' : '');
-    var recurringBadge = a.recurrence === 'monthly' ? '<span class="kpi-award-badge kpi-award-badge--recurring">↻ har oy</span>' : '';
+    var recurringBadge = a.recurrence === 'monthly' ? '<span class="kpi-award-badge kpi-award-badge--recurring">' + esc(T('kpi.recurring')) + '</span>' : '';
     var manageTools = KPI_CAN_MANAGE
-      ? '<button type="button" class="kpi-award-card__del" data-kpi-award-edit="' + a.id + '" title="Tahrirlash">✎</button>' +
-        '<button type="button" class="kpi-award-card__del" data-kpi-award-del="' + a.id + '" title="O\'chirish">✕</button>'
+      ? '<button type="button" class="kpi-award-card__del" data-kpi-award-edit="' + a.id + '" title="' + esc(T('kpi.edit.title')) + '">✎</button>' +
+        '<button type="button" class="kpi-award-card__del" data-kpi-award-del="' + a.id + '" title="' + esc(T('kpi.del.title')) + '">✕</button>'
       : '';
     var actions = (a.status === 'pending' && KPI_CAN_MANAGE)
       ? '<div class="kpi-award-card__actions">' +
-          '<button type="button" class="kpi-award-btn kpi-award-btn--yes" data-kpi-award-decide="' + a.id + '" data-approved="1">Ha, bajarildi</button>' +
-          '<button type="button" class="kpi-award-btn kpi-award-btn--no" data-kpi-award-decide="' + a.id + '" data-approved="0">Yo\'q</button>' +
+          '<button type="button" class="kpi-award-btn kpi-award-btn--yes" data-kpi-award-decide="' + a.id + '" data-approved="1">' + esc(T('kpi.decide.yes')) + '</button>' +
+          '<button type="button" class="kpi-award-btn kpi-award-btn--no" data-kpi-award-decide="' + a.id + '" data-approved="0">' + esc(T('kpi.decide.no')) + '</button>' +
         '</div>'
       : '';
     // Bitta xodim tanlangan bo'lsa (chapdagi filtr), ism har kartada takrorlanmasin —
@@ -7099,9 +7648,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       '</div>' +
       reasonRow +
       '<div class="kpi-award-card__meta">' +
-        '<span class="kpi-award-badge ' + badgeClass + '">' + KPI_AWARD_STATUS_LABEL[a.status] + '</span>' +
+        '<span class="kpi-award-badge ' + badgeClass + '">' + esc(kpiAwardStatusLabel(a.status)) + '</span>' +
         recurringBadge +
-        '<span>Muddat: ' + a.due_date + '</span>' +
+        '<span>' + esc(T('kpi.due')) + ': ' + a.due_date + '</span>' +
         manageTools +
       '</div>' +
       actions +
@@ -7129,7 +7678,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   async function decideKpiAward(id, approved) {
     if (KPI_AWARD_DECIDE_LOCKS[id]) return;
-    if (!confirm(approved ? 'Xodim bu vazifani bajargani tasdiqlanadi. Davom etasizmi?' : "Xodim bu vazifani bajarmagan deb belgilanadi. Davom etasizmi?")) return;
+    if (!confirm(approved ? T('kpi.confirm.approve') : T('kpi.confirm.reject'))) return;
     KPI_AWARD_DECIDE_LOCKS[id] = true;
     var card = document.querySelector('[data-kpi-award-card="' + id + '"]');
     if (card) {
@@ -7153,7 +7702,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   }
 
   async function deleteKpiAward(id) {
-    if (!confirm("KPI topshirig'ini bekor qilishni tasdiqlaysizmi?")) return;
+    if (!confirm(T('kpi.confirm.del'))) return;
     try {
       await apiFetch('/api/kpi/awards/' + id, { method: 'DELETE' });
       await refreshKpiUI();
@@ -7162,7 +7711,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   window.openKpiAwardForm = function (employeeId, editAward) {
     KPI_AWARD_EDIT_ID = editAward ? editAward.id : null;
-    document.getElementById('kpiAwardModalTitle').textContent = editAward ? "KPI topshirig'ini tahrirlash" : "Yangi KPI topshirig'i";
+    document.getElementById('kpiAwardModalTitle').textContent = editAward ? T('kpi.modal.edit') : T('kpi.modal.new');
     document.getElementById('kpiAwardFormMsg').textContent = '';
     var sel = document.getElementById('kpiAwardEmployeeSelect');
     sel.innerHTML = KPI_EMPLOYEES.map(function (e) {
@@ -7210,26 +7759,26 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var data = await apiFetch('/api/kpi/my-awards');
       var awards = data.awards || [];
       el.innerHTML = awards.length
-        ? '<h3 class="prod-section-title">KPI topshiriqlarim</h3>' + awards.map(renderMyKpiAwardCard).join('')
+        ? '<h3 class="prod-section-title">' + esc(T('prod.kpi.title')) + '</h3>' + awards.map(renderMyKpiAwardCard).join('')
         : '';
     } catch (err) { /* jim */ }
   }
 
   function renderMyKpiAwardCard(a) {
     var badgeClass = 'kpi-award-badge--' + a.status;
-    var recurringBadge = a.recurrence === 'monthly' ? '<span class="kpi-award-badge kpi-award-badge--recurring">↻ har oy</span>' : '';
+    var recurringBadge = a.recurrence === 'monthly' ? '<span class="kpi-award-badge kpi-award-badge--recurring">' + esc(T('kpi.recurring')) + '</span>' : '';
     var extra = a.status === 'pending'
-      ? '<div class="kpi-award-card__reason">Agar shu natijaga erishsangiz, ushbu KPI sizga beriladi.</div>'
-      : (a.status === 'rejected' ? '<div class="kpi-award-card__reason">Sababi: siz ushbu vazifani bajarmadingiz.</div>' : '');
+      ? '<div class="kpi-award-card__reason">' + esc(T('prod.kpi.pending')) + '</div>'
+      : (a.status === 'rejected' ? '<div class="kpi-award-card__reason">' + esc(T('prod.kpi.rejected')) + '</div>' : '');
     return '<div class="kpi-award-card">' +
       '<div class="kpi-award-card__top">' +
         '<span class="kpi-award-card__name">' + esc(a.reason) + '</span>' +
         '<span class="kpi-award-card__amount">' + fmtMoney(a.amount) + '</span>' +
       '</div>' +
       '<div class="kpi-award-card__meta">' +
-        '<span class="kpi-award-badge ' + badgeClass + '">' + KPI_AWARD_STATUS_LABEL[a.status] + '</span>' +
+        '<span class="kpi-award-badge ' + badgeClass + '">' + esc(kpiAwardStatusLabel(a.status)) + '</span>' +
         recurringBadge +
-        '<span>Muddat: ' + a.due_date + '</span>' +
+        '<span>' + esc(T('kpi.due')) + ': ' + a.due_date + '</span>' +
       '</div>' +
       extra +
     '</div>';
@@ -7242,12 +7791,12 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     var monthInput = document.getElementById('prodMonthInput');
     if (!monthInput.value) monthInput.value = kpiDefaultMonth();
     var el = document.getElementById('prodSalaryEl');
-    el.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
+    el.innerHTML = '<div class="empty-state">' + T('common.loading') + '</div>';
     try {
       var data = await apiFetch('/api/attendance/my-salary?month=' + encodeURIComponent(monthInput.value));
       renderMySalary(data);
     } catch (err) {
-      el.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
+      el.innerHTML = '<div class="empty-state" style="color:#F2896F">' + T('common.load_error') + esc(err.message || '') + '</div>';
     }
   }
 
@@ -7293,7 +7842,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   }
   function attFmtDateShort(dateStr) {
     var d = new Date(dateStr);
-    return attPad2(d.getUTCDate()) + '-' + UZ_MONTHS[d.getUTCMonth()].slice(0, 3);
+    return attPad2(d.getUTCDate()) + '-' + monthName(d.getUTCMonth()).slice(0, 3);
   }
   function attTimeValue(iso) {
     if (!iso) return '';
@@ -7327,13 +7876,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   async function loadAttToday() {
     var box = document.getElementById('attTodayBox');
-    box.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
+    box.innerHTML = '<div class="empty-state">' + T('common.loading') + '</div>';
     try {
       var data = await apiFetch('/api/attendance/today');
       ATT_TODAY = data.record;
       renderAttToday();
     } catch (err) {
-      box.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
+      box.innerHTML = '<div class="empty-state" style="color:#F2896F">' + T('common.load_error') + esc(err.message || '') + '</div>';
     }
   }
 
@@ -7344,9 +7893,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     if (!r || !r.check_in_at) {
       box.innerHTML =
         '<div class="att-status-icon">🌅</div>' +
-        '<div class="att-status-title">Hali kelmadingiz</div>' +
-        '<div class="att-status-sub">Ishga kelganingizda joylashuvingizni va ishxona suratini tasdiqlash uchun tugmani bosing.</div>' +
-        '<button type="button" class="att-big-btn att-big-btn--in" id="attCheckInBtn">✅ Keldim</button>';
+        '<div class="att-status-title">' + esc(T('att.status.notyet')) + '</div>' +
+        '<div class="att-status-sub">' + esc(T('att.status.notyet.sub')) + '</div>' +
+        '<button type="button" class="att-big-btn att-big-btn--in" id="attCheckInBtn">✅ ' + esc(T('att.checkin.btn')) + '</button>';
       var inBtn = document.getElementById('attCheckInBtn');
       if (inBtn) inBtn.addEventListener('click', function () { startAttendanceFlow('in'); });
       return;
@@ -7356,13 +7905,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var isLate = r.late_minutes > 0;
       box.innerHTML =
         '<div class="att-status-icon">💼</div>' +
-        '<div class="att-status-title">Ish jarayonida</div>' +
-        '<div class="att-times-row"><div class="att-time-block"><b>' + attFmtTime(r.check_in_at) + '</b><span>Keldi</span></div></div>' +
+        '<div class="att-status-title">' + esc(T('att.status.working')) + '</div>' +
+        '<div class="att-times-row"><div class="att-time-block"><b>' + attFmtTime(r.check_in_at) + '</b><span>' + esc(T('att.table.checkin')) + '</span></div></div>' +
         '<div class="att-late-badge ' + (isLate ? 'late' : 'ontime') + '">' +
-          (isLate ? '⏰ ' + fmtDuration(r.late_minutes) + " kechikish · -" + r.deduct_percent + '%' : "✓ O'z vaqtida") +
+          (isLate ? '⏰ ' + fmtDuration(r.late_minutes) + ' ' + esc(T('att.late.by')).toLowerCase() + " · -" + r.deduct_percent + '%' : '✓ ' + esc(T('att.ontime'))) +
         '</div>' +
         (r.check_in_photo ? '<div class="att-photos-row"><img class="att-photo-thumb" src="' + esc(r.check_in_photo) + '" onclick="attShowPhoto(this.src)" /></div>' : '') +
-        '<div style="margin-top:20px"><button type="button" class="att-big-btn att-big-btn--out" id="attCheckOutBtn">🚪 Ketdim</button></div>';
+        '<div style="margin-top:20px"><button type="button" class="att-big-btn att-big-btn--out" id="attCheckOutBtn">🚪 ' + esc(T('att.checkout.btn')) + '</button></div>';
       var outBtn = document.getElementById('attCheckOutBtn');
       if (outBtn) outBtn.addEventListener('click', function () { startAttendanceFlow('out'); });
       return;
@@ -7371,13 +7920,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     var isLate2 = r.late_minutes > 0;
     box.innerHTML =
       '<div class="att-status-icon">🎉</div>' +
-      '<div class="att-status-title">Bugungi ish yakunlandi</div>' +
+      '<div class="att-status-title">' + esc(T('att.status.finished')) + '</div>' +
       '<div class="att-times-row">' +
-        '<div class="att-time-block"><b>' + attFmtTime(r.check_in_at) + '</b><span>Keldi</span></div>' +
-        '<div class="att-time-block"><b>' + attFmtTime(r.check_out_at) + '</b><span>Ketdi</span></div>' +
+        '<div class="att-time-block"><b>' + attFmtTime(r.check_in_at) + '</b><span>' + esc(T('att.table.checkin')) + '</span></div>' +
+        '<div class="att-time-block"><b>' + attFmtTime(r.check_out_at) + '</b><span>' + esc(T('att.table.checkout')) + '</span></div>' +
       '</div>' +
       '<div class="att-late-badge ' + (isLate2 ? 'late' : 'ontime') + '">' +
-        (isLate2 ? '⏰ ' + fmtDuration(r.late_minutes) + " kechikish · -" + r.deduct_percent + '%' : "✓ O'z vaqtida kelgan") +
+        (isLate2 ? '⏰ ' + fmtDuration(r.late_minutes) + ' ' + esc(T('att.late.by')).toLowerCase() + " · -" + r.deduct_percent + '%' : '✓ ' + esc(T('att.ontime'))) +
       '</div>' +
       '<div class="att-photos-row">' +
         (r.check_in_photo ? '<img class="att-photo-thumb" src="' + esc(r.check_in_photo) + '" onclick="attShowPhoto(this.src)" />' : '') +
@@ -7386,7 +7935,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       // Test rejimida backend qayta kelish/ketishga ruxsat beradi — shuning uchun
       // bu yerda ham qayta urinish imkoni qoldiriladi (production rejimida bosilsa,
       // backend tabiiy ravishda "allaqachon belgilangan" xatosini qaytaradi)
-      '<button type="button" class="att-retest-btn" id="attRetestBtn">🔁 Qayta boshlash (test)</button>';
+      '<button type="button" class="att-retest-btn" id="attRetestBtn">' + esc(T('att.retry.test')) + '</button>';
     var retestBtn = document.getElementById('attRetestBtn');
     if (retestBtn) retestBtn.addEventListener('click', function () { startAttendanceFlow('in'); });
   }
@@ -7448,10 +7997,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   function startAttendanceFlow(mode) {
     var activeBtn = document.getElementById(mode === 'in' ? 'attCheckInBtn' : 'attCheckOutBtn');
-    if (activeBtn) { activeBtn.disabled = true; activeBtn.textContent = 'Joylashuv aniqlanmoqda...'; }
+    if (activeBtn) { activeBtn.disabled = true; activeBtn.textContent = T('att.gps.checking'); }
 
     if (!navigator.geolocation) {
-      alert("Brauzeringiz joylashuvni aniqlashni qo'llab-quvvatlamaydi");
+      alert(T('att.gps.unsupported'));
       if (activeBtn) activeBtn.disabled = false;
       renderAttToday();
       return;
@@ -7465,7 +8014,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       if (ATT_OFFICE_LOCATION && ATT_OFFICE_LOCATION.latitude !== undefined) {
         var dist = attDistanceMeters(lat, lng, Number(ATT_OFFICE_LOCATION.latitude), Number(ATT_OFFICE_LOCATION.longitude));
         if (dist > Number(ATT_OFFICE_LOCATION.radius_meters)) {
-          alert('Siz ishxona hududida emassiz (taxminan ' + Math.round(dist) + ' metr uzoqdasiz). Tasdiqlash rad etildi.');
+          alert(T('att.gps.outside.prefix') + ' ' + Math.round(dist) + ' ' + T('att.gps.outside.suffix'));
           if (activeBtn) activeBtn.disabled = false;
           renderAttToday();
           return;
@@ -7473,9 +8022,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       }
       openCamera(mode, lat, lng);
     }, function (err) {
-      var msg = "Joylashuvni aniqlab bo'lmadi";
-      if (err.code === err.PERMISSION_DENIED) msg = 'Joylashuvga ruxsat berilmadi. Brauzer sozlamalaridan ruxsat bering.';
-      else if (err.code === err.TIMEOUT) msg = "Joylashuvni aniqlash vaqti tugadi, qayta urinib ko'ring";
+      var msg = T('att.gps.error');
+      if (err.code === err.PERMISSION_DENIED) msg = T('att.gps.denied');
+      else if (err.code === err.TIMEOUT) msg = T('att.gps.timeout');
       alert(msg);
       if (activeBtn) activeBtn.disabled = false;
       renderAttToday();
@@ -7491,7 +8040,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   function openCamera(mode, lat, lng) {
     CAM_MODE = mode; CAM_LAT = lat; CAM_LNG = lng; CAM_PHOTO = null;
     CAM_OPEN = true;
-    document.getElementById('camTitle').textContent = mode === 'in' ? 'Ishxonani suratga oling (kelish)' : 'Ishxonani suratga oling (ketish)';
+    document.getElementById('camTitle').textContent = mode === 'in' ? T('att.cam.title.in') : T('att.cam.title.out');
     document.getElementById('camMsg').textContent = '';
     document.getElementById('camVideo').style.display = '';
     document.getElementById('camPreview').style.display = 'none';
@@ -7507,7 +8056,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         document.getElementById('camVideo').srcObject = stream;
       })
       .catch(function () {
-        if (CAM_OPEN) document.getElementById('camMsg').textContent = 'Kameraga ruxsat berilmadi yoki kamera topilmadi';
+        if (CAM_OPEN) document.getElementById('camMsg').textContent = T('att.cam.denied');
       });
   }
 
@@ -7562,7 +8111,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     btn.disabled = true;
     var msgEl = document.getElementById('camMsg');
     msgEl.style.color = '';
-    msgEl.textContent = 'Yuborilmoqda...';
+    msgEl.textContent = T('att.sending');
     try {
       var path = CAM_MODE === 'in' ? '/api/attendance/check-in' : '/api/attendance/check-out';
       var resp = await apiFetch(path, { method: 'POST', body: JSON.stringify({ latitude: CAM_LAT, longitude: CAM_LNG, photo: CAM_PHOTO }) });
@@ -7584,8 +8133,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     } catch (err) {
       msgEl.style.color = '#F2896F';
       msgEl.textContent = err.message === 'not_in_area'
-        ? "Siz ishxona hududida emassiz. Iltimos, ishxonaga yaqinroq joyda qayta urinib ko'ring."
-        : (err.message || 'Xato yuz berdi');
+        ? T('att.cam.outside.msg')
+        : (err.message || T('common.error'));
     } finally {
       btn.disabled = false;
     }
@@ -7605,13 +8154,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       renderAttHistory(ATT_HISTORY_CACHE.records);
       return;
     }
-    list.innerHTML = '<div class="empty-state">Yuklanmoqda...</div>';
+    list.innerHTML = '<div class="empty-state">' + T('common.loading') + '</div>';
     try {
       var data = await apiFetch('/api/attendance/my?month=' + encodeURIComponent(monthInput.value));
       ATT_HISTORY_CACHE = { month: monthInput.value, records: data.records || [] };
       renderAttHistory(ATT_HISTORY_CACHE.records);
     } catch (err) {
-      list.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
+      list.innerHTML = '<div class="empty-state" style="color:#F2896F">' + T('common.load_error') + esc(err.message || '') + '</div>';
     }
   }
   document.getElementById('attMyMonthInput').addEventListener('change', function () {
@@ -7621,7 +8170,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   function renderAttHistory(records) {
     var list = document.getElementById('attMyList');
     if (!records.length) {
-      list.innerHTML = '<div class="empty-state">Bu oyda yozuv yo\'q</div>';
+      list.innerHTML = '<div class="empty-state">' + esc(T('att.history.empty')) + '</div>';
       return;
     }
     list.innerHTML = records.map(function (r) {
@@ -7629,9 +8178,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       return '<div class="att-history-row">' +
         '<div class="att-history-date">' + attFmtDateShort(r.work_date) + '</div>' +
         '<div class="att-history-times">' +
-          '<span>Keldi: <b>' + attFmtTime(r.check_in_at) + '</b></span>' +
-          '<span>Ketdi: <b>' + attFmtTime(r.check_out_at) + '</b></span>' +
-          (late ? '<span style="color:#F2896F">-' + r.deduct_percent + '% (' + fmtDuration(r.late_minutes) + ')</span>' : '<span style="color:var(--green-hi)">O\'z vaqtida</span>') +
+          '<span>' + esc(T('att.time.checkin')) + ' <b>' + attFmtTime(r.check_in_at) + '</b></span>' +
+          '<span>' + esc(T('att.time.checkout')) + ' <b>' + attFmtTime(r.check_out_at) + '</b></span>' +
+          (late ? '<span style="color:#F2896F">-' + r.deduct_percent + '% (' + fmtDuration(r.late_minutes) + ')</span>' : '<span style="color:var(--green-hi)">' + esc(T('att.ontime')) + '</span>') +
         '</div>' +
         '<div class="att-history-thumbs">' +
           (r.check_in_photo ? '<img src="' + esc(r.check_in_photo) + '" onclick="attShowPhoto(this.src)" />' : '') +
@@ -7646,12 +8195,12 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     var monthInput = document.getElementById('attTeamMonthInput');
     if (!monthInput.value) monthInput.value = attDefaultMonth();
     var body = document.getElementById('attTeamBody');
-    body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--gray-dim)">Yuklanmoqda...</td></tr>';
+    body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--gray-dim)">' + T('common.loading') + '</td></tr>';
     try {
       var data = await apiFetch('/api/attendance/all?month=' + encodeURIComponent(monthInput.value));
       renderAttTeam(data.records || []);
     } catch (err) {
-      body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</td></tr>';
+      body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#F2896F">' + T('common.load_error') + esc(err.message || '') + '</td></tr>';
     }
   }
   document.getElementById('attTeamMonthInput').addEventListener('change', function () {
@@ -7661,19 +8210,19 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   function renderAttTeam(records) {
     var body = document.getElementById('attTeamBody');
     if (!records.length) {
-      body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--gray-dim)">Bu oyda yozuv yo\'q</td></tr>';
+      body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--gray-dim)">' + esc(T('att.history.empty')) + '</td></tr>';
       return;
     }
     body.innerHTML = records.map(function (r) {
       var pillStyle = r.deduct_percent > 0 ? 'background:rgba(242,137,111,.15);color:#F2896F' : 'background:rgba(76,247,156,.15);color:var(--green-hi)';
       return '<tr data-id="' + r.id + '">' +
-        '<td data-label="Xodim">' + esc(r.employee_name) + '</td>' +
-        '<td data-label="Sana">' + attFmtDateShort(r.work_date) + '</td>' +
-        '<td data-label="Keldi"><input type="time" class="att-edit-input" data-field="check_in_time" value="' + attTimeValue(r.check_in_at) + '" /></td>' +
-        '<td data-label="Kechikish">' + (r.late_minutes > 0 ? fmtDuration(r.late_minutes) : '—') + '</td>' +
-        '<td data-label="Ushlab qolindi"><span class="att-deduct-pill" style="' + pillStyle + '">' + r.deduct_percent + '%</span></td>' +
-        '<td data-label="Ketdi"><input type="time" class="att-edit-input" data-field="check_out_time" value="' + attTimeValue(r.check_out_at) + '" /></td>' +
-        '<td data-label=""><button type="button" class="icon-btn att-save-row" title="Saqlash">💾</button></td>' +
+        '<td data-label="' + esc(T('att.table.employee')) + '">' + esc(r.employee_name) + '</td>' +
+        '<td data-label="' + esc(T('att.table.date')) + '">' + attFmtDateShort(r.work_date) + '</td>' +
+        '<td data-label="' + esc(T('att.table.checkin')) + '"><input type="time" class="att-edit-input" data-field="check_in_time" value="' + attTimeValue(r.check_in_at) + '" /></td>' +
+        '<td data-label="' + esc(T('att.table.late')) + '">' + (r.late_minutes > 0 ? fmtDuration(r.late_minutes) : '—') + '</td>' +
+        '<td data-label="' + esc(T('att.table.deducted')) + '"><span class="att-deduct-pill" style="' + pillStyle + '">' + r.deduct_percent + '%</span></td>' +
+        '<td data-label="' + esc(T('att.table.checkout')) + '"><input type="time" class="att-edit-input" data-field="check_out_time" value="' + attTimeValue(r.check_out_at) + '" /></td>' +
+        '<td data-label=""><button type="button" class="icon-btn att-save-row" title="' + esc(T('att.save')) + '">💾</button></td>' +
       '</tr>';
     }).join('');
 
@@ -7691,7 +8240,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
           });
           await loadAttTeam();
         } catch (err) {
-          alert(err.message || 'Xato');
+          alert(err.message || T('common.error'));
           btn.disabled = false;
         }
       });
@@ -7749,11 +8298,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var period = btn.dataset.period;
       var range = computeAttExportRange(period, document.getElementById('attTeamMonthInput').value);
       var originalText = btn.textContent;
-      btn.disabled = true; btn.textContent = 'Yuklanmoqda...';
+      btn.disabled = true; btn.textContent = T('common.loading');
       try {
         await downloadAttendanceXlsx(range);
       } catch (err) {
-        alert(err.message || 'Xato');
+        alert(err.message || T('common.error'));
       } finally {
         btn.disabled = false; btn.textContent = originalText;
       }
@@ -7767,24 +8316,24 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     try {
       var data = await apiFetch('/api/attendance/office-location');
       var loc = data.location;
-      document.getElementById('attOfficeName').value = loc ? loc.name : 'Bosh ofis';
+      document.getElementById('attOfficeName').value = loc ? loc.name : T('att.office.name.ph');
       document.getElementById('attOfficeLat').value = loc ? loc.latitude : '';
       document.getElementById('attOfficeLng').value = loc ? loc.longitude : '';
       document.getElementById('attOfficeRadius').value = loc ? loc.radius_meters : 100;
-    } catch (err) { msg.textContent = err.message || 'Xato'; }
+    } catch (err) { msg.textContent = err.message || T('common.error'); }
   }
 
   document.getElementById('attOfficeLocateBtn').addEventListener('click', function () {
-    if (!navigator.geolocation) { alert("Joylashuv qo'llab-quvvatlanmaydi"); return; }
+    if (!navigator.geolocation) { alert(T('att.gps.unsupported')); return; }
     var btn = this;
-    btn.disabled = true; btn.textContent = 'Aniqlanmoqda...';
+    btn.disabled = true; btn.textContent = T('att.gps.checking');
     navigator.geolocation.getCurrentPosition(function (pos) {
       document.getElementById('attOfficeLat').value = pos.coords.latitude.toFixed(6);
       document.getElementById('attOfficeLng').value = pos.coords.longitude.toFixed(6);
-      btn.disabled = false; btn.textContent = '📍 Joriy joylashuvimni ishlatish';
+      btn.disabled = false; btn.textContent = T('att.office.locate');
     }, function () {
-      alert("Joylashuvni aniqlab bo'lmadi");
-      btn.disabled = false; btn.textContent = '📍 Joriy joylashuvimni ishlatish';
+      alert(T('att.gps.error'));
+      btn.disabled = false; btn.textContent = T('att.office.locate');
     }, { enableHighAccuracy: true, timeout: 15000 });
   });
 
@@ -7802,11 +8351,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     try {
       await apiFetch('/api/attendance/office-location', { method: 'PUT', body: JSON.stringify(body) });
       msg.style.color = 'var(--green-hi)';
-      msg.textContent = 'Saqlandi';
+      msg.textContent = T('att.policy.saved');
       ATT_OFFICE_LOCATION = Object.assign({}, ATT_OFFICE_LOCATION, body);
     } catch (err) {
       msg.style.color = '#F2896F';
-      msg.textContent = err.message || 'Xato';
+      msg.textContent = err.message || T('common.error');
     }
   });
 
@@ -7823,23 +8372,23 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       document.getElementById('attPolicyGrace').value = p.grace_minutes;
       ATT_TIERS_EDIT = (p.tiers || []).map(function (t) { return { after_minutes: t.after_minutes, deduct_percent: t.deduct_percent }; });
       renderAttTiers();
-    } catch (err) { msg.textContent = err.message || 'Xato'; }
+    } catch (err) { msg.textContent = err.message || T('common.error'); }
   }
 
   function renderAttTiers() {
     var wrap = document.getElementById('attTiersList');
     if (!ATT_TIERS_EDIT.length) {
-      wrap.innerHTML = '<div style="font-size:12px;color:var(--gray-dim)">Bosqich yo\'q — kechikish uchun ball ayirilmaydi</div>';
+      wrap.innerHTML = '<div style="font-size:12px;color:var(--gray-dim)">' + esc(T('att.tiers.empty')) + '</div>';
       return;
     }
     wrap.innerHTML = ATT_TIERS_EDIT.map(function (t, i) {
       return '<div class="att-tier-row" data-idx="' + i + '">' +
-        '<span>Kechikish ></span>' +
+        '<span>' + esc(T('att.tier.late')) + '</span>' +
         '<input type="number" class="att-edit-input" data-tier-field="after_minutes" min="0" step="1" value="' + t.after_minutes + '" style="width:64px" />' +
-        '<span>daq →</span>' +
+        '<span>' + esc(T('att.tier.minutes')) + '</span>' +
         '<input type="number" class="att-edit-input" data-tier-field="deduct_percent" min="0" max="100" step="1" value="' + t.deduct_percent + '" style="width:60px" />' +
         '<span>%</span>' +
-        '<button type="button" class="att-tier-remove" title="O\'chirish">✕</button>' +
+        '<button type="button" class="att-tier-remove" title="' + esc(T('kpi.del.title')) + '">✕</button>' +
       '</div>';
     }).join('');
 
@@ -7876,11 +8425,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     try {
       await apiFetch('/api/attendance/policy', { method: 'PUT', body: JSON.stringify(body) });
       msg.style.color = 'var(--green-hi)';
-      msg.textContent = 'Saqlandi';
+      msg.textContent = T('att.policy.saved');
       ATT_POLICY = Object.assign({}, ATT_POLICY, body);
     } catch (err) {
       msg.style.color = '#F2896F';
-      msg.textContent = err.message || 'Xato';
+      msg.textContent = err.message || T('common.error');
     }
   });
 
