@@ -1819,7 +1819,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
           <option value="menejer_bosh">Bosh menejer</option>
           <option value="dizayner_oddiy">Dizayner</option>
           <option value="dizayner_bosh">Bosh dizayner</option>
-          <option value="seo">SEO mutaxassis</option>
+          <option value="seo">SEO</option>
         </select>
         <button type="submit" id="registerSubmitBtn">Ro'yxatdan o'tish</button>
         <div class="login-error" id="registerError"></div>
@@ -3036,7 +3036,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'reg.role.menejer_bosh': 'Bosh menejer',
       'reg.role.dizayner_oddiy': 'Dizayner',
       'reg.role.dizayner_bosh': 'Bosh dizayner',
-      'reg.role.seo': 'SEO mutaxassis',
+      'reg.role.seo': 'SEO',
       'pending.title': "So'rovingiz yuborildi",
       'pending.text': "Ma'lumotlaringiz administratorlarga yuborildi.<br>Ular tasdiqlagandan so'ng tizimga kirishingiz mumkin.",
       'pending.back': '← Kirish sahifasiga qaytish',
@@ -3152,7 +3152,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.price': "Bu paketni o'chirishni tasdiqlaysizmi?",
       'role.superadmin': 'Superadmin',
       'role.it_bolimi': "IT bo'limi",
-      'role.seo': 'SEO mutaxassis',
+      'role.seo': 'SEO',
       'role.menejer_bosh': 'Bosh menejer',
       'role.menejer_oddiy': 'Menejer',
       'role.dizayner_bosh': 'Bosh dizayner',
@@ -3182,7 +3182,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'reg.role.menejer_bosh': 'Главный менеджер',
       'reg.role.dizayner_oddiy': 'Дизайнер',
       'reg.role.dizayner_bosh': 'Главный дизайнер',
-      'reg.role.seo': 'SEO специалист',
+      'reg.role.seo': 'SEO',
       'pending.title': 'Запрос отправлен',
       'pending.text': 'Ваши данные отправлены администраторам.<br>Вы сможете войти после их подтверждения.',
       'pending.back': '← Вернуться на страницу входа',
@@ -3298,7 +3298,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.price': 'Удалить этот пакет?',
       'role.superadmin': 'Суперадмин',
       'role.it_bolimi': 'IT отдел',
-      'role.seo': 'SEO специалист',
+      'role.seo': 'SEO',
       'role.menejer_bosh': 'Главный менеджер',
       'role.menejer_oddiy': 'Менеджер',
       'role.dizayner_bosh': 'Главный дизайнер',
@@ -3328,7 +3328,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'reg.role.menejer_bosh': 'Lead manager',
       'reg.role.dizayner_oddiy': 'Designer',
       'reg.role.dizayner_bosh': 'Lead designer',
-      'reg.role.seo': 'SEO specialist',
+      'reg.role.seo': 'SEO',
       'pending.title': 'Request submitted',
       'pending.text': 'Your details have been sent to the administrators.<br>You can sign in after they approve your account.',
       'pending.back': '← Back to sign in',
@@ -3444,7 +3444,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.price': 'Delete this package?',
       'role.superadmin': 'Superadmin',
       'role.it_bolimi': 'IT department',
-      'role.seo': 'SEO specialist',
+      'role.seo': 'SEO',
       'role.menejer_bosh': 'Lead manager',
       'role.menejer_oddiy': 'Manager',
       'role.dizayner_bosh': 'Lead designer',
@@ -7018,7 +7018,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
               }).join('') +
             '</div></div>' +
             '<div class="field"><label>Shanba</label><select id="kpiEmpSaturdaySelect">' + renderSaturdaySelectOptions(data.schedule.saturday) + '</select></div>' +
-            '<button type="button" class="btn-add" id="kpiEmpSalarySaveBtn" style="padding:9px 16px">Saqlash</button>' +
+            '<div style="display:flex;gap:8px">' +
+              '<button type="button" class="btn-add" id="kpiEmpSalarySaveBtn" style="padding:9px 16px">Saqlash</button>' +
+              (data.salary > 0 ? '<button type="button" class="kpi-award-btn kpi-award-btn--no" id="kpiEmpSalaryDelBtn" style="flex:0 0 auto;padding:9px 16px">O\'chirish</button>' : '') +
+            '</div>' +
           '</div>'
         : '';
       el.innerHTML = editHtml + renderSalarySummaryHtml(data);
@@ -7049,6 +7052,22 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
           }
         });
       }
+      var delBtn = document.getElementById('kpiEmpSalaryDelBtn');
+      if (delBtn) {
+        delBtn.addEventListener('click', async function () {
+          if (!confirm("Bu xodimning oylik maoshini o'chirishni tasdiqlaysizmi?")) return;
+          delBtn.disabled = true;
+          try {
+            await apiFetch('/api/attendance/salary/' + employeeId, { method: 'PUT', body: JSON.stringify({ salary: 0 }) });
+            await renderKpiEmpSalary(employeeId, containerId);
+            await refreshSalaryUI();
+          } catch (err) {
+            alert(err.message);
+          } finally {
+            delBtn.disabled = false;
+          }
+        });
+      }
     } catch (err) {
       el.innerHTML = '<div class="empty-state" style="color:#F2896F">Yuklashda xato: ' + esc(err.message || '') + '</div>';
     }
@@ -7059,9 +7078,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     var badgeClass = 'kpi-award-badge--' + a.status;
     var cardClass = 'kpi-award-card' + (kpiAwardIsDueSoon(a) ? ' kpi-award-card--pending-review' : '');
     var recurringBadge = a.recurrence === 'monthly' ? '<span class="kpi-award-badge kpi-award-badge--recurring">↻ har oy</span>' : '';
-    var manageTools = (a.status === 'pending' && KPI_CAN_MANAGE)
+    var manageTools = KPI_CAN_MANAGE
       ? '<button type="button" class="kpi-award-card__del" data-kpi-award-edit="' + a.id + '" title="Tahrirlash">✎</button>' +
-        '<button type="button" class="kpi-award-card__del" data-kpi-award-del="' + a.id + '" title="Bekor qilish">✕</button>'
+        '<button type="button" class="kpi-award-card__del" data-kpi-award-del="' + a.id + '" title="O\'chirish">✕</button>'
       : '';
     var actions = (a.status === 'pending' && KPI_CAN_MANAGE)
       ? '<div class="kpi-award-card__actions">' +

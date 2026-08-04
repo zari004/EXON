@@ -313,14 +313,11 @@ router.post('/awards', auth.requireAuth, requireKpiManage, async (req, res) => {
   }
 });
 
-// PUT /api/kpi/awards/:id — hali hal qilinmagan KPI topshirig'ini tahrirlash
+// PUT /api/kpi/awards/:id — KPI topshirig'ini tahrirlash (holatidan qat'i nazar)
 router.put('/awards/:id', auth.requireAuth, requireKpiManage, async (req, res) => {
   try {
     const award = await db.get('SELECT * FROM kpi_awards WHERE id = ?', [req.params.id]);
     if (!award) return res.status(404).json({ success: false, error: 'Topilmadi' });
-    if (award.status !== 'pending') {
-      return res.status(400).json({ success: false, error: 'Hal qilingan topshiriqni tahrirlab bo\'lmaydi' });
-    }
     const { amount, reason, dueDate, recurrence, valid } = parseAwardBody(Object.assign({}, req.body, { employee_id: award.employee_id }));
     if (!valid) return res.status(400).json({ success: false, error: "Barcha maydonlarni to'ldiring" });
     await db.run(
