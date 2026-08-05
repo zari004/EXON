@@ -2425,6 +2425,22 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
             <button type="button" class="db-usage-refresh" id="dbUsageRefresh" data-i18n="settings.db.refresh">Yangilash</button>
             <div class="form-msg" id="dbUsageMsg"></div>
           </div>
+
+          <!-- RENDER BACKEND HOLATI -->
+          <h3 style="margin-top:24px" data-i18n="settings.render.title">Backend holati (Render)</h3>
+          <p class="hint" data-i18n="settings.render.hint">Backend serverning jonli holati...</p>
+          <div class="db-usage-card">
+            <div class="db-usage-head">
+              <div class="db-usage-percent" id="renderStatusIcon" style="font-size:20px">—</div>
+              <div class="db-usage-state" id="renderStatusText" data-i18n="settings.render.loading">Tekshirilmoqda...</div>
+            </div>
+            <div class="db-usage-meta" style="grid-template-columns:repeat(2,1fr)">
+              <div class="db-usage-stat"><span data-i18n="settings.render.response_time">Javob vaqti</span><strong id="renderResponseTime">—</strong></div>
+              <div class="db-usage-stat"><span data-i18n="settings.render.monthly_limit">Oylik bepul limit</span><strong data-i18n="settings.render.hours750">750 soat</strong></div>
+            </div>
+            <button type="button" class="db-usage-refresh" id="renderStatusRefresh" data-i18n="settings.db.refresh">Yangilash</button>
+            <a href="https://dashboard.render.com" target="_blank" rel="noopener" class="db-usage-refresh" style="text-decoration:none;display:inline-block;margin-left:8px" data-i18n="settings.render.dashboard_link">Render dashboard'da to'liq ko'rish</a>
+          </div>
         </div>
       </div>
     </div>
@@ -3388,6 +3404,15 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'settings.db.remaining': 'Qolgan',
       'settings.db.total': 'Umumiy limit',
       'settings.db.refresh': 'Yangilash',
+      'settings.render.title': 'Backend holati (Render)',
+      'settings.render.hint': "Backend serverning jonli holati. Oyiga 750 soatlik bepul limitdan qanchasi ishlatilganini Render o'zining API'sida bermaydi — aniq holatini pastdagi havola orqali Render dashboard'ida ko'rish mumkin.",
+      'settings.render.loading': 'Tekshirilmoqda...',
+      'settings.render.ok': 'Ishlab turibdi',
+      'settings.render.down': 'Javob bermayapti',
+      'settings.render.response_time': 'Javob vaqti',
+      'settings.render.monthly_limit': 'Oylik bepul limit',
+      'settings.render.hours750': '750 soat',
+      'settings.render.dashboard_link': 'Render dashboard’da toʻliq koʻrish',
       'settings.avatar.error': "Rasmni o'qishda xato",
     },
     ru: {
@@ -3720,6 +3745,15 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'settings.db.remaining': 'Осталось',
       'settings.db.total': 'Общий лимит',
       'settings.db.refresh': 'Обновить',
+      'settings.render.title': 'Статус бэкенда (Render)',
+      'settings.render.hint': 'Живой статус backend-сервера. Render не предоставляет через API информацию о том, сколько из 750 бесплатных часов в месяц использовано — точный статус можно посмотреть по ссылке ниже в панели Render.',
+      'settings.render.loading': 'Проверка...',
+      'settings.render.ok': 'Работает',
+      'settings.render.down': 'Не отвечает',
+      'settings.render.response_time': 'Время ответа',
+      'settings.render.monthly_limit': 'Месячный бесплатный лимит',
+      'settings.render.hours750': '750 часов',
+      'settings.render.dashboard_link': 'Открыть панель Render',
       'settings.avatar.error': 'Ошибка при чтении изображения',
     },
     en: {
@@ -4052,6 +4086,15 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'settings.db.remaining': 'Remaining',
       'settings.db.total': 'Total limit',
       'settings.db.refresh': 'Refresh',
+      'settings.render.title': 'Backend status (Render)',
+      'settings.render.hint': "Live status of the backend server. Render doesn't expose how many of the 750 free monthly hours have been used via its API — check the exact status on the Render dashboard via the link below.",
+      'settings.render.loading': 'Checking...',
+      'settings.render.ok': 'Running',
+      'settings.render.down': 'Not responding',
+      'settings.render.response_time': 'Response time',
+      'settings.render.monthly_limit': 'Monthly free limit',
+      'settings.render.hours750': '750 hours',
+      'settings.render.dashboard_link': 'Open Render dashboard',
       'settings.avatar.error': 'Error reading the image',
     }
   };
@@ -7349,7 +7392,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var pane = document.getElementById('setPane' + btn.dataset.pane.charAt(0).toUpperCase() + btn.dataset.pane.slice(1));
       if (pane) pane.classList.add('is-active');
       saveAdminViewState({ settingsPane: btn.dataset.pane });
-      if (btn.dataset.pane === 'database') loadDatabaseUsage();
+      if (btn.dataset.pane === 'database') { loadDatabaseUsage(); loadRenderStatus(); }
     });
   });
 
@@ -7388,6 +7431,39 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   }
 
   document.getElementById('dbUsageRefresh').addEventListener('click', loadDatabaseUsage);
+
+  // Render'ning o'z API'si "750 soatdan qanchasi ishlatilgan" degan hisobni
+  // bermaydi (faqat ularning dashboard'ida ko'rinadi) — shuning uchun bu
+  // yerda faqat backend'ning jonli holatini (/api/health) tekshiramiz.
+  async function loadRenderStatus() {
+    if (USER_ROLE !== 'superadmin' && USER_ROLE !== 'it_bolimi') return;
+    var icon = document.getElementById('renderStatusIcon');
+    var text = document.getElementById('renderStatusText');
+    var timeEl = document.getElementById('renderResponseTime');
+    icon.textContent = '…';
+    icon.style.color = 'var(--gray)';
+    text.textContent = T('settings.render.loading');
+    timeEl.textContent = '—';
+    var start = Date.now();
+    try {
+      var res = await fetch(API + '/api/health');
+      var elapsed = Date.now() - start;
+      if (res.ok) {
+        icon.textContent = '●';
+        icon.style.color = 'var(--green-hi)';
+        text.textContent = T('settings.render.ok');
+        timeEl.textContent = elapsed + ' ms';
+      } else {
+        throw new Error('HTTP ' + res.status);
+      }
+    } catch (err) {
+      icon.textContent = '●';
+      icon.style.color = '#F25F5C';
+      text.textContent = T('settings.render.down');
+      timeEl.textContent = '—';
+    }
+  }
+  document.getElementById('renderStatusRefresh').addEventListener('click', loadRenderStatus);
 
   function setAvatarPreview(name, avatarUrl) {
     var el = document.getElementById('setAvatarPreview');
