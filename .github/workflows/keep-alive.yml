@@ -1,0 +1,29 @@
+name: Backendni uxlab qolishdan saqlash
+
+# Render bepul tarifi ~15 daqiqa so'rov kelmasa serverni "uxlatib" qo'yadi,
+# shundan keyingi birinchi so'rov 30-50+ soniya kutishga majbur qiladi.
+# Bu ish har 10 daqiqada backendning sog'ligini tekshiruvchi (/api/health)
+# manzilga bir marta "chertib" turadi — shu bilan server hech qachon
+# uxlab qolmaydi, foydalanuvchilar kutish muddatini sezmaydi.
+#
+# Diqqat: Render'ning bepul tarifida oyiga umumiy ishlash vaqti chegarasi
+# bor (odatda ~750 soat/oy — bitta doim uyg'oq servis uchun deyarli yetarli,
+# lekin agar boshqa bepul servislaringiz ham bo'lsa, chegara tezroq to'lishi
+# mumkin). Agar oy oxiriga yaqin servis kutilmaganda ishlamay qolsa — aynan
+# shu chegara sabab bo'lgan bo'lishi mumkin.
+on:
+  schedule:
+    - cron: '*/10 * * * *' # har 10 daqiqada
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: /api/health manziliga so'rov
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 https://exon-backend-zgtl.onrender.com/api/health)
+          echo "Javob kodi: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "::warning::Backend kutilmagan javob qaytardi (status $STATUS) — Render dashboard'ni tekshiring"
+          fi
