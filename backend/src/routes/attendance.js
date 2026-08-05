@@ -3,6 +3,7 @@ const router = express.Router();
 const ExcelJS = require('exceljs');
 const db = require('../db');
 const auth = require('../services/auth');
+const storage = require('../services/storage');
 
 // Ishxona hududini (geofencing) sozlash — IT bo'limi/superadmin
 const OFFICE_MANAGE_ROLES = ['it_bolimi', 'superadmin'];
@@ -256,18 +257,20 @@ router.post('/check-in', auth.requireAuth, async (req, res) => {
 
     const policy = await getPolicy();
     const { lateMinutes, deductPercent } = computeLateness(policy, now);
+    // Baza hajmini tejash uchun surat bazada emas, Supabase Storage'da saqlanadi
+    const photoUrl = await storage.uploadIfBase64(v.photo, 'attendance');
 
     try {
       if (existing) {
         await db.run(
           `UPDATE attendance_records SET check_in_at=?, check_in_lat=?, check_in_lng=?, check_in_photo=?, late_minutes=?, deduct_percent=? WHERE id=?`,
-          [now.toISOString(), v.lat, v.lng, v.photo, lateMinutes, deductPercent, existing.id]
+          [now.toISOString(), v.lat, v.lng, photoUrl, lateMinutes, deductPercent, existing.id]
         );
       } else {
         await db.run(
           `INSERT INTO attendance_records (employee_id, work_date, check_in_at, check_in_lat, check_in_lng, check_in_photo, late_minutes, deduct_percent)
            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-          [req.user.userId, workDate, now.toISOString(), v.lat, v.lng, v.photo, lateMinutes, deductPercent]
+          [req.user.userId, workDate, now.toISOString(), v.lat, v.lng, photoUrl, lateMinutes, deductPercent]
         );
       }
     } catch (dbErr) {
@@ -320,9 +323,10 @@ router.post('/check-out', auth.requireAuth, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Bugun allaqachon ketganingiz belgilangan' });
     }
 
+    const photoUrl = await storage.uploadIfBase64(v.photo, 'attendance');
     await db.run(
       `UPDATE attendance_records SET check_out_at=?, check_out_lat=?, check_out_lng=?, check_out_photo=? WHERE id=?`,
-      [now.toISOString(), v.lat, v.lng, v.photo, existing.id]
+      [now.toISOString(), v.lat, v.lng, photoUrl, existing.id]
     );
     res.json({ success: true, checkOutAt: now.toISOString() });
   } catch (err) {

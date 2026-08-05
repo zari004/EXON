@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const auth = require('../services/auth');
+const storage = require('../services/storage');
 
 /**
  * POST /api/admin/login
@@ -65,6 +66,31 @@ router.get('/database-usage', auth.requireAuth, auth.requireSuperAdmin, async (r
 });
 
 /**
+ * GET /api/admin/storage-usage — Supabase Storage (rasmlar) hajmi, database'dan
+ * alohida 1 GB bepul kvota (faqat IT bo'limi va superadmin ko'ra oladi)
+ */
+router.get('/storage-usage', auth.requireAuth, auth.requireSuperAdmin, async (req, res) => {
+  try {
+    const usedBytes = await storage.totalUsageBytes();
+    const limitBytes = 1024 * 1024 * 1024;
+    const percent = Math.round((usedBytes / limitBytes) * 1000) / 10;
+    res.json({
+      success: true,
+      usage: {
+        usedBytes,
+        limitBytes,
+        remainingBytes: Math.max(0, limitBytes - usedBytes),
+        percent,
+        configured: storage.isConfigured(),
+        measuredAt: new Date().toISOString()
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
  * GET /api/admin/assignable-users — vazifa tayinlash uchun minimal ro'yxat
  * (istalgan tizimga kirgan foydalanuvchi chaqira oladi — endi hamma
  * boshqalarga vazifa bera olishi kerak, shuning uchun email/rol kabi
@@ -113,11 +139,12 @@ router.post('/stores', auth.requireAuth, async (req, res) => {
     if (!name || !name.trim()) {
       return res.status(400).json({ success: false, error: "Do'kon nomi talab qilinadi" });
     }
+    const logoUrl = await storage.uploadIfBase64(logo, 'stores');
     const result = await db.run(
       'INSERT INTO stores (name, logo, created_by, created_name) VALUES (?, ?, ?, ?)',
-      [name.trim(), logo || null, req.user.userId, req.user.name || null]
+      [name.trim(), logoUrl || null, req.user.userId, req.user.name || null]
     );
-    res.json({ success: true, store: { id: result.id, name: name.trim(), logo: logo || null } });
+    res.json({ success: true, store: { id: result.id, name: name.trim(), logo: logoUrl || null } });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -136,7 +163,8 @@ router.put('/stores/:id', auth.requireAuth, async (req, res) => {
     if (!name || !name.trim()) {
       return res.status(400).json({ success: false, error: "Do'kon nomi talab qilinadi" });
     }
-    await db.run('UPDATE stores SET name=?, logo=? WHERE id=?', [name.trim(), logo || null, req.params.id]);
+    const logoUrl = await storage.uploadIfBase64(logo, 'stores');
+    await db.run('UPDATE stores SET name=?, logo=? WHERE id=?', [name.trim(), logoUrl || null, req.params.id]);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });

@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const db = require('../db');
 const auth = require('../services/auth');
+const storage = require('../services/storage');
 
 // GET /api/account/me — joriy foydalanuvchi profili
 router.get('/me', auth.requireAuth, async (req, res) => {
@@ -40,7 +41,8 @@ router.put('/profile', auth.requireAuth, async (req, res) => {
     if (taken) {
       return res.status(400).json({ success: false, error: 'Bu email boshqa hisobda band' });
     }
-    await db.run('UPDATE admin_users SET name = ?, email = ?, avatar = ? WHERE id = ?', [name.trim(), cleanEmail, avatar || null, req.user.userId]);
+    const avatarUrl = await storage.uploadIfBase64(avatar, 'avatars');
+    await db.run('UPDATE admin_users SET name = ?, email = ?, avatar = ? WHERE id = ?', [name.trim(), cleanEmail, avatarUrl || null, req.user.userId]);
     await auth.updateTokenName(req.token, name.trim());
     res.json({ success: true });
   } catch (err) {

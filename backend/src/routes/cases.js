@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const auth = require('../services/auth');
+const storage = require('../services/storage');
 
 const toPublic = (row) => ({
   id: row.id,
@@ -32,11 +33,12 @@ router.post('/', auth.requireAuth, async (req, res) => {
     if (!tag || !title || !desc) {
       return res.status(400).json({ success: false, error: 'tag, title, desc majburiy' });
     }
+    const imageUrl = await storage.uploadIfBase64(image, 'cases');
     const result = await db.run(
       `INSERT INTO cases (tag,title,description,metric1_value,metric1_label,metric2_value,metric2_label,markets,image,sort_order)
        VALUES (?,?,?,?,?,?,?,?,?,?)`,
       [tag, title, desc, metric1?.value || '', metric1?.label || '', metric2?.value || '', metric2?.label || '',
-        JSON.stringify(markets || []), image || null, sortOrder || 0]
+        JSON.stringify(markets || []), imageUrl || null, sortOrder || 0]
     );
     const row = await db.get('SELECT * FROM cases WHERE id = ?', [result.id]);
     res.json({ success: true, case: toPublic(row) });
@@ -52,6 +54,7 @@ router.put('/:id', auth.requireAuth, async (req, res) => {
     const existing = await db.get('SELECT * FROM cases WHERE id = ?', [req.params.id]);
     if (!existing) return res.status(404).json({ success: false, error: 'Case topilmadi' });
 
+    const imageUrl = image !== undefined ? await storage.uploadIfBase64(image, 'cases') : undefined;
     await db.run(
       `UPDATE cases SET tag=?, title=?, description=?, metric1_value=?, metric1_label=?, metric2_value=?, metric2_label=?, markets=?, image=?, sort_order=?
        WHERE id=?`,
@@ -60,7 +63,7 @@ router.put('/:id', auth.requireAuth, async (req, res) => {
         metric1?.value ?? existing.metric1_value, metric1?.label ?? existing.metric1_label,
         metric2?.value ?? existing.metric2_value, metric2?.label ?? existing.metric2_label,
         markets ? JSON.stringify(markets) : existing.markets,
-        image !== undefined ? image : existing.image,
+        imageUrl !== undefined ? imageUrl : existing.image,
         sortOrder ?? existing.sort_order,
         req.params.id
       ]

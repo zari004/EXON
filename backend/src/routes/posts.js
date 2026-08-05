@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const auth = require('../services/auth');
+const storage = require('../services/storage');
 
 const toPublic = (row) => ({
   id: row.id,
@@ -31,9 +32,10 @@ router.post('/', auth.requireAuth, async (req, res) => {
     if (!tag || !title || !desc) {
       return res.status(400).json({ success: false, error: 'tag, title, desc majburiy' });
     }
+    const imageUrl = await storage.uploadIfBase64(image, 'posts');
     const result = await db.run(
       `INSERT INTO posts (tag,title,description,date_label,read_time,image,sort_order) VALUES (?,?,?,?,?,?,?)`,
-      [tag, title, desc, date || '', readTime || '', image || null, sortOrder || 0]
+      [tag, title, desc, date || '', readTime || '', imageUrl || null, sortOrder || 0]
     );
     const row = await db.get('SELECT * FROM posts WHERE id = ?', [result.id]);
     res.json({ success: true, post: toPublic(row) });
@@ -49,12 +51,13 @@ router.put('/:id', auth.requireAuth, async (req, res) => {
     const existing = await db.get('SELECT * FROM posts WHERE id = ?', [req.params.id]);
     if (!existing) return res.status(404).json({ success: false, error: 'Maqola topilmadi' });
 
+    const imageUrl = image !== undefined ? await storage.uploadIfBase64(image, 'posts') : undefined;
     await db.run(
       `UPDATE posts SET tag=?, title=?, description=?, date_label=?, read_time=?, image=?, sort_order=? WHERE id=?`,
       [
         tag ?? existing.tag, title ?? existing.title, desc ?? existing.description,
         date ?? existing.date_label, readTime ?? existing.read_time,
-        image !== undefined ? image : existing.image,
+        imageUrl !== undefined ? imageUrl : existing.image,
         sortOrder ?? existing.sort_order,
         req.params.id
       ]

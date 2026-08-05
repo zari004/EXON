@@ -2426,6 +2426,26 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
             <div class="form-msg" id="dbUsageMsg"></div>
           </div>
 
+          <!-- SUPABASE STORAGE (RASMLAR) HAJMI -->
+          <h3 style="margin-top:24px" data-i18n="settings.storage.title">Fayl saqlash (Storage)</h3>
+          <p class="hint" data-i18n="settings.storage.hint">Rasmlar (profil, keys, blog, do'kon, keldi-ketdi suratlari) uchun bazadan alohida 1 GB bepul joy.</p>
+          <div class="db-usage-card">
+            <div class="db-usage-head">
+              <div class="db-usage-percent" id="storageUsagePercent">—</div>
+              <div class="db-usage-state" id="storageUsageState" data-i18n="settings.db.loading">Yuklanmoqda...</div>
+            </div>
+            <div class="db-usage-bar" role="progressbar" aria-label="Storage ishlatilishi" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="storageUsageBar">
+              <div class="db-usage-fill" id="storageUsageFill"></div>
+            </div>
+            <div class="db-usage-meta">
+              <div class="db-usage-stat"><span data-i18n="settings.db.used">Ishlatilgan</span><strong id="storageUsageUsed">—</strong></div>
+              <div class="db-usage-stat"><span data-i18n="settings.db.remaining">Qolgan</span><strong id="storageUsageRemaining">—</strong></div>
+              <div class="db-usage-stat"><span data-i18n="settings.db.total">Umumiy limit</span><strong id="storageUsageLimit">1 GB</strong></div>
+            </div>
+            <button type="button" class="db-usage-refresh" id="storageUsageRefresh" data-i18n="settings.db.refresh">Yangilash</button>
+            <div class="form-msg" id="storageUsageMsg"></div>
+          </div>
+
           <!-- RENDER BACKEND HOLATI -->
           <h3 style="margin-top:24px" data-i18n="settings.render.title">Backend holati (Render)</h3>
           <p class="hint" data-i18n="settings.render.hint">Backend serverning jonli holati...</p>
@@ -3414,6 +3434,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'settings.render.monthly_limit': 'Oylik bepul limit',
       'settings.render.hours750': '750 soat',
       'settings.render.dashboard_link': 'Render dashboard’da toʻliq koʻrish',
+      'settings.storage.title': 'Fayl saqlash (Storage)',
+      'settings.storage.hint': "Rasmlar (profil, keys, blog, do'kon, keldi-ketdi suratlari) uchun bazadan alohida 1 GB bepul joy.",
       'settings.avatar.error': "Rasmni o'qishda xato",
     },
     ru: {
@@ -3756,6 +3778,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'settings.render.monthly_limit': 'Месячный бесплатный лимит',
       'settings.render.hours750': '750 часов',
       'settings.render.dashboard_link': 'Открыть панель Render',
+      'settings.storage.title': 'Хранилище файлов (Storage)',
+      'settings.storage.hint': 'Отдельный от базы данных бесплатный лимит в 1 ГБ для изображений (профиль, кейсы, блог, магазины, фото посещаемости).',
       'settings.avatar.error': 'Ошибка при чтении изображения',
     },
     en: {
@@ -4098,6 +4122,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'settings.render.monthly_limit': 'Monthly free limit',
       'settings.render.hours750': '750 hours',
       'settings.render.dashboard_link': 'Open Render dashboard',
+      'settings.storage.title': 'File storage (Storage)',
+      'settings.storage.hint': 'A separate 1 GB free limit for images (profile, cases, blog, stores, attendance photos), independent from the database.',
       'settings.avatar.error': 'Error reading the image',
     }
   };
@@ -7426,7 +7452,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var pane = document.getElementById('setPane' + btn.dataset.pane.charAt(0).toUpperCase() + btn.dataset.pane.slice(1));
       if (pane) pane.classList.add('is-active');
       saveAdminViewState({ settingsPane: btn.dataset.pane });
-      if (btn.dataset.pane === 'database') { loadDatabaseUsage(); loadRenderStatus(); }
+      if (btn.dataset.pane === 'database') { loadDatabaseUsage(); loadStorageUsage(); loadRenderStatus(); }
     });
   });
 
@@ -7465,6 +7491,40 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   }
 
   document.getElementById('dbUsageRefresh').addEventListener('click', loadDatabaseUsage);
+
+  async function loadStorageUsage() {
+    if (USER_ROLE !== 'superadmin' && USER_ROLE !== 'it_bolimi') return;
+    var msg = document.getElementById('storageUsageMsg');
+    var state = document.getElementById('storageUsageState');
+    msg.className = 'form-msg';
+    msg.textContent = '';
+    state.textContent = T('settings.db.loading');
+    try {
+      var data = await apiFetch('/api/admin/storage-usage');
+      var usage = data.usage || {};
+      var percent = Number(usage.percent || 0);
+      var visualPercent = Math.max(0, Math.min(100, percent));
+      var color = percent >= 90 ? '#F25F5C' : (percent >= 80 ? '#F0A500' : 'var(--green)');
+      document.getElementById('storageUsagePercent').textContent = percent.toFixed(1) + '%';
+      document.getElementById('storageUsageUsed').textContent = formatDatabaseBytes(usage.usedBytes);
+      document.getElementById('storageUsageRemaining').textContent = formatDatabaseBytes(usage.remainingBytes);
+      document.getElementById('storageUsageLimit').textContent = formatDatabaseBytes(usage.limitBytes);
+      document.getElementById('storageUsageFill').style.width = visualPercent + '%';
+      document.getElementById('storageUsageFill').style.background = color;
+      document.getElementById('storageUsagePercent').style.color = color;
+      document.getElementById('storageUsageBar').setAttribute('aria-valuenow', String(Math.round(visualPercent)));
+      if (usage.configured === false) {
+        state.textContent = 'Sozlanmagan';
+      } else {
+        state.textContent = percent >= 100 ? 'Limit tugagan' : (percent >= 90 ? 'Juda kam joy qoldi' : (percent >= 80 ? 'Limitga yaqin' : 'Holati yaxshi'));
+      }
+    } catch (err) {
+      state.textContent = 'Ma’lumot olinmadi';
+      msg.className = 'form-msg error';
+      msg.textContent = err.message || 'Storage hajmini yuklashda xato';
+    }
+  }
+  document.getElementById('storageUsageRefresh').addEventListener('click', loadStorageUsage);
 
   // Render'ning o'z API'si "750 soatdan qanchasi ishlatilgan" degan hisobni
   // bermaydi (faqat ularning dashboard'ida ko'rinadi) — shuning uchun bu
