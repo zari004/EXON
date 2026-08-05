@@ -119,9 +119,9 @@ ol,ul{list-style:none}
   display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:24px;
 }
 
-.logo{display:flex;align-items:center;height:40px}
+.logo{display:flex;align-items:center;height:52px}
 .logo__img{
-  height:100%;width:auto;max-height:40px;
+  height:100%;width:auto;max-height:52px;
   filter:brightness(1) contrast(1.05);
 }
 /* dark mavzuda oq "ex" logotipi, light mavzuda qorong'i "ex" logotipi */
