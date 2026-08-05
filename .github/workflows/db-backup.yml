@@ -1,0 +1,44 @@
+name: Bazaning kunlik zaxira nusxasi
+
+# Render'dan mustaqil ishlaydi — server uxlab qolsa ham, hech kim saytga
+# kirmasa ham, GitHub'ning o'zi har kuni belgilangan vaqtda ishga tushiradi.
+# Natija (SQL dump, siqilgan) Telegram guruhga fayl sifatida yuboriladi —
+# Telegram fayllarni hech qachon o'chirmaydi, shuning uchun saqlash muddati
+# cheksiz (pullik Supabase backup'dan farqli, u faqat 7 kun saqlaydi).
+on:
+  schedule:
+    - cron: '0 20 * * *' # har kuni 20:00 UTC = 01:00 Toshkent vaqti
+  workflow_dispatch: {} # Actions bo'limidan qo'lda ham ishga tushirish mumkin
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: postgresql-client o'rnatish
+        run: sudo apt-get update -qq && sudo apt-get install -yqq postgresql-client
+
+      - name: Bazadan dump olish
+        env:
+          DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+        run: |
+          set -e
+          FILENAME="exon-backup-$(date -u +%F).sql.gz"
+          pg_dump "$DATABASE_URL" --no-owner --no-privileges | gzip > "$FILENAME"
+          echo "FILENAME=$FILENAME" >> "$GITHUB_ENV"
+          echo "Dump tayyor: $(du -h "$FILENAME" | cut -f1)"
+
+      - name: Telegram guruhga yuborish
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_BACKUP_CHAT_ID }}
+        run: |
+          set -e
+          curl -sS -F document=@"$FILENAME" \
+            -F chat_id="$CHAT_ID" \
+            -F caption="📦 EXON baza zaxirasi — $(date -u +%F)" \
+            "https://api.telegram.org/bot${BOT_TOKEN}/sendDocument" \
+            -o response.json
+          if ! grep -q '"ok":true' response.json; then
+            echo "Telegram xato qaytardi:"; cat response.json; exit 1
+          fi
+          echo "✅ Telegram'ga yuborildi"
