@@ -60,46 +60,6 @@
     }
   });
 
-  /* ── 5. Audit formasi ─────────────────────────────────────────────────
-     Hozircha faqat mijoz tomonida tekshiruv. Backend ulanganda bu yer
-     POST /api/audit ga almashtiriladi (skoring server tomonida hisoblanadi). */
-  var form = document.getElementById('auditForm');
-  var input = document.getElementById('storeUrl');
-  var hint = document.getElementById('captureHint');
-  var HINT_DEFAULT = hint.textContent;
-
-  function say(message, state) {
-    hint.textContent = message;
-    hint.classList.toggle('is-error', state === 'error');
-    hint.classList.toggle('is-ok', state === 'ok');
-  }
-
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var value = input.value.trim();
-
-    if (!value) {
-      say("Do'koningiz havolasini kiriting — masalan, uzum.uz/uz/shop/...", 'error');
-      input.focus();
-      return;
-    }
-
-    // Havola yoki do'kon nomi — ikkalasi ham qabul qilinadi.
-    if (value.length < 4) {
-      say('Havola juda qisqa. To’liq manzilni joylashtiring.', 'error');
-      input.focus();
-      return;
-    }
-
-    say('Qabul qilindi. Auditga o\'tkazilyapti...', 'ok');
-
-    window.location.href = 'audit.html?store=' + encodeURIComponent(value);
-  });
-
-  input.addEventListener('input', function () {
-    if (hint.textContent !== HINT_DEFAULT) say(HINT_DEFAULT, null);
-  });
-
   /* ── 6. Teaser bo'limlar — scroll'da paydo bo'lish ──────────────────── */
   var revealEls = document.querySelectorAll('.reveal');
   if (revealEls.length) {

@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=14" />
+<link rel="stylesheet" href="assets/css/style.css?v=15" />
 <link rel="manifest" href="/manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -60,10 +60,6 @@
         <button class="lang__btn is-active" type="button" aria-pressed="true">UZ</button>
         <button class="lang__btn" type="button" aria-pressed="false">RU</button>
       </div>
-      <a class="btn btn--pill" href="audit.html">
-        Bepul audit
-        <span class="btn__plus" aria-hidden="true">+</span>
-      </a>
       <button class="burger" id="burger" type="button" aria-label="Menyuni ochish" aria-expanded="false" aria-controls="navMenu">
         <span></span><span></span>
       </button>
@@ -78,11 +74,6 @@
   <div class="hero__grain" aria-hidden="true"></div>
 
   <div class="hero__top">
-    <p class="badge">
-      <span class="badge__dot" aria-hidden="true"></span>
-      Marketpleys ekspertlari
-    </p>
-
     <h1 class="hero__title" id="hero-title">
       <span class="hero__line">Marketpleysda savdongizni</span>
       <span class="hero__line hero__line--2">tizimli o'stiramiz</span>
@@ -91,21 +82,6 @@
     <p class="hero__lede">
       Uzum, Wildberries va Yandex Market — kartochkadan reklamagacha butun jarayonni biz olamiz.
     </p>
-
-    <form class="capture" id="auditForm" novalidate>
-      <label class="capture__label" for="storeUrl">Do'koningiz havolasi</label>
-      <input
-        class="capture__input"
-        id="storeUrl"
-        name="store"
-        type="text"
-        inputmode="url"
-        placeholder="Do'koningiz havolasi"
-        autocomplete="url"
-      />
-      <button class="btn btn--primary" type="submit">Bepul audit olish</button>
-    </form>
-    <p class="capture__hint" id="captureHint">3 ish kunida 12 nuqta bo'yicha yozma hisobot. Majburiyatsiz.</p>
   </div>
 
   <!-- ── O'SISH EGRI CHIZIG'I ── -->
@@ -387,7 +363,7 @@
 
 </main>
 
-<script src="assets/js/main.js?v=4"></script>
+<script src="assets/js/main.js?v=5"></script>
 <script>
 (function () {
   // Service Worker ro'yxatdan o'tkazish (keshlash/tezlik uchun —
