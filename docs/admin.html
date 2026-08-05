@@ -715,6 +715,32 @@ body{
 }
 .td-cal-clear:hover{border-color:#F2896F;color:#F2896F}
 
+/* QAYTA ISHLATILADIGAN KALENDAR TANLAGICH — xuddi vazifa oynasidagi
+   kalendar uslubida, lekin har qanday sana/oy maydonida ishlatish uchun
+   (KPI muddati, Ish unumdorligi/Keldi-ketdi oy tanlagichlari va h.k.) */
+.cal-picker{position:relative;display:inline-flex}
+.field .cal-picker{display:block;width:100%}
+.cal-picker-btn{
+  display:inline-flex;align-items:center;gap:7px;background:var(--surface);
+  border:1px solid var(--line-2);border-radius:8px;padding:9px 13px;
+  font-size:13px;color:var(--gray);cursor:pointer;font-family:inherit;
+  transition:border-color .15s,color .15s;
+}
+.field .cal-picker-btn{width:100%;box-sizing:border-box;padding:10px 12px;font-size:14px}
+[data-theme="light"] .cal-picker-btn{color:#5b675a}
+.cal-picker-btn:hover{border-color:var(--green)}
+.cal-picker-btn.has-val{color:var(--white)}
+[data-theme="light"] .cal-picker-btn.has-val{color:#1a2117}
+.cal-picker-btn svg{flex-shrink:0;opacity:.75}
+.cal-picker-pop{
+  position:absolute;top:calc(100% + 6px);left:0;z-index:60;
+  flex-direction:column;padding:0;min-width:280px;max-width:calc(100vw - 24px);
+}
+.cal-picker-pop.align-right{left:auto;right:0}
+.cal-picker-pop.is-on{display:flex}
+.cal-picker-grid.is-months{grid-template-columns:repeat(3,1fr);gap:6px}
+.cal-picker-grid.is-months .td-cal-day{height:44px;width:100%;border-radius:8px;font-size:12.5px;font-weight:600}
+
 /* iPhone SE kabi qisqa ekranlarda kalendar pastdan kesilmasin. Elementlar
    ixchamlashadi, lekin alohida ichki skroll paydo bo'lmaydi. */
 @media(max-height:650px){
@@ -2582,7 +2608,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       </div>
       <div class="field-row">
         <div class="field"><label data-i18n="kpi.field.amount">Miqdori (so'm)</label><input type="number" id="kpiAwardAmount" min="0" step="1000" placeholder="0" required /></div>
-        <div class="field"><label data-i18n="kpi.field.dueDate">Sana (qachongacha)</label><input type="date" id="kpiAwardDate" required /></div>
+        <div class="field"><label data-i18n="kpi.field.dueDate">Sana (qachongacha)</label><input type="date" id="kpiAwardDate" /></div>
       </div>
       <div class="field">
         <label data-i18n="kpi.field.reason">Nima uchun (sabab)</label>
@@ -2865,8 +2891,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       </div>
 
       <div class="td-cal-foot">
-        <button type="button" class="td-cal-ok" id="tdCalOk">OK</button>
-        <button type="button" class="td-cal-clear" id="tdCalClear">Tozalash</button>
+        <button type="button" class="td-cal-ok" id="tdCalOk" data-i18n="cal.ok">OK</button>
+        <button type="button" class="td-cal-clear" id="tdCalClear" data-i18n="cal.clear">Tozalash</button>
       </div>
     </div>
     <button class="td-ibtn" id="tdAssBtn" type="button" aria-label="Tayinlash" title="Tayinlash">
@@ -2982,6 +3008,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   let USER_NAME = localStorage.getItem('exon_admin_name') || '';
   const ADMIN_VIEW_STATE_KEY = 'exon_admin_view_state';
   var ADMIN_VIEW_RESTORING = false;
+  var CAL_PICKER_INSTANCES = []; // initCalendarPicker() shu ro'yxatga o'zini qo'shadi
 
   function readAdminViewState() {
     try {
@@ -3174,6 +3201,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'month.4': 'May', 'month.5': 'Iyun', 'month.6': 'Iyul', 'month.7': 'Avgust',
       'month.8': 'Sentabr', 'month.9': 'Oktabr', 'month.10': 'Noyabr', 'month.11': 'Dekabr',
       'cal.more': 'ta yana',
+      'cal.ok': 'OK',
+      'cal.clear': 'Tozalash',
+      'cal.pick': 'Tanlang',
       'kpi.add': "+ Yangi KPI topshirig'i",
       'kpi.pending.title': 'Tasdiqlash kutilmoqda',
       'kpi.empty': "Hali KPI topshirig'i yo'q",
@@ -3183,6 +3213,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'kpi.status.rejected': 'Berilmadi',
       'kpi.recurring': '↻ har oy',
       'kpi.due': 'Muddat',
+      'kpi.error.due_required': 'Sana tanlanmagan',
       'kpi.count': 'ta KPI',
       'kpi.decide.yes': 'Ha, bajarildi',
       'kpi.decide.no': "Yo'q",
@@ -3500,6 +3531,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'month.4': 'Май', 'month.5': 'Июнь', 'month.6': 'Июль', 'month.7': 'Август',
       'month.8': 'Сентябрь', 'month.9': 'Октябрь', 'month.10': 'Ноябрь', 'month.11': 'Декабрь',
       'cal.more': 'ещё',
+      'cal.ok': 'ОК',
+      'cal.clear': 'Очистить',
+      'cal.pick': 'Выберите',
       'kpi.add': '+ Новое задание KPI',
       'kpi.pending.title': 'Ожидает подтверждения',
       'kpi.empty': 'Пока нет заданий KPI',
@@ -3509,6 +3543,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'kpi.status.rejected': 'Не выполнено',
       'kpi.recurring': '↻ ежемесячно',
       'kpi.due': 'Срок',
+      'kpi.error.due_required': 'Дата не выбрана',
       'kpi.count': 'KPI',
       'kpi.decide.yes': 'Да, выполнено',
       'kpi.decide.no': 'Нет',
@@ -3826,6 +3861,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'month.4': 'May', 'month.5': 'June', 'month.6': 'July', 'month.7': 'August',
       'month.8': 'September', 'month.9': 'October', 'month.10': 'November', 'month.11': 'December',
       'cal.more': 'more',
+      'cal.ok': 'OK',
+      'cal.clear': 'Clear',
+      'cal.pick': 'Select',
       'kpi.add': '+ New KPI assignment',
       'kpi.pending.title': 'Awaiting confirmation',
       'kpi.empty': 'No KPI assignments yet',
@@ -3835,6 +3873,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'kpi.status.rejected': 'Not given',
       'kpi.recurring': '↻ monthly',
       'kpi.due': 'Due',
+      'kpi.error.due_required': 'Date not selected',
       'kpi.count': 'KPIs',
       'kpi.decide.yes': 'Yes, completed',
       'kpi.decide.no': 'No',
@@ -4106,6 +4145,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       else if (activeTab === 'calendar') loadCalendar();
       else if (activeTab === 'attendance' && typeof renderAttToday === 'function') { renderAttToday(); }
     }
+    if (typeof retranslateCalendarPickers === 'function') retranslateCalendarPickers();
   }
 
   function setLang(lang) {
@@ -4141,10 +4181,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   // ── EKRANLAR ──
   async function showApp() {
-    hideBootLoader();
+    // Diqqat: adminApp panel hali ko'rsatilmaydi — avval ruxsatlar (applyPermissions)
+    // to'liq qo'llanilishi kerak, aks holda foydalanuvchi bir lahza "hammaga bir xil"
+    // (standart) menyuni ko'rib, keyin ruxsatiga qarab qisqarib qolganini payqaydi.
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('pendingScreen').classList.remove('is-active');
-    document.getElementById('adminApp').classList.add('is-active');
     // Sidebar foydalanuvchi ma'lumotlari
     document.getElementById('sidebarUserName').textContent = USER_NAME || 'Admin';
     document.getElementById('sidebarUserRole').textContent = '';
@@ -4187,6 +4228,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     document.getElementById('sidebarUserRole').textContent = T('role.' + USER_ROLE) || USER_ROLE;
     await applyPermissions();
     syncBottomNavVisibility();
+    // Endi tablar ruxsatga mos holga keldi — shundagina oyna ko'rsatiladi,
+    // shu bilan "avval hammasi, keyin qisqaradi" degan chaqnash yo'qoladi
+    document.getElementById('adminApp').classList.add('is-active');
+    hideBootLoader();
     initNotifications();
     await restoreAdminViewState();
   }
@@ -5224,6 +5269,216 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     var dt = new Date(d);
     return dt.getDate() + '-' + monthName(dt.getMonth()).toLowerCase();
   }
+
+  // ── QAYTA ISHLATILADIGAN KALENDAR TANLAGICH ──
+  // Vazifa oynasidagi custom kalendar bilan bir xil uslubda, native
+  // <input type="date">/<input type="month"> o'rniga ishlatiladi (KPI
+  // muddati, Ish unumdorligi/Keldi-ketdi oy tanlagichlari va h.k.), shunda
+  // brauzer/OS lokaliga bog'liq bo'lmay, ilova tanlagan tilda ko'rinadi.
+  function retranslateCalendarPickers() {
+    (CAL_PICKER_INSTANCES || []).forEach(function (fn) { fn(); });
+  }
+  function initCalendarPicker(inputId, opts) {
+    opts = opts || {};
+    var type = opts.type === 'month' ? 'month' : 'date';
+    var input = document.getElementById(inputId);
+    if (!input || input.dataset.calPicker) return;
+    input.dataset.calPicker = '1';
+
+    var wrap = document.createElement('span');
+    wrap.className = 'cal-picker';
+    input.parentNode.insertBefore(wrap, input);
+    wrap.appendChild(input);
+    input.style.display = 'none';
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'cal-picker-btn';
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M3 9h18M8 2v4M16 2v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="cal-picker-lbl"></span>';
+    wrap.appendChild(btn);
+    var lblEl = btn.querySelector('.cal-picker-lbl');
+
+    var dowRow = '';
+    if (type === 'date') {
+      dowRow = '<div class="td-cal-dow"><span>' + ['mon','tue','wed','thu','fri','sat','sun'].map(function (k) { return T('cal.weekday.' + k); }).join('</span><span>') + '</span></div>';
+    }
+    var pop = document.createElement('div');
+    pop.className = 'td-popup cal-picker-pop';
+    pop.innerHTML =
+      '<div class="td-cal-pop-inner">' +
+        '<div class="td-cal-head">' +
+          '<span class="td-cal-title"></span>' +
+          '<div class="td-cal-nav">' +
+            '<button type="button" class="td-cal-navbtn" data-nav="prev" aria-label="Oldingi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+            '<button type="button" class="td-cal-navbtn" data-nav="next" aria-label="Keyingi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+          '</div>' +
+        '</div>' +
+        dowRow +
+        '<div class="td-cal-grid cal-picker-grid' + (type === 'month' ? ' is-months' : '') + '"></div>' +
+        '<div class="td-cal-foot">' +
+          '<button type="button" class="td-cal-clear" data-act="clear">' + esc(T('cal.clear')) + '</button>' +
+          '<button type="button" class="td-cal-ok" data-act="ok">' + esc(T('cal.ok')) + '</button>' +
+        '</div>' +
+      '</div>';
+    wrap.appendChild(pop);
+
+    var titleEl = pop.querySelector('.td-cal-title');
+    var gridEl = pop.querySelector('.cal-picker-grid');
+    var prevBtn = pop.querySelector('[data-nav="prev"]');
+    var nextBtn = pop.querySelector('[data-nav="next"]');
+    var okBtn = pop.querySelector('[data-act="ok"]');
+    var clearBtn = pop.querySelector('[data-act="clear"]');
+
+    var viewYear, viewMonth;
+
+    function refreshLabel() {
+      var v = input.value;
+      if (!v) {
+        lblEl.textContent = opts.placeholder ? T(opts.placeholder) : T('cal.pick');
+        btn.classList.remove('has-val');
+        return;
+      }
+      btn.classList.add('has-val');
+      if (type === 'month') {
+        var mp = v.split('-');
+        lblEl.textContent = monthName(Number(mp[1]) - 1) + ' ' + mp[0];
+      } else {
+        lblEl.textContent = fmtDate(v);
+      }
+    }
+
+    function setViewFromValue() {
+      var v = input.value;
+      var t = new Date();
+      if (v) {
+        var p = v.split('-');
+        viewYear = Number(p[0]); viewMonth = Number(p[1]) - 1;
+      } else {
+        viewYear = t.getFullYear(); viewMonth = t.getMonth();
+      }
+    }
+
+    function renderPop() {
+      var val = input.value;
+      var t = new Date();
+      if (type === 'month') {
+        titleEl.textContent = String(viewYear);
+        var html = '';
+        for (var m = 0; m < 12; m++) {
+          var mv = viewYear + '-' + pad2(m + 1);
+          var cls = 'td-cal-day';
+          if (m === t.getMonth() && viewYear === t.getFullYear()) cls += ' is-today';
+          if (mv === val) cls += ' is-selected';
+          html += '<button type="button" class="' + cls + '" data-val="' + mv + '">' + monthName(m) + '</button>';
+        }
+        gridEl.innerHTML = html;
+      } else {
+        titleEl.textContent = monthName(viewMonth) + ' ' + viewYear;
+        var firstDay = new Date(viewYear, viewMonth, 1);
+        var startOffset = (firstDay.getDay() + 6) % 7;
+        var daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+        var daysInPrevMonth = new Date(viewYear, viewMonth, 0).getDate();
+        var todayStr = t.getFullYear() + '-' + pad2(t.getMonth() + 1) + '-' + pad2(t.getDate());
+        var html2 = '';
+        for (var i = startOffset; i > 0; i--) {
+          html2 += '<button type="button" class="td-cal-day is-muted" disabled>' + (daysInPrevMonth - i + 1) + '</button>';
+        }
+        for (var d = 1; d <= daysInMonth; d++) {
+          var dateStr = viewYear + '-' + pad2(viewMonth + 1) + '-' + pad2(d);
+          var dcls = 'td-cal-day';
+          if (dateStr === todayStr) dcls += ' is-today';
+          if (dateStr === val) dcls += ' is-selected';
+          html2 += '<button type="button" class="' + dcls + '" data-val="' + dateStr + '">' + d + '</button>';
+        }
+        var remainder = (startOffset + daysInMonth) % 7;
+        var nextDays = remainder === 0 ? 0 : 7 - remainder;
+        for (var d2 = 1; d2 <= nextDays; d2++) {
+          html2 += '<button type="button" class="td-cal-day is-muted" disabled>' + d2 + '</button>';
+        }
+        gridEl.innerHTML = html2;
+      }
+      gridEl.querySelectorAll('.td-cal-day:not(.is-muted)').forEach(function (cell) {
+        cell.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var picked = cell.dataset.val;
+          applyValue(input.value === picked ? '' : picked);
+          renderPop();
+          if (type === 'month') close();
+        });
+      });
+    }
+
+    function applyValue(v) {
+      input.value = v;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function open() {
+      document.querySelectorAll('.cal-picker-pop.is-on').forEach(function (p) { p.classList.remove('is-on'); });
+      setViewFromValue();
+      renderPop();
+      pop.classList.add('is-on');
+      // Ekranning o'ng chetiga sig'masa, kalendar chapga qarab ochilsin
+      var rect = wrap.getBoundingClientRect();
+      var popWidth = pop.offsetWidth || 280;
+      pop.classList.toggle('align-right', rect.left + popWidth > window.innerWidth - 12);
+    }
+    function close() { pop.classList.remove('is-on'); }
+
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var wasOn = pop.classList.contains('is-on');
+      close();
+      if (!wasOn) open();
+    });
+    pop.addEventListener('click', function (e) { e.stopPropagation(); });
+    prevBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (type === 'month') { viewYear--; } else { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } }
+      renderPop();
+    });
+    nextBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (type === 'month') { viewYear++; } else { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } }
+      renderPop();
+    });
+    okBtn.addEventListener('click', function (e) { e.stopPropagation(); close(); });
+    clearBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      applyValue('');
+      renderPop();
+      close();
+    });
+    document.addEventListener('click', function () { close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+
+    // Dastur kodi to'g'ridan-to'g'ri `input.value = ...` yozganda ham
+    // (masalan KPI tahrirlash oynasi ochilganda) tugma yorlig'i yangilansin.
+    var nativeDesc = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+    Object.defineProperty(input, 'value', {
+      get: function () { return nativeDesc.get.call(input); },
+      set: function (v) {
+        nativeDesc.set.call(input, v);
+        refreshLabel();
+        if (pop.classList.contains('is-on')) { setViewFromValue(); renderPop(); }
+      },
+      configurable: true
+    });
+
+    refreshLabel();
+
+    CAL_PICKER_INSTANCES.push(function () {
+      if (type === 'date') {
+        var keys = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+        pop.querySelectorAll('.td-cal-dow span').forEach(function (s, i) { s.textContent = T('cal.weekday.' + keys[i]); });
+      }
+      clearBtn.textContent = T('cal.clear');
+      okBtn.textContent = T('cal.ok');
+      refreshLabel();
+      if (pop.classList.contains('is-on')) renderPop();
+    });
+  }
+
   function isOverdue(due, status) {
     if (!due || status === 'done') return false;
     return new Date(due) < new Date();
@@ -7730,6 +7985,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     document.getElementById('kpiAwardRecurrence').value = editAward ? (editAward.recurrence || 'once') : 'once';
     document.getElementById('kpiAwardModal').classList.add('is-active');
   };
+  initCalendarPicker('kpiAwardDate', { type: 'date' });
 
   document.getElementById('kpiAwardForm').addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -7742,6 +7998,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       reason: document.getElementById('kpiAwardReason').value.trim(),
       recurrence: document.getElementById('kpiAwardRecurrence').value
     };
+    if (!body.due_date) { msg.textContent = T('kpi.error.due_required'); return; }
     try {
       if (KPI_AWARD_EDIT_ID) {
         await apiFetch('/api/kpi/awards/' + KPI_AWARD_EDIT_ID, { method: 'PUT', body: JSON.stringify(body) });
@@ -7808,6 +8065,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   document.getElementById('prodMonthInput').addEventListener('change', function () {
     if (document.getElementById('panel-productivity').classList.contains('is-active')) loadMySalary();
   });
+  initCalendarPicker('prodMonthInput', { type: 'month' });
 
   function renderMySalary(data) {
     var el = document.getElementById('prodSalaryEl');
@@ -8171,6 +8429,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   document.getElementById('attMyMonthInput').addEventListener('change', function () {
     if (document.getElementById('attPaneHistory').classList.contains('is-active')) loadAttHistory();
   });
+  initCalendarPicker('attMyMonthInput', { type: 'month' });
 
   function renderAttHistory(records) {
     var list = document.getElementById('attMyList');
@@ -8211,6 +8470,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   document.getElementById('attTeamMonthInput').addEventListener('change', function () {
     if (document.getElementById('attPaneTeam').classList.contains('is-active')) loadAttTeam();
   });
+  initCalendarPicker('attTeamMonthInput', { type: 'month' });
 
   function renderAttTeam(records) {
     var body = document.getElementById('attTeamBody');
