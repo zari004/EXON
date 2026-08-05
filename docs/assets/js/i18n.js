@@ -51,6 +51,14 @@
   add("3 ish kunida 12 nuqta bo'yicha yozma hisobot. Majburiyatsiz.", 'Письменный отчёт по 12 пунктам за 3 рабочих дня. Без обязательств.', 'A written 12-point report within 3 business days. No obligation.');
   add("Marketpleysda o'sish bosqichlari", 'Этапы роста на маркетплейсе', 'Marketplace growth stages');
   add("Audit, upakovka, reklama va o'sish bosqichlaridan iborat ko'tariluvchi egri chiziq.", 'Восходящая кривая из этапов аудита, упаковки, рекламы и роста.', 'An upward curve covering audit, packaging, advertising and growth.');
+  // Egri chiziq (jarayon bosqichlari) — "Xizmatlar" bo'limidagi kartalardan alohida matnlar
+  add('Strategiya', 'Стратегия', 'Strategy');
+  add("Do'koningizni va raqobatchilarni tahlil qilib, aniq o'sish rejasini tuzamiz.", 'Анализируем ваш магазин и конкурентов, составляем чёткий план роста.', 'We analyze your store and competitors, and build a clear growth plan.');
+  add('Ishga tushirish', 'Запуск', 'Launch');
+  add('Kartochka, professional foto, infografika va reklama kampaniyalarini ishga tushiramiz.', 'Запускаем карточки, профессиональные фото, инфографику и рекламные кампании.', 'We launch product cards, professional photos, infographics and ad campaigns.');
+  add('Boshqaruv', 'Управление', 'Management');
+  add("Trafik, narxlar va reklama samaradorligini kunlik kuzatib, boshqarib boramiz.", 'Ежедневно отслеживаем и управляем трафиком, ценами и эффективностью рекламы.', 'We monitor and manage traffic, pricing and advertising performance daily.');
+  // "Xizmatlar" bo'limidagi kartalar — bular hali ham eski nomlarda
   add('Audit', 'Аудит', 'Audit');
   add("Do'koningizni 12 nuqta bo'yicha tekshiramiz va o'sish nuqtalarini topamiz.", 'Проверим магазин по 12 пунктам и найдём точки роста.', 'We audit your store across 12 points and identify growth opportunities.');
   add('Upakovka', 'Упаковка', 'Packaging');
