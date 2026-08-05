@@ -7,13 +7,14 @@ name: Backendni uxlab qolishdan saqlash
 # uxlab qolmaydi, foydalanuvchilar kutish muddatini sezmaydi.
 #
 # Diqqat: Render'ning bepul tarifida oyiga umumiy ishlash vaqti chegarasi
-# bor (odatda ~750 soat/oy — bitta doim uyg'oq servis uchun deyarli yetarli,
-# lekin agar boshqa bepul servislaringiz ham bo'lsa, chegara tezroq to'lishi
-# mumkin). Agar oy oxiriga yaqin servis kutilmaganda ishlamay qolsa — aynan
-# shu chegara sabab bo'lgan bo'lishi mumkin.
+# bor (odatda ~750 soat/oy). Shuning uchun tunda soat 01:00 dan 04:00 gacha
+# (Toshkent vaqti) — bu vaqtda odatda hech kim ishlamaydi — ataylab
+# "chertilmaydi", shu 3 soat davomida server tabiiy ravishda uxlab, oyiga
+# ~90 soatgacha zaxira qo'shadi. UTC'da bu 20:00-22:59 oralig'iga to'g'ri
+# keladi (Toshkent = UTC+5).
 on:
   schedule:
-    - cron: '*/10 * * * *' # har 10 daqiqada
+    - cron: '*/10 0-19,23 * * *' # har 10 daqiqada, lekin 01:00-04:00 (Toshkent) oralig'idan tashqari
   workflow_dispatch: {}
 
 jobs:
