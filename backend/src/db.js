@@ -339,14 +339,6 @@ const init = async () => {
     CREATE INDEX IF NOT EXISTS idx_attendance_employee_date
     ON attendance_records(employee_id, work_date DESC)
   `);
-  // Sinov rejimi vaqtida bir zumda "Keldim"+"Ketdim" bosilib qolgan (2
-  // daqiqadan kam farq bilan) yozuvlar — bular haqiqiy ish kuni emas,
-  // sinov qoldig'i, shuning uchun bir martalik tozalanadi
-  await pool.query(`
-    DELETE FROM attendance_records
-    WHERE check_in_at IS NOT NULL AND check_out_at IS NOT NULL
-      AND EXTRACT(EPOCH FROM (check_out_at - check_in_at)) < 120
-  `);
 
   // Standart ruxsatlar — mavjud bo'lsa o'zgartirmaydi
   await pool.query(`
