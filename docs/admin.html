@@ -1641,6 +1641,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 .modal-actions button{flex:1;height:44px;border-radius:8px;border:0;font-weight:600;font-size:14px;cursor:pointer}
 .modal-save,.modal-save-static{background:linear-gradient(140deg,var(--green-hi) 0%,var(--green) 52%,#1FA36C 100%);color:var(--green-ink)}
 .modal-cancel{background:var(--surface);border:1px solid var(--line-2) !important;color:var(--gray)}
+.modal-danger{background:linear-gradient(140deg,#F2896F 0%,#e2604a 55%,#c94a36 100%);color:#fff}
+.modal-danger:hover{opacity:.88}
 .form-msg{font-size:13px;margin-top:10px;min-height:16px}
 .form-msg.error{color:#F2896F}
 .form-msg.ok{color:var(--green)}
@@ -2756,6 +2758,21 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   </div>
 </div>
 
+<!-- ══════════ QAYTA ISHLATILADIGAN TASDIQLASH OYNASI ══════════
+     Brauzerning o'z confirm() oynasi o'rniga — chunki foydalanuvchi
+     brauzerda "bu saytdan boshqa so'rov chiqmasin" degan katakchani
+     tasodifan yoqib qo'ysa, confirm() butunlay ishlamay qolishi mumkin. -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box" style="max-width:380px">
+    <h3 data-i18n="confirm.title">Tasdiqlash</h3>
+    <p id="confirmModalMsg" style="color:var(--gray);font-size:13.5px;line-height:1.5;margin-bottom:4px"></p>
+    <div class="modal-actions">
+      <button type="button" class="modal-cancel" id="confirmModalCancel" data-i18n="modal.cancel">Bekor qilish</button>
+      <button type="button" class="modal-danger" id="confirmModalOk" data-i18n="modal.confirm.yes">Ha</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════ TASK DRAWER (TickTick uslubi) ══════════ -->
 <div class="td-bd" id="tdBd"></div>
 <div class="td" id="td" role="dialog" aria-modal="true">
@@ -3175,6 +3192,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.featured': 'Eng mashhur sifatida belgilash',
       'modal.save': 'Saqlash',
       'modal.cancel': 'Bekor qilish',
+      'confirm.title': 'Tasdiqlash',
+      'modal.confirm.yes': 'Ha',
       'confirm.del.case': "Bu keysni o'chirishni tasdiqlaysizmi?",
       'confirm.del.post': "Bu maqolani o'chirishni tasdiqlaysizmi?",
       'confirm.del.price': "Bu paketni o'chirishni tasdiqlaysizmi?",
@@ -3505,6 +3524,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.featured': 'Отметить как популярный',
       'modal.save': 'Сохранить',
       'modal.cancel': 'Отмена',
+      'confirm.title': 'Подтверждение',
+      'modal.confirm.yes': 'Да',
       'confirm.del.case': 'Удалить этот кейс?',
       'confirm.del.post': 'Удалить эту статью?',
       'confirm.del.price': 'Удалить этот пакет?',
@@ -3835,6 +3856,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.featured': 'Mark as most popular',
       'modal.save': 'Save',
       'modal.cancel': 'Cancel',
+      'confirm.title': 'Confirm',
+      'modal.confirm.yes': 'Yes',
       'confirm.del.case': 'Delete this case?',
       'confirm.del.post': 'Delete this article?',
       'confirm.del.price': 'Delete this package?',
@@ -4827,6 +4850,36 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   window.closeModal = function (id) { document.getElementById(id).classList.remove('is-active'); };
 
+  // Brauzerning o'z confirm() o'rniga — foydalanuvchi brauzerda "bu saytdan
+  // boshqa so'rov chiqmasin" katakchasini yoqib qo'ysa, confirm() butunlay
+  // ishlamay qolishi mumkin (har doim false qaytaradi). Bu esa saytning o'z
+  // ichidagi oyna bo'lgani uchun bunday cheklovga tushmaydi.
+  function confirmDialog(message) {
+    return new Promise(function (resolve) {
+      var overlay = document.getElementById('confirmModal');
+      document.getElementById('confirmModalMsg').textContent = message;
+      var okBtn = document.getElementById('confirmModalOk');
+      var cancelBtn = document.getElementById('confirmModalCancel');
+      function cleanup(result) {
+        overlay.classList.remove('is-active');
+        okBtn.removeEventListener('click', onOk);
+        cancelBtn.removeEventListener('click', onCancel);
+        overlay.removeEventListener('click', onBackdrop);
+        document.removeEventListener('keydown', onKey);
+        resolve(result);
+      }
+      function onOk() { cleanup(true); }
+      function onCancel() { cleanup(false); }
+      function onBackdrop(e) { if (e.target === overlay) cleanup(false); }
+      function onKey(e) { if (e.key === 'Escape') cleanup(false); }
+      okBtn.addEventListener('click', onOk);
+      cancelBtn.addEventListener('click', onCancel);
+      overlay.addEventListener('click', onBackdrop);
+      document.addEventListener('keydown', onKey);
+      overlay.classList.add('is-active');
+    });
+  }
+
   ['salaryEmployeeModal'].forEach(function (id) {
     var overlay = document.getElementById(id);
     if (overlay) overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(id); });
@@ -4952,7 +5005,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   });
 
   window.deleteCase = async function (id) {
-    if (!confirm(T('confirm.del.case'))) return;
+    if (!(await confirmDialog(T('confirm.del.case')))) return;
     try { await apiFetch('/api/cases/' + id, { method: 'DELETE' }); loadCases(); }
     catch (err) { alert(err.message); }
   };
@@ -5025,7 +5078,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   });
 
   window.deletePost = async function (id) {
-    if (!confirm(T('confirm.del.post'))) return;
+    if (!(await confirmDialog(T('confirm.del.post')))) return;
     try { await apiFetch('/api/posts/' + id, { method: 'DELETE' }); loadPosts(); }
     catch (err) { alert(err.message); }
   };
@@ -5105,7 +5158,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   });
 
   window.deletePricing = async function (id) {
-    if (!confirm(T('confirm.del.price'))) return;
+    if (!(await confirmDialog(T('confirm.del.price')))) return;
     try { await apiFetch('/api/pricing/' + id, { method: 'DELETE' }); loadPricing(); }
     catch (err) { alert(err.message); }
   };
@@ -5219,7 +5272,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   };
 
   window.deleteUser = async function (id) {
-    if (!confirm(T('users.confirm.del'))) return;
+    if (!(await confirmDialog(T('users.confirm.del')))) return;
     try { await apiFetch('/api/admin/users/' + id, { method: 'DELETE' }); loadUsers(); }
     catch (err) { alert(err.message); }
   };
@@ -6472,7 +6525,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   }
 
   async function deleteTaskComment(commentId) {
-    if (!confirm(T('tasks.comment.confirm.del'))) return;
+    if (!(await confirmDialog(T('tasks.comment.confirm.del')))) return;
     var error = document.getElementById('tdCommentsError');
     try {
       await apiFetch('/api/tasks/' + TD_EDIT_ID + '/comments/' + commentId, { method: 'DELETE' });
@@ -6602,7 +6655,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         e.stopPropagation();
         var row = btn.closest('.item-row');
         var id = row.dataset.id;
-        if (!confirm(T('stores.confirm.del'))) return;
+        if (!(await confirmDialog(T('stores.confirm.del')))) return;
         try {
           await apiFetch('/api/admin/stores/' + id, { method: 'DELETE' });
           TD_STORES = TD_STORES.filter(function (s) { return String(s.id) !== String(id); });
@@ -7235,7 +7288,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     // Delete (edit mode)
     document.getElementById('tdDelBtn').addEventListener('click', async function () {
       if (!TD_EDIT_ID) return;
-      if (!confirm(T('tasks.confirm.del') || "O'chirishni tasdiqlaysizmi?")) return;
+      if (!(await confirmDialog(T('tasks.confirm.del') || "O'chirishni tasdiqlaysizmi?"))) return;
       try {
         await apiFetch('/api/tasks/' + TD_EDIT_ID, { method: 'DELETE' });
         tdClose();
@@ -7275,7 +7328,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   // Expose for "+" button in panel header
   window.openTaskModal = function () { openTaskDrawer(null, null, { assignee: activeTaskMember() }); };
   window.deleteTask = async function (id) {
-    if (!confirm(T('tasks.confirm.del') || "O'chirishni tasdiqlaysizmi?")) return;
+    if (!(await confirmDialog(T('tasks.confirm.del') || "O'chirishni tasdiqlaysizmi?"))) return;
     try { await apiFetch('/api/tasks/' + id, { method: 'DELETE' }); await loadTasks(); }
     catch (err) { alert(err.message || T('common.error')); }
   };
@@ -7870,7 +7923,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var delBtn = document.getElementById('kpiEmpSalaryDelBtn');
       if (delBtn) {
         delBtn.addEventListener('click', async function () {
-          if (!confirm(T('salary.confirm.del'))) return;
+          if (!(await confirmDialog(T('salary.confirm.del')))) return;
           delBtn.disabled = true;
           try {
             await apiFetch('/api/attendance/salary/' + employeeId, { method: 'PUT', body: JSON.stringify({ salary: 0 }) });
@@ -7944,7 +7997,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   async function decideKpiAward(id, approved) {
     if (KPI_AWARD_DECIDE_LOCKS[id]) return;
-    if (!confirm(approved ? T('kpi.confirm.approve') : T('kpi.confirm.reject'))) return;
+    if (!(await confirmDialog(approved ? T('kpi.confirm.approve') : T('kpi.confirm.reject')))) return;
     KPI_AWARD_DECIDE_LOCKS[id] = true;
     var card = document.querySelector('[data-kpi-award-card="' + id + '"]');
     if (card) {
@@ -7968,7 +8021,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   }
 
   async function deleteKpiAward(id) {
-    if (!confirm(T('kpi.confirm.del'))) return;
+    if (!(await confirmDialog(T('kpi.confirm.del')))) return;
     try {
       await apiFetch('/api/kpi/awards/' + id, { method: 'DELETE' });
       await refreshKpiUI();
