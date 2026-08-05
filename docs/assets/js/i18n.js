@@ -43,9 +43,9 @@
   /* Bosh sahifa */
   add("EXON — Marketpleysda savdongizni tizimli o'stiramiz", 'EXON — системно развиваем продажи на маркетплейсах', 'EXON — systematic marketplace growth');
   add('Marketpleys ekspertlari', 'Эксперты по маркетплейсам', 'Marketplace experts');
-  add('Marketpleysda savdongizni', 'Системно развиваем', 'We systematically grow');
-  add("tizimli o'stiramiz", 'продажи на маркетплейсах', 'your marketplace sales');
-  add('Uzum, Wildberries va Yandex Market — kartochkadan reklamagacha butun jarayonni biz olamiz.', 'Uzum, Wildberries и Yandex Market — берём на себя весь процесс от карточки до рекламы.', 'Uzum, Wildberries and Yandex Market — we handle everything from product cards to advertising.');
+  add("Marketplace'larda real natija beruvchi", 'Реальный результат на маркетплейсах —', 'Real results on marketplaces —');
+  add('professional jamoa', 'профессиональная команда', 'a professional team');
+  add("Biz marketplace'larni boshqariladigan biznesga aylantiramiz.", 'Мы превращаем маркетплейсы в управляемый бизнес.', 'We turn marketplaces into a manageable business.');
   add("Do'koningiz havolasi", 'Ссылка на ваш магазин', 'Your store link');
   add('Bepul audit olish', 'Получить бесплатный аудит', 'Get a free audit');
   add("3 ish kunida 12 nuqta bo'yicha yozma hisobot. Majburiyatsiz.", 'Письменный отчёт по 12 пунктам за 3 рабочих дня. Без обязательств.', 'A written 12-point report within 3 business days. No obligation.');
