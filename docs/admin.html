@@ -1741,6 +1741,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 .db-usage-refresh{margin-top:16px;background:none;border:1px solid var(--line-2);border-radius:8px;padding:8px 13px;color:var(--gray);font:inherit;font-size:12.5px;cursor:pointer}
 .db-usage-refresh:hover{color:var(--white);border-color:var(--green-deep)}
 [data-theme="light"] .db-usage-refresh:hover{color:#1a2117}
+.usage-group-label{
+  font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--gray-dim);padding-bottom:6px;border-bottom:1px solid var(--line);margin-bottom:14px;
+}
+.usage-group-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;align-items:start}
 
 @media (max-width:640px){
   .settings-shell{flex-direction:column;min-height:0;min-width:0}
@@ -2405,62 +2410,76 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
           <button type="button" class="forgot-link" id="setForgotPwdLink" data-i18n="settings.security.forgot" style="text-align:left;margin:14px 0 0 !important;display:inline-block !important">Joriy parolni bilmayman — kod orqali tiklash</button>
         </div>
 
-        <!-- SUPABASE BAZA HAJMI (faqat IT / superadmin) -->
+        <!-- SUPABASE / RENDER RESURS HOLATI (faqat IT / superadmin) -->
         <div class="settings-content-pane" id="setPaneDatabase">
-          <h3 data-i18n="settings.db.title">Supabase bazasi</h3>
-          <p class="hint" data-i18n="settings.db.hint">Bepul tarifdagi 500 MB database limitining joriy ishlatilishi.</p>
-          <div class="db-usage-card">
-            <div class="db-usage-head">
-              <div class="db-usage-percent" id="dbUsagePercent">—</div>
-              <div class="db-usage-state" id="dbUsageState" data-i18n="settings.db.loading">Yuklanmoqda...</div>
+
+          <!-- ═══ SUPABASE (baza + fayl saqlash) ═══ -->
+          <div class="usage-group-label">Supabase</div>
+          <div class="usage-group-row">
+            <div>
+              <h3 data-i18n="settings.db.title">Supabase bazasi</h3>
+              <p class="hint" data-i18n="settings.db.hint">Bepul tarifdagi 500 MB database limitining joriy ishlatilishi.</p>
+              <div class="db-usage-card">
+                <div class="db-usage-head">
+                  <div class="db-usage-percent" id="dbUsagePercent">—</div>
+                  <div class="db-usage-state" id="dbUsageState" data-i18n="settings.db.loading">Yuklanmoqda...</div>
+                </div>
+                <div class="db-usage-bar" role="progressbar" aria-label="Database ishlatilishi" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="dbUsageBar">
+                  <div class="db-usage-fill" id="dbUsageFill"></div>
+                </div>
+                <div class="db-usage-meta">
+                  <div class="db-usage-stat"><span data-i18n="settings.db.used">Ishlatilgan</span><strong id="dbUsageUsed">—</strong></div>
+                  <div class="db-usage-stat"><span data-i18n="settings.db.remaining">Qolgan</span><strong id="dbUsageRemaining">—</strong></div>
+                  <div class="db-usage-stat"><span data-i18n="settings.db.total">Umumiy limit</span><strong id="dbUsageLimit">500 MB</strong></div>
+                </div>
+                <button type="button" class="db-usage-refresh" id="dbUsageRefresh" data-i18n="settings.db.refresh">Yangilash</button>
+                <div class="form-msg" id="dbUsageMsg"></div>
+              </div>
             </div>
-            <div class="db-usage-bar" role="progressbar" aria-label="Database ishlatilishi" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="dbUsageBar">
-              <div class="db-usage-fill" id="dbUsageFill"></div>
+
+            <div>
+              <h3 data-i18n="settings.storage.title">Fayl saqlash (Storage)</h3>
+              <p class="hint" data-i18n="settings.storage.hint">Rasmlar (profil, keys, blog, do'kon, keldi-ketdi suratlari) uchun bazadan alohida 1 GB bepul joy.</p>
+              <div class="db-usage-card">
+                <div class="db-usage-head">
+                  <div class="db-usage-percent" id="storageUsagePercent">—</div>
+                  <div class="db-usage-state" id="storageUsageState" data-i18n="settings.db.loading">Yuklanmoqda...</div>
+                </div>
+                <div class="db-usage-bar" role="progressbar" aria-label="Storage ishlatilishi" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="storageUsageBar">
+                  <div class="db-usage-fill" id="storageUsageFill"></div>
+                </div>
+                <div class="db-usage-meta">
+                  <div class="db-usage-stat"><span data-i18n="settings.db.used">Ishlatilgan</span><strong id="storageUsageUsed">—</strong></div>
+                  <div class="db-usage-stat"><span data-i18n="settings.db.remaining">Qolgan</span><strong id="storageUsageRemaining">—</strong></div>
+                  <div class="db-usage-stat"><span data-i18n="settings.db.total">Umumiy limit</span><strong id="storageUsageLimit">1 GB</strong></div>
+                </div>
+                <button type="button" class="db-usage-refresh" id="storageUsageRefresh" data-i18n="settings.db.refresh">Yangilash</button>
+                <div class="form-msg" id="storageUsageMsg"></div>
+              </div>
             </div>
-            <div class="db-usage-meta">
-              <div class="db-usage-stat"><span data-i18n="settings.db.used">Ishlatilgan</span><strong id="dbUsageUsed">—</strong></div>
-              <div class="db-usage-stat"><span data-i18n="settings.db.remaining">Qolgan</span><strong id="dbUsageRemaining">—</strong></div>
-              <div class="db-usage-stat"><span data-i18n="settings.db.total">Umumiy limit</span><strong id="dbUsageLimit">500 MB</strong></div>
-            </div>
-            <button type="button" class="db-usage-refresh" id="dbUsageRefresh" data-i18n="settings.db.refresh">Yangilash</button>
-            <div class="form-msg" id="dbUsageMsg"></div>
           </div>
 
-          <!-- SUPABASE STORAGE (RASMLAR) HAJMI -->
-          <h3 style="margin-top:24px" data-i18n="settings.storage.title">Fayl saqlash (Storage)</h3>
-          <p class="hint" data-i18n="settings.storage.hint">Rasmlar (profil, keys, blog, do'kon, keldi-ketdi suratlari) uchun bazadan alohida 1 GB bepul joy.</p>
-          <div class="db-usage-card">
-            <div class="db-usage-head">
-              <div class="db-usage-percent" id="storageUsagePercent">—</div>
-              <div class="db-usage-state" id="storageUsageState" data-i18n="settings.db.loading">Yuklanmoqda...</div>
+          <!-- ═══ RENDER (backend) ═══ -->
+          <div class="usage-group-label" style="margin-top:20px">Render</div>
+          <div class="usage-group-row">
+            <div>
+              <h3 data-i18n="settings.render.title">Backend holati (Render)</h3>
+              <p class="hint" data-i18n="settings.render.hint">Backend serverning jonli holati...</p>
+              <div class="db-usage-card">
+                <div class="db-usage-head">
+                  <div class="db-usage-percent" id="renderStatusIcon" style="font-size:20px">—</div>
+                  <div class="db-usage-state" id="renderStatusText" data-i18n="settings.render.loading">Tekshirilmoqda...</div>
+                </div>
+                <div class="db-usage-meta" style="grid-template-columns:repeat(2,1fr)">
+                  <div class="db-usage-stat"><span data-i18n="settings.render.response_time">Javob vaqti</span><strong id="renderResponseTime">—</strong></div>
+                  <div class="db-usage-stat"><span data-i18n="settings.render.monthly_limit">Oylik bepul limit</span><strong data-i18n="settings.render.hours750">750 soat</strong></div>
+                </div>
+                <button type="button" class="db-usage-refresh" id="renderStatusRefresh" data-i18n="settings.db.refresh">Yangilash</button>
+                <a href="https://dashboard.render.com/w/tea-d8qg09eq1p3s739p3aq0/billing" target="_blank" rel="noopener" class="db-usage-refresh" style="text-decoration:none;display:inline-block;margin-left:8px" data-i18n="settings.render.dashboard_link">Render dashboard'da to'liq ko'rish</a>
+              </div>
             </div>
-            <div class="db-usage-bar" role="progressbar" aria-label="Storage ishlatilishi" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="storageUsageBar">
-              <div class="db-usage-fill" id="storageUsageFill"></div>
-            </div>
-            <div class="db-usage-meta">
-              <div class="db-usage-stat"><span data-i18n="settings.db.used">Ishlatilgan</span><strong id="storageUsageUsed">—</strong></div>
-              <div class="db-usage-stat"><span data-i18n="settings.db.remaining">Qolgan</span><strong id="storageUsageRemaining">—</strong></div>
-              <div class="db-usage-stat"><span data-i18n="settings.db.total">Umumiy limit</span><strong id="storageUsageLimit">1 GB</strong></div>
-            </div>
-            <button type="button" class="db-usage-refresh" id="storageUsageRefresh" data-i18n="settings.db.refresh">Yangilash</button>
-            <div class="form-msg" id="storageUsageMsg"></div>
           </div>
 
-          <!-- RENDER BACKEND HOLATI -->
-          <h3 style="margin-top:24px" data-i18n="settings.render.title">Backend holati (Render)</h3>
-          <p class="hint" data-i18n="settings.render.hint">Backend serverning jonli holati...</p>
-          <div class="db-usage-card">
-            <div class="db-usage-head">
-              <div class="db-usage-percent" id="renderStatusIcon" style="font-size:20px">—</div>
-              <div class="db-usage-state" id="renderStatusText" data-i18n="settings.render.loading">Tekshirilmoqda...</div>
-            </div>
-            <div class="db-usage-meta" style="grid-template-columns:repeat(2,1fr)">
-              <div class="db-usage-stat"><span data-i18n="settings.render.response_time">Javob vaqti</span><strong id="renderResponseTime">—</strong></div>
-              <div class="db-usage-stat"><span data-i18n="settings.render.monthly_limit">Oylik bepul limit</span><strong data-i18n="settings.render.hours750">750 soat</strong></div>
-            </div>
-            <button type="button" class="db-usage-refresh" id="renderStatusRefresh" data-i18n="settings.db.refresh">Yangilash</button>
-            <a href="https://dashboard.render.com" target="_blank" rel="noopener" class="db-usage-refresh" style="text-decoration:none;display:inline-block;margin-left:8px" data-i18n="settings.render.dashboard_link">Render dashboard'da to'liq ko'rish</a>
-          </div>
         </div>
       </div>
     </div>
