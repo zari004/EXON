@@ -3212,6 +3212,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'modal.cancel': 'Bekor qilish',
       'confirm.title': 'Tasdiqlash',
       'modal.confirm.yes': 'Ha',
+      'modal.ok': 'Tushunarli',
       'confirm.del.case': "Bu keysni o'chirishni tasdiqlaysizmi?",
       'confirm.del.post': "Bu maqolani o'chirishni tasdiqlaysizmi?",
       'confirm.del.price': "Bu paketni o'chirishni tasdiqlaysizmi?",
@@ -3553,6 +3554,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'modal.cancel': 'Отмена',
       'confirm.title': 'Подтверждение',
       'modal.confirm.yes': 'Да',
+      'modal.ok': 'Понятно',
       'confirm.del.case': 'Удалить этот кейс?',
       'confirm.del.post': 'Удалить эту статью?',
       'confirm.del.price': 'Удалить этот пакет?',
@@ -3894,6 +3896,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'modal.cancel': 'Cancel',
       'confirm.title': 'Confirm',
       'modal.confirm.yes': 'Yes',
+      'modal.ok': 'Got it',
       'confirm.del.case': 'Delete this case?',
       'confirm.del.post': 'Delete this article?',
       'confirm.del.price': 'Delete this package?',
@@ -4925,6 +4928,37 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     });
   }
 
+  // Brauzerning o'z alert() o'rniga — xuddi confirmDialog kabi sabablarga
+  // ko'ra (brauzerda bloklanib qolishi mumkinligi), shu bilan birga uslub
+  // jihatidan ham saytning boshqa oynalari bilan bir xil ko'rinadi.
+  function customAlert(message) {
+    return new Promise(function (resolve) {
+      var overlay = document.getElementById('confirmModal');
+      document.getElementById('confirmModalMsg').textContent = message;
+      var okBtn = document.getElementById('confirmModalOk');
+      var cancelBtn = document.getElementById('confirmModalCancel');
+      var originalOkText = okBtn.textContent;
+      okBtn.textContent = T('modal.ok');
+      cancelBtn.style.display = 'none';
+      function cleanup() {
+        overlay.classList.remove('is-active');
+        okBtn.removeEventListener('click', onOk);
+        overlay.removeEventListener('click', onBackdrop);
+        document.removeEventListener('keydown', onKey);
+        cancelBtn.style.display = '';
+        okBtn.textContent = originalOkText;
+        resolve();
+      }
+      function onOk() { cleanup(); }
+      function onBackdrop(e) { if (e.target === overlay) cleanup(); }
+      function onKey(e) { if (e.key === 'Escape') cleanup(); }
+      okBtn.addEventListener('click', onOk);
+      overlay.addEventListener('click', onBackdrop);
+      document.addEventListener('keydown', onKey);
+      overlay.classList.add('is-active');
+    });
+  }
+
   ['salaryEmployeeModal'].forEach(function (id) {
     var overlay = document.getElementById(id);
     if (overlay) overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(id); });
@@ -5052,7 +5086,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   window.deleteCase = async function (id) {
     if (!(await confirmDialog(T('confirm.del.case')))) return;
     try { await apiFetch('/api/cases/' + id, { method: 'DELETE' }); loadCases(); }
-    catch (err) { alert(err.message); }
+    catch (err) { customAlert(err.message); }
   };
 
   // ══════════════════════════════════════════════════════════
@@ -5125,7 +5159,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   window.deletePost = async function (id) {
     if (!(await confirmDialog(T('confirm.del.post')))) return;
     try { await apiFetch('/api/posts/' + id, { method: 'DELETE' }); loadPosts(); }
-    catch (err) { alert(err.message); }
+    catch (err) { customAlert(err.message); }
   };
 
   // ══════════════════════════════════════════════════════════
@@ -5205,7 +5239,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   window.deletePricing = async function (id) {
     if (!(await confirmDialog(T('confirm.del.price')))) return;
     try { await apiFetch('/api/pricing/' + id, { method: 'DELETE' }); loadPricing(); }
-    catch (err) { alert(err.message); }
+    catch (err) { customAlert(err.message); }
   };
 
   // ══════════════════════════════════════════════════════════
@@ -5255,7 +5289,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     try {
       await apiFetch('/api/admin/users/' + id + '/role', { method: 'POST', body: JSON.stringify({ role: role }) });
       loadUsers();
-    } catch (err) { alert(err.message); loadUsers(); }
+    } catch (err) { customAlert(err.message); loadUsers(); }
   };
 
   // ══════════════════════════════════════════════════════════
@@ -5303,23 +5337,23 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     checkboxes.forEach(function (cb) { if (cb.checked) tabs.push(cb.dataset.tab); });
     try {
       await apiFetch('/api/admin/permissions/' + role, { method: 'PUT', body: JSON.stringify({ tabs: tabs }) });
-    } catch (err) { alert(err.message); loadPermissions(); }
+    } catch (err) { customAlert(err.message); loadPermissions(); }
   };
 
   window.approveUser = async function (id) {
     try { await apiFetch('/api/admin/users/' + id + '/approve', { method: 'POST' }); loadUsers(); }
-    catch (err) { alert(err.message); }
+    catch (err) { customAlert(err.message); }
   };
 
   window.rejectUser = async function (id) {
     try { await apiFetch('/api/admin/users/' + id + '/reject', { method: 'POST' }); loadUsers(); }
-    catch (err) { alert(err.message); }
+    catch (err) { customAlert(err.message); }
   };
 
   window.deleteUser = async function (id) {
     if (!(await confirmDialog(T('users.confirm.del')))) return;
     try { await apiFetch('/api/admin/users/' + id, { method: 'DELETE' }); loadUsers(); }
-    catch (err) { alert(err.message); }
+    catch (err) { customAlert(err.message); }
   };
 
   // ══════════════════════════════════════════════════════════
@@ -6706,7 +6740,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
           TD_STORES = TD_STORES.filter(function (s) { return String(s.id) !== String(id); });
           if (STORE_EDIT_ID && String(STORE_EDIT_ID) === String(id)) resetStoreAddForm();
           renderStoresList();
-        } catch (err) { alert(err.message || T('common.error')); }
+        } catch (err) { customAlert(err.message || T('common.error')); }
       });
     });
     if (TD_STORES_CAN_MANAGE) {
@@ -6755,7 +6789,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       }
       resetStoreAddForm();
       renderStoresList();
-    } catch (err) { alert(err.message || "Do'kon qo'shib bo'lmadi"); }
+    } catch (err) { customAlert(err.message || "Do'kon qo'shib bo'lmadi"); }
   });
   document.getElementById('storeNewNameInp').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') { e.preventDefault(); document.getElementById('storeAddBtn').click(); }
@@ -7143,7 +7177,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         if (document.getElementById('panel-calendar').classList.contains('is-active')) renderCalGrid();
       } catch (err) {
         chk.classList.toggle('is-done');
-        alert(err.message || T('common.error'));
+        customAlert(err.message || T('common.error'));
       } finally {
         chk.disabled = false;
       }
@@ -7338,7 +7372,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         await apiFetch('/api/tasks/' + TD_EDIT_ID, { method: 'DELETE' });
         tdClose();
         await loadTasks();
-      } catch (err) { alert(err.message || T('common.error')); }
+      } catch (err) { customAlert(err.message || T('common.error')); }
     });
 
     // Drawer ichida eng ustki popupdan tashqariga bosilsa ham faqat o'sha
@@ -7375,7 +7409,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   window.deleteTask = async function (id) {
     if (!(await confirmDialog(T('tasks.confirm.del') || "O'chirishni tasdiqlaysizmi?"))) return;
     try { await apiFetch('/api/tasks/' + id, { method: 'DELETE' }); await loadTasks(); }
-    catch (err) { alert(err.message || T('common.error')); }
+    catch (err) { customAlert(err.message || T('common.error')); }
   };
 
   // ══════════════════════════════════════════════════════════
@@ -7518,7 +7552,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     try {
       SET_AVATAR_B64 = await fileToResizedBase64(file, 256);
       setAvatarPreview(document.getElementById('setName').value, SET_AVATAR_B64);
-    } catch (err) { alert(T('settings.avatar.error')); }
+    } catch (err) { customAlert(T('settings.avatar.error')); }
   });
 
   // ── Profilni saqlash ──
@@ -7992,7 +8026,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
             await renderKpiEmpSalary(employeeId, containerId);
             await refreshSalaryUI();
           } catch (err) {
-            alert(err.message);
+            customAlert(err.message);
           } finally {
             saveBtn.disabled = false;
           }
@@ -8008,7 +8042,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
             await renderKpiEmpSalary(employeeId, containerId);
             await refreshSalaryUI();
           } catch (err) {
-            alert(err.message);
+            customAlert(err.message);
           } finally {
             delBtn.disabled = false;
           }
@@ -8089,7 +8123,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       renderKpiPendingPanel();
       renderKpiAwardsMain();
       await refreshKpiUI();
-    } catch (err) { alert(err.message); }
+    } catch (err) { customAlert(err.message); }
     finally {
       delete KPI_AWARD_DECIDE_LOCKS[id];
       if (card) {
@@ -8103,7 +8137,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     try {
       await apiFetch('/api/kpi/awards/' + id, { method: 'DELETE' });
       await refreshKpiUI();
-    } catch (err) { alert(err.message); }
+    } catch (err) { customAlert(err.message); }
   }
 
   window.openKpiAwardForm = function (employeeId, editAward) {
@@ -8400,7 +8434,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     if (activeBtn) { activeBtn.disabled = true; activeBtn.textContent = T('att.gps.checking'); }
 
     if (!navigator.geolocation) {
-      alert(T('att.gps.unsupported'));
+      customAlert(T('att.gps.unsupported'));
       if (activeBtn) activeBtn.disabled = false;
       renderAttToday();
       return;
@@ -8414,7 +8448,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       if (ATT_OFFICE_LOCATION && ATT_OFFICE_LOCATION.latitude !== undefined) {
         var dist = attDistanceMeters(lat, lng, Number(ATT_OFFICE_LOCATION.latitude), Number(ATT_OFFICE_LOCATION.longitude));
         if (dist > Number(ATT_OFFICE_LOCATION.radius_meters)) {
-          alert(T('att.gps.outside.prefix') + ' ' + Math.round(dist) + ' ' + T('att.gps.outside.suffix'));
+          customAlert(T('att.gps.outside.prefix') + ' ' + Math.round(dist) + ' ' + T('att.gps.outside.suffix'));
           if (activeBtn) activeBtn.disabled = false;
           renderAttToday();
           return;
@@ -8425,7 +8459,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var msg = T('att.gps.error');
       if (err.code === err.PERMISSION_DENIED) msg = T('att.gps.denied');
       else if (err.code === err.TIMEOUT) msg = T('att.gps.timeout');
-      alert(msg);
+      customAlert(msg);
       if (activeBtn) activeBtn.disabled = false;
       renderAttToday();
     }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
@@ -8644,7 +8678,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
           });
           await loadAttTeam();
         } catch (err) {
-          alert(err.message || T('common.error'));
+          customAlert(err.message || T('common.error'));
           btn.disabled = false;
         }
       });
@@ -8706,7 +8740,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       try {
         await downloadAttendanceXlsx(range);
       } catch (err) {
-        alert(err.message || T('common.error'));
+        customAlert(err.message || T('common.error'));
       } finally {
         btn.disabled = false; btn.textContent = originalText;
       }
@@ -8728,7 +8762,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   }
 
   document.getElementById('attOfficeLocateBtn').addEventListener('click', function () {
-    if (!navigator.geolocation) { alert(T('att.gps.unsupported')); return; }
+    if (!navigator.geolocation) { customAlert(T('att.gps.unsupported')); return; }
     var btn = this;
     btn.disabled = true; btn.textContent = T('att.gps.checking');
     navigator.geolocation.getCurrentPosition(function (pos) {
@@ -8736,7 +8770,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       document.getElementById('attOfficeLng').value = pos.coords.longitude.toFixed(6);
       btn.disabled = false; btn.textContent = T('att.office.locate');
     }, function () {
-      alert(T('att.gps.error'));
+      customAlert(T('att.gps.error'));
       btn.disabled = false; btn.textContent = T('att.office.locate');
     }, { enableHighAccuracy: true, timeout: 15000 });
   });
