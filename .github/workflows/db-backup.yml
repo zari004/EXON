@@ -22,10 +22,16 @@ jobs:
           DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
         run: |
           set -e
+          set -o pipefail # pg_dump | gzip zanjirida pg_dump xato bersa ham "muvaffaqiyat" deb ko'rsatilmasin
           FILENAME="exon-backup-$(date -u +%F).sql.gz"
           pg_dump "$DATABASE_URL" --no-owner --no-privileges | gzip > "$FILENAME"
+          SIZE=$(stat -c%s "$FILENAME")
+          echo "Dump hajmi: $SIZE bayt"
+          if [ "$SIZE" -lt 500 ]; then
+            echo "::error::Dump fayli shubhali darajada kichik ($SIZE bayt) — bo'sh yoki noto'g'ri bo'lishi mumkin"
+            exit 1
+          fi
           echo "FILENAME=$FILENAME" >> "$GITHUB_ENV"
-          echo "Dump tayyor: $(du -h "$FILENAME" | cut -f1)"
 
       - name: Telegram guruhga yuborish
         env:
