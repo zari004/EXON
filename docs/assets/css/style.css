@@ -309,6 +309,9 @@ ol,ul{list-style:none}
 }
 .hero__line{display:block}
 .hero__line--2{color:var(--gray)}
+/* Light temada ikkala qator ham bir xil to'q rangda bo'lsin — dark
+   temadagi ikki xil ton (asosiy oq + xira kulrang) faqat dark uchun */
+[data-theme="light"] .hero__line--2{color:var(--white)}
 
 .hero__lede{
   margin:clamp(16px,2.4vh,24px) 0 0;
