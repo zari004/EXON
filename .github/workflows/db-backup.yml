@@ -14,8 +14,16 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     steps:
-      - name: postgresql-client o'rnatish
-        run: sudo apt-get update -qq && sudo apt-get install -yqq postgresql-client
+      # Ubuntu'ning standart postgresql-client'i (16-versiya) Supabase'ning
+      # yangiroq server versiyasidan (17) dump ololmaydi — pg_dump o'zidan
+      # yangiroq serverdan dump olishni qasddan rad etadi. Shuning uchun
+      # rasmiy PGDG repozitoriyasidan aynan mos versiya o'rnatiladi.
+      - name: postgresql-client-17 o'rnatish
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -yqq postgresql-common
+          yes '' | sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install -yqq postgresql-client-17
 
       - name: Bazadan dump olish
         env:
@@ -23,8 +31,10 @@ jobs:
         run: |
           set -e
           set -o pipefail # pg_dump | gzip zanjirida pg_dump xato bersa ham "muvaffaqiyat" deb ko'rsatilmasin
+          PGDUMP=/usr/lib/postgresql/17/bin/pg_dump
+          [ -x "$PGDUMP" ] || PGDUMP=pg_dump # ehtiyot uchun — versiyalangan yo'l topilmasa PATH'dagisi ishlatiladi
           FILENAME="exon-backup-$(date -u +%F).sql.gz"
-          pg_dump "$DATABASE_URL" --no-owner --no-privileges | gzip > "$FILENAME"
+          "$PGDUMP" "$DATABASE_URL" --no-owner --no-privileges | gzip > "$FILENAME"
           SIZE=$(stat -c%s "$FILENAME")
           echo "Dump hajmi: $SIZE bayt"
           if [ "$SIZE" -lt 500 ]; then
