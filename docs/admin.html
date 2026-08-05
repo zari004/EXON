@@ -4232,6 +4232,12 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     // shu bilan "avval hammasi, keyin qisqaradi" degan chaqnash yo'qoladi
     document.getElementById('adminApp').classList.add('is-active');
     hideBootLoader();
+    // applyLang() yuqorida (adminApp hali "is-active" bo'lmaganda) chaqirilgan
+    // edi — uning ichidagi dastlabki ma'lumot yuklash qismi (loadDashboard,
+    // loadUsers, loadPermissions va h.k.) shu sabab o'tkazib yuborilgan
+    // bo'ladi. Endi oyna ko'rinib turgan holatda yana bir marta chaqiramiz —
+    // shu safar o'sha yuklashlar to'g'ri ishga tushadi.
+    applyLang();
     initNotifications();
     await restoreAdminViewState();
   }
