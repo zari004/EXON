@@ -8482,7 +8482,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     var video = document.getElementById('camVideo');
     var canvas = document.getElementById('camCanvas');
     var w = video.videoWidth || 640, h = video.videoHeight || 480;
-    var maxDim = 900;
+    // Baza hajmini tejash uchun kichraytirilgan (avval 900px edi) — joylashuvni
+    // tasdiqlash uchun bu yetarli, faqat yangi suratlarga ta'sir qiladi
+    var maxDim = 480;
     var scale = Math.min(1, maxDim / Math.max(w, h));
     canvas.width = w * scale; canvas.height = h * scale;
     canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);

@@ -1,0 +1,43 @@
+name: Baza hajmini kuzatish
+
+# Supabase'ning bepul tarifida 500 MB database limiti bor. Bu ish har kuni
+# bazaning joriy hajmini tekshiradi va agar limitning 70%'idan oshib ketsa
+# (odatiy holatda hech qanday xabar yubormaydi — faqat xavf paydo bo'lganda),
+# "EXON Backups" Telegram guruhiga ogohlantirish yuboradi.
+on:
+  schedule:
+    - cron: '0 5 * * *' # har kuni soat 05:00 UTC (10:00 Toshkent)
+  workflow_dispatch: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: postgresql-client-17 o'rnatish
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -yqq postgresql-common
+          yes '' | sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+          sudo apt-get install -yqq postgresql-client-17
+
+      - name: Baza hajmini o'lchash va kerak bo'lsa ogohlantirish
+        env:
+          DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_BACKUP_CHAT_ID }}
+        run: |
+          set -e
+          PSQL=/usr/lib/postgresql/17/bin/psql
+          [ -x "$PSQL" ] || PSQL=psql
+          USED_BYTES=$("$PSQL" "$DATABASE_URL" -t -A -c "SELECT COALESCE(SUM(pg_database_size(datname)), 0)::bigint FROM pg_database;" | tr -d '[:space:]')
+          LIMIT_BYTES=$((500 * 1024 * 1024))
+          PERCENT=$(( USED_BYTES * 1000 / LIMIT_BYTES ))  # 1 o'nlik xona uchun x10
+          USED_MB=$(( USED_BYTES / 1024 / 1024 ))
+          echo "Ishlatilgan: ${USED_MB} MB / 500 MB (${PERCENT}0 promille, ya'ni $((PERCENT / 10)).$((PERCENT % 10))%)"
+          if [ "$PERCENT" -ge 700 ]; then
+            curl -sS -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
+              -d chat_id="$CHAT_ID" \
+              -d text="⚠️ EXON baza hajmi xavotirli darajada: ${USED_MB} MB / 500 MB ($((PERCENT / 10)).$((PERCENT % 10))%) ishlatilgan. Supabase'da tozalash yoki tarifni oshirishni ko'rib chiqing." \
+              -o /dev/null
+            echo "Ogohlantirish yuborildi (limit >= 70%)"
+          fi
