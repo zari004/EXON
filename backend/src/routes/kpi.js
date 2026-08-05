@@ -248,7 +248,8 @@ function fmtAmount(n) {
 // KPI, bosh menejer tomonidan muddat oxirida bajarilgandan qo'lda tasdiqlanadi
 // ══════════════════════════════════════════════════════════
 
-const KPI_AWARD_RECURRENCES = ['once', 'monthly'];
+const KPI_AWARD_RECURRENCES = ['once', 'monthly', 'quarterly'];
+const KPI_RECURRENCE_INTERVAL = { monthly: '1 month', quarterly: '3 months' };
 
 // GET /api/kpi/awards — barcha KPI topshiriqlari (boshqaruv ko'rinishi)
 router.get('/awards', auth.requireAuth, requireKpiView, async (req, res) => {
@@ -256,7 +257,7 @@ router.get('/awards', auth.requireAuth, requireKpiView, async (req, res) => {
     const rows = await db.all(`
       SELECT ka.id, ka.employee_id, ka.amount, ka.reason, ka.status, ka.recurrence,
              to_char(ka.due_date, 'YYYY-MM-DD') AS due_date,
-             ka.decided_by, ka.decided_at, ka.created_at, u.name AS employee_name
+             ka.decided_by, ka.decided_at, ka.decision_note, ka.created_at, u.name AS employee_name
       FROM kpi_awards ka JOIN admin_users u ON u.id = ka.employee_id
       WHERE u.role != 'superadmin'
       ORDER BY (ka.status = 'pending') DESC, ka.due_date ASC
@@ -271,7 +272,7 @@ router.get('/awards', auth.requireAuth, requireKpiView, async (req, res) => {
 router.get('/my-awards', auth.requireAuth, async (req, res) => {
   try {
     const rows = await db.all(`
-      SELECT id, amount, reason, status, recurrence, to_char(due_date, 'YYYY-MM-DD') AS due_date, decided_at
+      SELECT id, amount, reason, status, recurrence, to_char(due_date, 'YYYY-MM-DD') AS due_date, decided_at, decision_note
       FROM kpi_awards WHERE employee_id = ?
       ORDER BY (status = 'pending') DESC, due_date DESC
     `, [req.user.userId]);
@@ -337,38 +338,44 @@ router.post('/awards/:id/decide', auth.requireAuth, requireKpiManage, async (req
   try {
     const approved = !!req.body.approved;
     const status = approved ? 'approved' : 'rejected';
+    // Bosh menejer nima uchun tasdiqlagani/rad etganini yozib qoldirishi mumkin —
+    // xodimning o'ziga ham bildirishnoma va KPI kartasi orqali ko'rsatiladi
+    const note = String(req.body.note || '').trim().slice(0, 1000) || null;
 
     // due_date to_char orqali matn sifatida qaytariladi — pg'ning DATE ustunini
     // JS Date obyektiga aylantirishi server TZ'siga bog'liq bo'lib, keyingi
     // oy hisoblanganda sana bir kun surilib ketishi mumkin edi (shu tufayli
     // yangi topshiriq "muddati yaqin" bo'lib darhol qayta chiqib ketardi)
     const award = await db.get(
-      `UPDATE kpi_awards SET status = ?, decided_by = ?, decided_at = NOW(), updated_at = NOW()
+      `UPDATE kpi_awards SET status = ?, decided_by = ?, decided_at = NOW(), decision_note = ?, updated_at = NOW()
        WHERE id = ? AND status = 'pending'
        RETURNING *, to_char(due_date, 'YYYY-MM-DD') AS due_date_str`,
-      [status, req.user.userId, req.params.id]
+      [status, req.user.userId, note, req.params.id]
     );
     if (!award) {
       const existing = await db.get('SELECT id, status FROM kpi_awards WHERE id = ?', [req.params.id]);
       if (!existing) return res.status(404).json({ success: false, error: 'Topilmadi' });
       return res.status(400).json({ success: false, error: 'Bu topshiriq allaqachon hal qilingan' });
     }
+    const noteSuffix = note ? ' Izoh: ' + note : '';
     await notifications.notify(
       award.employee_id,
       approved ? 'kpi_award_approved' : 'kpi_award_rejected',
       approved ? 'KPI tasdiqlandi' : 'KPI berilmadi',
-      approved
+      (approved
         ? 'Bu oy "' + award.reason + '" vazifasi uchun ' + fmtAmount(award.amount) + ' miqdorida KPI sizga beriladi.'
         : 'Bu oy "' + award.reason + '" vazifasi uchun KPI sizga berilmaydi. Sababi: siz ushbu vazifani bajarmadingiz.'
+      ) + noteSuffix
     );
-    if (award.recurrence === 'monthly') {
+    const interval = KPI_RECURRENCE_INTERVAL[award.recurrence];
+    if (interval) {
       const next = await db.get(
-        "SELECT to_char((?::date + INTERVAL '1 month')::date, 'YYYY-MM-DD') AS next_date",
-        [award.due_date_str]
+        "SELECT to_char((?::date + ?::interval)::date, 'YYYY-MM-DD') AS next_date",
+        [award.due_date_str, interval]
       );
-      const inserted = await db.run(
-        `INSERT INTO kpi_awards (employee_id, amount, reason, due_date, recurrence, created_by) VALUES (?, ?, ?, ?, 'monthly', ?)`,
-        [award.employee_id, award.amount, award.reason, next.next_date, award.created_by]
+      await db.run(
+        `INSERT INTO kpi_awards (employee_id, amount, reason, due_date, recurrence, created_by) VALUES (?, ?, ?, ?, ?, ?)`,
+        [award.employee_id, award.amount, award.reason, next.next_date, award.recurrence, award.created_by]
       );
       await notifications.notify(
         award.employee_id, 'kpi_award_pending', 'Yangi KPI belgilandi',

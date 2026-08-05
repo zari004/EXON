@@ -1376,6 +1376,7 @@ body{
 [data-theme="light"] .kpi-award-card__name{color:#1a2117}
 .kpi-award-card__amount{color:var(--green-hi);font-weight:700;font-size:13px;white-space:nowrap;flex-shrink:0}
 .kpi-award-card__reason{font-size:12.5px;color:var(--gray);margin-top:6px;line-height:1.4}
+.kpi-award-card__note{font-size:12px;color:var(--gray);margin-top:8px;line-height:1.4;padding:8px 10px;background:var(--surface);border-radius:8px;border-left:2px solid var(--green-deep)}
 .kpi-award-card__meta{font-size:11px;color:var(--gray-dim);margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .kpi-award-badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;flex-shrink:0}
 .kpi-award-badge--pending{background:rgba(240,165,0,.15);color:#F0A500}
@@ -2691,6 +2692,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         <select id="kpiAwardRecurrence">
           <option value="once" data-i18n="kpi.recurrence.once">Bir martalik</option>
           <option value="monthly" data-i18n="kpi.recurrence.monthly">Har oy avtomatik takrorlansin</option>
+          <option value="quarterly" data-i18n="kpi.recurrence.quarterly">Har 3 oyda avtomatik takrorlansin</option>
         </select>
       </div>
       <p class="kpi-modal-hint" data-i18n="kpi.hint">Saqlagach xodimga bildirishnoma boradi. Belgilangan sanadan bir kun oldin sizga ushbu vazifa bajarildimi deb so'raladi. "Har oy avtomatik" tanlansa, har safar tasdiqlagach/rad etgach navbatdagi oy uchun avtomatik yangi topshiriq ochiladi.</p>
@@ -2839,6 +2841,22 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     <div class="modal-actions">
       <button type="button" class="modal-cancel" id="confirmModalCancel" data-i18n="modal.cancel">Bekor qilish</button>
       <button type="button" class="modal-danger" id="confirmModalOk" data-i18n="modal.confirm.yes">Ha</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ KPI TASDIQLASH/RAD ETISH — IZOH BILAN ══════════ -->
+<div class="modal-overlay" id="kpiDecideModal">
+  <div class="modal-box" style="max-width:420px">
+    <h3 id="kpiDecideModalTitle">Tasdiqlash</h3>
+    <p id="kpiDecideModalMsg" style="color:var(--gray);font-size:13.5px;line-height:1.5;margin-bottom:14px"></p>
+    <div class="field">
+      <label data-i18n="kpi.decide.note.label">Izoh (ixtiyoriy) — xodimga ko'rinadi</label>
+      <textarea id="kpiDecideNote" rows="3" data-i18n-ph="kpi.decide.note.ph" placeholder="Masalan: yaxshi natija, davom eting!"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="modal-cancel" id="kpiDecideCancel" data-i18n="modal.cancel">Bekor qilish</button>
+      <button type="button" class="modal-save" id="kpiDecideOk" data-i18n="modal.confirm.yes">Ha</button>
     </div>
   </div>
 </div>
@@ -3302,6 +3320,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'kpi.status.approved': 'Tasdiqlandi',
       'kpi.status.rejected': 'Berilmadi',
       'kpi.recurring': '↻ har oy',
+      'kpi.recurring.monthly': '↻ har oy',
+      'kpi.recurring.quarterly': '↻ har 3 oyda',
       'kpi.due': 'Muddat',
       'kpi.error.due_required': 'Sana tanlanmagan',
       'kpi.count': 'ta KPI',
@@ -3311,6 +3331,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'kpi.del.title': "O'chirish",
       'kpi.confirm.approve': 'Xodim bu vazifani bajargani tasdiqlanadi. Davom etasizmi?',
       'kpi.confirm.reject': "Xodim bu vazifani bajarmagan deb belgilanadi. Davom etasizmi?",
+      'kpi.decide.note.label': "Izoh (ixtiyoriy) — xodimga ko'rinadi",
+      'kpi.decide.note.ph': 'Masalan: yaxshi natija, davom eting!',
+      'kpi.decide.note.shown': 'Izoh: ',
       'kpi.confirm.del': "KPI topshirig'ini o'chirishni tasdiqlaysizmi?",
       'kpi.modal.new': "Yangi KPI topshirig'i",
       'kpi.modal.edit': "KPI topshirig'ini tahrirlash",
@@ -3322,6 +3345,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'kpi.field.recurrence': 'Takrorlanishi',
       'kpi.recurrence.once': 'Bir martalik',
       'kpi.recurrence.monthly': 'Har oy avtomatik takrorlansin',
+      'kpi.recurrence.quarterly': 'Har 3 oyda avtomatik takrorlansin',
       'kpi.hint': 'Saqlagach xodimga bildirishnoma boradi. Belgilangan sanadan bir kun oldin sizga ushbu vazifa bajarildimi deb so\'raladi. "Har oy avtomatik" tanlansa, har safar tasdiqlagach/rad etgach navbatdagi oy uchun avtomatik yangi topshiriq ochiladi.',
       'salary.notset': 'Oylik maosh belgilanmagan',
       'salary.remaining': 'Qoladi',
@@ -3646,6 +3670,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'kpi.status.approved': 'Подтверждено',
       'kpi.status.rejected': 'Не выполнено',
       'kpi.recurring': '↻ ежемесячно',
+      'kpi.recurring.monthly': '↻ ежемесячно',
+      'kpi.recurring.quarterly': '↻ каждые 3 месяца',
       'kpi.due': 'Срок',
       'kpi.error.due_required': 'Дата не выбрана',
       'kpi.count': 'KPI',
@@ -3655,6 +3681,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'kpi.del.title': 'Удалить',
       'kpi.confirm.approve': 'Сотруднику будет подтверждено выполнение задания. Продолжить?',
       'kpi.confirm.reject': 'Сотрудник будет отмечен как не выполнивший задание. Продолжить?',
+      'kpi.decide.note.label': 'Комментарий (необязательно) — увидит сотрудник',
+      'kpi.decide.note.ph': 'Например: отличный результат, продолжайте в том же духе!',
+      'kpi.decide.note.shown': 'Комментарий: ',
       'kpi.confirm.del': 'Удалить это задание KPI?',
       'kpi.modal.new': 'Новое задание KPI',
       'kpi.modal.edit': 'Редактировать задание KPI',
@@ -3666,6 +3695,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'kpi.field.recurrence': 'Повторение',
       'kpi.recurrence.once': 'Разовое',
       'kpi.recurrence.monthly': 'Повторять автоматически каждый месяц',
+      'kpi.recurrence.quarterly': 'Повторять автоматически каждые 3 месяца',
       'kpi.hint': 'После сохранения сотруднику придёт уведомление. За день до указанной даты у вас спросят, выполнено ли задание. При выборе "Каждый месяц" после каждого решения автоматически создаётся новое задание на следующий месяц.',
       'salary.notset': 'Зарплата не установлена',
       'salary.remaining': 'Осталось',
@@ -3990,6 +4020,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'kpi.status.approved': 'Approved',
       'kpi.status.rejected': 'Not given',
       'kpi.recurring': '↻ monthly',
+      'kpi.recurring.monthly': '↻ monthly',
+      'kpi.recurring.quarterly': '↻ every 3 months',
       'kpi.due': 'Due',
       'kpi.error.due_required': 'Date not selected',
       'kpi.count': 'KPIs',
@@ -3999,6 +4031,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'kpi.del.title': 'Delete',
       'kpi.confirm.approve': 'The employee will be confirmed as having completed this task. Continue?',
       'kpi.confirm.reject': 'The employee will be marked as not having completed this task. Continue?',
+      'kpi.decide.note.label': "Comment (optional) — visible to the employee",
+      'kpi.decide.note.ph': 'E.g.: great result, keep it up!',
+      'kpi.decide.note.shown': 'Comment: ',
       'kpi.confirm.del': 'Delete this KPI assignment?',
       'kpi.modal.new': 'New KPI assignment',
       'kpi.modal.edit': 'Edit KPI assignment',
@@ -4010,6 +4045,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'kpi.field.recurrence': 'Recurrence',
       'kpi.recurrence.once': 'One-time',
       'kpi.recurrence.monthly': 'Repeat automatically every month',
+      'kpi.recurrence.quarterly': 'Repeat automatically every 3 months',
       'kpi.hint': 'Once saved, the employee gets notified. One day before the due date, you\'ll be asked whether the task was completed. If "monthly" is selected, a new assignment for the next month is created automatically after each decision.',
       'salary.notset': 'Salary not set',
       'salary.remaining': 'Remaining',
@@ -7856,6 +7892,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   var KPI_AWARD_EDIT_ID = null;
   var KPI_AWARD_DECIDE_LOCKS = {};
   function kpiAwardStatusLabel(status) { return T('kpi.status.' + status); }
+  function recurringBadgeLabel(recurrence) {
+    return (recurrence === 'monthly' || recurrence === 'quarterly') ? T('kpi.recurring.' + recurrence) : '';
+  }
 
   function kpiDefaultMonth() {
     var now = new Date();
@@ -8159,7 +8198,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     opts = opts || {};
     var badgeClass = 'kpi-award-badge--' + a.status;
     var cardClass = 'kpi-award-card' + (kpiAwardIsDueSoon(a) ? ' kpi-award-card--pending-review' : '');
-    var recurringBadge = a.recurrence === 'monthly' ? '<span class="kpi-award-badge kpi-award-badge--recurring">' + esc(T('kpi.recurring')) + '</span>' : '';
+    var recurringBadge = recurringBadgeLabel(a.recurrence) ? '<span class="kpi-award-badge kpi-award-badge--recurring">' + esc(recurringBadgeLabel(a.recurrence)) + '</span>' : '';
     var manageTools = KPI_CAN_MANAGE
       ? '<button type="button" class="kpi-award-card__del" data-kpi-award-edit="' + a.id + '" title="' + esc(T('kpi.edit.title')) + '">✎</button>' +
         '<button type="button" class="kpi-award-card__del" data-kpi-award-del="' + a.id + '" title="' + esc(T('kpi.del.title')) + '">✕</button>'
@@ -8174,6 +8213,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     // o'rniga sabab sarlavha sifatida chiqadi; "Barchasi"da esa xodim ismi ko'rinadi
     var titleText = opts.hideName ? a.reason : (a.employee_name || '');
     var reasonRow = opts.hideName ? '' : ('<div class="kpi-award-card__reason">' + esc(a.reason) + '</div>');
+    var noteRow = a.decision_note ? '<div class="kpi-award-card__note">' + esc(T('kpi.decide.note.shown')) + esc(a.decision_note) + '</div>' : '';
     return '<div class="' + cardClass + '" data-kpi-award-card="' + a.id + '">' +
       '<div class="kpi-award-card__top">' +
         '<span class="kpi-award-card__name">' + esc(titleText) + '</span>' +
@@ -8186,6 +8226,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         '<span>' + esc(T('kpi.due')) + ': ' + a.due_date + '</span>' +
         manageTools +
       '</div>' +
+      noteRow +
       actions +
     '</div>';
   }
@@ -8209,18 +8250,51 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     });
   }
 
+  // KPI tasdiqlash/rad etishda ixtiyoriy izoh yozish imkoniyati beradi —
+  // xuddi confirmDialog kabi, faqat ichida matn maydoni ham bor.
+  function kpiDecideDialog(approved) {
+    return new Promise(function (resolve) {
+      var overlay = document.getElementById('kpiDecideModal');
+      document.getElementById('kpiDecideModalTitle').textContent = approved ? T('kpi.decide.yes') : T('kpi.decide.no');
+      document.getElementById('kpiDecideModalMsg').textContent = approved ? T('kpi.confirm.approve') : T('kpi.confirm.reject');
+      var noteInput = document.getElementById('kpiDecideNote');
+      noteInput.value = '';
+      var okBtn = document.getElementById('kpiDecideOk');
+      var cancelBtn = document.getElementById('kpiDecideCancel');
+      okBtn.className = approved ? 'modal-save' : 'modal-danger';
+      function cleanup(result) {
+        overlay.classList.remove('is-active');
+        okBtn.removeEventListener('click', onOk);
+        cancelBtn.removeEventListener('click', onCancel);
+        overlay.removeEventListener('click', onBackdrop);
+        document.removeEventListener('keydown', onKey);
+        resolve(result);
+      }
+      function onOk() { cleanup({ confirmed: true, note: noteInput.value.trim() }); }
+      function onCancel() { cleanup({ confirmed: false, note: '' }); }
+      function onBackdrop(e) { if (e.target === overlay) cleanup({ confirmed: false, note: '' }); }
+      function onKey(e) { if (e.key === 'Escape') cleanup({ confirmed: false, note: '' }); }
+      okBtn.addEventListener('click', onOk);
+      cancelBtn.addEventListener('click', onCancel);
+      overlay.addEventListener('click', onBackdrop);
+      document.addEventListener('keydown', onKey);
+      overlay.classList.add('is-active');
+    });
+  }
+
   async function decideKpiAward(id, approved) {
     if (KPI_AWARD_DECIDE_LOCKS[id]) return;
-    if (!(await confirmDialog(approved ? T('kpi.confirm.approve') : T('kpi.confirm.reject')))) return;
+    var decision = await kpiDecideDialog(approved);
+    if (!decision.confirmed) return;
     KPI_AWARD_DECIDE_LOCKS[id] = true;
     var card = document.querySelector('[data-kpi-award-card="' + id + '"]');
     if (card) {
       card.querySelectorAll('button').forEach(function (btn) { btn.disabled = true; });
     }
     try {
-      await apiFetch('/api/kpi/awards/' + id + '/decide', { method: 'POST', body: JSON.stringify({ approved: approved }) });
+      await apiFetch('/api/kpi/awards/' + id + '/decide', { method: 'POST', body: JSON.stringify({ approved: approved, note: decision.note }) });
       KPI_AWARDS_ALL = KPI_AWARDS_ALL.map(function (a) {
-        return a.id === id ? Object.assign({}, a, { status: approved ? 'approved' : 'rejected' }) : a;
+        return a.id === id ? Object.assign({}, a, { status: approved ? 'approved' : 'rejected', decision_note: decision.note || null }) : a;
       });
       renderKpiPendingPanel();
       renderKpiAwardsMain();
@@ -8301,10 +8375,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 
   function renderMyKpiAwardCard(a) {
     var badgeClass = 'kpi-award-badge--' + a.status;
-    var recurringBadge = a.recurrence === 'monthly' ? '<span class="kpi-award-badge kpi-award-badge--recurring">' + esc(T('kpi.recurring')) + '</span>' : '';
+    var recurringBadge = recurringBadgeLabel(a.recurrence) ? '<span class="kpi-award-badge kpi-award-badge--recurring">' + esc(recurringBadgeLabel(a.recurrence)) + '</span>' : '';
     var extra = a.status === 'pending'
       ? '<div class="kpi-award-card__reason">' + esc(T('prod.kpi.pending')) + '</div>'
       : (a.status === 'rejected' ? '<div class="kpi-award-card__reason">' + esc(T('prod.kpi.rejected')) + '</div>' : '');
+    var noteRow = a.decision_note ? '<div class="kpi-award-card__note">' + esc(T('kpi.decide.note.shown')) + esc(a.decision_note) + '</div>' : '';
     return '<div class="kpi-award-card">' +
       '<div class="kpi-award-card__top">' +
         '<span class="kpi-award-card__name">' + esc(a.reason) + '</span>' +
@@ -8316,6 +8391,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         '<span>' + esc(T('kpi.due')) + ': ' + a.due_date + '</span>' +
       '</div>' +
       extra +
+      noteRow +
     '</div>';
   }
 

@@ -284,6 +284,10 @@ const init = async () => {
   // 'once' — bir martalik, 'monthly' — har oyda avtomatik takrorlanadi
   // (bosh menejer har safar tasdiqlagach/rad etgach navbatdagi oy uchun avtomatik yangi topshiriq ochiladi)
   await pool.query(`ALTER TABLE kpi_awards ADD COLUMN IF NOT EXISTS recurrence TEXT NOT NULL DEFAULT 'once'`);
+  // Bosh menejer tasdiqlagan/rad etganda yozadigan izoh — xodimning o'ziga
+  // ham (bildirishnoma + KPI kartasida) ko'rsatiladi, nima uchun shunday
+  // qaror qilinganini tushuntirish uchun
+  await pool.query(`ALTER TABLE kpi_awards ADD COLUMN IF NOT EXISTS decision_note TEXT`);
 
   // ── KELDI-KETDI (davomat) ──
   // Ishxona hududi — IT bo'limi/superadmin belgilaydi, GPS geofencing uchun (bitta qator, id=1)
