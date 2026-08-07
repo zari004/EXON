@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Admin — EXON</title>
-<link rel="stylesheet" href="assets/css/style.css?v=16" />
+<link rel="stylesheet" href="assets/css/style.css?v=17" />
 <link rel="manifest" href="/admin-manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -1954,6 +1954,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         <svg viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z" stroke="currentColor" stroke-width="1.7"/><circle cx="7" cy="7" r="1.5" fill="currentColor"/></svg>
         <span>Narxlar</span>
       </button>
+      <button class="sidebar-item" data-tab="partners">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 9h17M3.5 15h17M12 3c2.2 2.4 3.3 5.3 3.3 9s-1.1 6.6-3.3 9c-2.2-2.4-3.3-5.3-3.3-9S9.8 5.4 12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>
+        <span data-i18n="tab.partners">Hamkorlar</span>
+      </button>
 
       <div class="sidebar-divider" id="sidebarDividerSite"></div>
       <div class="sidebar-section-label" data-i18n="more.section.manage">Boshqaruv</div>
@@ -2055,6 +2059,16 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       <button class="btn-add" onclick="openPricingForm()">+ Yangi paket</button>
     </div>
     <div class="item-list" id="pricingList"></div>
+  </section>
+
+  <!-- HAMKORLAR -->
+  <section class="admin-panel" id="panel-partners">
+    <div class="panel-head">
+      <h2 data-i18n="partners.title">Hamkorlar</h2>
+      <button class="btn-add" onclick="openPartnerForm()" data-i18n="partners.add">+ Yangi hamkor</button>
+    </div>
+    <p style="color:var(--gray);font-size:13.5px;margin:-10px 0 20px" data-i18n="partners.desc">Bu yerga qo'shilgan logotiplar sayt bosh sahifasidagi "Bizga ishonishdi" aylanma karuselida ko'rinadi.</p>
+    <div class="item-list" id="partnersList"></div>
   </section>
 
   <!-- FOYDALANUVCHILAR (superadmin) -->
@@ -2783,6 +2797,27 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   </div>
 </div>
 
+<!-- ══════════ MODAL: HAMKOR FORM ══════════ -->
+<div class="modal-overlay" id="partnerModal">
+  <div class="modal-box">
+    <h3 id="partnerModalTitle" data-i18n="partners.new">Yangi hamkor</h3>
+    <form id="partnerForm">
+      <input type="hidden" id="partnerId" />
+      <div class="field"><label data-i18n="field.partnerName">Kompaniya nomi</label><input type="text" id="partnerName" required placeholder="HP" /></div>
+      <div class="field">
+        <label data-i18n="field.partnerLogo">Logotip</label>
+        <div class="img-preview" id="partnerImgPreview" data-i18n="image.none">Rasm tanlanmagan</div>
+        <input type="file" id="partnerImgFile" accept="image/*" />
+      </div>
+      <div class="form-msg" id="partnerFormMsg"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-cancel" onclick="closeModal('partnerModal')">Bekor qilish</button>
+        <button type="submit" class="modal-save">Saqlash</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- ══════════ MODAL: PAROLNI TIKLASH (email kod orqali) ══════════ -->
 <div class="modal-overlay" id="resetPwdModal">
   <div class="modal-box" style="max-width:400px">
@@ -3179,6 +3214,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tab.cases': 'Keyslar',
       'tab.posts': 'Blog',
       'tab.pricing': 'Narxlar',
+      'tab.partners': 'Hamkorlar',
       'tab.users': 'Foydalanuvchilar',
       'tab.permissions': 'Ruxsatlar',
       'tab.tasks': 'Vazifalar',
@@ -3239,6 +3275,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'pricing.empty': "Hali paketlar yo'q",
       'pricing.new': 'Yangi paket',
       'pricing.edit': 'Paketni tahrirlash',
+      'partners.title': 'Hamkorlar',
+      'partners.add': '+ Yangi hamkor',
+      'partners.desc': 'Bu yerga qo\'shilgan logotiplar sayt bosh sahifasidagi "Bizga ishonishdi" aylanma karuselida ko\'rinadi.',
+      'partners.empty': "Hali hamkorlar yo'q",
+      'partners.new': 'Yangi hamkor',
+      'partners.edit': 'Hamkorni tahrirlash',
+      'partners.imageRequired': 'Logotip yuklash majburiy',
       'users.title': 'Foydalanuvchilar',
       'users.empty': "Hali ro'yxatdan o'tganlar yo'q",
       'users.pending': 'Kutmoqda',
@@ -3278,6 +3321,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.primary': 'Asosiy (yashil)',
       'field.secondary': 'Ikkinchi darajali',
       'field.featured': 'Eng mashhur sifatida belgilash',
+      'field.partnerName': 'Kompaniya nomi',
+      'field.partnerLogo': 'Logotip',
       'modal.save': 'Saqlash',
       'modal.cancel': 'Bekor qilish',
       'confirm.title': 'Tasdiqlash',
@@ -3286,6 +3331,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.case': "Bu keysni o'chirishni tasdiqlaysizmi?",
       'confirm.del.post': "Bu maqolani o'chirishni tasdiqlaysizmi?",
       'confirm.del.price': "Bu paketni o'chirishni tasdiqlaysizmi?",
+      'confirm.del.partner': "Bu hamkorni o'chirishni tasdiqlaysizmi?",
       'role.superadmin': 'Superadmin',
       'role.it_bolimi': "IT bo'limi",
       'role.seo': 'SEO',
@@ -3529,6 +3575,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tab.cases': 'Кейсы',
       'tab.posts': 'Блог',
       'tab.pricing': 'Тарифы',
+      'tab.partners': 'Партнёры',
       'tab.users': 'Пользователи',
       'tab.permissions': 'Доступы',
       'tab.tasks': 'Задачи',
@@ -3589,6 +3636,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'pricing.empty': 'Пакетов пока нет',
       'pricing.new': 'Новый пакет',
       'pricing.edit': 'Редактировать пакет',
+      'partners.title': 'Партнёры',
+      'partners.add': '+ Новый партнёр',
+      'partners.desc': 'Добавленные здесь логотипы отображаются во вращающейся 3D-карусели в разделе "Нам доверяют" на главной странице.',
+      'partners.empty': 'Партнёров пока нет',
+      'partners.new': 'Новый партнёр',
+      'partners.edit': 'Редактировать партнёра',
+      'partners.imageRequired': 'Необходимо загрузить логотип',
       'users.title': 'Пользователи',
       'users.empty': 'Зарегистрированных пользователей пока нет',
       'users.pending': 'Ожидает',
@@ -3628,6 +3682,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.primary': 'Основная (зелёная)',
       'field.secondary': 'Вторичная',
       'field.featured': 'Отметить как популярный',
+      'field.partnerName': 'Название компании',
+      'field.partnerLogo': 'Логотип',
       'modal.save': 'Сохранить',
       'modal.cancel': 'Отмена',
       'confirm.title': 'Подтверждение',
@@ -3636,6 +3692,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.case': 'Удалить этот кейс?',
       'confirm.del.post': 'Удалить эту статью?',
       'confirm.del.price': 'Удалить этот пакет?',
+      'confirm.del.partner': 'Удалить этого партнёра?',
       'role.superadmin': 'Суперадмин',
       'role.it_bolimi': 'IT отдел',
       'role.seo': 'SEO',
@@ -3879,6 +3936,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tab.cases': 'Cases',
       'tab.posts': 'Blog',
       'tab.pricing': 'Pricing',
+      'tab.partners': 'Partners',
       'tab.users': 'Users',
       'tab.permissions': 'Permissions',
       'tab.tasks': 'Tasks',
@@ -3939,6 +3997,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'pricing.empty': 'No packages yet',
       'pricing.new': 'New package',
       'pricing.edit': 'Edit package',
+      'partners.title': 'Partners',
+      'partners.add': '+ New partner',
+      'partners.desc': 'Logos added here appear in the rotating 3D carousel in the "Trusted by" section on the homepage.',
+      'partners.empty': 'No partners yet',
+      'partners.new': 'New partner',
+      'partners.edit': 'Edit partner',
+      'partners.imageRequired': 'A logo upload is required',
       'users.title': 'Users',
       'users.empty': 'No registered users yet',
       'users.pending': 'Pending',
@@ -3978,6 +4043,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.primary': 'Primary (green)',
       'field.secondary': 'Secondary',
       'field.featured': 'Mark as most popular',
+      'field.partnerName': 'Company name',
+      'field.partnerLogo': 'Logo',
       'modal.save': 'Save',
       'modal.cancel': 'Cancel',
       'confirm.title': 'Confirm',
@@ -3986,6 +4053,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.case': 'Delete this case?',
       'confirm.del.post': 'Delete this article?',
       'confirm.del.price': 'Delete this package?',
+      'confirm.del.partner': 'Delete this partner?',
       'role.superadmin': 'Superadmin',
       'role.it_bolimi': 'IT department',
       'role.seo': 'SEO',
@@ -4298,7 +4366,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       if (sidebarRoleEl) sidebarRoleEl.textContent = roleLabel;
       var moreRoleEl = document.getElementById('moreProfileRole');
       if (moreRoleEl) moreRoleEl.textContent = roleLabel;
-      loadDashboard(); loadCases(); loadPosts(); loadPricing();
+      loadDashboard(); loadCases(); loadPosts(); loadPricing(); loadPartners();
       if (USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi') { loadUsers(); loadPermissions(); }
       // Hozir ochiq bo'lgan bo'limning dinamik (JS orqali chizilgan) kontenti
       // ham yangi tilda qayta chiziladi
@@ -4361,7 +4429,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     // Admin/it_bolimi har doim "Sayt boshqaruvi" bo'limini to'liq ko'radi —
     // oldingi (oddiy foydalanuvchi) sessiyasidan qolgan "yashirin" holatni tozalaydi
     if (isSuperLevel) {
-      ['dashboard', 'cases', 'posts', 'pricing'].forEach(function (tab) {
+      ['dashboard', 'cases', 'posts', 'pricing', 'partners'].forEach(function (tab) {
         var btn = document.querySelector('.sidebar-item[data-tab="' + tab + '"]');
         if (btn) btn.style.display = '';
       });
@@ -4413,7 +4481,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     try {
       var data = await apiFetch('/api/admin/my-permissions');
       var allowed = data.tabs || ['dashboard'];
-      var siteTabs = ['dashboard', 'cases', 'posts', 'pricing'];
+      var siteTabs = ['dashboard', 'cases', 'posts', 'pricing', 'partners'];
       var boshqaruvTabs = ['tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
       var anySiteVisible = false;
       siteTabs.concat(boshqaruvTabs).forEach(function (tab) {
@@ -4925,7 +4993,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var target = document.querySelector('.sidebar-item[data-tab="' + btn.dataset.tab + '"]');
       var visible = !!(target && target.style.display !== 'none');
       btn.style.display = visible ? '' : 'none';
-      if (visible && ['cases', 'posts', 'pricing'].indexOf(btn.dataset.tab) !== -1) anySiteVisible = true;
+      if (visible && ['cases', 'posts', 'pricing', 'partners'].indexOf(btn.dataset.tab) !== -1) anySiteVisible = true;
     });
     var siteLabel = document.getElementById('moreSectionSite');
     var siteList = document.getElementById('moreListSite');
@@ -5337,6 +5405,72 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   };
 
   // ══════════════════════════════════════════════════════════
+  // HAMKORLAR
+  // ══════════════════════════════════════════════════════════
+  let partnersCache = [];
+  async function loadPartners() {
+    try {
+      const data = await apiFetch('/api/partners');
+      partnersCache = data.partners;
+      const list = document.getElementById('partnersList');
+      list.innerHTML = partnersCache.length ? partnersCache.map(function (p) {
+        return '<div class="item-row">' +
+          '<img class="item-row__thumb" style="object-fit:contain;background:var(--panel-2, rgba(127,127,127,.08))" src="' + p.image + '" />' +
+          '<div class="item-row__body"><div class="item-row__title">' + esc(p.name) + '</div></div>' +
+          '<div class="item-row__actions">' +
+          '<button class="icon-btn" onclick="openPartnerForm(' + p.id + ')" title="' + T('item.edit') + '">✎</button>' +
+          '<button class="icon-btn danger" onclick="deletePartner(' + p.id + ')" title="' + T('item.delete') + '">✕</button>' +
+          '</div></div>';
+      }).join('') : '<div class="empty-state">' + T('partners.empty') + '</div>';
+    } catch (err) { console.error(err); }
+  }
+
+  window.openPartnerForm = function (id) {
+    const existing = id ? partnersCache.find(function (p) { return p.id === id; }) : null;
+    document.getElementById('partnerModalTitle').textContent = existing ? T('partners.edit') : T('partners.new');
+    document.getElementById('partnerId').value = existing ? existing.id : '';
+    document.getElementById('partnerName').value = existing ? existing.name : '';
+    const preview = document.getElementById('partnerImgPreview');
+    preview.innerHTML = existing && existing.image ? '<img src="' + existing.image + '" />' : T('image.none');
+    preview.dataset.value = existing && existing.image ? existing.image : '';
+    document.getElementById('partnerImgFile').value = '';
+    document.getElementById('partnerFormMsg').textContent = '';
+    document.getElementById('partnerModal').classList.add('is-active');
+  };
+
+  document.getElementById('partnerImgFile').addEventListener('change', async function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const base64 = await fileToResizedBase64(file, 400);
+    const preview = document.getElementById('partnerImgPreview');
+    preview.innerHTML = '<img src="' + base64 + '" />';
+    preview.dataset.value = base64;
+  });
+
+  document.getElementById('partnerForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const msg = document.getElementById('partnerFormMsg');
+    msg.textContent = ''; msg.className = 'form-msg';
+    const id = document.getElementById('partnerId').value;
+    const image = document.getElementById('partnerImgPreview').dataset.value || '';
+    if (!image) { msg.textContent = T('partners.imageRequired'); msg.className = 'form-msg error'; return; }
+    const body = {
+      name: document.getElementById('partnerName').value,
+      image: image
+    };
+    try {
+      await apiFetch(id ? '/api/partners/' + id : '/api/partners', { method: id ? 'PUT' : 'POST', body: JSON.stringify(body) });
+      closeModal('partnerModal'); loadPartners();
+    } catch (err) { msg.textContent = err.message; msg.className = 'form-msg error'; }
+  });
+
+  window.deletePartner = async function (id) {
+    if (!(await confirmDialog(T('confirm.del.partner')))) return;
+    try { await apiFetch('/api/partners/' + id, { method: 'DELETE' }); loadPartners(); }
+    catch (err) { customAlert(err.message); }
+  };
+
+  // ══════════════════════════════════════════════════════════
   // FOYDALANUVCHILAR (superadmin)
   // ══════════════════════════════════════════════════════════
   var ALL_ROLES = ['it_bolimi', 'seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
@@ -5389,7 +5523,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   // ══════════════════════════════════════════════════════════
   // RUXSATLAR (IT bo'limi)
   // ══════════════════════════════════════════════════════════
-  var PERM_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
+  var PERM_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
   var PERM_ROLES = ['seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
 
   async function loadPermissions() {

@@ -458,6 +458,36 @@ ol,ul{list-style:none}
 }
 .proof__list li:hover{color:var(--gray)}
 
+/* Hamkorlar logotiplari — 3D aylanuvchi karusel (admin panelda qo'shiladi) */
+.proof__carousel{
+  width:100%;max-width:720px;height:60px;
+  perspective:1100px;perspective-origin:50% 50%;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.proof__carousel-track{
+  position:relative;width:1px;height:1px;
+  transform-style:preserve-3d;
+  animation:proof-spin 28s linear infinite;
+}
+.proof__carousel:hover .proof__carousel-track{animation-play-state:paused}
+.proof__carousel-item{
+  position:absolute;top:0;left:0;
+  width:120px;height:52px;margin:-26px 0 0 -60px;
+  display:flex;align-items:center;justify-content:center;
+  backface-visibility:hidden;
+}
+.proof__carousel-item img{
+  max-width:100%;max-height:36px;object-fit:contain;
+  filter:grayscale(1) opacity(.55);
+  transition:filter .25s var(--ease),opacity .25s var(--ease);
+}
+.proof__carousel-item:hover img{filter:grayscale(0) opacity(1)}
+@keyframes proof-spin{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
+@media (prefers-reduced-motion:reduce){
+  .proof__carousel-track{animation-duration:0s}
+}
+
 /* ==========================================================================
    ANIMATSIYALAR
    ========================================================================== */

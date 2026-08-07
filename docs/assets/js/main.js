@@ -60,7 +60,40 @@
     }
   });
 
-  /* ── 6. Teaser bo'limlar — scroll'da paydo bo'lish ──────────────────── */
+  /* ── 6. Hamkorlar logotiplari — admin paneldan olib, 3D karusel qilib
+     chizish. API ishlamasa yoki hamkor qo'shilmagan bo'lsa, statik
+     matnli ro'yxat (proof__list) o'zgarishsiz ko'rinishda qoladi. ── */
+  (function () {
+    var track = document.getElementById('proofTrack');
+    var carousel = document.getElementById('proofCarousel');
+    var fallbackList = document.getElementById('proofList');
+    if (!track || !carousel || !window.EXON_API_BASE) return;
+
+    fetch(window.EXON_API_BASE + '/api/partners')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var partners = (data && data.success && Array.isArray(data.partners)) ? data.partners : [];
+        if (!partners.length) return;
+
+        var count = partners.length;
+        var itemWidth = 120;
+        var radius = Math.round((itemWidth / 2) / Math.tan(Math.PI / count));
+        radius = Math.max(radius, 130);
+
+        track.innerHTML = partners.map(function (p, i) {
+          var angle = (360 / count) * i;
+          return '<div class="proof__carousel-item" style="transform:rotateY(' + angle + 'deg) translateZ(' + radius + 'px)">' +
+            '<img src="' + p.image + '" alt="' + p.name.replace(/"/g, '&quot;') + '" loading="lazy" />' +
+            '</div>';
+        }).join('');
+
+        carousel.style.display = '';
+        if (fallbackList) fallbackList.style.display = 'none';
+      })
+      .catch(function () { /* API ishlamasa — statik ro'yxat ko'rinishda qoladi */ });
+  })();
+
+  /* ── 7. Teaser bo'limlar — scroll'da paydo bo'lish ──────────────────── */
   var revealEls = document.querySelectorAll('.reveal');
   if (revealEls.length) {
     if ('IntersectionObserver' in window) {

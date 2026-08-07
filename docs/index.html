@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=16" />
+<link rel="stylesheet" href="assets/css/style.css?v=17" />
 <link rel="manifest" href="/manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -165,10 +165,13 @@
   <!-- ishonch lentasi -->
   <div class="proof">
     <p class="proof__label">Bizga ishonishdi</p>
-    <ul class="proof__list">
+    <ul class="proof__list" id="proofList">
       <li>HP</li><li>Lenovo</li><li>Panasonic</li><li>Grohe</li>
       <li>Frosch</li><li>Vileda</li><li>Deerma</li><li>Lovular</li>
     </ul>
+    <div class="proof__carousel" id="proofCarousel" style="display:none">
+      <div class="proof__carousel-track" id="proofTrack"></div>
+    </div>
   </div>
 </section>
 
@@ -363,7 +366,8 @@
 
 </main>
 
-<script src="assets/js/main.js?v=5"></script>
+<script src="assets/js/api-base.js?v=2"></script>
+<script src="assets/js/main.js?v=6"></script>
 <script>
 (function () {
   // Service Worker ro'yxatdan o'tkazish (keshlash/tezlik uchun —

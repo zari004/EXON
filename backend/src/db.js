@@ -86,6 +86,16 @@ const init = async () => {
   `);
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS partners (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      image TEXT NOT NULL,
+      sort_order INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS pricing (
       id SERIAL PRIMARY KEY,
       badge TEXT,
