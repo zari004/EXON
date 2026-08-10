@@ -60,17 +60,18 @@
     }
   });
 
-  /* ── 6. Hamkorlar logotiplari — admin paneldan olib, 3D karusel qilib
-     chizish. API ishlamasa yoki hamkor qo'shilmagan bo'lsa, statik
-     matnli ro'yxat (proof__list) o'zgarishsiz ko'rinishda qoladi.
-     Aylanish requestAnimationFrame orqali chiziladi — shu bilan
-     foydalanuvchi sichqoncha/barmoq bilan chapga-o'ngga sudrab, halqani
-     qo'lda ham burashi mumkin. ── */
+  /* ── 6. Hamkorlar logotiplari — faqat admin panelda haqiqiy logotip
+     qo'shilgan bo'lsagina "Bizga ishonishdi" bo'limi ko'rsatiladi. API
+     ishlamasa yoki hali hech narsa qo'shilmagan bo'lsa, bo'lim butunlay
+     yashirin qoladi — hech qanday o'ylab topilgan/noto'g'ri ma'lumot
+     ko'rsatilmaydi. Aylanish requestAnimationFrame orqali chiziladi —
+     shu bilan foydalanuvchi sichqoncha/barmoq bilan chapga-o'ngga sudrab,
+     halqani qo'lda ham burashi mumkin. ── */
   (function () {
+    var section = document.getElementById('proofSection');
     var track = document.getElementById('proofTrack');
     var carousel = document.getElementById('proofCarousel');
-    var fallbackList = document.getElementById('proofList');
-    if (!track || !carousel || !window.EXON_API_BASE) return;
+    if (!section || !track || !carousel || !window.EXON_API_BASE) return;
 
     // Kam sonli logotipda aylanish katta bo'sh joylar bilan chiroysiz
     // ko'rinadi — shu sabab kamida shuncha logotip bo'lgandagina avtomatik
@@ -138,8 +139,7 @@
       autoRotate = count >= MIN_ROTATE_COUNT;
       applyTransform();
 
-      carousel.style.display = '';
-      if (fallbackList) fallbackList.style.display = 'none';
+      section.style.display = '';
     }
 
     fetch(window.EXON_API_BASE + '/api/partners')
@@ -149,7 +149,7 @@
         if (!partners.length) return;
         renderPartners(partners);
       })
-      .catch(function () { /* API ishlamasa — statik ro'yxat ko'rinishda qoladi */ });
+      .catch(function () { /* API ishlamasa yoki hamkor qo'shilmagan bo'lsa — bo'lim yashirin qoladi */ });
   })();
 
   /* ── 7. Teaser bo'limlar — scroll'da paydo bo'lish ──────────────────── */

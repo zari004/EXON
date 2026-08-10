@@ -162,14 +162,12 @@
     </ol>
   </div>
 
-  <!-- ishonch lentasi -->
-  <div class="proof">
+  <!-- ishonch lentasi — faqat admin panelda haqiqiy hamkor logotiplari
+       qo'shilgan bo'lsa ko'rinadi (main.js orqali). Hech qanday zaxira
+       (noto'g'ri/o'ylab topilgan) ma'lumot ko'rsatilmaydi. -->
+  <div class="proof" id="proofSection" style="display:none">
     <p class="proof__label">Bizga ishonishdi</p>
-    <ul class="proof__list" id="proofList">
-      <li>HP</li><li>Lenovo</li><li>Panasonic</li><li>Grohe</li>
-      <li>Frosch</li><li>Vileda</li><li>Deerma</li><li>Lovular</li>
-    </ul>
-    <div class="proof__carousel" id="proofCarousel" style="display:none">
+    <div class="proof__carousel" id="proofCarousel">
       <div class="proof__carousel-track" id="proofTrack"></div>
     </div>
   </div>
@@ -367,7 +365,7 @@
 </main>
 
 <script src="assets/js/api-base.js?v=2"></script>
-<script src="assets/js/main.js?v=12"></script>
+<script src="assets/js/main.js?v=13"></script>
 <script>
 (function () {
   // Service Worker ro'yxatdan o'tkazish (keshlash/tezlik uchun —
