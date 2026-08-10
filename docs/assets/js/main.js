@@ -123,30 +123,47 @@
     window.addEventListener('pointerup', endDrag);
     window.addEventListener('pointercancel', endDrag);
 
+    function renderPartners(partners) {
+      var count = partners.length;
+      var itemWidth = 170;
+      var radius = Math.round((itemWidth / 2) / Math.tan(Math.PI / count));
+      radius = Math.max(radius, 190);
+
+      track.innerHTML = partners.map(function (p, i) {
+        var a = (360 / count) * i;
+        return '<div class="proof__carousel-item" style="transform:rotateY(' + a + 'deg) translateZ(' + radius + 'px)">' +
+          '<img src="' + p.image + '" alt="' + (p.name || '').replace(/"/g, '&quot;') + '" loading="lazy" />' +
+          '</div>';
+      }).join('');
+      autoRotate = count >= MIN_ROTATE_COUNT;
+      applyTransform();
+
+      carousel.style.display = '';
+      if (fallbackList) fallbackList.style.display = 'none';
+    }
+
+    // Render backendning "uxlab qolishi" (Render bepul tarifi) tufayli
+    // birinchi so'rov 30-50 soniya cho'zilishi mumkin — shu payt sahifa
+    // eski matnli ro'yxatni ko'rsatib turadi. Shu kutishni yo'qotish uchun
+    // oldingi muvaffaqiyatli natija localStorage'da saqlanadi va sahifa
+    // ochilishi bilan darhol ko'rsatiladi (keyin fon rejimida yangilanadi).
+    var CACHE_KEY = 'exon_partners_cache_v1';
+    try {
+      var cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+      if (cached && Array.isArray(cached.partners) && cached.partners.length) {
+        renderPartners(cached.partners);
+      }
+    } catch (e) { /* localStorage yo'q yoki buzilgan keshi — e'tiborsiz qoldiriladi */ }
+
     fetch(window.EXON_API_BASE + '/api/partners')
       .then(function (r) { return r.json(); })
       .then(function (data) {
         var partners = (data && data.success && Array.isArray(data.partners)) ? data.partners : [];
         if (!partners.length) return;
-
-        var count = partners.length;
-        var itemWidth = 170;
-        var radius = Math.round((itemWidth / 2) / Math.tan(Math.PI / count));
-        radius = Math.max(radius, 190);
-
-        track.innerHTML = partners.map(function (p, i) {
-          var a = (360 / count) * i;
-          return '<div class="proof__carousel-item" style="transform:rotateY(' + a + 'deg) translateZ(' + radius + 'px)">' +
-            '<img src="' + p.image + '" alt="' + p.name.replace(/"/g, '&quot;') + '" loading="lazy" />' +
-            '</div>';
-        }).join('');
-        autoRotate = count >= MIN_ROTATE_COUNT;
-        applyTransform();
-
-        carousel.style.display = '';
-        if (fallbackList) fallbackList.style.display = 'none';
+        renderPartners(partners);
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify({ partners: partners })); } catch (e) {}
       })
-      .catch(function () { /* API ishlamasa — statik ro'yxat ko'rinishda qoladi */ });
+      .catch(function () { /* API ishlamasa — kesh yoki statik ro'yxat ko'rinishda qoladi */ });
   })();
 
   /* ── 7. Teaser bo'limlar — scroll'da paydo bo'lish ──────────────────── */
