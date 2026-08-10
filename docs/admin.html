@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Admin — EXON</title>
-<link rel="stylesheet" href="assets/css/style.css?v=17" />
+<link rel="stylesheet" href="assets/css/style.css?v=18" />
 <link rel="manifest" href="/admin-manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -3277,7 +3277,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'pricing.edit': 'Paketni tahrirlash',
       'partners.title': 'Hamkorlar',
       'partners.add': '+ Yangi hamkor',
-      'partners.desc': 'Bu yerga qo\'shilgan logotiplar sayt bosh sahifasidagi "Bizga ishonishdi" aylanma karuselida ko\'rinadi.',
+      'partners.desc': 'Bu yerga qo\'shilgan logotiplar sayt bosh sahifasidagi "Bizga ishonishdi" bo\'limida ko\'rinadi. Chiroyli aylanishi uchun kamida 6 ta logotip qo\'shing — 6 tadan kam bo\'lsa, logotiplar aylanmasdan qotib turadi.',
       'partners.empty': "Hali hamkorlar yo'q",
       'partners.new': 'Yangi hamkor',
       'partners.edit': 'Hamkorni tahrirlash',
@@ -3638,7 +3638,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'pricing.edit': 'Редактировать пакет',
       'partners.title': 'Партнёры',
       'partners.add': '+ Новый партнёр',
-      'partners.desc': 'Добавленные здесь логотипы отображаются во вращающейся 3D-карусели в разделе "Нам доверяют" на главной странице.',
+      'partners.desc': 'Добавленные здесь логотипы отображаются в разделе "Нам доверяют" на главной странице. Чтобы карусель красиво вращалась, добавьте минимум 6 логотипов — если их меньше 6, логотипы остаются неподвижными.',
       'partners.empty': 'Партнёров пока нет',
       'partners.new': 'Новый партнёр',
       'partners.edit': 'Редактировать партнёра',
@@ -3999,7 +3999,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'pricing.edit': 'Edit package',
       'partners.title': 'Partners',
       'partners.add': '+ New partner',
-      'partners.desc': 'Logos added here appear in the rotating 3D carousel in the "Trusted by" section on the homepage.',
+      'partners.desc': 'Logos added here appear in the "Trusted by" section on the homepage. For the carousel to rotate nicely, add at least 6 logos — with fewer than 6, the logos stay still.',
       'partners.empty': 'No partners yet',
       'partners.new': 'New partner',
       'partners.edit': 'Edit partner',
@@ -5148,6 +5148,53 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       reader.readAsDataURL(file);
     });
   }
+
+  // ── IMAGE HELPER: base64'ni bir img-preview qutisiga qo'yish ──
+  async function setImagePreview(previewId, file, maxDim) {
+    const base64 = await fileToResizedBase64(file, maxDim);
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '<img src="' + base64 + '" />';
+    preview.dataset.value = base64;
+    return base64;
+  }
+
+  // ── Rasmni buferdan joylashtirish (Ctrl+V) — qaysi rasm maydoni
+  // hozir ochiq/ko'rinib turgan bo'lsa, o'sha yerga qo'yiladi.
+  function isVisible(el) { return !!el && el.offsetParent !== null; }
+
+  async function applyPastedImage(file) {
+    if (document.getElementById('caseModal').classList.contains('is-active')) {
+      await setImagePreview('caseImgPreview', file, 640);
+    } else if (document.getElementById('postModal').classList.contains('is-active')) {
+      await setImagePreview('postImgPreview', file, 640);
+    } else if (document.getElementById('partnerModal').classList.contains('is-active')) {
+      await setImagePreview('partnerImgPreview', file, 400);
+    } else if (isVisible(document.getElementById('storeLogoPick'))) {
+      var storeBase64 = await fileToResizedBase64(file, 160);
+      STORE_NEW_LOGO_B64 = storeBase64;
+      document.getElementById('storeLogoPickIcon').outerHTML = '<img id="storeLogoPickIcon" src="' + storeBase64 + '" />';
+    } else if (isVisible(document.getElementById('setAvatarBtn'))) {
+      try {
+        SET_AVATAR_B64 = await fileToResizedBase64(file, 256);
+        setAvatarPreview(document.getElementById('setName').value, SET_AVATAR_B64);
+      } catch (err) { customAlert(T('settings.avatar.error')); }
+    }
+  }
+
+  document.addEventListener('paste', function (e) {
+    var dt = e.clipboardData || window.clipboardData;
+    if (!dt || !dt.items) return;
+    var file = null;
+    for (var i = 0; i < dt.items.length; i++) {
+      if (dt.items[i].kind === 'file' && dt.items[i].type.indexOf('image/') === 0) {
+        file = dt.items[i].getAsFile();
+        break;
+      }
+    }
+    if (!file) return;
+    e.preventDefault();
+    applyPastedImage(file);
+  });
 
   // ══════════════════════════════════════════════════════════
   // DASHBOARD

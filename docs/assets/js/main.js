@@ -69,6 +69,11 @@
     var fallbackList = document.getElementById('proofList');
     if (!track || !carousel || !window.EXON_API_BASE) return;
 
+    // Kam sonli logotipda aylanish katta bo'sh joylar bilan chiroysiz
+    // ko'rinadi — shu sabab kamida shuncha logotip bo'lgandagina aylanadi,
+    // aks holda halqa qotib turadi (admin panelda ham shu son ko'rsatiladi).
+    var MIN_ROTATE_COUNT = 6;
+
     fetch(window.EXON_API_BASE + '/api/partners')
       .then(function (r) { return r.json(); })
       .then(function (data) {
@@ -86,6 +91,7 @@
             '<img src="' + p.image + '" alt="' + p.name.replace(/"/g, '&quot;') + '" loading="lazy" />' +
             '</div>';
         }).join('');
+        track.classList.toggle('is-spinning', count >= MIN_ROTATE_COUNT);
 
         carousel.style.display = '';
         if (fallbackList) fallbackList.style.display = 'none';
