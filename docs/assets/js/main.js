@@ -77,7 +77,7 @@
     // aylanadi (admin panelda ham shu son ko'rsatiladi). Qo'lda sudrash esa
     // logotiplar soni qanday bo'lishidan qat'i nazar ishlaydi.
     var MIN_ROTATE_COUNT = 6;
-    var AUTO_DEG_PER_SEC = 360 / 28; // "28 soniyada bir aylanish"
+    var AUTO_DEG_PER_SEC = 360 / 45; // "45 soniyada bir aylanish" — sekin, xotirjam harakat
     var DRAG_SENSITIVITY = 0.35; // piksel siljish -> gradus
 
     var angle = 0;
