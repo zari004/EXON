@@ -126,18 +126,18 @@
 
     function renderPartners(partners) {
       var count = partners.length;
-      // Halqa radiusi sayt eniga yaqin kengaytirilgan (aylanish keng yoy
-      // bo'ylab "suzib" o'tadi), lekin logotiplar orasidagi burchak tor
-      // ushlab turiladi — shu bilan ular o'zaro yaqin turgan holda katta
-      // halqa bo'ylab birgalikda aylanadi.
-      var radius = 600;
-      var ANGULAR_STEP = 22; // gradus — qo'shni logotiplar orasidagi burchak
-      var MAX_ARC = 300; // umumiy yoy — juda ko'p logotipda ham to'liq halqaga aylanadi
-      var step = count > 1 ? Math.min(ANGULAR_STEP, MAX_ARC / (count - 1)) : 0;
-      var totalArc = step * (count - 1);
+      // To'liq 360 gradusga teng taqsimlanadi — shu bilan halqaning
+      // "boshi" ham, "oxiri" ham bo'lmaydi, cheksiz aylanaveradi. Radius
+      // qo'shni logotiplar orasida taxminan bir xil, yaqin bo'shliq
+      // qolishi uchun hisoblanadi — shu sabab ko'proq logotip qo'shilgan
+      // sayin halqa o'zi tabiiy ravishda kengayib boradi.
+      var itemWidth = 170;
+      var gap = 40;
+      var radius = count > 1 ? Math.round((itemWidth + gap) / (2 * Math.sin(Math.PI / count))) : 0;
+      radius = Math.max(radius, 160);
 
       track.innerHTML = partners.map(function (p, i) {
-        var a = totalArc > 0 ? -totalArc / 2 + step * i : 0;
+        var a = (360 / count) * i;
         return '<div class="proof__carousel-item" style="transform:rotateY(' + a + 'deg) translateZ(' + radius + 'px)">' +
           '<img src="' + p.image + '" alt="' + (p.name || '').replace(/"/g, '&quot;') + '" loading="lazy" />' +
           '</div>';
