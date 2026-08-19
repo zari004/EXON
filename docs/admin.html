@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Admin — EXON</title>
-<link rel="stylesheet" href="assets/css/style.css?v=20" />
+<link rel="stylesheet" href="assets/css/style.css?v=21" />
 <link rel="manifest" href="/admin-manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -1962,6 +1962,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         <svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><rect x="7" y="12" width="3" height="6" rx="1" fill="currentColor"/><rect x="12.5" y="8" width="3" height="10" rx="1" fill="currentColor"/><rect x="18" y="5" width="3" height="13" rx="1" fill="currentColor"/></svg>
         <span data-i18n="tab.stats">Statistika</span>
       </button>
+      <button class="sidebar-item" data-tab="social">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="6" cy="12" r="2.6" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="5.5" r="2.6" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="18.5" r="2.6" stroke="currentColor" stroke-width="1.7"/><path d="M8.3 10.7l7.4-4.4M8.3 13.3l7.4 4.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span data-i18n="tab.social">Ijtimoiy tarmoqlar</span>
+      </button>
 
       <div class="sidebar-divider" id="sidebarDividerSite"></div>
       <div class="sidebar-section-label" data-i18n="more.section.manage">Boshqaruv</div>
@@ -2083,6 +2087,16 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     </div>
     <p style="color:var(--gray);font-size:13.5px;margin:-10px 0 20px" data-i18n="stats.desc">Bu raqamlar sayt bosh sahifasidagi "Keyslar" bo'limida 0'dan ko'payib boruvchi animatsiya bilan ko'rsatiladi.</p>
     <div class="item-list" id="statsList"></div>
+  </section>
+
+  <!-- IJTIMOIY TARMOQLAR -->
+  <section class="admin-panel" id="panel-social">
+    <div class="panel-head">
+      <h2 data-i18n="social.title">Ijtimoiy tarmoqlar</h2>
+      <button class="btn-add" onclick="openSocialForm()" data-i18n="social.add">+ Yangi havola</button>
+    </div>
+    <p style="color:var(--gray);font-size:13.5px;margin:-10px 0 20px" data-i18n="social.desc">Bu havolalar sayt pastidagi (footer) ikonkalar sifatida barcha sahifalarda ko'rinadi.</p>
+    <div class="item-list" id="socialList"></div>
   </section>
 
   <!-- FOYDALANUVCHILAR (superadmin) -->
@@ -2852,6 +2866,34 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   </div>
 </div>
 
+<!-- ══════════ MODAL: IJTIMOIY TARMOQ FORM ══════════ -->
+<div class="modal-overlay" id="socialModal">
+  <div class="modal-box">
+    <h3 id="socialModalTitle" data-i18n="social.new">Yangi havola</h3>
+    <form id="socialForm">
+      <input type="hidden" id="socialId" />
+      <div class="field">
+        <label data-i18n="field.socialPlatform">Platforma</label>
+        <select id="socialPlatform">
+          <option value="instagram">Instagram</option>
+          <option value="facebook">Facebook</option>
+          <option value="telegram">Telegram</option>
+          <option value="linkedin">LinkedIn</option>
+          <option value="youtube">YouTube</option>
+          <option value="tiktok">TikTok</option>
+          <option value="x">X (Twitter)</option>
+        </select>
+      </div>
+      <div class="field"><label data-i18n="field.socialUrl">Havola (URL)</label><input type="url" id="socialUrl" required placeholder="https://instagram.com/exon" /></div>
+      <div class="form-msg" id="socialFormMsg"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-cancel" onclick="closeModal('socialModal')">Bekor qilish</button>
+        <button type="submit" class="modal-save">Saqlash</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- ══════════ MODAL: PAROLNI TIKLASH (email kod orqali) ══════════ -->
 <div class="modal-overlay" id="resetPwdModal">
   <div class="modal-box" style="max-width:400px">
@@ -3250,6 +3292,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tab.pricing': 'Narxlar',
       'tab.partners': 'Hamkorlar',
       'tab.stats': 'Statistika',
+      'tab.social': 'Ijtimoiy tarmoqlar',
       'tab.users': 'Foydalanuvchilar',
       'tab.permissions': 'Ruxsatlar',
       'tab.tasks': 'Vazifalar',
@@ -3323,6 +3366,12 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'stats.empty': "Hali statistika yo'q",
       'stats.new': 'Yangi statistika',
       'stats.edit': 'Statistikani tahrirlash',
+      'social.title': 'Ijtimoiy tarmoqlar',
+      'social.add': '+ Yangi havola',
+      'social.desc': "Bu havolalar sayt pastidagi (footer) ikonkalar sifatida barcha sahifalarda ko'rinadi.",
+      'social.empty': "Hali havola qo'shilmagan",
+      'social.new': 'Yangi havola',
+      'social.edit': 'Havolani tahrirlash',
       'users.title': 'Foydalanuvchilar',
       'users.empty': "Hali ro'yxatdan o'tganlar yo'q",
       'users.pending': 'Kutmoqda',
@@ -3367,6 +3416,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.statValue': 'Raqam',
       'field.statSuffix': "Qo'shimcha belgi",
       'field.statLabel': 'Izoh (nomi)',
+      'field.socialPlatform': 'Platforma',
+      'field.socialUrl': 'Havola (URL)',
       'modal.save': 'Saqlash',
       'modal.cancel': 'Bekor qilish',
       'confirm.title': 'Tasdiqlash',
@@ -3377,6 +3428,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.price': "Bu paketni o'chirishni tasdiqlaysizmi?",
       'confirm.del.partner': "Bu hamkorni o'chirishni tasdiqlaysizmi?",
       'confirm.del.stat': "Bu statistikani o'chirishni tasdiqlaysizmi?",
+      'confirm.del.social': "Bu havolani o'chirishni tasdiqlaysizmi?",
       'role.superadmin': 'Superadmin',
       'role.it_bolimi': "IT bo'limi",
       'role.seo': 'SEO',
@@ -3622,6 +3674,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tab.pricing': 'Тарифы',
       'tab.partners': 'Партнёры',
       'tab.stats': 'Статистика',
+      'tab.social': 'Соцсети',
       'tab.users': 'Пользователи',
       'tab.permissions': 'Доступы',
       'tab.tasks': 'Задачи',
@@ -3695,6 +3748,12 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'stats.empty': 'Статистики пока нет',
       'stats.new': 'Новая статистика',
       'stats.edit': 'Редактировать статистику',
+      'social.title': 'Соцсети',
+      'social.add': '+ Новая ссылка',
+      'social.desc': 'Эти ссылки отображаются в виде иконок внизу (footer) на всех страницах сайта.',
+      'social.empty': 'Ссылок пока нет',
+      'social.new': 'Новая ссылка',
+      'social.edit': 'Редактировать ссылку',
       'users.title': 'Пользователи',
       'users.empty': 'Зарегистрированных пользователей пока нет',
       'users.pending': 'Ожидает',
@@ -3739,6 +3798,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.statValue': 'Число',
       'field.statSuffix': 'Доп. символ',
       'field.statLabel': 'Подпись (название)',
+      'field.socialPlatform': 'Платформа',
+      'field.socialUrl': 'Ссылка (URL)',
       'modal.save': 'Сохранить',
       'modal.cancel': 'Отмена',
       'confirm.title': 'Подтверждение',
@@ -3749,6 +3810,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.price': 'Удалить этот пакет?',
       'confirm.del.partner': 'Удалить этого партнёра?',
       'confirm.del.stat': 'Удалить эту статистику?',
+      'confirm.del.social': 'Удалить эту ссылку?',
       'role.superadmin': 'Суперадмин',
       'role.it_bolimi': 'IT отдел',
       'role.seo': 'SEO',
@@ -3994,6 +4056,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tab.pricing': 'Pricing',
       'tab.partners': 'Partners',
       'tab.stats': 'Stats',
+      'tab.social': 'Social',
       'tab.users': 'Users',
       'tab.permissions': 'Permissions',
       'tab.tasks': 'Tasks',
@@ -4067,6 +4130,12 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'stats.empty': 'No stats yet',
       'stats.new': 'New stat',
       'stats.edit': 'Edit stat',
+      'social.title': 'Social links',
+      'social.add': '+ New link',
+      'social.desc': 'These links appear as icons in the footer on every page of the site.',
+      'social.empty': 'No links yet',
+      'social.new': 'New link',
+      'social.edit': 'Edit link',
       'users.title': 'Users',
       'users.empty': 'No registered users yet',
       'users.pending': 'Pending',
@@ -4111,6 +4180,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.statValue': 'Number',
       'field.statSuffix': 'Suffix',
       'field.statLabel': 'Label (name)',
+      'field.socialPlatform': 'Platform',
+      'field.socialUrl': 'Link (URL)',
       'modal.save': 'Save',
       'modal.cancel': 'Cancel',
       'confirm.title': 'Confirm',
@@ -4121,6 +4192,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.price': 'Delete this package?',
       'confirm.del.partner': 'Delete this partner?',
       'confirm.del.stat': 'Delete this stat?',
+      'confirm.del.social': 'Delete this link?',
       'role.superadmin': 'Superadmin',
       'role.it_bolimi': 'IT department',
       'role.seo': 'SEO',
@@ -4433,7 +4505,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       if (sidebarRoleEl) sidebarRoleEl.textContent = roleLabel;
       var moreRoleEl = document.getElementById('moreProfileRole');
       if (moreRoleEl) moreRoleEl.textContent = roleLabel;
-      loadDashboard(); loadCases(); loadPosts(); loadPricing(); loadPartners(); loadStats();
+      loadDashboard(); loadCases(); loadPosts(); loadPricing(); loadPartners(); loadStats(); loadSocial();
       if (USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi') { loadUsers(); loadPermissions(); }
       // Hozir ochiq bo'lgan bo'limning dinamik (JS orqali chizilgan) kontenti
       // ham yangi tilda qayta chiziladi
@@ -4496,7 +4568,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     // Admin/it_bolimi har doim "Sayt boshqaruvi" bo'limini to'liq ko'radi —
     // oldingi (oddiy foydalanuvchi) sessiyasidan qolgan "yashirin" holatni tozalaydi
     if (isSuperLevel) {
-      ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'stats'].forEach(function (tab) {
+      ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social'].forEach(function (tab) {
         var btn = document.querySelector('.sidebar-item[data-tab="' + tab + '"]');
         if (btn) btn.style.display = '';
       });
@@ -4548,7 +4620,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     try {
       var data = await apiFetch('/api/admin/my-permissions');
       var allowed = data.tabs || ['dashboard'];
-      var siteTabs = ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'stats'];
+      var siteTabs = ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social'];
       var boshqaruvTabs = ['tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
       var anySiteVisible = false;
       siteTabs.concat(boshqaruvTabs).forEach(function (tab) {
@@ -5060,7 +5132,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var target = document.querySelector('.sidebar-item[data-tab="' + btn.dataset.tab + '"]');
       var visible = !!(target && target.style.display !== 'none');
       btn.style.display = visible ? '' : 'none';
-      if (visible && ['cases', 'posts', 'pricing', 'partners', 'stats'].indexOf(btn.dataset.tab) !== -1) anySiteVisible = true;
+      if (visible && ['cases', 'posts', 'pricing', 'partners', 'stats', 'social'].indexOf(btn.dataset.tab) !== -1) anySiteVisible = true;
     });
     var siteLabel = document.getElementById('moreSectionSite');
     var siteList = document.getElementById('moreListSite');
@@ -5639,6 +5711,60 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   };
 
   // ══════════════════════════════════════════════════════════
+  // IJTIMOIY TARMOQLAR
+  // ══════════════════════════════════════════════════════════
+  var SOCIAL_PLATFORM_LABELS = { instagram: 'Instagram', facebook: 'Facebook', telegram: 'Telegram', linkedin: 'LinkedIn', youtube: 'YouTube', tiktok: 'TikTok', x: 'X (Twitter)' };
+  let socialCache = [];
+  async function loadSocial() {
+    try {
+      const data = await apiFetch('/api/social');
+      socialCache = data.links;
+      const list = document.getElementById('socialList');
+      list.innerHTML = socialCache.length ? socialCache.map(function (s) {
+        return '<div class="item-row">' +
+          '<div class="item-row__thumb" style="font-size:12px;font-weight:700">' + esc((SOCIAL_PLATFORM_LABELS[s.platform] || s.platform).slice(0, 2).toUpperCase()) + '</div>' +
+          '<div class="item-row__body"><div class="item-row__title">' + esc(SOCIAL_PLATFORM_LABELS[s.platform] || s.platform) + '</div>' +
+          '<div class="item-row__meta">' + esc(s.url) + '</div></div>' +
+          '<div class="item-row__actions">' +
+          '<button class="icon-btn" onclick="openSocialForm(' + s.id + ')" title="' + T('item.edit') + '">✎</button>' +
+          '<button class="icon-btn danger" onclick="deleteSocial(' + s.id + ')" title="' + T('item.delete') + '">✕</button>' +
+          '</div></div>';
+      }).join('') : '<div class="empty-state">' + T('social.empty') + '</div>';
+    } catch (err) { console.error(err); }
+  }
+
+  window.openSocialForm = function (id) {
+    const existing = id ? socialCache.find(function (s) { return s.id === id; }) : null;
+    document.getElementById('socialModalTitle').textContent = existing ? T('social.edit') : T('social.new');
+    document.getElementById('socialId').value = existing ? existing.id : '';
+    document.getElementById('socialPlatform').value = existing ? existing.platform : 'instagram';
+    document.getElementById('socialUrl').value = existing ? existing.url : '';
+    document.getElementById('socialFormMsg').textContent = '';
+    document.getElementById('socialModal').classList.add('is-active');
+  };
+
+  document.getElementById('socialForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const msg = document.getElementById('socialFormMsg');
+    msg.textContent = ''; msg.className = 'form-msg';
+    const id = document.getElementById('socialId').value;
+    const body = {
+      platform: document.getElementById('socialPlatform').value,
+      url: document.getElementById('socialUrl').value
+    };
+    try {
+      await apiFetch(id ? '/api/social/' + id : '/api/social', { method: id ? 'PUT' : 'POST', body: JSON.stringify(body) });
+      closeModal('socialModal'); loadSocial();
+    } catch (err) { msg.textContent = err.message; msg.className = 'form-msg error'; }
+  });
+
+  window.deleteSocial = async function (id) {
+    if (!(await confirmDialog(T('confirm.del.social')))) return;
+    try { await apiFetch('/api/social/' + id, { method: 'DELETE' }); loadSocial(); }
+    catch (err) { customAlert(err.message); }
+  };
+
+  // ══════════════════════════════════════════════════════════
   // FOYDALANUVCHILAR (superadmin)
   // ══════════════════════════════════════════════════════════
   var ALL_ROLES = ['it_bolimi', 'seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
@@ -5691,7 +5817,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   // ══════════════════════════════════════════════════════════
   // RUXSATLAR (IT bo'limi)
   // ══════════════════════════════════════════════════════════
-  var PERM_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'stats', 'tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
+  var PERM_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social', 'tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
   var PERM_ROLES = ['seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
 
   async function loadPermissions() {

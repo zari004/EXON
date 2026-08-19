@@ -96,6 +96,16 @@ const init = async () => {
   `);
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS social_links (
+      id SERIAL PRIMARY KEY,
+      platform TEXT NOT NULL,
+      url TEXT NOT NULL,
+      sort_order INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS stats (
       id SERIAL PRIMARY KEY,
       value INTEGER NOT NULL,

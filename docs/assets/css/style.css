@@ -493,6 +493,40 @@ ol,ul{list-style:none}
 }
 
 /* ==========================================================================
+   FOOTER — ijtimoiy tarmoq ikonkalari (admin panelda kiritiladi)
+   ========================================================================== */
+.site-footer{padding:clamp(26px,4vw,42px) 0;border-top:1px solid var(--line)}
+.site-footer__inner{
+  width:100%;max-width:var(--wrap);margin:0 auto;
+  padding:0 clamp(18px,3.4vw,40px);
+  display:flex;justify-content:center;
+}
+.social-icons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.social-icon{
+  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  display:grid;place-items:center;
+  background:var(--surface);border:1px solid var(--line);color:var(--gray);
+  animation:social-pop .55s cubic-bezier(.34,1.56,.64,1) both;
+  animation-delay:calc(var(--i,0) * .07s);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1),background .25s var(--ease),color .25s var(--ease),border-color .25s var(--ease);
+}
+.social-icon svg{width:19px;height:19px}
+.social-icon:hover{
+  background:var(--green);border-color:var(--green);color:#08130D;
+  transform:translateY(-4px) rotate(-8deg) scale(1.08);
+}
+.social-icon:active{transform:translateY(-1px) rotate(0deg) scale(.96)}
+@keyframes social-pop{
+  0%{opacity:0;transform:translateY(14px) scale(.6)}
+  60%{opacity:1;transform:translateY(-3px) scale(1.06)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+@media (prefers-reduced-motion:reduce){
+  .social-icon{animation:none;transition:background .2s,color .2s,border-color .2s}
+  .social-icon:hover{transform:none}
+}
+
+/* ==========================================================================
    ANIMATSIYALAR
    ========================================================================== */
 @keyframes fadeIn{to{opacity:1}}
