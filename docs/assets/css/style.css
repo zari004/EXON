@@ -464,8 +464,8 @@ ol,ul{list-style:none}
    qo'lda ham burashi mumkin. Faqat kamida 6 ta logotip bo'lsa avtomatik
    aylanadi (main.js), lekin sudrab boshqarish son qat'i nazar ishlaydi. */
 .proof__carousel{
-  width:100%;max-width:1200px;height:180px;
-  perspective:1600px;perspective-origin:50% 50%;
+  width:100%;max-width:var(--wrap);height:180px;
+  perspective:2400px;perspective-origin:50% 50%;
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;
   cursor:grab;touch-action:pan-y;user-select:none;
