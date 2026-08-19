@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Admin — EXON</title>
-<link rel="stylesheet" href="assets/css/style.css?v=21" />
+<link rel="stylesheet" href="assets/css/style.css?v=22" />
 <link rel="manifest" href="/admin-manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -5266,7 +5266,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   });
 
   // ── IMAGE HELPER: fayl -> resize -> base64 ──
-  function fileToResizedBase64(file, maxDim) {
+  function fileToResizedBase64(file, maxDim, format) {
+    // format='png' — shaffoflikni saqlaydi (logotiplar uchun; JPEG shaffof
+    // joylarni qora fon bilan to'ldirib qo'yadi, chunki JPEG'da alfa kanal yo'q)
     return new Promise(function (resolve, reject) {
       const reader = new FileReader();
       reader.onerror = reject;
@@ -5279,7 +5281,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
           const canvas = document.createElement('canvas');
           canvas.width = w; canvas.height = h;
           canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-          resolve(canvas.toDataURL('image/jpeg', 0.8));
+          resolve(format === 'png' ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.8));
         };
         img.onerror = reject;
         img.src = reader.result;
@@ -5289,8 +5291,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   }
 
   // ── IMAGE HELPER: base64'ni bir img-preview qutisiga qo'yish ──
-  async function setImagePreview(previewId, file, maxDim) {
-    const base64 = await fileToResizedBase64(file, maxDim);
+  async function setImagePreview(previewId, file, maxDim, format) {
+    const base64 = await fileToResizedBase64(file, maxDim, format);
     const preview = document.getElementById(previewId);
     preview.innerHTML = '<img src="' + base64 + '" />';
     preview.dataset.value = base64;
@@ -5307,7 +5309,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     } else if (document.getElementById('postModal').classList.contains('is-active')) {
       await setImagePreview('postImgPreview', file, 640);
     } else if (document.getElementById('partnerModal').classList.contains('is-active')) {
-      await setImagePreview('partnerImgPreview', file, 400);
+      await setImagePreview('partnerImgPreview', file, 400, 'png');
     } else if (isVisible(document.getElementById('storeLogoPick'))) {
       var storeBase64 = await fileToResizedBase64(file, 160);
       STORE_NEW_LOGO_B64 = storeBase64;
@@ -5627,7 +5629,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   document.getElementById('partnerImgFile').addEventListener('change', async function (e) {
     const file = e.target.files[0];
     if (!file) return;
-    const base64 = await fileToResizedBase64(file, 400);
+    const base64 = await fileToResizedBase64(file, 400, 'png');
     const preview = document.getElementById('partnerImgPreview');
     preview.innerHTML = '<img src="' + base64 + '" />';
     preview.dataset.value = base64;

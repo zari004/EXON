@@ -464,7 +464,7 @@ ol,ul{list-style:none}
    qo'lda ham burashi mumkin. Faqat kamida 6 ta logotip bo'lsa avtomatik
    aylanadi (main.js), lekin sudrab boshqarish son qat'i nazar ishlaydi. */
 .proof__carousel{
-  width:100%;max-width:1000px;height:110px;
+  width:100%;max-width:1000px;height:180px;
   perspective:1400px;perspective-origin:50% 50%;
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;
@@ -488,7 +488,7 @@ ol,ul{list-style:none}
   pointer-events:none;
 }
 .proof__carousel-item:hover img{
-  filter:drop-shadow(0 0 12px rgba(11,209,108,.65));
+  filter:drop-shadow(0 0 8px rgba(11,209,108,.6));
   transform:scale(1.1);
 }
 

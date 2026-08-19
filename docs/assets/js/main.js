@@ -127,8 +127,8 @@
     function renderPartners(partners) {
       var count = partners.length;
       var itemWidth = 170;
-      var radius = Math.round((itemWidth / 2) / Math.tan(Math.PI / count));
-      radius = Math.max(radius, 190);
+      var radius = Math.round((itemWidth / 2) / Math.tan(Math.PI / count) * 1.15);
+      radius = Math.max(radius, 260);
 
       track.innerHTML = partners.map(function (p, i) {
         var a = (360 / count) * i;
