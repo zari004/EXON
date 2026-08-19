@@ -152,7 +152,67 @@
       .catch(function () { /* API ishlamasa yoki hamkor qo'shilmagan bo'lsa — bo'lim yashirin qoladi */ });
   })();
 
-  /* ── 7. Teaser bo'limlar — scroll'da paydo bo'lish ──────────────────── */
+  /* ── 7. Statistika — admin paneldan olib, "Keyslar" bo'limida ko'rinishga
+     kirganda 0'dan raqamgacha animatsiya bilan ko'rsatish. API ishlamasa
+     yoki hali statistika kiritilmagan bo'lsa, qator butunlay yashirin
+     qoladi. ── */
+  (function () {
+    var row = document.getElementById('statsRow');
+    if (!row || !window.EXON_API_BASE) return;
+
+    function esc(s) { return String(s || '').replace(/[<>&"]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]; }); }
+
+    function animateValue(el, target, duration) {
+      var startTime = null;
+      function step(now) {
+        if (startTime === null) startTime = now;
+        var progress = Math.min((now - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3); // ease-out kub
+        el.textContent = Math.round(target * eased).toLocaleString('en-US');
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = target.toLocaleString('en-US');
+      }
+      requestAnimationFrame(step);
+    }
+
+    var started = false;
+    function startCountUp() {
+      if (started) return;
+      started = true;
+      row.querySelectorAll('.stat-item__num').forEach(function (el) {
+        animateValue(el, Number(el.dataset.target) || 0, 1600);
+      });
+    }
+
+    fetch(window.EXON_API_BASE + '/api/stats')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var stats = (data && data.success && Array.isArray(data.stats)) ? data.stats : [];
+        if (!stats.length) return;
+
+        row.innerHTML = stats.map(function (s) {
+          return '<div class="stat-item">' +
+            '<div class="stat-item__value"><span class="stat-item__num" data-target="' + Number(s.value) + '">0</span>' + esc(s.suffix) + '</div>' +
+            '<div class="stat-item__label">' + esc(s.label) + '</div>' +
+            '</div>';
+        }).join('');
+        row.style.display = '';
+
+        if ('IntersectionObserver' in window) {
+          var statsIo = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) { startCountUp(); statsIo.disconnect(); }
+            });
+          }, { threshold: .3 });
+          statsIo.observe(row);
+        } else {
+          startCountUp();
+        }
+      })
+      .catch(function () { /* API ishlamasa yoki statistika kiritilmagan bo'lsa — qator yashirin qoladi */ });
+  })();
+
+  /* ── 8. Teaser bo'limlar — scroll'da paydo bo'lish ──────────────────── */
   var revealEls = document.querySelectorAll('.reveal');
   if (revealEls.length) {
     if ('IntersectionObserver' in window) {

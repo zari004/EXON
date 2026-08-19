@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Admin — EXON</title>
-<link rel="stylesheet" href="assets/css/style.css?v=19" />
+<link rel="stylesheet" href="assets/css/style.css?v=20" />
 <link rel="manifest" href="/admin-manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -1958,6 +1958,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 9h17M3.5 15h17M12 3c2.2 2.4 3.3 5.3 3.3 9s-1.1 6.6-3.3 9c-2.2-2.4-3.3-5.3-3.3-9S9.8 5.4 12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>
         <span data-i18n="tab.partners">Hamkorlar</span>
       </button>
+      <button class="sidebar-item" data-tab="stats">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><rect x="7" y="12" width="3" height="6" rx="1" fill="currentColor"/><rect x="12.5" y="8" width="3" height="10" rx="1" fill="currentColor"/><rect x="18" y="5" width="3" height="13" rx="1" fill="currentColor"/></svg>
+        <span data-i18n="tab.stats">Statistika</span>
+      </button>
 
       <div class="sidebar-divider" id="sidebarDividerSite"></div>
       <div class="sidebar-section-label" data-i18n="more.section.manage">Boshqaruv</div>
@@ -2069,6 +2073,16 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     </div>
     <p style="color:var(--gray);font-size:13.5px;margin:-10px 0 20px" data-i18n="partners.desc">Bu yerga qo'shilgan logotiplar sayt bosh sahifasidagi "Bizga ishonishdi" aylanma karuselida ko'rinadi.</p>
     <div class="item-list" id="partnersList"></div>
+  </section>
+
+  <!-- STATISTIKA -->
+  <section class="admin-panel" id="panel-stats">
+    <div class="panel-head">
+      <h2 data-i18n="stats.title">Statistika</h2>
+      <button class="btn-add" onclick="openStatForm()" data-i18n="stats.add">+ Yangi statistika</button>
+    </div>
+    <p style="color:var(--gray);font-size:13.5px;margin:-10px 0 20px" data-i18n="stats.desc">Bu raqamlar sayt bosh sahifasidagi "Keyslar" bo'limida 0'dan ko'payib boruvchi animatsiya bilan ko'rsatiladi.</p>
+    <div class="item-list" id="statsList"></div>
   </section>
 
   <!-- FOYDALANUVCHILAR (superadmin) -->
@@ -2818,6 +2832,26 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   </div>
 </div>
 
+<!-- ══════════ MODAL: STATISTIKA FORM ══════════ -->
+<div class="modal-overlay" id="statModal">
+  <div class="modal-box">
+    <h3 id="statModalTitle" data-i18n="stats.new">Yangi statistika</h3>
+    <form id="statForm">
+      <input type="hidden" id="statId" />
+      <div class="field-row">
+        <div class="field"><label data-i18n="field.statValue">Raqam</label><input type="number" id="statValue" required placeholder="50" /></div>
+        <div class="field"><label data-i18n="field.statSuffix">Qo'shimcha belgi</label><input type="text" id="statSuffix" placeholder="+" value="+" /></div>
+      </div>
+      <div class="field"><label data-i18n="field.statLabel">Izoh (nomi)</label><input type="text" id="statLabel" required placeholder="Do'konlar" /></div>
+      <div class="form-msg" id="statFormMsg"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-cancel" onclick="closeModal('statModal')">Bekor qilish</button>
+        <button type="submit" class="modal-save">Saqlash</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <!-- ══════════ MODAL: PAROLNI TIKLASH (email kod orqali) ══════════ -->
 <div class="modal-overlay" id="resetPwdModal">
   <div class="modal-box" style="max-width:400px">
@@ -3215,6 +3249,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tab.posts': 'Blog',
       'tab.pricing': 'Narxlar',
       'tab.partners': 'Hamkorlar',
+      'tab.stats': 'Statistika',
       'tab.users': 'Foydalanuvchilar',
       'tab.permissions': 'Ruxsatlar',
       'tab.tasks': 'Vazifalar',
@@ -3282,6 +3317,12 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'partners.new': 'Yangi hamkor',
       'partners.edit': 'Hamkorni tahrirlash',
       'partners.imageRequired': 'Logotip yuklash majburiy',
+      'stats.title': 'Statistika',
+      'stats.add': '+ Yangi statistika',
+      'stats.desc': 'Bu raqamlar sayt bosh sahifasidagi "Keyslar" bo\'limida 0\'dan ko\'payib boruvchi animatsiya bilan ko\'rsatiladi.',
+      'stats.empty': "Hali statistika yo'q",
+      'stats.new': 'Yangi statistika',
+      'stats.edit': 'Statistikani tahrirlash',
       'users.title': 'Foydalanuvchilar',
       'users.empty': "Hali ro'yxatdan o'tganlar yo'q",
       'users.pending': 'Kutmoqda',
@@ -3323,6 +3364,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.featured': 'Eng mashhur sifatida belgilash',
       'field.partnerName': 'Kompaniya nomi',
       'field.partnerLogo': 'Logotip',
+      'field.statValue': 'Raqam',
+      'field.statSuffix': "Qo'shimcha belgi",
+      'field.statLabel': 'Izoh (nomi)',
       'modal.save': 'Saqlash',
       'modal.cancel': 'Bekor qilish',
       'confirm.title': 'Tasdiqlash',
@@ -3332,6 +3376,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.post': "Bu maqolani o'chirishni tasdiqlaysizmi?",
       'confirm.del.price': "Bu paketni o'chirishni tasdiqlaysizmi?",
       'confirm.del.partner': "Bu hamkorni o'chirishni tasdiqlaysizmi?",
+      'confirm.del.stat': "Bu statistikani o'chirishni tasdiqlaysizmi?",
       'role.superadmin': 'Superadmin',
       'role.it_bolimi': "IT bo'limi",
       'role.seo': 'SEO',
@@ -3576,6 +3621,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tab.posts': 'Блог',
       'tab.pricing': 'Тарифы',
       'tab.partners': 'Партнёры',
+      'tab.stats': 'Статистика',
       'tab.users': 'Пользователи',
       'tab.permissions': 'Доступы',
       'tab.tasks': 'Задачи',
@@ -3643,6 +3689,12 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'partners.new': 'Новый партнёр',
       'partners.edit': 'Редактировать партнёра',
       'partners.imageRequired': 'Необходимо загрузить логотип',
+      'stats.title': 'Статистика',
+      'stats.add': '+ Новая статистика',
+      'stats.desc': 'Эти цифры показываются в разделе "Кейсы" на главной странице с анимацией увеличения от 0.',
+      'stats.empty': 'Статистики пока нет',
+      'stats.new': 'Новая статистика',
+      'stats.edit': 'Редактировать статистику',
       'users.title': 'Пользователи',
       'users.empty': 'Зарегистрированных пользователей пока нет',
       'users.pending': 'Ожидает',
@@ -3684,6 +3736,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.featured': 'Отметить как популярный',
       'field.partnerName': 'Название компании',
       'field.partnerLogo': 'Логотип',
+      'field.statValue': 'Число',
+      'field.statSuffix': 'Доп. символ',
+      'field.statLabel': 'Подпись (название)',
       'modal.save': 'Сохранить',
       'modal.cancel': 'Отмена',
       'confirm.title': 'Подтверждение',
@@ -3693,6 +3748,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.post': 'Удалить эту статью?',
       'confirm.del.price': 'Удалить этот пакет?',
       'confirm.del.partner': 'Удалить этого партнёра?',
+      'confirm.del.stat': 'Удалить эту статистику?',
       'role.superadmin': 'Суперадмин',
       'role.it_bolimi': 'IT отдел',
       'role.seo': 'SEO',
@@ -3937,6 +3993,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'tab.posts': 'Blog',
       'tab.pricing': 'Pricing',
       'tab.partners': 'Partners',
+      'tab.stats': 'Stats',
       'tab.users': 'Users',
       'tab.permissions': 'Permissions',
       'tab.tasks': 'Tasks',
@@ -4004,6 +4061,12 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'partners.new': 'New partner',
       'partners.edit': 'Edit partner',
       'partners.imageRequired': 'A logo upload is required',
+      'stats.title': 'Stats',
+      'stats.add': '+ New stat',
+      'stats.desc': 'These numbers appear in the "Cases" section on the homepage with a count-up animation from 0.',
+      'stats.empty': 'No stats yet',
+      'stats.new': 'New stat',
+      'stats.edit': 'Edit stat',
       'users.title': 'Users',
       'users.empty': 'No registered users yet',
       'users.pending': 'Pending',
@@ -4045,6 +4108,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.featured': 'Mark as most popular',
       'field.partnerName': 'Company name',
       'field.partnerLogo': 'Logo',
+      'field.statValue': 'Number',
+      'field.statSuffix': 'Suffix',
+      'field.statLabel': 'Label (name)',
       'modal.save': 'Save',
       'modal.cancel': 'Cancel',
       'confirm.title': 'Confirm',
@@ -4054,6 +4120,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.post': 'Delete this article?',
       'confirm.del.price': 'Delete this package?',
       'confirm.del.partner': 'Delete this partner?',
+      'confirm.del.stat': 'Delete this stat?',
       'role.superadmin': 'Superadmin',
       'role.it_bolimi': 'IT department',
       'role.seo': 'SEO',
@@ -4366,7 +4433,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       if (sidebarRoleEl) sidebarRoleEl.textContent = roleLabel;
       var moreRoleEl = document.getElementById('moreProfileRole');
       if (moreRoleEl) moreRoleEl.textContent = roleLabel;
-      loadDashboard(); loadCases(); loadPosts(); loadPricing(); loadPartners();
+      loadDashboard(); loadCases(); loadPosts(); loadPricing(); loadPartners(); loadStats();
       if (USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi') { loadUsers(); loadPermissions(); }
       // Hozir ochiq bo'lgan bo'limning dinamik (JS orqali chizilgan) kontenti
       // ham yangi tilda qayta chiziladi
@@ -4429,7 +4496,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     // Admin/it_bolimi har doim "Sayt boshqaruvi" bo'limini to'liq ko'radi —
     // oldingi (oddiy foydalanuvchi) sessiyasidan qolgan "yashirin" holatni tozalaydi
     if (isSuperLevel) {
-      ['dashboard', 'cases', 'posts', 'pricing', 'partners'].forEach(function (tab) {
+      ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'stats'].forEach(function (tab) {
         var btn = document.querySelector('.sidebar-item[data-tab="' + tab + '"]');
         if (btn) btn.style.display = '';
       });
@@ -4481,7 +4548,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     try {
       var data = await apiFetch('/api/admin/my-permissions');
       var allowed = data.tabs || ['dashboard'];
-      var siteTabs = ['dashboard', 'cases', 'posts', 'pricing', 'partners'];
+      var siteTabs = ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'stats'];
       var boshqaruvTabs = ['tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
       var anySiteVisible = false;
       siteTabs.concat(boshqaruvTabs).forEach(function (tab) {
@@ -4993,7 +5060,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var target = document.querySelector('.sidebar-item[data-tab="' + btn.dataset.tab + '"]');
       var visible = !!(target && target.style.display !== 'none');
       btn.style.display = visible ? '' : 'none';
-      if (visible && ['cases', 'posts', 'pricing', 'partners'].indexOf(btn.dataset.tab) !== -1) anySiteVisible = true;
+      if (visible && ['cases', 'posts', 'pricing', 'partners', 'stats'].indexOf(btn.dataset.tab) !== -1) anySiteVisible = true;
     });
     var siteLabel = document.getElementById('moreSectionSite');
     var siteList = document.getElementById('moreListSite');
@@ -5518,6 +5585,60 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   };
 
   // ══════════════════════════════════════════════════════════
+  // STATISTIKA
+  // ══════════════════════════════════════════════════════════
+  let statsCache = [];
+  async function loadStats() {
+    try {
+      const data = await apiFetch('/api/stats');
+      statsCache = data.stats;
+      const list = document.getElementById('statsList');
+      list.innerHTML = statsCache.length ? statsCache.map(function (s) {
+        return '<div class="item-row">' +
+          '<div class="item-row__thumb" style="font-size:15px;font-weight:700">' + esc(s.value) + esc(s.suffix || '') + '</div>' +
+          '<div class="item-row__body"><div class="item-row__title">' + esc(s.label) + '</div></div>' +
+          '<div class="item-row__actions">' +
+          '<button class="icon-btn" onclick="openStatForm(' + s.id + ')" title="' + T('item.edit') + '">✎</button>' +
+          '<button class="icon-btn danger" onclick="deleteStat(' + s.id + ')" title="' + T('item.delete') + '">✕</button>' +
+          '</div></div>';
+      }).join('') : '<div class="empty-state">' + T('stats.empty') + '</div>';
+    } catch (err) { console.error(err); }
+  }
+
+  window.openStatForm = function (id) {
+    const existing = id ? statsCache.find(function (s) { return s.id === id; }) : null;
+    document.getElementById('statModalTitle').textContent = existing ? T('stats.edit') : T('stats.new');
+    document.getElementById('statId').value = existing ? existing.id : '';
+    document.getElementById('statValue').value = existing ? existing.value : '';
+    document.getElementById('statSuffix').value = existing ? existing.suffix : '+';
+    document.getElementById('statLabel').value = existing ? existing.label : '';
+    document.getElementById('statFormMsg').textContent = '';
+    document.getElementById('statModal').classList.add('is-active');
+  };
+
+  document.getElementById('statForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const msg = document.getElementById('statFormMsg');
+    msg.textContent = ''; msg.className = 'form-msg';
+    const id = document.getElementById('statId').value;
+    const body = {
+      value: Number(document.getElementById('statValue').value),
+      suffix: document.getElementById('statSuffix').value,
+      label: document.getElementById('statLabel').value
+    };
+    try {
+      await apiFetch(id ? '/api/stats/' + id : '/api/stats', { method: id ? 'PUT' : 'POST', body: JSON.stringify(body) });
+      closeModal('statModal'); loadStats();
+    } catch (err) { msg.textContent = err.message; msg.className = 'form-msg error'; }
+  });
+
+  window.deleteStat = async function (id) {
+    if (!(await confirmDialog(T('confirm.del.stat')))) return;
+    try { await apiFetch('/api/stats/' + id, { method: 'DELETE' }); loadStats(); }
+    catch (err) { customAlert(err.message); }
+  };
+
+  // ══════════════════════════════════════════════════════════
   // FOYDALANUVCHILAR (superadmin)
   // ══════════════════════════════════════════════════════════
   var ALL_ROLES = ['it_bolimi', 'seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
@@ -5570,7 +5691,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   // ══════════════════════════════════════════════════════════
   // RUXSATLAR (IT bo'limi)
   // ══════════════════════════════════════════════════════════
-  var PERM_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
+  var PERM_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'stats', 'tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
   var PERM_ROLES = ['seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
 
   async function loadPermissions() {

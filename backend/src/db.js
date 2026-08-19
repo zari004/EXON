@@ -96,6 +96,31 @@ const init = async () => {
   `);
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS stats (
+      id SERIAL PRIMARY KEY,
+      value INTEGER NOT NULL,
+      suffix TEXT DEFAULT '+',
+      label TEXT NOT NULL,
+      sort_order INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+
+  // Statistika jadvali bo'sh bo'lsa — taxminiy boshlang'ich raqamlar
+  // qo'yiladi (admin panelda "Statistika" sahifasidan haqiqiylariga
+  // almashtirilishi kerak)
+  const statsCount = await pool.query('SELECT COUNT(*) FROM stats');
+  if (Number(statsCount.rows[0].count) === 0) {
+    await pool.query(
+      `INSERT INTO stats (value, suffix, label, sort_order) VALUES
+       (50, '+', 'Do''konlar', 0),
+       (120, '+', 'Reklama kampaniyalari', 1),
+       (60, '+', 'Auditlar va strategiyalar', 2),
+       (80, '+', 'Dizayn loyihalari', 3)`
+    );
+  }
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS pricing (
       id SERIAL PRIMARY KEY,
       badge TEXT,
