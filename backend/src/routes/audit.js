@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../db');
 const scoring = require('../services/scoring');
 const telegram = require('../services/telegram');
+const metaConversions = require('../services/metaConversions');
 
 /**
  * POST /api/audit
@@ -26,7 +27,7 @@ const telegram = require('../services/telegram');
  */
 router.post('/', async (req, res) => {
   try {
-    const { email, q1, q2, q3, q4, q5, q6, q7, q8, q9 } = req.body;
+    const { email, q1, q2, q3, q4, q5, q6, q7, q8, q9, metaEventId } = req.body;
 
     // Validate email
     if (!email || !email.includes('@')) {
@@ -53,6 +54,11 @@ router.post('/', async (req, res) => {
     // Send Telegram notification (async, don't wait)
     telegram.sendAuditResult(result, email).catch(err => {
       console.error('⚠️ Telegram notification failed:', err.message);
+    });
+
+    // Meta Conversions API — "Lead" hodisasi (async, javobni kutmaydi)
+    metaConversions.sendLeadEvent({ email, eventId: metaEventId, req }).catch(err => {
+      console.error('⚠️ Meta Conversions API xato:', err.message);
     });
 
     // Return result to client
