@@ -64,37 +64,43 @@
      qo'shilgan bo'lsagina "Bizga ishonishdi" bo'limi ko'rsatiladi. API
      ishlamasa yoki hali hech narsa qo'shilmagan bo'lsa, bo'lim butunlay
      yashirin qoladi — hech qanday o'ylab topilgan/noto'g'ri ma'lumot
-     ko'rsatilmaydi. Aylanish requestAnimationFrame orqali chiziladi —
-     shu bilan foydalanuvchi sichqoncha/barmoq bilan chapga-o'ngga sudrab,
-     halqani qo'lda ham burashi mumkin. ── */
+     ko'rsatilmaydi. Cheksiz gorizontal lenta: ro'yxat ikki marta
+     takrorlanadi va uzluksiz chapga siljib turadi — boshi ham, oxiri ham
+     yo'q, va nechta logotip bo'lsa ham konteyner sig'imicha bir vaqtda
+     ko'rinadi. Foydalanuvchi sichqoncha/barmoq bilan chapga-o'ngga
+     sudrab, qo'lda ham aylantira oladi. ── */
   (function () {
     var section = document.getElementById('proofSection');
     var track = document.getElementById('proofTrack');
     var carousel = document.getElementById('proofCarousel');
     if (!section || !track || !carousel || !window.EXON_API_BASE) return;
 
-    // Kam sonli logotipda aylanish katta bo'sh joylar bilan chiroysiz
-    // ko'rinadi — shu sabab kamida shuncha logotip bo'lgandagina avtomatik
-    // aylanadi (admin panelda ham shu son ko'rsatiladi). Qo'lda sudrash esa
+    // Kam sonli logotipda siljish deyarli sezilmaydi — shu sabab kamida
+    // shuncha logotip bo'lgandagina avtomatik siljiydi. Qo'lda sudrash esa
     // logotiplar soni qanday bo'lishidan qat'i nazar ishlaydi.
     var MIN_ROTATE_COUNT = 6;
-    var AUTO_DEG_PER_SEC = 360 / 45; // "45 soniyada bir aylanish" — sekin, xotirjam harakat
-    var DRAG_SENSITIVITY = 0.35; // piksel siljish -> gradus
+    var AUTO_PX_PER_SEC = 36; // sekin, xotirjam siljish tezligi
+    var DRAG_SENSITIVITY = 1; // piksel siljish -> piksel (1:1)
 
-    var angle = 0;
-    var autoRotate = false;
+    var offset = 0; // umumiy siljigan piksel (faqat oshadi/kamayadi, wrap qilish applyTransform'da)
+    var halfWidth = 0; // bitta nusxaning to'liq eni — ikkinchi nusxa shu masofada takrorlanadi
+    var autoScroll = false;
     var dragging = false;
     var hovering = false;
     var dragStartX = 0;
-    var dragStartAngle = 0;
+    var dragStartOffset = 0;
     var lastFrameTime = null;
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    function applyTransform() { track.style.transform = 'rotateY(' + angle + 'deg)'; }
+    function applyTransform() {
+      if (!halfWidth) { track.style.transform = 'translateX(0)'; return; }
+      var wrapped = ((offset % halfWidth) + halfWidth) % halfWidth;
+      track.style.transform = 'translateX(-' + wrapped + 'px)';
+    }
 
     function tick(now) {
-      if (!dragging && !hovering && autoRotate && !reduceMotion) {
-        if (lastFrameTime !== null) angle += AUTO_DEG_PER_SEC * (now - lastFrameTime) / 1000;
+      if (!dragging && !hovering && autoScroll && !reduceMotion) {
+        if (lastFrameTime !== null) offset += AUTO_PX_PER_SEC * (now - lastFrameTime) / 1000;
         applyTransform();
       }
       lastFrameTime = now;
@@ -109,11 +115,11 @@
       dragging = true;
       carousel.classList.add('is-dragging');
       dragStartX = e.clientX;
-      dragStartAngle = angle;
+      dragStartOffset = offset;
     });
     window.addEventListener('pointermove', function (e) {
       if (!dragging) return;
-      angle = dragStartAngle + (e.clientX - dragStartX) * DRAG_SENSITIVITY;
+      offset = dragStartOffset - (e.clientX - dragStartX) * DRAG_SENSITIVITY;
       applyTransform();
     });
     function endDrag() {
@@ -124,26 +130,26 @@
     window.addEventListener('pointerup', endDrag);
     window.addEventListener('pointercancel', endDrag);
 
-    function renderPartners(partners) {
-      var count = partners.length;
-      // To'liq 360 gradusga teng taqsimlanadi — shu bilan halqaning
-      // "boshi" ham, "oxiri" ham bo'lmaydi, cheksiz aylanaveradi. Radius
-      // qo'shni logotiplar orasida taxminan bir xil, yaqin bo'shliq
-      // qolishi uchun hisoblanadi — shu sabab ko'proq logotip qo'shilgan
-      // sayin halqa o'zi tabiiy ravishda kengayib boradi.
-      var itemWidth = 170;
-      var gap = 40;
-      var radius = count > 1 ? Math.round((itemWidth + gap) / (2 * Math.sin(Math.PI / count))) : 0;
-      radius = Math.max(radius, 160);
+    function measureHalfWidth() { halfWidth = track.scrollWidth / 2; }
+    window.addEventListener('resize', measureHalfWidth);
 
-      track.innerHTML = partners.map(function (p, i) {
-        var a = (360 / count) * i;
-        return '<div class="proof__carousel-item" style="transform:rotateY(' + a + 'deg) translateZ(' + radius + 'px)">' +
-          '<img src="' + p.image + '" alt="' + (p.name || '').replace(/"/g, '&quot;') + '" loading="lazy" />' +
+    function esc(s) { return String(s || '').replace(/[<>&"]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]; }); }
+
+    function renderPartners(partners) {
+      var itemsHtml = partners.map(function (p) {
+        return '<div class="proof__carousel-item">' +
+          '<img src="' + p.image + '" alt="' + esc(p.name) + '" loading="lazy" />' +
           '</div>';
       }).join('');
-      autoRotate = count >= MIN_ROTATE_COUNT;
-      applyTransform();
+      // Ikki marta takrorlanadi — birinchi nusxa chapga chiqib ketganda,
+      // ikkinchisi xuddi shu joydan davom etib, uzilish sezilmaydi
+      track.innerHTML = itemsHtml + itemsHtml;
+      autoScroll = partners.length >= MIN_ROTATE_COUNT;
+
+      requestAnimationFrame(function () {
+        measureHalfWidth();
+        applyTransform();
+      });
 
       section.style.display = '';
     }
