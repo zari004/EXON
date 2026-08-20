@@ -57,6 +57,43 @@ Vaqt: ${new Date().toLocaleString('uz-UZ')}
 };
 
 /**
+ * Send homepage contact-form lead to Telegram
+ * @param {Object} lead - { name, businessType, phone }
+ */
+const sendContactLead = async (lead) => {
+  if (!bot) {
+    console.log('⚠️ Telegram bot not initialized. Skipping notification for:', lead.phone);
+    return;
+  }
+
+  try {
+    const adminId = process.env.TELEGRAM_ADMIN_ID;
+    if (!adminId) {
+      console.log('⚠️ TELEGRAM_ADMIN_ID not set. Cannot send notification.');
+      return;
+    }
+
+    const message = `
+📞 *YANGI ARIZA (bosh sahifa)*
+
+👤 *Ism:* ${lead.name}
+🏷️ *Biznes turi:* ${lead.businessType}
+☎️ *Telefon:* \`${lead.phone}\`
+
+---
+Vaqt: ${new Date().toLocaleString('uz-UZ')}
+    `;
+
+    await bot.sendMessage(adminId, message, { parse_mode: 'Markdown' });
+    console.log(`📱 Telegram notification sent for lead: ${lead.name} (${lead.phone})`);
+
+  } catch (error) {
+    console.error('❌ Telegram error:', error.message);
+    // Don't throw - this shouldn't break the API response
+  }
+};
+
+/**
  * Send consultation reminder to user (optional)
  * @param {String} chatId - User's Telegram chat ID (if they joined the bot)
  * @param {String} segmentName - Segment name
@@ -95,5 +132,6 @@ Click the button below to book your consultation:
 module.exports = {
   bot,
   sendAuditResult,
+  sendContactLead,
   sendConsultationReminder
 };

@@ -55,6 +55,16 @@ const init = async () => {
   `);
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS contact_leads (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      business_type TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS cases (
       id SERIAL PRIMARY KEY,
       tag TEXT NOT NULL,

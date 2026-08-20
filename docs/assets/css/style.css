@@ -493,6 +493,46 @@ ol,ul{list-style:none}
 }
 
 /* ==========================================================================
+   ARIZA — bosh sahifa pastidagi lid formasi
+   ========================================================================== */
+.lead-form-wrap{
+  width:100%;max-width:520px;margin:0 auto;
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:28px;
+}
+.lead-form-head{display:flex;flex-direction:column;align-items:center}
+.lead-form{width:100%;display:flex;flex-direction:column;gap:16px;text-align:left}
+.lead-form__field{display:flex;flex-direction:column;gap:8px}
+.lead-form__field label{font-size:13.5px;font-weight:500;color:var(--gray)}
+.lead-form__field input,
+.lead-form__field select{
+  width:100%;height:48px;padding:0 16px;border-radius:10px;
+  background:var(--surface);border:1px solid var(--line-2);
+  color:var(--white);font-size:15px;font-family:inherit;
+  transition:border-color .2s var(--ease),box-shadow .2s var(--ease);
+}
+.lead-form__field select{cursor:pointer}
+.lead-form__field select:invalid{color:var(--gray-dim)}
+.lead-form__field input::placeholder{color:var(--gray-dim)}
+.lead-form__field input:focus,
+.lead-form__field select:focus{
+  outline:none;border-color:var(--green-deep);
+  box-shadow:0 0 0 4px rgba(11,209,108,.12);
+}
+.lead-form__submit{
+  margin-top:4px;height:52px;border:0;border-radius:999px;cursor:pointer;
+  font-size:15.5px;font-weight:600;
+  background:linear-gradient(140deg,var(--green-hi) 0%,var(--green) 52%,#1FA36C 100%);
+  color:var(--green-ink);
+  box-shadow:0 6px 26px -8px rgba(53,193,133,.65);
+  transition:transform .2s var(--ease),box-shadow .2s var(--ease),opacity .2s var(--ease);
+}
+.lead-form__submit:hover{transform:translateY(-1px);box-shadow:0 10px 32px -8px rgba(53,193,133,.8)}
+.lead-form__submit:active{transform:translateY(0)}
+.lead-form__submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.lead-form .form-msg{font-size:13.5px;min-height:0}
+.lead-form .form-msg.error{color:#F2896F}
+
+/* ==========================================================================
    FOOTER — ijtimoiy tarmoq ikonkalari (admin panelda kiritiladi)
    ========================================================================== */
 .site-footer{padding:clamp(26px,4vw,42px) 0;border-top:1px solid var(--line)}

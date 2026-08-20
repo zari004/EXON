@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Admin — EXON</title>
-<link rel="stylesheet" href="assets/css/style.css?v=24" />
+<link rel="stylesheet" href="assets/css/style.css?v=25" />
 <link rel="manifest" href="/admin-manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -1942,6 +1942,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="13" width="4" height="8" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="10" y="8" width="4" height="13" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="17" y="3" width="4" height="18" rx="1" stroke="currentColor" stroke-width="1.7"/></svg>
         <span>Hisobot</span>
       </button>
+      <button class="sidebar-item" data-tab="contactLeads">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .7 2.9a2 2 0 0 1-.4 2.1L8 10.1a16 16 0 0 0 6 6l1.4-1.4a2 2 0 0 1 2.1-.4c.9.4 1.9.6 2.9.7a2 2 0 0 1 1.7 2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <span data-i18n="tab.contactLeads">Arizalar</span>
+      </button>
       <button class="sidebar-item" data-tab="cases">
         <svg viewBox="0 0 24 24" fill="none"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.7"/></svg>
         <span>Keyslar</span>
@@ -2039,6 +2043,21 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     <table class="admin-table admin-table--responsive">
       <thead><tr><th>Email</th><th>Ball</th><th>Segment</th><th>Sana</th></tr></thead>
       <tbody id="leadsBody"></tbody>
+    </table>
+  </section>
+
+  <!-- ARIZALAR (bosh sahifadagi lid formasi) -->
+  <section class="admin-panel" id="panel-contactLeads">
+    <div class="panel-head"><h2 data-i18n="contactLeads.title">Arizalar</h2></div>
+    <p style="color:var(--gray);font-size:13.5px;margin:-10px 0 20px" data-i18n="contactLeads.desc">Bosh sahifadagi ariza formasi orqali kelib tushgan murojaatlar.</p>
+    <table class="admin-table admin-table--responsive">
+      <thead><tr>
+        <th data-i18n="contactLeads.name">Ism</th>
+        <th data-i18n="contactLeads.business">Biznes turi</th>
+        <th data-i18n="contactLeads.phone">Telefon</th>
+        <th data-i18n="table.date">Sana</th>
+      </tr></thead>
+      <tbody id="contactLeadsBody"></tbody>
     </table>
   </section>
 
@@ -3287,6 +3306,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'theme.dark': "Qorong'i mavzu",
       'theme.light': "Yorug' mavzu",
       'tab.dashboard': 'Hisobot',
+      'tab.contactLeads': 'Arizalar',
       'tab.cases': 'Keyslar',
       'tab.posts': 'Blog',
       'tab.pricing': 'Narxlar',
@@ -3338,6 +3358,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'table.seg': 'Segment',
       'table.date': 'Sana',
       'table.empty': "Hali lidlar yo'q",
+      'contactLeads.title': 'Arizalar',
+      'contactLeads.desc': 'Bosh sahifadagi ariza formasi orqali kelib tushgan murojaatlar.',
+      'contactLeads.name': 'Ism',
+      'contactLeads.business': 'Biznes turi',
+      'contactLeads.phone': 'Telefon',
       'cases.title': 'Keyslar',
       'cases.add': '+ Yangi keys',
       'cases.empty': "Hali keyslar yo'q",
@@ -3669,6 +3694,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'theme.dark': 'Тёмная тема',
       'theme.light': 'Светлая тема',
       'tab.dashboard': 'Отчёты',
+      'tab.contactLeads': 'Заявки',
       'tab.cases': 'Кейсы',
       'tab.posts': 'Блог',
       'tab.pricing': 'Тарифы',
@@ -3720,6 +3746,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'table.seg': 'Сегмент',
       'table.date': 'Дата',
       'table.empty': 'Лидов пока нет',
+      'contactLeads.title': 'Заявки',
+      'contactLeads.desc': 'Заявки, полученные через форму на главной странице сайта.',
+      'contactLeads.name': 'Имя',
+      'contactLeads.business': 'Тип бизнеса',
+      'contactLeads.phone': 'Телефон',
       'cases.title': 'Кейсы',
       'cases.add': '+ Новый кейс',
       'cases.empty': 'Кейсов пока нет',
@@ -4051,6 +4082,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'theme.dark': 'Dark theme',
       'theme.light': 'Light theme',
       'tab.dashboard': 'Reports',
+      'tab.contactLeads': 'Applications',
       'tab.cases': 'Cases',
       'tab.posts': 'Blog',
       'tab.pricing': 'Pricing',
@@ -4102,6 +4134,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'table.seg': 'Segment',
       'table.date': 'Date',
       'table.empty': 'No leads yet',
+      'contactLeads.title': 'Applications',
+      'contactLeads.desc': 'Submissions received through the homepage contact form.',
+      'contactLeads.name': 'Name',
+      'contactLeads.business': 'Business type',
+      'contactLeads.phone': 'Phone',
       'cases.title': 'Cases',
       'cases.add': '+ New case',
       'cases.empty': 'No cases yet',
@@ -4505,7 +4542,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       if (sidebarRoleEl) sidebarRoleEl.textContent = roleLabel;
       var moreRoleEl = document.getElementById('moreProfileRole');
       if (moreRoleEl) moreRoleEl.textContent = roleLabel;
-      loadDashboard(); loadCases(); loadPosts(); loadPricing(); loadPartners(); loadStats(); loadSocial();
+      loadDashboard(); loadContactLeads(); loadCases(); loadPosts(); loadPricing(); loadPartners(); loadStats(); loadSocial();
       if (USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi') { loadUsers(); loadPermissions(); }
       // Hozir ochiq bo'lgan bo'limning dinamik (JS orqali chizilgan) kontenti
       // ham yangi tilda qayta chiziladi
@@ -4568,7 +4605,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     // Admin/it_bolimi har doim "Sayt boshqaruvi" bo'limini to'liq ko'radi —
     // oldingi (oddiy foydalanuvchi) sessiyasidan qolgan "yashirin" holatni tozalaydi
     if (isSuperLevel) {
-      ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social'].forEach(function (tab) {
+      ['dashboard', 'contactLeads', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social'].forEach(function (tab) {
         var btn = document.querySelector('.sidebar-item[data-tab="' + tab + '"]');
         if (btn) btn.style.display = '';
       });
@@ -4620,7 +4657,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     try {
       var data = await apiFetch('/api/admin/my-permissions');
       var allowed = data.tabs || ['dashboard'];
-      var siteTabs = ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social'];
+      var siteTabs = ['dashboard', 'contactLeads', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social'];
       var boshqaruvTabs = ['tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
       var anySiteVisible = false;
       siteTabs.concat(boshqaruvTabs).forEach(function (tab) {
@@ -5360,6 +5397,21 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
   // ══════════════════════════════════════════════════════════
+  // ARIZALAR (bosh sahifadagi lid formasi)
+  // ══════════════════════════════════════════════════════════
+  async function loadContactLeads() {
+    try {
+      const data = await apiFetch('/api/admin/contact-leads');
+      document.getElementById('contactLeadsBody').innerHTML = (data.leads || []).map(function (l) {
+        return '<tr><td data-label="' + T('contactLeads.name') + '">' + esc(l.name) + '</td>' +
+          '<td data-label="' + T('contactLeads.business') + '">' + esc(l.business_type) + '</td>' +
+          '<td data-label="' + T('contactLeads.phone') + '">' + esc(l.phone) + '</td>' +
+          '<td data-label="' + T('table.date') + '">' + new Date(l.created_at).toLocaleString(LANG === 'ru' ? 'ru-RU' : 'uz-UZ') + '</td></tr>';
+      }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--gray-dim)">' + T('table.empty') + '</td></tr>';
+    } catch (err) { console.error(err); }
+  }
+
+  // ══════════════════════════════════════════════════════════
   // KEYSLAR
   // ══════════════════════════════════════════════════════════
   let casesCache = [];
@@ -5819,7 +5871,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   // ══════════════════════════════════════════════════════════
   // RUXSATLAR (IT bo'limi)
   // ══════════════════════════════════════════════════════════
-  var PERM_TABS = ['dashboard', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social', 'tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
+  var PERM_TABS = ['dashboard', 'contactLeads', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social', 'tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
   var PERM_ROLES = ['seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
 
   async function loadPermissions() {

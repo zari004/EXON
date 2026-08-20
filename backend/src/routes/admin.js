@@ -339,4 +339,17 @@ router.get('/stats', auth.requireAuth, async (req, res) => {
   }
 });
 
+/**
+ * GET /api/admin/contact-leads
+ * Bosh sahifadagi lid formasidan kelgan arizalar ro'yxati
+ */
+router.get('/contact-leads', auth.requireAuth, async (req, res) => {
+  try {
+    const rows = await db.all('SELECT id, name, business_type, phone, created_at FROM contact_leads ORDER BY created_at DESC LIMIT 200');
+    res.json({ success: true, leads: rows });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch contact leads' });
+  }
+});
+
 module.exports = router;

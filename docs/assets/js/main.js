@@ -218,7 +218,51 @@
       .catch(function () { /* API ishlamasa yoki statistika kiritilmagan bo'lsa — qator yashirin qoladi */ });
   })();
 
-  /* ── 8. Teaser bo'limlar — scroll'da paydo bo'lish ──────────────────── */
+  /* ── 8. Ariza formasi — bosh sahifa pastidagi lid formasi. Yuborilganda
+     backend'ga saqlanadi, so'ng tasdiqlash sahifasiga o'tkaziladi — Meta
+     Pixel "Lead" hodisasi aynan o'sha sahifaga yetib kelgan foydalanuvchi
+     uchun hisoblanadi (server Conversions API bilan bir xil event ID
+     orqali ikkilanmasdan). ── */
+  (function () {
+    var form = document.getElementById('leadForm');
+    if (!form || !window.EXON_API_BASE) return;
+
+    var submitBtn = document.getElementById('leadFormSubmit');
+    var msg = document.getElementById('leadFormMsg');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      msg.textContent = ''; msg.className = 'form-msg';
+      submitBtn.disabled = true;
+
+      var eventId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'evt-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+      var body = {
+        name: form.name.value.trim(),
+        businessType: form.businessType.value,
+        phone: form.phone.value.trim(),
+        metaEventId: eventId
+      };
+
+      fetch(window.EXON_API_BASE + '/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (!data.success) throw new Error(data.error || 'Xatolik yuz berdi');
+          try { sessionStorage.setItem('exon_lead_event_id', eventId); } catch (err) {}
+          window.location.href = 'ariza-yuborildi.html';
+        })
+        .catch(function (err) {
+          msg.textContent = err.message || 'Xatolik yuz berdi. Birozdan so\'ng qayta urinib ko\'ring.';
+          msg.className = 'form-msg error';
+          submitBtn.disabled = false;
+        });
+    });
+  })();
+
+  /* ── 9. Teaser bo'limlar — scroll'da paydo bo'lish ──────────────────── */
   var revealEls = document.querySelectorAll('.reveal');
   if (revealEls.length) {
     if ('IntersectionObserver' in window) {

@@ -9,24 +9,30 @@ const PIXEL_ID = '1554557782253530'; // brauzer kodida ham ochiq ko'rinadi — m
 const API_VERSION = 'v19.0';
 
 const sha256 = (value) => crypto.createHash('sha256').update(String(value).trim().toLowerCase()).digest('hex');
+// Meta talabiga ko'ra telefon raqami xeshlanishdan oldin faqat raqamlardan
+// (davlat kodi bilan, "+" va bo'shliqlarsiz) iborat bo'lishi kerak
+const normalizePhone = (phone) => String(phone).replace(/[^0-9]/g, '');
 
-async function sendLeadEvent({ email, eventId, req }) {
+async function sendLeadEvent({ email, phone, eventId, req }) {
   const token = process.env.META_CONVERSIONS_TOKEN;
   if (!token) return; // sozlanmagan bo'lsa — jimgina o'tkazib yuboriladi
 
   const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+  const userData = {
+    client_ip_address: ip || undefined,
+    client_user_agent: req.headers['user-agent'] || undefined
+  };
+  if (email) userData.em = [sha256(email)];
+  if (phone) userData.ph = [sha256(normalizePhone(phone))];
+
   const payload = {
     data: [{
       event_name: 'Lead',
       event_time: Math.floor(Date.now() / 1000),
       event_id: eventId,
       action_source: 'website',
-      event_source_url: req.headers['referer'] || 'https://exon-marketing.uz/audit.html',
-      user_data: {
-        em: [sha256(email)],
-        client_ip_address: ip || undefined,
-        client_user_agent: req.headers['user-agent'] || undefined
-      }
+      event_source_url: req.headers['referer'] || 'https://exon-marketing.uz/',
+      user_data: userData
     }]
   };
 
