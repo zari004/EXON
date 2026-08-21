@@ -148,14 +148,26 @@
       section.style.display = '';
     }
 
-    fetch(window.EXON_API_BASE + '/api/partners')
-      .then(function (r) { return r.json(); })
+    // Avval GitHub Pages'dagi statik nusxadan (bir necha daqiqada bir marta
+    // GitHub Action orqali yangilanadi) — bu doim tez, Render'ning uxlab
+    // qolishini kutib turmaydi. Topilmasa/bo'sh bo'lsa jonli API'ga o'tadi.
+    fetch('data/partners.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (data) {
         var partners = (data && data.success && Array.isArray(data.partners)) ? data.partners : [];
-        if (!partners.length) return;
+        if (!partners.length) throw 0;
         renderPartners(partners);
       })
-      .catch(function () { /* API ishlamasa yoki hamkor qo'shilmagan bo'lsa — bo'lim yashirin qoladi */ });
+      .catch(function () {
+        fetch(window.EXON_API_BASE + '/api/partners')
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            var partners = (data && data.success && Array.isArray(data.partners)) ? data.partners : [];
+            if (!partners.length) return;
+            renderPartners(partners);
+          })
+          .catch(function () { /* API ishlamasa yoki hamkor qo'shilmagan bo'lsa — bo'lim yashirin qoladi */ });
+      });
   })();
 
   /* ── 7. Statistika — admin paneldan olib, "Keyslar" bo'limida ko'rinishga
@@ -190,32 +202,45 @@
       });
     }
 
-    fetch(window.EXON_API_BASE + '/api/stats')
-      .then(function (r) { return r.json(); })
+    function renderStats(stats) {
+      row.innerHTML = stats.map(function (s) {
+        return '<div class="stat-item">' +
+          '<div class="stat-item__value"><span class="stat-item__num" data-target="' + Number(s.value) + '">0</span>' + esc(s.suffix) + '</div>' +
+          '<div class="stat-item__label">' + esc(s.label) + '</div>' +
+          '</div>';
+      }).join('');
+      row.style.display = '';
+
+      if ('IntersectionObserver' in window) {
+        var statsIo = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) { startCountUp(); statsIo.disconnect(); }
+          });
+        }, { threshold: .3 });
+        statsIo.observe(row);
+      } else {
+        startCountUp();
+      }
+    }
+
+    // Avval statik nusxadan (tez, Render'ni kutmaydi), topilmasa jonli API'dan
+    fetch('data/stats.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (data) {
         var stats = (data && data.success && Array.isArray(data.stats)) ? data.stats : [];
-        if (!stats.length) return;
-
-        row.innerHTML = stats.map(function (s) {
-          return '<div class="stat-item">' +
-            '<div class="stat-item__value"><span class="stat-item__num" data-target="' + Number(s.value) + '">0</span>' + esc(s.suffix) + '</div>' +
-            '<div class="stat-item__label">' + esc(s.label) + '</div>' +
-            '</div>';
-        }).join('');
-        row.style.display = '';
-
-        if ('IntersectionObserver' in window) {
-          var statsIo = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-              if (entry.isIntersecting) { startCountUp(); statsIo.disconnect(); }
-            });
-          }, { threshold: .3 });
-          statsIo.observe(row);
-        } else {
-          startCountUp();
-        }
+        if (!stats.length) throw 0;
+        renderStats(stats);
       })
-      .catch(function () { /* API ishlamasa yoki statistika kiritilmagan bo'lsa — qator yashirin qoladi */ });
+      .catch(function () {
+        fetch(window.EXON_API_BASE + '/api/stats')
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            var stats = (data && data.success && Array.isArray(data.stats)) ? data.stats : [];
+            if (!stats.length) return;
+            renderStats(stats);
+          })
+          .catch(function () { /* API ishlamasa yoki statistika kiritilmagan bo'lsa — qator yashirin qoladi */ });
+      });
   })();
 
   /* ── 8. Ariza formasi — bosh sahifa pastidagi lid formasi. Yuborilganda

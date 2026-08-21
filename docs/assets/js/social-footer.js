@@ -22,20 +22,33 @@
 
   function esc(s) { return String(s || '').replace(/[<>&"]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]; }); }
 
-  fetch(window.EXON_API_BASE + '/api/social')
-    .then(function (r) { return r.json(); })
+  function renderLinks(links) {
+    iconsRow.innerHTML = links.map(function (l, i) {
+      var icon = ICONS[l.platform] || FALLBACK_ICON;
+      var label = LABELS[l.platform] || l.platform;
+      return '<a class="social-icon" href="' + esc(l.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(label) + '" style="--i:' + i + '">' +
+        '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' + icon + '</svg>' +
+        '</a>';
+    }).join('');
+    footer.style.display = '';
+  }
+
+  // Avval statik nusxadan (tez, Render'ni kutmaydi), topilmasa jonli API'dan
+  fetch('data/social.json', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
     .then(function (data) {
       var links = (data && data.success && Array.isArray(data.links)) ? data.links : [];
-      if (!links.length) return;
-
-      iconsRow.innerHTML = links.map(function (l, i) {
-        var icon = ICONS[l.platform] || FALLBACK_ICON;
-        var label = LABELS[l.platform] || l.platform;
-        return '<a class="social-icon" href="' + esc(l.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(label) + '" style="--i:' + i + '">' +
-          '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' + icon + '</svg>' +
-          '</a>';
-      }).join('');
-      footer.style.display = '';
+      if (!links.length) throw 0;
+      renderLinks(links);
     })
-    .catch(function () { /* API ishlamasa yoki havola kiritilmagan bo'lsa — footer yashirin qoladi */ });
+    .catch(function () {
+      fetch(window.EXON_API_BASE + '/api/social')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var links = (data && data.success && Array.isArray(data.links)) ? data.links : [];
+          if (!links.length) return;
+          renderLinks(links);
+        })
+        .catch(function () { /* API ishlamasa yoki havola kiritilmagan bo'lsa — footer yashirin qoladi */ });
+    });
 })();
