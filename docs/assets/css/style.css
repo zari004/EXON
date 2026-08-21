@@ -743,12 +743,12 @@ ol,ul{list-style:none}
   padding:clamp(22px,3.4vw,36px) 0 clamp(30px,4.4vw,44px);margin-top:8px;
   border-top:1px solid var(--line);
 }
-.stat-item{text-align:center;min-width:110px}
+.stat-item{text-align:center;min-width:130px}
 .stat-item__value{
-  font-size:clamp(38px,6vw,64px);font-weight:800;letter-spacing:-.02em;
+  font-size:clamp(50px,8.4vw,92px);font-weight:800;letter-spacing:-.02em;
   color:var(--white);font-variant-numeric:tabular-nums;
 }
-.stat-item__label{font-size:15.5px;color:var(--gray);font-weight:400;margin-top:6px}
+.stat-item__label{font-size:17px;color:var(--gray);font-weight:400;margin-top:8px}
 
 /* ── scroll'da paydo bo'lish ── */
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease) var(--rd,0s),transform .7s var(--ease) var(--rd,0s)}
