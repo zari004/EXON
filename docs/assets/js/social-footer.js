@@ -1,12 +1,11 @@
-/* EXON — footer ijtimoiy tarmoq ikonkalari. Admin panelda ("Ijtimoiy
-   tarmoqlar") kiritilgan havolalarni /api/social'dan olib, footer'da
+/* EXON — header ijtimoiy tarmoq ikonkalari. Admin panelda ("Ijtimoiy
+   tarmoqlar") kiritilgan havolalarni /api/social'dan olib, nav'da
    ko'rsatadi. Hech qanday havola kiritilmagan bo'lsa yoki API ishlamasa
-   — footer butunlay yashirin qoladi, hech qanday noto'g'ri/o'ylab
-   topilgan havola ko'rsatilmaydi. */
+   — ikonkalar qatori butunlay yashirin qoladi, hech qanday noto'g'ri/
+   o'ylab topilgan havola ko'rsatilmaydi. */
 (function () {
-  var footer = document.getElementById('siteFooter');
-  var iconsRow = document.getElementById('socialIcons');
-  if (!footer || !iconsRow || !window.EXON_API_BASE) return;
+  var iconsRow = document.getElementById('socialIconsNav');
+  if (!iconsRow || !window.EXON_API_BASE) return;
 
   var ICONS = {
     instagram: '<path d="M12 2c2.7 0 3.1 0 4.1.1 1.1.1 1.8.2 2.5.5.7.3 1.2.6 1.8 1.2.6.6.9 1.1 1.2 1.8.3.7.4 1.4.5 2.5.1 1 .1 1.4.1 4.1s0 3.1-.1 4.1c-.1 1.1-.2 1.8-.5 2.5-.3.7-.6 1.2-1.2 1.8-.6.6-1.1.9-1.8 1.2-.7.3-1.4.4-2.5.5-1 .1-1.4.1-4.1.1s-3.1 0-4.1-.1c-1.1-.1-1.8-.2-2.5-.5-.7-.3-1.2-.6-1.8-1.2-.6-.6-.9-1.1-1.2-1.8-.3-.7-.4-1.4-.5-2.5C2 15.1 2 14.7 2 12s0-3.1.1-4.1c.1-1.1.2-1.8.5-2.5.3-.7.6-1.2 1.2-1.8.6-.6 1.1-.9 1.8-1.2.7-.3 1.4-.4 2.5-.5C8.9 2 9.3 2 12 2Zm0 1.8c-2.7 0-3 0-4 .1-.9 0-1.5.2-1.8.3-.5.2-.8.4-1.1.7-.3.3-.5.6-.7 1.1-.1.3-.3.9-.3 1.8-.1 1-.1 1.3-.1 4s0 3 .1 4c0 .9.2 1.5.3 1.8.2.5.4.8.7 1.1.3.3.6.5 1.1.7.3.1.9.3 1.8.3 1 .1 1.3.1 4 .1s3 0 4-.1c.9 0 1.5-.2 1.8-.3.5-.2.8-.4 1.1-.7.3-.3.5-.6.7-1.1.1-.3.3-.9.3-1.8.1-1 .1-1.3.1-4s0-3-.1-4c0-.9-.2-1.5-.3-1.8-.2-.5-.4-.8-.7-1.1a2.9 2.9 0 0 0-1.1-.7c-.3-.1-.9-.3-1.8-.3-1-.1-1.3-.1-4-.1Zm0 3.5a4.7 4.7 0 1 1 0 9.4 4.7 4.7 0 0 1 0-9.4Zm0 1.8a2.9 2.9 0 1 0 0 5.8 2.9 2.9 0 0 0 0-5.8Zm5-2a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0Z"/>',
@@ -30,7 +29,7 @@
         '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' + icon + '</svg>' +
         '</a>';
     }).join('');
-    footer.style.display = '';
+    iconsRow.style.display = 'flex';
   }
 
   // Avval statik nusxadan (tez, Render'ni kutmaydi), topilmasa jonli API'dan
@@ -49,6 +48,6 @@
           if (!links.length) return;
           renderLinks(links);
         })
-        .catch(function () { /* API ishlamasa yoki havola kiritilmagan bo'lsa — footer yashirin qoladi */ });
+        .catch(function () { /* API ishlamasa yoki havola kiritilmagan bo'lsa — ikonkalar yashirin qoladi */ });
     });
 })();

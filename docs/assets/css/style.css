@@ -533,15 +533,10 @@ ol,ul{list-style:none}
 .lead-form .form-msg.error{color:#F2896F}
 
 /* ==========================================================================
-   FOOTER — ijtimoiy tarmoq ikonkalari (admin panelda kiritiladi)
+   NAV — ijtimoiy tarmoq ikonkalari (admin panelda kiritiladi)
    ========================================================================== */
-.site-footer{padding:clamp(26px,4vw,42px) 0;border-top:1px solid var(--line)}
-.site-footer__inner{
-  width:100%;max-width:var(--wrap);margin:0 auto;
-  padding:0 clamp(18px,3.4vw,40px);
-  display:flex;justify-content:center;
-}
 .social-icons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.social-icons--nav{gap:8px;flex-wrap:nowrap}
 .social-icon{
   width:42px;height:42px;border-radius:50%;flex-shrink:0;
   display:grid;place-items:center;
@@ -556,10 +551,31 @@ ol,ul{list-style:none}
   transform:translateY(-4px) rotate(-8deg) scale(1.08);
 }
 .social-icon:active{transform:translateY(-1px) rotate(0deg) scale(.96)}
+/* Header'dagi kichikroq versiya — doimiy tepa-pastga "suzib" turadi + yashil porlash */
+.social-icons--nav .social-icon{
+  width:34px;height:34px;
+  animation:social-pop .55s cubic-bezier(.34,1.56,.64,1) both,
+            social-bob 1.7s ease-in-out infinite,
+            social-breathe 2.6s ease-in-out infinite;
+  animation-delay:calc(var(--i,0) * .07s), calc(.6s + var(--i,0) * .28s), calc(.6s + var(--i,0) * .28s);
+}
+.social-icons--nav .social-icon svg{width:16px;height:16px}
+.social-icons--nav .social-icon:hover{animation:none}
 @keyframes social-pop{
   0%{opacity:0;transform:translateY(14px) scale(.6)}
   60%{opacity:1;transform:translateY(-3px) scale(1.06)}
   100%{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes social-bob{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-5px)}
+}
+@keyframes social-breathe{
+  0%,100%{box-shadow:0 0 0 0 rgba(var(--green-rgb),.45)}
+  50%{box-shadow:0 0 0 6px rgba(var(--green-rgb),0)}
+}
+@media (max-width:880px){
+  .social-icons--nav{display:none!important}
 }
 @media (prefers-reduced-motion:reduce){
   .social-icon{animation:none;transition:background .2s,color .2s,border-color .2s}
