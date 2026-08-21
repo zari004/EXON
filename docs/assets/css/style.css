@@ -740,8 +740,8 @@ ol,ul{list-style:none}
 /* ── statistika qatori — admin panelda kiritilgan raqamlar, 0'dan animatsiya bilan ── */
 .stats-row{
   display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(28px,5vw,64px);
-  padding:clamp(22px,3.4vw,36px) 0;margin-top:8px;
-  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:clamp(22px,3.4vw,36px) 0 clamp(30px,4.4vw,44px);margin-top:8px;
+  border-top:1px solid var(--line);
 }
 .stat-item{text-align:center;min-width:110px}
 .stat-item__value{
