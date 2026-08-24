@@ -131,6 +131,9 @@ app.listen(PORT, () => {
   ║  ✅ Ready to accept audit requests     ║
   ╚════════════════════════════════════════╝
   `);
+  console.log(process.env.META_CONVERSIONS_TOKEN
+    ? '✅ META_CONVERSIONS_TOKEN sozlangan — server Lead hodisalarini Meta Conversions API orqali yuboradi'
+    : '⚠️  META_CONVERSIONS_TOKEN sozlanmagan — server tomonidan Lead hodisalari Meta\'ga yuborilmaydi (faqat brauzer Pixel\'i ishlaydi)');
 });
 
 module.exports = app;
