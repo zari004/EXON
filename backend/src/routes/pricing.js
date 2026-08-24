@@ -28,6 +28,33 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/pricing/visibility — ommaviy. Narxlar bo'limi saytda ko'rinadimi
+// yo'qmi (admin panelda "Narxlar" bo'limidan istalgan vaqt o'zgartiriladi).
+// Sozlama hali kiritilmagan bo'lsa — standart holat "ko'rinadi".
+router.get('/visibility', async (req, res) => {
+  try {
+    const row = await db.get("SELECT value FROM site_settings WHERE key = 'pricing_visible'");
+    res.json({ success: true, visible: row ? row.value !== 'false' : true });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch pricing visibility' });
+  }
+});
+
+// PUT /api/pricing/visibility — admin
+router.put('/visibility', auth.requireAuth, async (req, res) => {
+  try {
+    const visible = req.body.visible !== false;
+    await db.run(
+      `INSERT INTO site_settings (key, value, updated_at) VALUES ('pricing_visible', ?, NOW())
+       ON CONFLICT (key) DO UPDATE SET value = ?, updated_at = NOW() RETURNING key`,
+      [String(visible), String(visible)]
+    );
+    res.json({ success: true, visible });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to update pricing visibility' });
+  }
+});
+
 // POST /api/pricing — admin
 router.post('/', auth.requireAuth, async (req, res) => {
   try {

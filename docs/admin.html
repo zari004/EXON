@@ -1189,6 +1189,25 @@ body{
   .admin-table--responsive td[data-label=""]{justify-content:flex-end}
 }
 
+/* ── KO'RINISH TUMBLERI (masalan Narxlar bo'limi) ── */
+.vis-toggle{
+  display:flex;align-items:center;gap:12px;padding:14px 17px;border-radius:14px;margin-bottom:18px;
+  background:linear-gradient(145deg,var(--surface),rgba(var(--surface-2-rgb),.38));border:1px solid var(--line);
+}
+.vis-toggle__switch{
+  position:relative;width:44px;height:25px;flex-shrink:0;border-radius:999px;border:0;cursor:pointer;
+  background:var(--surface-2);transition:background .2s var(--ease);
+}
+.vis-toggle__switch::before{
+  content:"";position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:50%;
+  background:var(--gray);transition:transform .2s var(--ease),background .2s var(--ease);
+}
+.vis-toggle__switch.is-on{background:rgba(var(--green-rgb),.25)}
+.vis-toggle__switch.is-on::before{transform:translateX(19px);background:var(--green)}
+.vis-toggle__switch:disabled{opacity:.5;cursor:not-allowed}
+.vis-toggle__label{font-size:14px;font-weight:600}
+.vis-toggle__hint{font-size:12.5px;color:var(--gray)}
+
 /* ── ITEM LISTS ── */
 .item-list{display:flex;flex-direction:column;gap:10px}
 .item-row{
@@ -2084,6 +2103,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     <div class="panel-head">
       <h2>Narxlar paketlari</h2>
       <button class="btn-add" onclick="openPricingForm()">+ Yangi paket</button>
+    </div>
+    <div class="vis-toggle">
+      <button type="button" class="vis-toggle__switch" id="pricingVisSwitch" disabled onclick="togglePricingVisibility()"></button>
+      <div>
+        <div class="vis-toggle__label" id="pricingVisLabel">Tekshirilmoqda...</div>
+        <div class="vis-toggle__hint">Yoqilganda — Narxlar bo'limi saytda barcha tashrif buyuruvchilarga ko'rinadi. O'chirilganda — butunlay yashiriladi.</div>
+      </div>
     </div>
     <div class="item-list" id="pricingList"></div>
   </section>
@@ -4542,7 +4568,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       if (sidebarRoleEl) sidebarRoleEl.textContent = roleLabel;
       var moreRoleEl = document.getElementById('moreProfileRole');
       if (moreRoleEl) moreRoleEl.textContent = roleLabel;
-      loadDashboard(); loadContactLeads(); loadCases(); loadPosts(); loadPricing(); loadPartners(); loadStats(); loadSocial();
+      loadDashboard(); loadContactLeads(); loadCases(); loadPosts(); loadPricing(); loadPricingVisibility(); loadPartners(); loadStats(); loadSocial();
       if (USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi') { loadUsers(); loadPermissions(); }
       // Hozir ochiq bo'lgan bo'limning dinamik (JS orqali chizilgan) kontenti
       // ham yangi tilda qayta chiziladi
@@ -5585,6 +5611,42 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       }).join('') : '<div class="empty-state">' + T('pricing.empty') + '</div>';
     } catch (err) { console.error(err); }
   }
+
+  async function loadPricingVisibility() {
+    const btn = document.getElementById('pricingVisSwitch');
+    const label = document.getElementById('pricingVisLabel');
+    try {
+      const data = await apiFetch('/api/pricing/visibility');
+      applyPricingVisState(data.visible);
+    } catch (err) {
+      console.error(err);
+      label.textContent = "Holatni tekshirib bo'lmadi";
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function applyPricingVisState(visible) {
+    const btn = document.getElementById('pricingVisSwitch');
+    const label = document.getElementById('pricingVisLabel');
+    btn.classList.toggle('is-on', !!visible);
+    label.textContent = visible ? "Narxlar saytda ko'rinadi" : "Narxlar saytda yashirilgan";
+  }
+
+  window.togglePricingVisibility = async function () {
+    const btn = document.getElementById('pricingVisSwitch');
+    const next = !btn.classList.contains('is-on');
+    btn.disabled = true;
+    try {
+      const data = await apiFetch('/api/pricing/visibility', { method: 'PUT', body: JSON.stringify({ visible: next }) });
+      applyPricingVisState(data.visible);
+    } catch (err) {
+      console.error(err);
+      alert("Holatni o'zgartirib bo'lmadi. Qayta urinib ko'ring.");
+    } finally {
+      btn.disabled = false;
+    }
+  };
 
   window.addFeatureRow = function (value) {
     const wrap = document.getElementById('featuresList');

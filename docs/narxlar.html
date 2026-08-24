@@ -427,6 +427,7 @@ src="https://www.facebook.com/tr?id=1554557782253530&ev=PageView&noscript=1"
 
 <script src="assets/js/api-base.js?v=2"></script>
 <script src="assets/js/social-footer.js?v=3"></script>
+<script src="assets/js/pricing-visibility.js?v=1"></script>
 <script>
 // Nav scroll blur
 (function() {
@@ -493,20 +494,34 @@ function goToConsultation() {
       '</div>';
   }
 
-  fetch(window.EXON_API_BASE + '/api/pricing')
+  fetch(window.EXON_API_BASE + '/api/pricing/visibility')
     .then(function (r) { return r.json(); })
     .then(function (data) {
-      const list = document.getElementById('pricing-list');
-      if (!data.success || !data.pricing.length) {
-        list.innerHTML = '<p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Hozircha paketlar yo\'q.</p>';
+      if (data && data.success && data.visible === false) {
+        document.getElementById('pricing-list').innerHTML =
+          '<p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Narxlar hozircha bu yerda ko\'rsatilmayapti. Tafsilotlar uchun biz bilan bog\'laning.</p>';
         return;
       }
-      list.innerHTML = data.pricing.map(renderPlan).join('');
+      loadPricingPlans();
     })
-    .catch(function () {
-      document.getElementById('pricing-list').innerHTML =
-        '<p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Narxlarni yuklab bo\'lmadi. Birozdan so\'ng qayta urinib ko\'ring.</p>';
-    });
+    .catch(loadPricingPlans);
+
+  function loadPricingPlans() {
+    fetch(window.EXON_API_BASE + '/api/pricing')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        const list = document.getElementById('pricing-list');
+        if (!data.success || !data.pricing.length) {
+          list.innerHTML = '<p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Hozircha paketlar yo\'q.</p>';
+          return;
+        }
+        list.innerHTML = data.pricing.map(renderPlan).join('');
+      })
+      .catch(function () {
+        document.getElementById('pricing-list').innerHTML =
+          '<p style="color:var(--gray-dim);grid-column:1/-1;text-align:center">Narxlarni yuklab bo\'lmadi. Birozdan so\'ng qayta urinib ko\'ring.</p>';
+      });
+  }
 })();
 </script>
 <script>if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});</script>
