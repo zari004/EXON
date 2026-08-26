@@ -132,8 +132,11 @@ app.listen(PORT, () => {
   ╚════════════════════════════════════════╝
   `);
   console.log(process.env.META_CONVERSIONS_TOKEN
-    ? '✅ META_CONVERSIONS_TOKEN sozlangan — server Lead hodisalarini Meta Conversions API orqali yuboradi'
-    : '⚠️  META_CONVERSIONS_TOKEN sozlanmagan — server tomonidan Lead hodisalari Meta\'ga yuborilmaydi (faqat brauzer Pixel\'i ishlaydi)');
+    ? "✅ META_CONVERSIONS_TOKEN sozlangan — 1-pixel (1554557782253530) uchun Lead hodisalari serverdan yuboriladi"
+    : "⚠️  META_CONVERSIONS_TOKEN sozlanmagan — 1-pixel uchun server-side Lead yuborilmaydi (faqat brauzer Pixel'i ishlaydi)");
+  console.log(process.env.META_CONVERSIONS_TOKEN_2
+    ? "✅ META_CONVERSIONS_TOKEN_2 sozlangan — 2-pixel (4291431417787119) uchun Lead hodisalari serverdan yuboriladi"
+    : "⚠️  META_CONVERSIONS_TOKEN_2 sozlanmagan — 2-pixel uchun server-side Lead yuborilmaydi (faqat brauzer Pixel'i ishlaydi)");
 });
 
 module.exports = app;
