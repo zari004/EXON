@@ -859,9 +859,10 @@ ol,ul{list-style:none}
 .case-card__stats b{display:block;font-size:24px;font-weight:700;color:var(--green-hi)}
 .case-card__stats span{font-size:11px;color:var(--gray-dim);text-transform:uppercase;letter-spacing:.06em}
 .case-card__market{
-  display:inline-block;font-size:11.5px;font-family:var(--font-mono);color:var(--gray);
-  padding:4px 10px;border-radius:999px;border:1px solid var(--line-2);
+  display:inline-flex;align-items:center;justify-content:center;height:32px;
+  padding:5px 10px;border-radius:8px;border:1px solid var(--line-2);background:#fff;
 }
+.case-card__market img{display:block;width:auto;height:18px;max-width:112px}
 
 /* ── NARXLAR: 2 ta taomil taqqoslash ── */
 .price-teaser{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:760px}

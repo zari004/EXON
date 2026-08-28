@@ -1,4 +1,4 @@
-const CACHE = 'exon-v33';
+const CACHE = 'exon-v34';
 const STATIC = [
   '/',
   '/index.html',
@@ -18,6 +18,8 @@ const STATIC = [
   '/assets/js/theme.js',
   '/assets/img/logo-exon.png',
   '/assets/img/logo-exon-light.png',
+  '/assets/img/uzum-market.svg',
+  '/assets/img/wildberries.svg',
   '/assets/img/icon.svg',
   '/assets/img/app-icon-v2.svg',
   '/assets/img/app-icon-180.png',

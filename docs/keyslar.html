@@ -25,14 +25,14 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 <script src="assets/js/theme.js?v=3"></script>
-<script src="assets/js/i18n.js?v=3" defer></script>
+<script src="assets/js/i18n.js?v=5" defer></script>
 <title>Keyslar — EXON Marketpleys Konsultansiyasi</title>
 <meta name="description" content="50+ do'kon, 100 000+ buyurtma. Elektronika, uy buyumlari, kosmetika, mahsulot, brend — hamma uchun biz ishladik." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=34" />
+<link rel="stylesheet" href="assets/css/style.css?v=38" />
 <link rel="manifest" href="/manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -204,13 +204,22 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 .market-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  min-width: 56px;
+  height: 34px;
   padding: 6px 10px;
-  border-radius: 4px;
-  background: var(--surface);
+  border-radius: 7px;
+  background: #fff;
   font-size: 12px;
   font-weight: 500;
   color: var(--gray);
+}
+
+.market-badge img {
+  display: block;
+  width: auto;
+  height: 19px;
+  max-width: 118px;
 }
 
 .market-badge--uzum { border: 1px solid rgba(255, 107, 53, .3); }
@@ -330,9 +339,9 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
   <div class="keyslar__cta">
     <h2 class="keyslar__cta-title">Sizning hikoyangizni boshlay</h2>
     <p class="keyslar__cta-desc">
-      Bepul audit — 12 nuqtali tahlil. Keyingi qadam uchun plan 3 kunda.
+      Bepul konsultatsiyaga yoziling — mutaxassisimiz siz bilan tez orada bog'lanadi.
     </p>
-    <a class="keyslar__cta-btn" href="audit.html">Bepul Audit</a>
+    <a class="keyslar__cta-btn" href="konsultatsiya.html">Bepul konsultatsiya</a>
   </div>
 
 </main>
@@ -377,9 +386,9 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 // Keyslarni admin panel bazasidan yuklash
 (function () {
   const MARKET_INFO = {
-    uzum: { icon: '🛍', label: 'Uzum', cls: 'market-badge--uzum' },
-    wb: { icon: '📦', label: 'Wildberries', cls: 'market-badge--wb' },
-    yandex: { icon: '🔴', label: 'Yandex', cls: 'market-badge--yandex' }
+    uzum: { logo: 'assets/img/uzum-market.svg', label: 'Uzum Market', cls: 'market-badge--uzum' },
+    wb: { logo: 'assets/img/wildberries.svg', label: 'Wildberries', cls: 'market-badge--wb' },
+    yandex: { logo: '', label: 'Yandex', cls: 'market-badge--yandex' }
   };
 
   function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
@@ -387,7 +396,9 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
   function renderCase(c) {
     const marketsHtml = (c.markets || []).map(function (m) {
       const info = MARKET_INFO[m];
-      return info ? '<span class="market-badge ' + info.cls + '">' + info.icon + ' ' + info.label + '</span>' : '';
+      if (!info) return '';
+      const content = info.logo ? '<img src="' + info.logo + '" alt="' + info.label + '" />' : info.label;
+      return '<span class="market-badge ' + info.cls + '">' + content + '</span>';
     }).join('');
     return '<article class="key-card">' +
       (c.image ? '<img class="key-card__img" src="' + c.image + '" alt="" />' : '') +
