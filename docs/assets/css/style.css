@@ -859,10 +859,17 @@ ol,ul{list-style:none}
 .case-card__stats b{display:block;font-size:24px;font-weight:700;color:var(--green-hi)}
 .case-card__stats span{font-size:11px;color:var(--gray-dim);text-transform:uppercase;letter-spacing:.06em}
 .case-card__market{
-  display:inline-flex;align-items:center;justify-content:center;height:32px;
-  padding:5px 10px;border-radius:8px;border:1px solid var(--line-2);background:#fff;
+  display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;
+  padding:0;border:0;background:transparent;
 }
-.case-card__market img{display:block;width:auto;height:18px;max-width:112px}
+.case-card__market img{
+  display:block;width:34px;height:34px;border-radius:10px;object-fit:contain;
+  transition:transform .2s var(--ease),box-shadow .2s var(--ease);
+}
+.case-card__market:hover img{transform:translateY(-2px) scale(1.04)}
+.case-card__market--uzum:hover img{box-shadow:0 8px 22px -4px rgba(112,0,255,.75),0 4px 14px -6px rgba(255,214,0,.9)}
+.case-card__market--wb:hover img{box-shadow:0 8px 22px -4px rgba(207,20,211,.78)}
+.case-card__market--yandex:hover img{box-shadow:0 8px 22px -4px rgba(255,59,20,.75),0 4px 14px -6px rgba(255,221,0,.9)}
 
 /* ── NARXLAR: 2 ta taomil taqqoslash ── */
 .price-teaser{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:760px}

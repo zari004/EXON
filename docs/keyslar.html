@@ -32,7 +32,7 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=38" />
+<link rel="stylesheet" href="assets/css/style.css?v=39" />
 <link rel="manifest" href="/manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -205,11 +205,11 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 56px;
-  height: 34px;
-  padding: 6px 10px;
-  border-radius: 7px;
-  background: #fff;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 11px;
+  background: transparent;
   font-size: 12px;
   font-weight: 500;
   color: var(--gray);
@@ -217,14 +217,21 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 
 .market-badge img {
   display: block;
-  width: auto;
-  height: 19px;
-  max-width: 118px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  object-fit: contain;
+  transition: transform .2s cubic-bezier(.22,.68,.28,1), box-shadow .2s cubic-bezier(.22,.68,.28,1);
 }
 
-.market-badge--uzum { border: 1px solid rgba(255, 107, 53, .3); }
-.market-badge--wb { border: 1px solid rgba(76, 84, 242, .3); }
-.market-badge--yandex { border: 1px solid rgba(255, 0, 0, .2); }
+.market-badge--uzum,
+.market-badge--wb,
+.market-badge--yandex { border: 0; }
+
+.market-badge:hover img { transform: translateY(-2px) scale(1.04); }
+.market-badge--uzum:hover img { box-shadow: 0 8px 22px -4px rgba(112,0,255,.75), 0 4px 14px -6px rgba(255,214,0,.9); }
+.market-badge--wb:hover img { box-shadow: 0 8px 22px -4px rgba(207,20,211,.78); }
+.market-badge--yandex:hover img { box-shadow: 0 8px 22px -4px rgba(255,59,20,.75), 0 4px 14px -6px rgba(255,221,0,.9); }
 
 /* ── CTA ── */
 .keyslar__cta {
@@ -386,9 +393,9 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 // Keyslarni admin panel bazasidan yuklash
 (function () {
   const MARKET_INFO = {
-    uzum: { logo: 'assets/img/uzum-market.svg', label: 'Uzum Market', cls: 'market-badge--uzum' },
-    wb: { logo: 'assets/img/wildberries.svg', label: 'Wildberries', cls: 'market-badge--wb' },
-    yandex: { logo: '', label: 'Yandex', cls: 'market-badge--yandex' }
+    uzum: { logo: 'assets/img/market-uzum.webp', label: 'Uzum Market', cls: 'market-badge--uzum' },
+    wb: { logo: 'assets/img/market-wildberries.png', label: 'Wildberries', cls: 'market-badge--wb' },
+    yandex: { logo: 'assets/img/market-yandex.png', label: 'Yandex Market', cls: 'market-badge--yandex' }
   };
 
   function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
