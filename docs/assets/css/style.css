@@ -321,6 +321,20 @@ ol,ul{list-style:none}
   color:var(--gray);
 }
 
+.consultation-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  min-height:50px;padding:0 24px;border-radius:999px;
+  background:linear-gradient(140deg,var(--green-hi) 0%,var(--green) 52%,#1FA36C 100%);
+  color:var(--green-ink);font-size:15px;font-weight:650;
+  box-shadow:0 8px 28px -10px rgba(var(--green-rgb),.75);
+  transition:transform .22s var(--ease),box-shadow .22s var(--ease);
+}
+.consultation-btn svg{width:17px;height:17px;transition:transform .22s var(--ease)}
+.consultation-btn:hover{transform:translateY(-2px);box-shadow:0 12px 34px -10px rgba(var(--green-rgb),.9)}
+.consultation-btn:hover svg{transform:translateX(3px)}
+.consultation-btn:active{transform:translateY(0)}
+.hero__consultation{margin-top:clamp(24px,4vh,42px);position:relative;z-index:3}
+
 /* ── inline capture ── */
 .capture{
   margin:clamp(24px,3.6vh,36px) 0 0;
@@ -493,8 +507,30 @@ ol,ul{list-style:none}
 }
 
 /* ==========================================================================
-   ARIZA — bosh sahifa pastidagi lid formasi
+   BEPUL KONSULTATSIYA
    ========================================================================== */
+.consultation-cta__card{
+  width:100%;padding:clamp(28px,5vw,56px);
+  display:flex;align-items:center;justify-content:space-between;gap:32px;
+  border:1px solid var(--line-2);border-radius:24px;
+  background:linear-gradient(135deg,rgba(var(--green-rgb),.08),var(--surface) 55%);
+}
+.consultation-cta__card .consultation-btn{flex-shrink:0}
+.consultation-page{
+  min-height:100svh;padding:calc(var(--nav-h) + clamp(42px,8vh,90px)) 18px clamp(52px,9vh,100px);
+  display:grid;place-items:center;position:relative;isolation:isolate;
+}
+.consultation-page::before{
+  content:"";position:absolute;z-index:-1;inset:0;
+  background:radial-gradient(ellipse 55% 46% at 50% 30%,rgba(var(--green-rgb),.11),transparent 72%);
+  pointer-events:none;
+}
+.consultation-page .lead-form-wrap{
+  max-width:600px;padding:clamp(28px,5vw,52px);border:1px solid var(--line-2);
+  border-radius:24px;background:rgba(var(--surface-rgb),.72);
+  box-shadow:0 24px 70px -35px rgba(0,0,0,.55);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
 .lead-form-wrap{
   width:100%;max-width:520px;margin:0 auto;
   display:flex;flex-direction:column;align-items:center;text-align:center;gap:28px;
@@ -601,6 +637,7 @@ ol,ul{list-style:none}
 .badge,
 .hero__title .hero__line,
 .hero__lede,
+.hero__consultation,
 .capture,
 .capture__hint{
   opacity:1;transform:translateY(0);
@@ -608,6 +645,7 @@ ol,ul{list-style:none}
 .js .badge,
 .js .hero__title .hero__line,
 .js .hero__lede,
+.js .hero__consultation,
 .js .capture,
 .js .capture__hint{
   opacity:0;transform:translateY(16px);
@@ -615,6 +653,7 @@ ol,ul{list-style:none}
 .is-ready .badge,
 .is-ready .hero__title .hero__line,
 .is-ready .hero__lede,
+.is-ready .hero__consultation,
 .is-ready .capture,
 .is-ready .capture__hint{
   animation:riseIn .85s var(--ease) forwards;
@@ -623,6 +662,7 @@ ol,ul{list-style:none}
 .is-ready .hero__title .hero__line:nth-child(1){animation-delay:.15s}
 .is-ready .hero__title .hero__line:nth-child(2){animation-delay:.25s}
 .is-ready .hero__lede{animation-delay:.36s}
+.is-ready .hero__consultation{animation-delay:.46s}
 .is-ready .capture{animation-delay:.46s}
 .is-ready .capture__hint{animation-delay:.54s}
 
@@ -637,6 +677,7 @@ ol,ul{list-style:none}
   .hero{padding-top:calc(var(--nav-h) + clamp(14px,2.2vh,30px))}
   .hero__title{font-size:clamp(2rem,4.7vw,3.6rem)}
   .hero__lede{margin-top:clamp(10px,1.5vh,16px);font-size:clamp(.9rem,1.2vw,1rem)}
+  .hero__consultation{margin-top:clamp(16px,2.3vh,24px);min-height:44px}
   .capture{margin-top:clamp(14px,2.2vh,24px)}
   .capture__hint{margin-top:10px}
   .curve{margin-top:clamp(6px,1.2vh,18px);aspect-ratio:1200/415}
@@ -653,6 +694,7 @@ ol,ul{list-style:none}
 }
 
 @media (max-width:880px){
+  .consultation-cta__card{align-items:flex-start;flex-direction:column}
   .nav__menu{
     position:fixed;inset:var(--nav-h) 0 auto 0;
     flex-direction:column;justify-content:flex-start;gap:0;
@@ -672,6 +714,8 @@ ol,ul{list-style:none}
   .lang{display:flex}
 
   @media (max-width:460px){
+    .nav__inner{padding-left:12px;padding-right:12px;gap:8px}
+    .logo{height:38px}
     .theme-toggle{width:34px;height:34px}
     .lang__btn{padding:4px 6px;font-size:10px}
   }

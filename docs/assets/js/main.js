@@ -243,7 +243,7 @@
       });
   })();
 
-  /* ── 8. Ariza formasi — bosh sahifa pastidagi lid formasi. Yuborilganda
+  /* ── 8. Ariza formasi — bepul konsultatsiya sahifasidagi lid formasi. Yuborilganda
      backend'ga saqlanadi, so'ng tasdiqlash sahifasiga o'tkaziladi — Meta
      Pixel "Lead" hodisasi aynan o'sha sahifaga yetib kelgan foydalanuvchi
      uchun hisoblanadi (server Conversions API bilan bir xil event ID
@@ -313,7 +313,7 @@
         businessType: form.businessType.value,
         phone: form.phone.value.trim(),
         metaEventId: eventId,
-        source: 'homepage-lead-form'
+        source: 'consultation-page'
       };
 
       fetch(window.EXON_API_BASE + '/api/contact', {

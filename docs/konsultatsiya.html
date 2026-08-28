@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="assets/js/theme.js?v=3"></script>
+<script src="assets/js/i18n.js?v=4" defer></script>
+<title>Bepul konsultatsiya — EXON</title>
+<meta name="description" content="EXON mutaxassislaridan marketplace biznesingiz bo'yicha bepul konsultatsiya oling." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/style.css?v=36" />
+<link rel="manifest" href="/manifest.json" />
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="assets/img/app-icon-v3-180.png" />
+<meta name="theme-color" content="#0BD16C" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<a class="skip" href="#consultation-title">Asosiy kontentga o'tish</a>
+
+<header class="nav is-scrolled" id="nav">
+  <div class="nav__inner">
+    <a class="logo" href="index.html" aria-label="EXON — bosh sahifa">
+      <img class="logo__img logo__img--dark" src="assets/img/logo-exon.png" width="1947" height="754" alt="EXON" />
+      <img class="logo__img logo__img--light" src="assets/img/logo-exon-light.png" width="1947" height="754" alt="EXON" />
+    </a>
+    <nav class="nav__menu" id="navMenu" aria-label="Asosiy menyu">
+      <a href="index.html#xizmatlar">Xizmatlar</a>
+      <a href="index.html#keyslar">Keyslar</a>
+      <a href="index.html#narxlar">Narxlar</a>
+      <a href="index.html#jarayon">Jarayon</a>
+      <a href="index.html#blog">Blog</a>
+    </nav>
+    <div class="nav__right">
+      <button class="theme-toggle" type="button" aria-label="Mavzuni almashtirish">
+        <svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="lang" role="group" aria-label="Til tanlash">
+        <button class="lang__btn is-active" type="button" aria-pressed="true">UZ</button>
+        <button class="lang__btn" type="button" aria-pressed="false">RU</button>
+      </div>
+      <button class="burger" id="burger" type="button" aria-label="Menyuni ochish" aria-expanded="false" aria-controls="navMenu"><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main class="consultation-page">
+  <section class="lead-form-wrap reveal" aria-labelledby="consultation-title">
+    <div class="lead-form-head">
+      <span class="tsec__kicker">Bepul konsultatsiya</span>
+      <h1 class="tsec__title" id="consultation-title">Biz bilan bog'laning</h1>
+      <p class="tsec__desc">Ismingiz, biznes turingiz va telefon raqamingizni qoldiring — mutaxassislarimiz siz bilan tez orada bog'lanadi.</p>
+    </div>
+    <form id="leadForm" class="lead-form" novalidate>
+      <div class="lead-form__field">
+        <label for="leadName">Ismingiz</label>
+        <input type="text" id="leadName" name="name" required placeholder="Ismingiz" autocomplete="name" />
+      </div>
+      <div class="lead-form__field">
+        <label for="leadBusiness">Biznes turi</label>
+        <select id="leadBusiness" name="businessType" required>
+          <option value="" disabled selected>Tanlang</option>
+          <option value="Biznes egasi">Biznes egasi</option>
+          <option value="Brend egasi">Brend egasi</option>
+          <option value="Ishlab chiqaruvchi">Ishlab chiqaruvchi</option>
+          <option value="Importyor">Importyor</option>
+          <option value="Olib sotar">Olib sotar</option>
+          <option value="Distribyutor">Distribyutor</option>
+        </select>
+      </div>
+      <div class="lead-form__field">
+        <label for="leadPhone">Telefon raqam</label>
+        <input type="tel" id="leadPhone" name="phone" required placeholder="+998 90 123 45 67" autocomplete="tel" />
+      </div>
+      <div class="form-msg" id="leadFormMsg" role="status" aria-live="polite"></div>
+      <button type="submit" class="lead-form__submit" id="leadFormSubmit">Ariza yuborish</button>
+    </form>
+  </section>
+</main>
+
+<script src="assets/js/api-base.js?v=3"></script>
+<script src="assets/js/main.js?v=29"></script>
+<script>
+if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); });
+</script>
+</body>
+</html>

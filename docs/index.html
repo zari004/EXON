@@ -37,7 +37,7 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=35" />
+<link rel="stylesheet" href="assets/css/style.css?v=36" />
 <link rel="manifest" href="/manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -104,6 +104,11 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
     <p class="hero__lede">
       Biz marketplace'larni boshqariladigan biznesga aylantiramiz.
     </p>
+
+    <a class="consultation-btn hero__consultation" href="konsultatsiya.html">
+      Bepul konsultatsiya
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
   </div>
 
   <!-- ── O'SISH EGRI CHIZIG'I ── -->
@@ -387,39 +392,19 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
   </div>
 </section>
 
-<!-- ══════════ ARIZA — bosh sahifa pastidagi lid formasi ══════════ -->
-<section id="ariza" class="tsec tsec--wash">
+<!-- ══════════ BEPUL KONSULTATSIYA — alohida sahifaga o'tish ══════════ -->
+<section id="ariza" class="tsec tsec--wash consultation-cta">
   <div class="tsec__inner">
-    <div class="lead-form-wrap reveal">
-      <div class="lead-form-head">
+    <div class="consultation-cta__card reveal">
+      <div>
         <span class="tsec__kicker">Bepul konsultatsiya</span>
         <h2 class="tsec__title">Biz bilan bog'laning</h2>
         <p class="tsec__desc">Ismingiz, biznes turingiz va telefon raqamingizni qoldiring — mutaxassislarimiz siz bilan tez orada bog'lanadi.</p>
       </div>
-      <form id="leadForm" class="lead-form" novalidate>
-        <div class="lead-form__field">
-          <label for="leadName">Ismingiz</label>
-          <input type="text" id="leadName" name="name" required placeholder="Ismingiz" autocomplete="name" />
-        </div>
-        <div class="lead-form__field">
-          <label for="leadBusiness">Biznes turi</label>
-          <select id="leadBusiness" name="businessType" required>
-            <option value="" disabled selected>Tanlang</option>
-            <option value="Biznes egasi">Biznes egasi</option>
-            <option value="Brend egasi">Brend egasi</option>
-            <option value="Ishlab chiqaruvchi">Ishlab chiqaruvchi</option>
-            <option value="Importyor">Importyor</option>
-            <option value="Olib sotar">Olib sotar</option>
-            <option value="Distribyutor">Distribyutor</option>
-          </select>
-        </div>
-        <div class="lead-form__field">
-          <label for="leadPhone">Telefon raqam</label>
-          <input type="tel" id="leadPhone" name="phone" required placeholder="+998 90 123 45 67" autocomplete="tel" />
-        </div>
-        <div class="form-msg" id="leadFormMsg" role="status" aria-live="polite"></div>
-        <button type="submit" class="lead-form__submit" id="leadFormSubmit">Ariza yuborish</button>
-      </form>
+      <a class="consultation-btn" href="konsultatsiya.html">
+        Bepul konsultatsiya
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
     </div>
   </div>
 </section>
@@ -429,7 +414,7 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 <script src="assets/js/api-base.js?v=3"></script>
 <script src="assets/js/social-footer.js?v=3"></script>
 <script src="assets/js/pricing-visibility.js?v=1"></script>
-<script src="assets/js/main.js?v=28"></script>
+<script src="assets/js/main.js?v=29"></script>
 <script>
 (function () {
   // Service Worker ro'yxatdan o'tkazish (keshlash/tezlik uchun —
