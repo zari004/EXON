@@ -255,6 +255,37 @@
 
     var submitBtn = document.getElementById('leadFormSubmit');
     var msg = document.getElementById('leadFormMsg');
+    var businessSelect = form.elements.businessType;
+    var unsupportedTypes = { 'Olib sotar': true, 'Distribyutor': true };
+
+    function eligibilityMessage() {
+      var lang = 'uz';
+      try { lang = localStorage.getItem('exon_lang') || 'uz'; } catch (err) {}
+      if (lang === 'ru') return 'К сожалению, сейчас мы не работаем с реселлерами и дистрибьюторами.';
+      if (lang === 'en') return 'Unfortunately, we do not currently work with resellers or distributors.';
+      return 'Afsuski, hozircha olib sotuvchilar va distribyutorlar bilan ishlay olmaymiz.';
+    }
+
+    function updateBusinessEligibility() {
+      var unsupported = !!unsupportedTypes[businessSelect.value];
+      if (unsupported) {
+        msg.textContent = eligibilityMessage();
+        msg.className = 'form-msg error eligibility';
+        submitBtn.disabled = true;
+      } else {
+        if (msg.classList.contains('eligibility')) {
+          msg.textContent = '';
+          msg.className = 'form-msg';
+        }
+        submitBtn.disabled = false;
+      }
+      return !unsupported;
+    }
+
+    businessSelect.addEventListener('change', updateBusinessEligibility);
+    document.addEventListener('click', function (event) {
+      if (event.target.closest('.lang__btn[data-lang]')) setTimeout(updateBusinessEligibility, 0);
+    });
 
     /* Google Sheets'ga yuborish — backend muvaffaqiyatli bo'lgandan keyin
        parallel ravishda, foydalanuvchini kutmasdan (fire-and-forget). Agar
@@ -272,6 +303,7 @@
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      if (!updateBusinessEligibility()) return;
       msg.textContent = ''; msg.className = 'form-msg';
       submitBtn.disabled = true;
 

@@ -531,6 +531,10 @@ ol,ul{list-style:none}
 .lead-form__submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .lead-form .form-msg{font-size:13.5px;min-height:0}
 .lead-form .form-msg.error{color:#F2896F}
+.lead-form .form-msg.eligibility{
+  padding:11px 13px;border-radius:10px;line-height:1.45;
+  background:rgba(242,137,111,.09);border:1px solid rgba(242,137,111,.24);
+}
 
 /* ==========================================================================
    NAV — ijtimoiy tarmoq ikonkalari (admin panelda kiritiladi)

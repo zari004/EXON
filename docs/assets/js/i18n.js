@@ -40,6 +40,22 @@
   add('Asosiy menyu', 'Главное меню', 'Main menu');
   add('Til tanlash', 'Выбор языка', 'Language selection');
 
+  /* Bosh sahifadagi konsultatsiya formasi */
+  add('Bepul konsultatsiya', 'Бесплатная консультация', 'Free consultation');
+  add("Biz bilan bog'laning", 'Свяжитесь с нами', 'Contact us');
+  add("Ismingiz, biznes turingiz va telefon raqamingizni qoldiring — mutaxassislarimiz siz bilan tez orada bog'lanadi.", 'Оставьте имя, тип бизнеса и номер телефона — наши специалисты скоро свяжутся с вами.', 'Leave your name, business type and phone number — our specialists will contact you shortly.');
+  add('Ismingiz', 'Ваше имя', 'Your name');
+  add('Biznes turi', 'Тип бизнеса', 'Business type');
+  add('Telefon raqam', 'Номер телефона', 'Phone number');
+  add('Tanlang', 'Выберите', 'Select');
+  add('Biznes egasi', 'Владелец бизнеса', 'Business owner');
+  add('Brend egasi', 'Владелец бренда', 'Brand owner');
+  add('Ishlab chiqaruvchi', 'Производитель', 'Manufacturer');
+  add('Importyor', 'Импортёр', 'Importer');
+  add('Olib sotar', 'Перепродавец', 'Reseller');
+  add('Distribyutor', 'Дистрибьютор', 'Distributor');
+  add('Ariza yuborish', 'Отправить заявку', 'Submit application');
+
   /* Bosh sahifa */
   add("EXON — Marketpleysda savdongizni tizimli o'stiramiz", 'EXON — системно развиваем продажи на маркетплейсах', 'EXON — systematic marketplace growth');
   add('Marketpleys ekspertlari', 'Эксперты по маркетплейсам', 'Marketplace experts');

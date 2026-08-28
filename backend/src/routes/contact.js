@@ -18,6 +18,12 @@ router.post('/', async (req, res) => {
     if (!businessType || !businessType.trim()) {
       return res.status(400).json({ success: false, error: "Biznes turi majburiy" });
     }
+    if (['olib sotar', 'distribyutor'].includes(businessType.trim().toLowerCase())) {
+      return res.status(422).json({
+        success: false,
+        error: 'Afsuski, hozircha olib sotuvchilar va distribyutorlar bilan ishlay olmaymiz.'
+      });
+    }
     if (!phone || phone.replace(/[^0-9]/g, '').length < 9) {
       return res.status(400).json({ success: false, error: "To'g'ri telefon raqam kiriting" });
     }
