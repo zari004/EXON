@@ -108,8 +108,8 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
   left: 50%;
   top: 0;
   bottom: 0;
-  width: 2px;
-  background: linear-gradient(to bottom, var(--green-deep), transparent 30%, transparent 70%, var(--green-deep));
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--green-deep) 8%, var(--green) 50%, var(--green-deep) 92%, transparent);
   transform: translateX(-50%);
 }
 
@@ -121,11 +121,11 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 /* Alternating left-right */
 .timeline-item:nth-child(odd) {
   text-align: right;
-  padding-right: 51%;
+  padding-right: calc(50% + 34px);
 }
 
 .timeline-item:nth-child(even) {
-  padding-left: 51%;
+  padding-left: calc(50% + 34px);
 }
 
 /* Tugun */
@@ -133,30 +133,21 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
   content: "";
   position: absolute;
   left: 50%;
-  top: 0;
-  width: 16px;
-  height: 16px;
+  top: 28px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   background: var(--green);
   border: 3px solid var(--bg);
   transform: translateX(-50%);
-  box-shadow: 0 0 0 8px rgba(11, 209, 108, .1);
-}
-
-.timeline-item:nth-child(odd)::before {
-  left: auto;
-  right: calc(50% - 8px);
-}
-
-.timeline-item:nth-child(even)::before {
-  left: calc(50% - 8px);
+  box-shadow: 0 0 0 5px rgba(11, 209, 108, .12);
 }
 
 /* Quti */
 .timeline-content {
   padding: clamp(20px,3vh,28px);
   border: 1px solid var(--line-2);
-  border-radius: 8px;
+  border-radius: 14px;
   background: rgba(var(--surface-rgb), .6);
   backdrop-filter: blur(8px);
 }
@@ -316,7 +307,7 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .timeline::before {
-    left: 16px;
+    left: calc(clamp(18px,3.4vw,40px) + 8px);
   }
 
   .timeline-item {
@@ -326,7 +317,7 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
   }
 
   .timeline-item::before {
-    left: 0 !important;
+    left: 8px !important;
     right: auto !important;
   }
 
