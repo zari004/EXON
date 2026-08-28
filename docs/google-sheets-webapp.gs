@@ -143,13 +143,13 @@ function leadKey_(name, phone, date) {
 function appendLead_(ss, data) {
   var sheet = ensureLeadsSheet_(ss);
   sheet.insertRowBefore(2);
+  sheet.getRange(2, 1, 1, 3).setNumberFormat('@');
   sheet.getRange(2, 1, 1, 4).setValues([[
     String(data.name || '').trim(),
     String(data.businessType || '').trim(),
     String(data.phone || '').trim(),
     toDate_(data.createdAt)
   ]]);
-  sheet.getRange(2, 1, 1, 3).setNumberFormat('@');
   sheet.getRange(2, 4).setNumberFormat('dd/MM/yyyy, HH:mm:ss');
   return 2;
 }
@@ -194,8 +194,8 @@ function syncLeads_(ss, leads) {
 
   if (missing.length) {
     var start = sheet.getLastRow() + 1;
-    sheet.getRange(start, 1, missing.length, 4).setValues(missing);
     sheet.getRange(start, 1, missing.length, 3).setNumberFormat('@');
+    sheet.getRange(start, 1, missing.length, 4).setValues(missing);
   }
   if (sheet.getLastRow() > 1) {
     sheet.getRange(2, 1, sheet.getLastRow() - 1, 4).sort({ column: 4, ascending: false });
@@ -229,8 +229,8 @@ function migrateLegacyLeads_(ss) {
   sheet.clear();
   sheet.getRange(1, 1, 1, 4).setValues([['Ism', 'Biznes turi', 'Telefon', 'Sana']]);
   if (cleanRows.length) {
-    sheet.getRange(2, 1, cleanRows.length, 4).setValues(cleanRows);
     sheet.getRange(2, 1, cleanRows.length, 3).setNumberFormat('@');
+    sheet.getRange(2, 1, cleanRows.length, 4).setValues(cleanRows);
   }
   formatLeadsSheet_(sheet);
   return sheet;
