@@ -247,13 +247,28 @@
      backend'ga saqlanadi, so'ng tasdiqlash sahifasiga o'tkaziladi — Meta
      Pixel "Lead" hodisasi aynan o'sha sahifaga yetib kelgan foydalanuvchi
      uchun hisoblanadi (server Conversions API bilan bir xil event ID
-     orqali ikkilanmasdan). ── */
+     orqali ikkilanmasdan). Google Sheets webhook ham parallel ravishda
+     ishga tushiriladi (fire-and-forget — foydalanuvchi kutmaydi). ── */
   (function () {
     var form = document.getElementById('leadForm');
     if (!form || !window.EXON_API_BASE) return;
 
     var submitBtn = document.getElementById('leadFormSubmit');
     var msg = document.getElementById('leadFormMsg');
+
+    /* Google Sheets'ga yuborish — backend muvaffaqiyatli bo'lgandan keyin
+       parallel ravishda, foydalanuvchini kutmasdan (fire-and-forget). Agar
+       EXON_SHEETS_URL bo'sh bo'lsa, hech narsa yuborilmaydi. */
+    function sendToSheets(body) {
+      if (!window.EXON_SHEETS_URL) return;
+      fetch(window.EXON_SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',  // Google Apps Script CORS blokini oldini oladi
+        keepalive: true,  // sahifa tasdiqlash oynasiga o'tsa ham so'rov tugaydi
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }).catch(function () {});  // xatolik foydalanuvchiga ta'sir qilmaydi
+    }
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -265,7 +280,8 @@
         name: form.name.value.trim(),
         businessType: form.businessType.value,
         phone: form.phone.value.trim(),
-        metaEventId: eventId
+        metaEventId: eventId,
+        source: 'homepage-lead-form'
       };
 
       fetch(window.EXON_API_BASE + '/api/contact', {
@@ -277,6 +293,8 @@
         .then(function (data) {
           if (!data.success) throw new Error(data.error || 'Xatolik yuz berdi');
           try { sessionStorage.setItem('exon_lead_event_id', eventId); } catch (err) {}
+          // Backend'ga muvaffaqiyatli saqlandi — endi Google Sheets'ga ham yuboramiz
+          sendToSheets(body);
           window.location.href = 'ariza-yuborildi.html';
         })
         .catch(function (err) {

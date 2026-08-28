@@ -814,7 +814,7 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
   </div>
 </main>
 
-<script src="assets/js/api-base.js?v=2"></script>
+<script src="assets/js/api-base.js?v=3"></script>
 <script src="assets/js/social-footer.js?v=3"></script>
 <script src="assets/js/pricing-visibility.js?v=1"></script>
 <script>
@@ -949,6 +949,26 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
       }
 
       console.log('✅ Audit submitted:', result);
+
+      // Google Sheets'ga ham yuborish (fire-and-forget — foydalanuvchi kutmaydi)
+      if (window.EXON_SHEETS_URL) {
+        fetch(window.EXON_SHEETS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          keepalive: true,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'Audit foydalanuvchisi',
+            businessType: 'Audit — ' + result.segmentName,
+            phone: '',
+            email: email,
+            source: 'audit-form',
+            metaEventId: metaEventId,
+            score: result.score,
+            segment: result.segment
+          })
+        }).catch(function () {});
+      }
 
     } catch (error) {
       console.error('❌ Error:', error.message);
