@@ -333,7 +333,10 @@ ol,ul{list-style:none}
 .consultation-btn:hover{transform:translateY(-2px);box-shadow:0 12px 34px -10px rgba(var(--green-rgb),.9)}
 .consultation-btn:hover svg{transform:translateX(3px)}
 .consultation-btn:active{transform:translateY(0)}
-.hero__consultation{margin-top:clamp(24px,4vh,42px);position:relative;z-index:3}
+.hero__consultation{
+  margin-top:clamp(24px,4vh,42px);position:relative;z-index:3;
+  top:clamp(58px,9vh,88px);
+}
 
 /* ── inline capture ── */
 .capture{
@@ -695,6 +698,7 @@ ol,ul{list-style:none}
 
 @media (max-width:880px){
   .consultation-cta__card{align-items:flex-start;flex-direction:column}
+  .hero__consultation{top:0}
   .nav__menu{
     position:fixed;inset:var(--nav-h) 0 auto 0;
     flex-direction:column;justify-content:flex-start;gap:0;
