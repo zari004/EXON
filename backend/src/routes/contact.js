@@ -22,8 +22,10 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ success: false, error: "To'g'ri telefon raqam kiriting" });
     }
 
-    await db.run(
-      `INSERT INTO contact_leads (name, business_type, phone) VALUES (?, ?, ?)`,
+    const savedLead = await db.get(
+      `INSERT INTO contact_leads (name, business_type, phone)
+       VALUES (?, ?, ?)
+       RETURNING id, name, business_type, phone, created_at`,
       [name.trim(), businessType.trim(), phone.trim()]
     );
 
@@ -35,7 +37,7 @@ router.post('/', async (req, res) => {
       console.error('⚠️ Meta Conversions API xato:', err.message);
     });
 
-    res.json({ success: true });
+    res.json({ success: true, lead: savedLead });
     console.log(`✅ Contact lead saved: ${name.trim()} (${phone.trim()})`);
 
   } catch (error) {

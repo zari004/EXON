@@ -294,6 +294,7 @@
           if (!data.success) throw new Error(data.error || 'Xatolik yuz berdi');
           try { sessionStorage.setItem('exon_lead_event_id', eventId); } catch (err) {}
           // Backend'ga muvaffaqiyatli saqlandi — endi Google Sheets'ga ham yuboramiz
+          if (data.lead && data.lead.created_at) body.createdAt = data.lead.created_at;
           sendToSheets(body);
           window.location.href = 'ariza-yuborildi.html';
         })
