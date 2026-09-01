@@ -957,10 +957,12 @@ ol,ul{list-style:none}
 /* ── BLOG: gradient-thumb kartalar ── */
 .post-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .post-card{
+  display:block;color:inherit;
   border-radius:20px;overflow:hidden;background:var(--surface);border:1px solid var(--line);
   transition:transform .3s var(--ease),border-color .3s var(--ease);
 }
 .post-card:hover{transform:translateY(-4px);border-color:var(--green-deep)}
+.post-card:focus-visible{outline:2px solid var(--green);outline-offset:3px}
 .post-card__thumb{height:120px}
 .post-card__thumb--1{background:radial-gradient(circle at 30% 30%,rgba(11,209,108,.38),var(--bg-2) 70%)}
 .post-card__thumb--2{background:radial-gradient(circle at 70% 40%,rgba(53,193,133,.32),var(--bg-2) 70%)}

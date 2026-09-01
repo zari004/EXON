@@ -107,6 +107,7 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 .article-card {
   display: flex;
   flex-direction: column;
+  color: inherit;
   padding: clamp(24px,4vw,32px);
   border: 1px solid var(--line-2);
   border-radius: 12px;
@@ -115,6 +116,11 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
   transition: all .3s cubic-bezier(.22,.68,.28,1);
   cursor: pointer;
   overflow: hidden;
+}
+
+.article-card:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 4px;
 }
 
 .article-card__img {
@@ -326,15 +332,15 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
   function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
 
   function renderPost(p) {
-    return '<article class="article-card">' +
-      (p.image ? '<img class="article-card__img" src="' + p.image + '" alt="" />' : '') +
+    return '<a class="article-card" href="maqola.html?id=' + encodeURIComponent(p.id) + '">' +
+      (p.image ? '<img class="article-card__img" src="' + esc(p.image) + '" alt="' + esc(p.title) + '" />' : '') +
       '<span class="article-card__tag">' + esc(p.tag) + '</span>' +
       '<h2 class="article-card__title">' + esc(p.title) + '</h2>' +
       '<p class="article-card__desc">' + esc(p.desc) + '</p>' +
       '<div class="article-card__meta">' +
       '<div class="article-card__date">📅 ' + esc(p.date) + '</div>' +
       '<div class="article-card__read">' + esc(p.readTime) + '</div>' +
-      '</div></article>';
+      '</div></a>';
   }
 
   fetch(window.EXON_API_BASE + '/api/posts')
@@ -346,9 +352,6 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
         return;
       }
       list.innerHTML = data.posts.map(renderPost).join('');
-      document.querySelectorAll('.article-card').forEach(function (card) {
-        card.addEventListener('click', function () { alert('Maqola sahifasi tayyorlanmoqda... 📖'); });
-      });
     })
     .catch(function () {
       document.getElementById('blog-list').innerHTML =

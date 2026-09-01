@@ -133,6 +133,10 @@
   add("Qo'llanma va tajribalar", 'Гайды и опыт', 'Guides and insights');
   add('50+ maqola — SEO, reklama, kartochka, analitika.', '50+ статей — SEO, реклама, карточки и аналитика.', '50+ articles on SEO, advertising, product cards and analytics.');
   add("Blog'ga o'tish", 'Перейти в блог', 'Visit the blog');
+  add("Blogga qaytish", 'Вернуться в блог', 'Back to blog');
+  add("Maqola topilmadi", 'Статья не найдена', 'Article not found');
+  add("So'ralgan maqola mavjud emas yoki o'chirilgan.", 'Запрошенная статья не существует или была удалена.', 'The requested article does not exist or has been deleted.');
+  add("Maqola yuklanmoqda...", 'Статья загружается...', 'Loading article...');
 
   /* Audit */
   add('Bepul Audit — EXON Marketpleys Ekspertlari', 'Бесплатный аудит — эксперты EXON', 'Free Audit — EXON Marketplace Experts');
