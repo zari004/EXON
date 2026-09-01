@@ -1687,6 +1687,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   margin-bottom:8px;overflow:hidden;
 }
 .img-preview img{width:100%;height:100%;object-fit:cover}
+.img-preview--icon{width:96px;height:96px}
+.img-preview--icon img{object-fit:contain;padding:10px}
 .features-list{display:flex;flex-direction:column;gap:8px}
 .feature-row{display:flex;gap:8px}
 .feature-row input{flex:1}
@@ -2769,6 +2771,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         </div>
       </div>
       <div class="field">
+        <label data-i18n="field.icon">Ikonka</label>
+        <div class="img-preview img-preview--icon" id="caseIconPreview">Ikonka tanlanmagan</div>
+        <input type="file" id="caseIconFile" accept="image/*" />
+      </div>
+      <div class="field">
         <label data-i18n="field.image">Rasm</label>
         <div class="img-preview" id="caseImgPreview">Rasm tanlanmagan</div>
         <input type="file" id="caseImgFile" accept="image/*" />
@@ -3492,6 +3499,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'item.edit': 'Tahrirlash',
       'item.delete': "O'chirish",
       'image.none': 'Rasm tanlanmagan',
+      'icon.none': 'Ikonka tanlanmagan',
       'feature.placeholder': 'Xususiyat',
       'field.caseTag': 'Teg (masalan: 📱 Elektronika)',
       'field.postTag': 'Teg (masalan: SEO)',
@@ -3504,6 +3512,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.metric2Label': 'Statistika 2 — nomi',
       'field.marketplaces': 'Marketpleyslar',
       'field.image': 'Rasm',
+      'field.icon': 'Ikonka',
       'field.date': 'Sana (masalan: 25 iyul)',
       'field.readTime': "O'qish vaqti (masalan: 5 min)",
       'field.badge': 'Belgi (masalan: YANGI BOSHLOVCHILAR)',
@@ -3883,6 +3892,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'item.edit': 'Редактировать',
       'item.delete': 'Удалить',
       'image.none': 'Изображение не выбрано',
+      'icon.none': 'Иконка не выбрана',
       'feature.placeholder': 'Характеристика',
       'field.caseTag': 'Тег (например: 📱 Электроника)',
       'field.postTag': 'Тег (например: SEO)',
@@ -3895,6 +3905,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.metric2Label': 'Статистика 2 — название',
       'field.marketplaces': 'Маркетплейсы',
       'field.image': 'Изображение',
+      'field.icon': 'Иконка',
       'field.date': 'Дата (например: 25 июля)',
       'field.readTime': 'Время чтения (например: 5 мин)',
       'field.badge': 'Метка (например: ДЛЯ НАЧИНАЮЩИХ)',
@@ -4274,6 +4285,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'item.edit': 'Edit',
       'item.delete': 'Delete',
       'image.none': 'No image selected',
+      'icon.none': 'No icon selected',
       'feature.placeholder': 'Feature',
       'field.caseTag': 'Tag (for example: 📱 Electronics)',
       'field.postTag': 'Tag (for example: SEO)',
@@ -4286,6 +4298,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.metric2Label': 'Statistic 2 — label',
       'field.marketplaces': 'Marketplaces',
       'field.image': 'Image',
+      'field.icon': 'Icon',
       'field.date': 'Date (for example: July 25)',
       'field.readTime': 'Reading time (for example: 5 min)',
       'field.badge': 'Badge (for example: FOR BEGINNERS)',
@@ -5535,7 +5548,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       const list = document.getElementById('casesList');
       list.innerHTML = casesCache.length ? casesCache.map(function (c) {
         return '<div class="item-row">' +
-          (c.image ? '<img class="item-row__thumb" src="' + c.image + '" />' : '<div class="item-row__thumb">' + (c.tag || '').split(' ')[0] + '</div>') +
+          (c.image ? '<img class="item-row__thumb" src="' + c.image + '" />' : c.icon ? '<img class="item-row__thumb" src="' + c.icon + '" />' : '<div class="item-row__thumb">' + (c.tag || '').split(' ')[0] + '</div>') +
           '<div class="item-row__body"><div class="item-row__title">' + esc(c.title) + '</div>' +
           '<div class="item-row__meta">' + esc(c.tag) + ' · ' + esc(c.metric1.value || '') + ' ' + esc(c.metric1.label || '') + '</div></div>' +
           '<div class="item-row__actions">' +
@@ -5563,7 +5576,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     const preview = document.getElementById('caseImgPreview');
     preview.innerHTML = existing && existing.image ? '<img src="' + existing.image + '" />' : T('image.none');
     preview.dataset.value = existing && existing.image ? existing.image : '';
+    const iconPreview = document.getElementById('caseIconPreview');
+    iconPreview.innerHTML = existing && existing.icon ? '<img src="' + existing.icon + '" />' : T('icon.none');
+    iconPreview.dataset.value = existing && existing.icon ? existing.icon : '';
     document.getElementById('caseImgFile').value = '';
+    document.getElementById('caseIconFile').value = '';
     document.getElementById('caseFormMsg').textContent = '';
     document.getElementById('caseModal').classList.add('is-active');
   };
@@ -5573,6 +5590,15 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     if (!file) return;
     const base64 = await fileToResizedBase64(file, 640);
     const preview = document.getElementById('caseImgPreview');
+    preview.innerHTML = '<img src="' + base64 + '" />';
+    preview.dataset.value = base64;
+  });
+
+  document.getElementById('caseIconFile').addEventListener('change', async function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const base64 = await fileToResizedBase64(file, 160, 'png');
+    const preview = document.getElementById('caseIconPreview');
     preview.innerHTML = '<img src="' + base64 + '" />';
     preview.dataset.value = base64;
   });
@@ -5590,7 +5616,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       metric1: { value: document.getElementById('caseM1v').value, label: document.getElementById('caseM1l').value },
       metric2: { value: document.getElementById('caseM2v').value, label: document.getElementById('caseM2l').value },
       markets: markets,
-      image: document.getElementById('caseImgPreview').dataset.value || null
+      image: document.getElementById('caseImgPreview').dataset.value || null,
+      icon: document.getElementById('caseIconPreview').dataset.value || null
     };
     try {
       await apiFetch(id ? '/api/cases/' + id : '/api/cases', { method: id ? 'PUT' : 'POST', body: JSON.stringify(body) });

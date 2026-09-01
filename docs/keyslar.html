@@ -146,6 +146,15 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
   margin-bottom: 16px;
 }
 
+.key-card__icon {
+  display:block;
+  width:24px;
+  height:24px;
+  border-radius:6px;
+  object-fit:contain;
+  flex-shrink:0;
+}
+
 .key-card__title {
   font-size: 20px;
   font-weight: 600;
@@ -408,8 +417,8 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
       return '<span class="market-badge ' + info.cls + '">' + content + '</span>';
     }).join('');
     return '<article class="key-card">' +
-      (c.image ? '<img class="key-card__img" src="' + c.image + '" alt="" />' : '') +
-      '<div class="key-card__tag">' + esc(c.tag) + '</div>' +
+      (c.image ? '<img class="key-card__img" src="' + esc(c.image) + '" alt="" />' : '') +
+      '<div class="key-card__tag">' + (c.icon ? '<img class="key-card__icon" src="' + esc(c.icon) + '" alt="" />' : '') + esc(c.tag) + '</div>' +
       '<h2 class="key-card__title">' + esc(c.title) + '</h2>' +
       '<p class="key-card__desc">' + esc(c.desc) + '</p>' +
       '<div class="key-card__metrics">' +

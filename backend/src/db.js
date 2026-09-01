@@ -80,6 +80,8 @@ const init = async () => {
       created_at TIMESTAMP DEFAULT NOW()
     )
   `);
+  // Keys kartasidagi katta rasmdan alohida kichik kategoriya ikonkasi.
+  await pool.query(`ALTER TABLE cases ADD COLUMN IF NOT EXISTS icon TEXT`);
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS posts (

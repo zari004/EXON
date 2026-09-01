@@ -85,7 +85,7 @@ async function folderSizeBytes(folder) {
   return total;
 }
 
-const FOLDERS = ['avatars', 'cases', 'posts', 'stores', 'attendance', 'partners'];
+const FOLDERS = ['avatars', 'cases', 'case-icons', 'posts', 'stores', 'attendance', 'partners'];
 
 async function totalUsageBytes() {
   if (!isConfigured()) return 0;
