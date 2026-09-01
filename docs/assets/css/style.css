@@ -407,6 +407,7 @@ ol,ul{list-style:none}
 .is-ready .curve__drops line:nth-child(2){animation-delay:1.2s}
 .is-ready .curve__drops line:nth-child(3){animation-delay:1.45s}
 .is-ready .curve__drops line:nth-child(4){animation-delay:1.7s}
+.is-ready .curve__drops line:nth-child(5){animation-delay:1.95s}
 
 .node{transform-box:fill-box;transform-origin:center}
 .js .node{opacity:0;transform:scale(.2)}
@@ -433,6 +434,7 @@ ol,ul{list-style:none}
 .step:nth-child(2){left:34.83%;top:66.9%}
 .step:nth-child(3){left:51.50%;top:53.9%}
 .step:nth-child(4){left:66.50%;top:34.3%}
+.step:nth-child(5){left:79.83%;top:15.8%}
 
 .step__n{
   display:block;
@@ -741,6 +743,7 @@ ol,ul{list-style:none}
   .step:nth-child(2){left:33.3%}
   .step:nth-child(3){left:50.0%}
   .step:nth-child(4){left:65.0%}
+  .step:nth-child(5){left:79.5%}
 }
 
 @media (max-width:880px){

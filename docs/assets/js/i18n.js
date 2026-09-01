@@ -76,7 +76,7 @@
   add('Bepul audit olish', 'Получить бесплатный аудит', 'Get a free audit');
   add("3 ish kunida 12 nuqta bo'yicha yozma hisobot. Majburiyatsiz.", 'Письменный отчёт по 12 пунктам за 3 рабочих дня. Без обязательств.', 'A written 12-point report within 3 business days. No obligation.');
   add("Marketpleysda o'sish bosqichlari", 'Этапы роста на маркетплейсе', 'Marketplace growth stages');
-  add("Audit, upakovka, reklama va o'sish bosqichlaridan iborat ko'tariluvchi egri chiziq.", 'Восходящая кривая из этапов аудита, упаковки, рекламы и роста.', 'An upward curve covering audit, packaging, advertising and growth.');
+  add("Strategiya, ishga tushirish, boshqaruv, tizim va o'sish bosqichlaridan iborat ko'tariluvchi egri chiziq.", 'Восходящая кривая из этапов стратегии, запуска, управления, системы и роста.', 'An upward curve covering strategy, launch, management, systems and growth.');
   // Egri chiziq (jarayon bosqichlari) — "Xizmatlar" bo'limidagi kartalardan alohida matnlar
   add('Strategiya', 'Стратегия', 'Strategy');
   add("Do'koningizni va raqobatchilarni tahlil qilib, aniq o'sish rejasini tuzamiz.", 'Анализируем ваш магазин и конкурентов, составляем чёткий план роста.', 'We analyze your store and competitors, and build a clear growth plan.');
@@ -84,6 +84,8 @@
   add('Kartochka, professional foto, infografika va reklama kampaniyalarini ishga tushiramiz.', 'Запускаем карточки, профессиональные фото, инфографику и рекламные кампании.', 'We launch product cards, professional photos, infographics and ad campaigns.');
   add('Boshqaruv', 'Управление', 'Management');
   add("Trafik, narxlar va reklama samaradorligini kunlik kuzatib, boshqarib boramiz.", 'Ежедневно отслеживаем и управляем трафиком, ценами и эффективностью рекламы.', 'We monitor and manage traffic, pricing and advertising performance daily.');
+  add('Tizim', 'Система', 'System');
+  add('Jarayonlar, hisobotlar va jamoa ishini yagona tizimga birlashtiramiz.', 'Объединяем процессы, отчёты и работу команды в единую систему.', 'We unite processes, reporting and teamwork in one system.');
   // "Xizmatlar" bo'limidagi kartalar — bular hali ham eski nomlarda
   add('Audit', 'Аудит', 'Audit');
   add("Do'koningizni 12 nuqta bo'yicha tekshiramiz va o'sish nuqtalarini topamiz.", 'Проверим магазин по 12 пунктам и найдём точки роста.', 'We audit your store across 12 points and identify growth opportunities.');
@@ -122,7 +124,7 @@
   add('/ 5 SKU', '/ 5 SKU', '/ 5 SKUs');
   add('Kartochka, foto, matn, SEO — hammasi', 'Карточка, фото, текст и SEO — всё включено', 'Cards, photos, copy and SEO — all included');
   add("30–90 kunlik yo'l xaritasi", 'Дорожная карта на 30–90 дней', '30–90 day roadmap');
-  add('Auditdan birinchi natijagacha — 4 aniq bosqich.', 'От аудита до первого результата — 4 чётких этапа.', 'Four clear stages from audit to first results.');
+  add("Strategiyadan barqaror o'sishgacha — 5 aniq bosqich.", 'Пять чётких этапов — от стратегии до стабильного роста.', 'Five clear stages from strategy to sustainable growth.');
   add("To'liq jarayon", 'Полный процесс', 'Full process');
   add('Audit va Tahlil', 'Аудит и анализ', 'Audit and Analysis');
   add('Strategiya va Rejalash', 'Стратегия и планирование', 'Strategy and Planning');
@@ -210,9 +212,13 @@
 
   /* Jarayon */
   add('Jarayon — EXON Boshqaruv Tizimi', 'Процесс — система управления EXON', 'Process — EXON Management System');
-  add('4 BOSQICH', '4 ЭТАПА', '4 STAGES');
-  add('Ishlashtirish Jarayoni', 'Процесс работы', 'How We Work');
-  add("Birinchi auditsiyadan oxirgi so'rash buyurtmagacha — 30-90 kun, 4 ta aniq bosqich.", 'От первого аудита до стабильных заказов — 30–90 дней и 4 чётких этапа.', 'From the first audit to stable orders — 30–90 days and 4 clear stages.');
+  add('5 BOSQICH', '5 ЭТАПОВ', '5 STAGES');
+  add('Ishlash Jarayoni', 'Процесс работы', 'How We Work');
+  add("Strategiyadan barqaror o'sishgacha — 30–90 kun, 5 ta aniq bosqich.", 'От стратегии до стабильного роста — 30–90 дней и 5 чётких этапов.', 'From strategy to sustainable growth — 30–90 days and 5 clear stages.');
+  add("Do'kon va raqobatchilarni tahlil qilib, aniq 90 kunlik harakat rejasini tuzamiz.", 'Анализируем магазин и конкурентов, затем составляем чёткий план действий на 90 дней.', 'We analyze the store and competitors, then create a clear 90-day action plan.');
+  add("Marketpleys ko'rsatkichlari tahlili", 'Анализ показателей маркетплейса', 'Marketplace performance analysis');
+  add("Kartochka va kalit so'zlar auditi", 'Аудит карточек и ключевых слов', 'Product-card and keyword audit');
+  add('Reklama kampaniyalarini baholash', 'Оценка рекламных кампаний', 'Advertising campaign review');
   add('1 hafta', '1 неделя', '1 week');
   add("Do'koningizni 12 nuqta bo'yicha tekshiramiz. Bosh muammolarni aniqlayabdi.", 'Проверим магазин по 12 пунктам и выявим основные проблемы.', 'We audit your store across 12 points and identify the main issues.');
   add("Marketpleys taraflardagi ko'rishlar", 'Анализ показателей маркетплейса', 'Marketplace performance review');
@@ -221,24 +227,37 @@
   add('Raqobat tahlili', 'Анализ конкурентов', 'Competitor analysis');
   add('Stratejiya va Rejalash', 'Стратегия и планирование', 'Strategy and Planning');
   add('1-2 hafta', '1–2 недели', '1–2 weeks');
+  add('Strategiya asosida kartochkalar, kontent va reklama kampaniyalarini ishga tushiramiz.', 'На основе стратегии запускаем карточки, контент и рекламные кампании.', 'Based on the strategy, we launch product cards, content and advertising campaigns.');
+  add('Professional foto va infografika', 'Профессиональные фото и инфографика', 'Professional photos and infographics');
+  add('SEO matn va kartochkalarni tayyorlash', 'Подготовка SEO-текстов и карточек', 'SEO copy and product-card preparation');
+  add('Reklama budjetini taqsimlash', 'Распределение рекламного бюджета', 'Advertising budget allocation');
+  add('Kampaniyalarni ishga tushirish', 'Запуск кампаний', 'Campaign launch');
   add("Audit asosida 90 kunlik o'sish rejasi tuzamiz.", 'На основе аудита составим план роста на 90 дней.', 'We create a 90-day growth plan based on the audit.');
   add("Kalit so'zlar strategiyasi", 'Стратегия ключевых слов', 'Keyword strategy');
   add("Kartochka o'zgarish rejasi", 'План изменений карточек', 'Product-card improvement plan');
   add('Reklama budjet taqsimoti', 'Распределение рекламного бюджета', 'Advertising budget allocation');
   add("KPI va target'lar belgilash", 'Определение KPI и целей', 'KPI and target setting');
   add('4-8 hafta', '4–8 недель', '4–8 weeks');
+  add('Savdo, narxlar, qoldiq va reklama samaradorligini kundalik boshqaramiz.', 'Ежедневно управляем продажами, ценами, остатками и эффективностью рекламы.', 'We manage sales, pricing, inventory and advertising performance every day.');
+  add('Narx va qoldiqlarni nazorat qilish', 'Контроль цен и остатков', 'Pricing and inventory control');
+  add('Reklama kampaniyalarini boshqarish', 'Управление рекламными кампаниями', 'Advertising campaign management');
   add('Kartochka, reklama va boshqaruv — hammasini biz boshqaramiz.', 'Карточки, реклама и управление — всё берём на себя.', 'We handle product cards, advertising and management.');
   add('Kartochka fotografi va matn tayyorlash', 'Подготовка фото и текста карточки', 'Product photography and copy');
   add('Reklama kampaniyalarini ishga tushirish', 'Запуск рекламных кампаний', 'Advertising campaign launch');
   add('Kunlik optimizatsiya', 'Ежедневная оптимизация', 'Daily optimization');
   add('Haftalik hisobot', 'Еженедельный отчёт', 'Weekly report');
-  add('Shuning Kuzatish', 'Контроль и развитие', 'Monitoring and Growth');
+  add('2-4 hafta', '2–4 недели', '2–4 weeks');
+  add('Jarayonlar, hisobotlar va jamoa ishini yagona boshqaruv tizimiga birlashtiramiz.', 'Объединяем процессы, отчёты и работу команды в единую систему управления.', 'We unite processes, reporting and teamwork in one management system.');
+  add('KPI va hisobotlar paneli', 'Панель KPI и отчётов', 'KPI and reporting dashboard');
+  add('Vazifalar va rollarni taqsimlash', 'Распределение задач и ролей', 'Task and role assignment');
+  add('Takroriy jarayonlarni avtomatlashtirish', 'Автоматизация повторяющихся процессов', 'Recurring-process automation');
+  add('Oylik rejalashtirish tizimi', 'Система ежемесячного планирования', 'Monthly planning system');
   add('Davom etuvchi', 'Постоянно', 'Ongoing');
-  add("Natijalari ko'ribdan rabo'tib, shunchaki o'stiramiz.", 'Отслеживаем результаты и продолжаем рост.', 'We track results and keep growing.');
-  add('Kunlik ROAS tracking', 'Ежедневный контроль ROAS', 'Daily ROAS tracking');
-  add('AB-testing va variantlar', 'A/B-тесты и варианты', 'A/B testing and variants');
-  add('Oylik baholash va taatlif', 'Ежемесячная оценка и рекомендации', 'Monthly review and recommendations');
-  add('2x ROI garantiyasi bilan', 'С гарантией ROI 2x', 'With a 2x ROI guarantee');
+  add("Natijalarni tahlil qilib, ishlayotgan yechimlarni kengaytiramiz va barqaror o'sishni ta'minlaymiz.", 'Анализируем результаты, масштабируем работающие решения и обеспечиваем стабильный рост.', 'We analyze results, scale what works and ensure sustainable growth.');
+  add('Kunlik ROAS nazorati', 'Ежедневный контроль ROAS', 'Daily ROAS monitoring');
+  add('A/B testlar va yangi variantlar', 'A/B-тесты и новые варианты', 'A/B tests and new variants');
+  add('Oylik tahlil va tavsiyalar', 'Ежемесячный анализ и рекомендации', 'Monthly analysis and recommendations');
+  add('Sotuvni bosqichma-bosqich kengaytirish', 'Поэтапное масштабирование продаж', 'Step-by-step sales scaling');
   add('Audit va Hisobot', 'Аудит и отчёт', 'Audit and Report');
   add('30–90 kun', '30–90 дней', '30–90 days');
   add("To'liq Tsikl", 'Полный цикл', 'Full Cycle');
