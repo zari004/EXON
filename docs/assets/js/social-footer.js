@@ -1,11 +1,51 @@
-/* EXON — header ijtimoiy tarmoq ikonkalari. Admin panelda ("Ijtimoiy
-   tarmoqlar") kiritilgan havolalarni /api/social'dan olib, nav'da
-   ko'rsatadi. Hech qanday havola kiritilmagan bo'lsa yoki API ishlamasa
+/* EXON — umumiy footer va ijtimoiy tarmoq ikonkalari. Admin panelda
+   ("Ijtimoiy tarmoqlar") kiritilgan havolalarni /api/social'dan olib,
+   nav va footer'da ko'rsatadi. Hech qanday havola kiritilmagan bo'lsa yoki API ishlamasa
    — ikonkalar qatori butunlay yashirin qoladi, hech qanday noto'g'ri/
    o'ylab topilgan havola ko'rsatilmaydi. */
 (function () {
-  var iconsRow = document.getElementById('socialIconsNav');
-  if (!iconsRow || !window.EXON_API_BASE) return;
+  var footer = document.createElement('footer');
+  footer.className = 'site-footer';
+  footer.innerHTML =
+    '<div class="site-footer__inner">' +
+      '<div class="site-footer__top">' +
+        '<div class="site-footer__brand">' +
+          '<a class="site-footer__logo" href="index.html" aria-label="EXON — bosh sahifa">' +
+            '<img class="logo__img logo__img--dark" src="assets/img/logo-exon.png" alt="EXON" />' +
+            '<img class="logo__img logo__img--light" src="assets/img/logo-exon-light.png" alt="EXON" />' +
+          '</a>' +
+          '<p>Biz marketplace\'larni boshqariladigan biznesga aylantiramiz.</p>' +
+        '</div>' +
+        '<div class="site-footer__group">' +
+          '<h2>Sahifalar</h2>' +
+          '<nav aria-label="Footer menyusi">' +
+            '<a href="index.html#xizmatlar">Xizmatlar</a>' +
+            '<a href="keyslar.html">Keyslar</a>' +
+            '<a href="narxlar.html">Narxlar</a>' +
+            '<a href="jarayon.html">Jarayon</a>' +
+            '<a href="blog.html">Blog</a>' +
+          '</nav>' +
+        '</div>' +
+        '<div class="site-footer__group site-footer__contact">' +
+          '<h2>Bog\'lanish</h2>' +
+          '<a class="site-footer__cta" href="konsultatsiya.html">Bepul konsultatsiya</a>' +
+          '<div class="social-icons social-icons--footer" id="socialIconsFooter" style="display:none"></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="site-footer__bottom">' +
+        '<span>© <span data-footer-year></span> EXON</span>' +
+        '<span>Barcha huquqlar himoyalangan.</span>' +
+      '</div>' +
+    '</div>';
+
+  var main = document.querySelector('main');
+  if (main) main.insertAdjacentElement('afterend', footer);
+  else document.body.appendChild(footer);
+  var year = footer.querySelector('[data-footer-year]');
+  if (year) year.textContent = String(new Date().getFullYear());
+
+  var iconsRows = [document.getElementById('socialIconsNav'), document.getElementById('socialIconsFooter')].filter(Boolean);
+  if (!window.EXON_API_BASE) return;
 
   var ICONS = {
     instagram: '<path d="M12 2c2.7 0 3.1 0 4.1.1 1.1.1 1.8.2 2.5.5.7.3 1.2.6 1.8 1.2.6.6.9 1.1 1.2 1.8.3.7.4 1.4.5 2.5.1 1 .1 1.4.1 4.1s0 3.1-.1 4.1c-.1 1.1-.2 1.8-.5 2.5-.3.7-.6 1.2-1.2 1.8-.6.6-1.1.9-1.8 1.2-.7.3-1.4.4-2.5.5-1 .1-1.4.1-4.1.1s-3.1 0-4.1-.1c-1.1-.1-1.8-.2-2.5-.5-.7-.3-1.2-.6-1.8-1.2-.6-.6-.9-1.1-1.2-1.8-.3-.7-.4-1.4-.5-2.5C2 15.1 2 14.7 2 12s0-3.1.1-4.1c.1-1.1.2-1.8.5-2.5.3-.7.6-1.2 1.2-1.8.6-.6 1.1-.9 1.8-1.2.7-.3 1.4-.4 2.5-.5C8.9 2 9.3 2 12 2Zm0 1.8c-2.7 0-3 0-4 .1-.9 0-1.5.2-1.8.3-.5.2-.8.4-1.1.7-.3.3-.5.6-.7 1.1-.1.3-.3.9-.3 1.8-.1 1-.1 1.3-.1 4s0 3 .1 4c0 .9.2 1.5.3 1.8.2.5.4.8.7 1.1.3.3.6.5 1.1.7.3.1.9.3 1.8.3 1 .1 1.3.1 4 .1s3 0 4-.1c.9 0 1.5-.2 1.8-.3.5-.2.8-.4 1.1-.7.3-.3.5-.6.7-1.1.1-.3.3-.9.3-1.8.1-1 .1-1.3.1-4s0-3-.1-4c0-.9-.2-1.5-.3-1.8-.2-.5-.4-.8-.7-1.1a2.9 2.9 0 0 0-1.1-.7c-.3-.1-.9-.3-1.8-.3-1-.1-1.3-.1-4-.1Zm0 3.5a4.7 4.7 0 1 1 0 9.4 4.7 4.7 0 0 1 0-9.4Zm0 1.8a2.9 2.9 0 1 0 0 5.8 2.9 2.9 0 0 0 0-5.8Zm5-2a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0Z"/>',
@@ -22,14 +62,17 @@
   function esc(s) { return String(s || '').replace(/[<>&"]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]; }); }
 
   function renderLinks(links) {
-    iconsRow.innerHTML = links.map(function (l, i) {
+    var html = links.map(function (l, i) {
       var icon = ICONS[l.platform] || FALLBACK_ICON;
       var label = LABELS[l.platform] || l.platform;
       return '<a class="social-icon" href="' + esc(l.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(label) + '" style="--i:' + i + '">' +
         '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' + icon + '</svg>' +
         '</a>';
     }).join('');
-    iconsRow.style.display = 'flex';
+    iconsRows.forEach(function (row) {
+      row.innerHTML = html;
+      row.style.display = 'flex';
+    });
   }
 
   // Avval statik nusxadan (tez, Render'ni kutmaydi), topilmasa jonli API'dan

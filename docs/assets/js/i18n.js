@@ -42,6 +42,15 @@
 
   /* Bosh sahifadagi konsultatsiya formasi */
   add('Bepul konsultatsiya', 'Бесплатная консультация', 'Free consultation');
+  add('Sahifalar', 'Страницы', 'Pages');
+  add("Bog'lanish", 'Связаться', 'Contact');
+  add('Footer menyusi', 'Меню в подвале', 'Footer navigation');
+  add('Barcha huquqlar himoyalangan.', 'Все права защищены.', 'All rights reserved.');
+  add('Loyixalar', 'Проекты', 'Projects');
+  add('SKU lar soni', 'Количество SKU', 'Number of SKUs');
+  add('Mahsulot kartochkalari', 'Карточки товаров', 'Product cards');
+  add('Kategoriyalar', 'Категории', 'Categories');
+  add('Brendlar', 'Бренды', 'Brands');
   add("Bepul konsultatsiyaga yoziling — mutaxassisimiz siz bilan tez orada bog'lanadi.", 'Запишитесь на бесплатную консультацию — наш специалист скоро свяжется с вами.', 'Book a free consultation — our specialist will contact you shortly.');
   add("Biz bilan bog'laning", 'Свяжитесь с нами', 'Contact us');
   add("Ismingiz, biznes turingiz va telefon raqamingizni qoldiring — mutaxassislarimiz siz bilan tez orada bog'lanadi.", 'Оставьте имя, тип бизнеса и номер телефона — наши специалисты скоро свяжутся с вами.', 'Leave your name, business type and phone number — our specialists will contact you shortly.');

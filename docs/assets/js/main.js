@@ -194,6 +194,8 @@
     }
 
     var started = false;
+    var statsIo = null;
+    var lastStatsSignature = '';
     function startCountUp() {
       if (started) return;
       started = true;
@@ -203,6 +205,12 @@
     }
 
     function renderStats(stats) {
+      var signature = JSON.stringify(stats.map(function (s) { return [s.value, s.suffix, s.label]; }));
+      if (signature === lastStatsSignature) return;
+      lastStatsSignature = signature;
+      started = false;
+      if (statsIo) { statsIo.disconnect(); statsIo = null; }
+
       row.innerHTML = stats.map(function (s) {
         return '<div class="stat-item">' +
           '<div class="stat-item__value"><span class="stat-item__num" data-target="' + Number(s.value) + '">0</span>' + esc(s.suffix) + '</div>' +
@@ -212,7 +220,7 @@
       row.style.display = '';
 
       if ('IntersectionObserver' in window) {
-        var statsIo = new IntersectionObserver(function (entries) {
+        statsIo = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
             if (entry.isIntersecting) { startCountUp(); statsIo.disconnect(); }
           });
@@ -223,7 +231,19 @@
       }
     }
 
-    // Avval statik nusxadan (tez, Render'ni kutmaydi), topilmasa jonli API'dan
+    function loadLiveStats() {
+      return fetch(window.EXON_API_BASE + '/api/stats', { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function (data) {
+          var stats = (data && data.success && Array.isArray(data.stats)) ? data.stats : [];
+          if (!stats.length) return;
+          renderStats(stats);
+        })
+        .catch(function () { /* API ishlamasa statik nusxa ekranda qoladi */ });
+    }
+
+    // Statik nusxa sahifani darhol to'ldiradi. Keyin jonli API har safar
+    // tekshiriladi va admin paneldagi yangi qiymatlar deploysiz yangilanadi.
     fetch('data/stats.json', { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (data) {
@@ -231,16 +251,8 @@
         if (!stats.length) throw 0;
         renderStats(stats);
       })
-      .catch(function () {
-        fetch(window.EXON_API_BASE + '/api/stats')
-          .then(function (r) { return r.json(); })
-          .then(function (data) {
-            var stats = (data && data.success && Array.isArray(data.stats)) ? data.stats : [];
-            if (!stats.length) return;
-            renderStats(stats);
-          })
-          .catch(function () { /* API ishlamasa yoki statistika kiritilmagan bo'lsa — qator yashirin qoladi */ });
-      });
+      .catch(function () { /* Statik nusxa bo'lmasa jonli API baribir yuklanadi */ })
+      .then(loadLiveStats);
   })();
 
   /* ── 8. Ariza formasi — bepul konsultatsiya sahifasidagi lid formasi. Yuborilganda
