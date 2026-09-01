@@ -864,16 +864,13 @@ ol,ul{list-style:none}
 .stat-item{text-align:center;min-width:0}
 .stat-item__value{
   font-size:clamp(38px,5.4vw,68px);font-weight:800;letter-spacing:-.035em;
-  color:var(--white);font-variant-numeric:tabular-nums;
-  text-shadow:
-    0 0 8px rgba(76,247,156,.48),
-    0 0 22px rgba(11,209,108,.35),
-    0 0 46px rgba(11,209,108,.2);
+  color:#86FFC0;font-variant-numeric:tabular-nums;
+  text-shadow:none;
 }
 .stat-item__label{font-size:17px;color:var(--white);font-weight:400;margin-top:8px}
 :root[data-theme="light"] .stat-item__value{
-  color:var(--white);
-  text-shadow:0 0 10px rgba(10,157,87,.18),0 0 24px rgba(10,157,87,.1);
+  color:#078D4B;
+  text-shadow:none;
 }
 @media (max-width:760px){
   .stats-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 18px}
