@@ -870,12 +870,11 @@ ol,ul{list-style:none}
     0 0 22px rgba(11,209,108,.35),
     0 0 46px rgba(11,209,108,.2);
 }
-.stat-item__label{font-size:17px;color:#A7C2B5;font-weight:400;margin-top:8px}
+.stat-item__label{font-size:17px;color:var(--white);font-weight:400;margin-top:8px}
 :root[data-theme="light"] .stat-item__value{
   color:#078D4B;
   text-shadow:0 0 10px rgba(10,157,87,.18),0 0 24px rgba(10,157,87,.1);
 }
-:root[data-theme="light"] .stat-item__label{color:#52675C}
 @media (max-width:760px){
   .stats-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 18px}
   .stat-item__value{font-size:clamp(36px,12vw,56px)}
