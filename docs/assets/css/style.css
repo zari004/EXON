@@ -1044,6 +1044,14 @@ ol,ul{list-style:none}
   background:linear-gradient(160deg,var(--surface),var(--bg-2));border:1px solid var(--line);
   transition:transform .3s var(--ease),border-color .3s var(--ease);
 }
+:root[data-theme="light"] .case-card{
+  background:linear-gradient(145deg,#E1F5E9,#D4EEDF);
+  border-color:rgba(var(--green-rgb),.28);
+}
+:root[data-theme="light"] .case-card:hover{
+  background:linear-gradient(145deg,#D8F2E3,#CBEAD8);
+  border-color:var(--green);
+}
 .case-card::before{
   content:"";position:absolute;top:0;left:0;right:0;height:2px;
   background:linear-gradient(90deg,var(--green-deep),var(--green-hi));
