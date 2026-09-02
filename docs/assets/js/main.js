@@ -85,31 +85,55 @@
     var autoRotate = false;
     var dragging = false;
     var hovering = false;
+    var sectionVisible = false;
+    var frameId = 0;
     var dragStartX = 0;
     var dragStartAngle = 0;
     var lastFrameTime = null;
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var compactMq = window.matchMedia && window.matchMedia('(max-width: 880px)');
+    var renderedSignature = '';
 
-    function applyTransform() { track.style.transform = 'rotateY(' + angle + 'deg)'; }
+    function isCompact() { return compactMq && compactMq.matches; }
+    function applyTransform() {
+      track.style.transform = isCompact() ? '' : 'rotateY(' + angle + 'deg)';
+    }
+
+    function canAnimate() {
+      return autoRotate && !reduceMotion && !isCompact() && sectionVisible &&
+        !document.hidden && !dragging && !hovering;
+    }
+
+    function stopAnimation() {
+      if (frameId) cancelAnimationFrame(frameId);
+      frameId = 0;
+      lastFrameTime = null;
+    }
+
+    function syncAnimation() {
+      if (!canAnimate()) { stopAnimation(); return; }
+      if (!frameId) frameId = requestAnimationFrame(tick);
+    }
 
     function tick(now) {
-      if (!dragging && !hovering && autoRotate && !reduceMotion) {
-        if (lastFrameTime !== null) angle += AUTO_DEG_PER_SEC * (now - lastFrameTime) / 1000;
-        applyTransform();
-      }
+      frameId = 0;
+      if (!canAnimate()) { lastFrameTime = null; return; }
+      if (lastFrameTime !== null) angle += AUTO_DEG_PER_SEC * (now - lastFrameTime) / 1000;
+      applyTransform();
       lastFrameTime = now;
-      requestAnimationFrame(tick);
+      frameId = requestAnimationFrame(tick);
     }
-    requestAnimationFrame(tick);
 
-    carousel.addEventListener('mouseenter', function () { hovering = true; });
-    carousel.addEventListener('mouseleave', function () { hovering = false; });
+    carousel.addEventListener('mouseenter', function () { hovering = true; syncAnimation(); });
+    carousel.addEventListener('mouseleave', function () { hovering = false; syncAnimation(); });
 
     carousel.addEventListener('pointerdown', function (e) {
+      if (isCompact()) return;
       dragging = true;
       carousel.classList.add('is-dragging');
       dragStartX = e.clientX;
       dragStartAngle = angle;
+      syncAnimation();
     });
     window.addEventListener('pointermove', function (e) {
       if (!dragging) return;
@@ -120,11 +144,30 @@
       if (!dragging) return;
       dragging = false;
       carousel.classList.remove('is-dragging');
+      syncAnimation();
     }
     window.addEventListener('pointerup', endDrag);
     window.addEventListener('pointercancel', endDrag);
 
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        sectionVisible = Boolean(entries[0] && entries[0].isIntersecting);
+        syncAnimation();
+      }, { rootMargin: '100px 0px' }).observe(section);
+    } else {
+      sectionVisible = true;
+    }
+    document.addEventListener('visibilitychange', syncAnimation);
+    if (compactMq) {
+      var onBreakpointChange = function () { applyTransform(); syncAnimation(); };
+      if (compactMq.addEventListener) compactMq.addEventListener('change', onBreakpointChange);
+      else compactMq.addListener(onBreakpointChange);
+    }
+
     function renderPartners(partners) {
+      var signature = JSON.stringify(partners.map(function (p) { return [p.id, p.name, p.image]; }));
+      if (signature === renderedSignature) return;
+      renderedSignature = signature;
       var count = partners.length;
       // To'liq 360 gradusga teng taqsimlanadi — shu bilan halqaning
       // "boshi" ham, "oxiri" ham bo'lmaydi, cheksiz aylanaveradi. Radius
@@ -139,18 +182,35 @@
       track.innerHTML = partners.map(function (p, i) {
         var a = (360 / count) * i;
         return '<div class="proof__carousel-item" style="transform:rotateY(' + a + 'deg) translateZ(' + radius + 'px)">' +
-          '<img src="' + p.image + '" alt="' + (p.name || '').replace(/"/g, '&quot;') + '" loading="lazy" />' +
+          '<img src="' + p.image + '" alt="' + (p.name || '').replace(/"/g, '&quot;') + '" loading="lazy" decoding="async" />' +
           '</div>';
       }).join('');
       autoRotate = count >= MIN_ROTATE_COUNT;
       applyTransform();
+      syncAnimation();
 
       section.style.display = '';
     }
 
-    // Avval GitHub Pages'dagi statik nusxadan (bir necha daqiqada bir marta
-    // GitHub Action orqali yangilanadi) — bu doim tez, Render'ning uxlab
-    // qolishini kutib turmaydi. Topilmasa/bo'sh bo'lsa jonli API'ga o'tadi.
+    function refreshFromApi() {
+      var controller = 'AbortController' in window ? new AbortController() : null;
+      var timeout = setTimeout(function () { if (controller) controller.abort(); }, 12000);
+      fetch(window.EXON_API_BASE + '/api/partners', {
+        cache: 'no-store',
+        signal: controller ? controller.signal : undefined
+      })
+        .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function (data) {
+          var partners = (data && data.success && Array.isArray(data.partners)) ? data.partners : [];
+          if (partners.length) renderPartners(partners);
+        })
+        .catch(function () { /* Tezkor statik nusxa ekranda qoladi. */ })
+        .then(function () { clearTimeout(timeout); });
+    }
+
+    // Statik nusxa sahifani darhol ko'rsatadi. Keyin API fon rejimida
+    // tekshiriladi: admin panelda yangi logo qo'shilgan bo'lsa, sahifa
+    // qayta yuklanmasdan ham eng yangi ro'yxatga almashadi.
     fetch('data/partners.json', { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (data) {
@@ -158,16 +218,8 @@
         if (!partners.length) throw 0;
         renderPartners(partners);
       })
-      .catch(function () {
-        fetch(window.EXON_API_BASE + '/api/partners')
-          .then(function (r) { return r.json(); })
-          .then(function (data) {
-            var partners = (data && data.success && Array.isArray(data.partners)) ? data.partners : [];
-            if (!partners.length) return;
-            renderPartners(partners);
-          })
-          .catch(function () { /* API ishlamasa yoki hamkor qo'shilmagan bo'lsa — bo'lim yashirin qoladi */ });
-      });
+      .catch(function () { /* API pastda baribir tekshiriladi. */ })
+      .then(refreshFromApi);
   })();
 
   /* ── 7. Statistika — admin paneldan olib, "Keyslar" bo'limida ko'rinishga

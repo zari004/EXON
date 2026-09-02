@@ -554,6 +554,25 @@ ol,ul{list-style:none}
   transform:scale(1.1);
 }
 
+@media (max-width:880px){
+  .proof__carousel{
+    height:auto;min-height:100px;padding:4px 18px 12px;
+    justify-content:flex-start;overflow-x:auto;perspective:none;
+    cursor:default;touch-action:pan-x;scroll-snap-type:x proximity;
+    scrollbar-width:none;
+  }
+  .proof__carousel::-webkit-scrollbar{display:none}
+  .proof__carousel-track{
+    position:static;width:max-content;height:auto;display:flex;gap:24px;
+    transform:none!important;transform-style:flat;will-change:auto;
+  }
+  .proof__carousel-item{
+    position:static;width:132px;height:72px;margin:0;flex:0 0 132px;
+    transform:none!important;backface-visibility:visible;scroll-snap-align:center;
+  }
+  .proof__carousel-item img{max-height:48px}
+}
+
 /* ==========================================================================
    BEPUL KONSULTATSIYA
    ========================================================================== */
