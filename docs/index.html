@@ -37,7 +37,7 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=53" />
+<link rel="stylesheet" href="assets/css/style.css?v=55" />
 <link rel="manifest" href="/manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -278,35 +278,8 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
       </a>
     </div>
 
-    <div class="case-grid">
-      <article class="case-card reveal" style="--rd:.05s">
-        <span class="case-card__tag">📱 Elektronika</span>
-        <h3 class="case-card__title">Smartfon Aksessuarlari</h3>
-        <div class="case-card__stats">
-          <div><b>+340%</b><span>Trafik</span></div>
-          <div><b>+218%</b><span>Buyurtma</span></div>
-        </div>
-        <span class="case-card__market case-card__market--uzum"><img src="assets/img/market-uzum.webp" alt="Uzum Market" /></span>
-      </article>
-      <article class="case-card reveal" style="--rd:.12s">
-        <span class="case-card__tag">🏠 Uy buyumlari</span>
-        <h3 class="case-card__title">Oshxona Janglari</h3>
-        <div class="case-card__stats">
-          <div><b>+156%</b><span>Pozitsiya</span></div>
-          <div><b>3:1</b><span>ROI</span></div>
-        </div>
-        <span class="case-card__market case-card__market--wb"><img src="assets/img/market-wildberries.png" alt="Wildberries" /></span>
-      </article>
-      <article class="case-card reveal" style="--rd:.19s">
-        <span class="case-card__tag">👶 Bolalar</span>
-        <h3 class="case-card__title">Bolalar Paltolari</h3>
-        <div class="case-card__stats">
-          <div><b>+420%</b><span>Buyurtma</span></div>
-          <div><b>2.8x</b><span>Konversiya</span></div>
-        </div>
-        <span class="case-card__market case-card__market--uzum"><img src="assets/img/market-uzum.webp" alt="Uzum Market" /></span>
-      </article>
-    </div>
+    <!-- Kartalar admin paneldagi Keyslar bo'limidan yuklanadi. -->
+    <div class="case-grid" id="homeCasesGrid"></div>
   </div>
 </section>
 
@@ -382,26 +355,8 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
       </a>
     </div>
 
-    <div class="post-grid">
-      <a class="post-card reveal" href="maqola.html?id=1" style="--rd:.05s">
-        <div class="post-card__thumb post-card__thumb--1" aria-hidden="true"></div>
-        <span class="post-card__tag">SEO</span>
-        <h3 class="post-card__title">Uzum'da Kalit So'zlar — 2025 Qo'llanmasi</h3>
-        <div class="post-card__meta"><span>25 iyul</span><span>5 min</span></div>
-      </a>
-      <a class="post-card reveal" href="maqola.html?id=2" style="--rd:.12s">
-        <div class="post-card__thumb post-card__thumb--2" aria-hidden="true"></div>
-        <span class="post-card__tag">REKLAMA</span>
-        <h3 class="post-card__title">Wildberries'da Reklama — Budjet Taqsimoti</h3>
-        <div class="post-card__meta"><span>22 iyul</span><span>8 min</span></div>
-      </a>
-      <a class="post-card reveal" href="maqola.html?id=3" style="--rd:.19s">
-        <div class="post-card__thumb post-card__thumb--3" aria-hidden="true"></div>
-        <span class="post-card__tag">KARTOCHKA</span>
-        <h3 class="post-card__title">Rasmni Optimallashtirish — Konversiya +40%</h3>
-        <div class="post-card__meta"><span>18 iyul</span><span>6 min</span></div>
-      </a>
-    </div>
+    <!-- Kartalar admin paneldagi Blog bo'limidan yuklanadi. -->
+    <div class="post-grid" id="homePostsGrid"></div>
   </div>
 </section>
 
@@ -427,7 +382,7 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 <script src="assets/js/api-base.js?v=3"></script>
 <script src="assets/js/social-footer.js?v=7"></script>
 <script src="assets/js/pricing-visibility.js?v=1"></script>
-<script src="assets/js/main.js?v=32"></script>
+<script src="assets/js/main.js?v=34"></script>
 <script>
 (function () {
   // Service Worker ro'yxatdan o'tkazish (keshlash/tezlik uchun —

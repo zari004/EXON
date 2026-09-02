@@ -1,6 +1,6 @@
 name: Ommaviy ma'lumotlarni statik faylga sinxronlash
 
-# Bosh sahifadagi hamkorlar, statistika va ijtimoiy tarmoq havolalari
+# Bosh sahifadagi hamkorlar, statistika, keyslar, blog va ijtimoiy tarmoq havolalari
 # odatda Render backend'dan jonli so'raladi — backend "uxlab" yotgan payt
 # birinchi tashrif buyuruvchi 30-60+ soniya kutishga majbur bo'ladi.
 #
@@ -35,10 +35,12 @@ jobs:
           BASE="https://exon-backend-zgtl.onrender.com"
           curl -sS --max-time 90 --fail "$BASE/api/partners" -o docs/data/partners.json
           curl -sS --max-time 30 --fail "$BASE/api/stats" -o docs/data/stats.json
+          curl -sS --max-time 30 --fail "$BASE/api/cases" -o docs/data/cases.json
+          curl -sS --max-time 30 --fail "$BASE/api/posts" -o docs/data/posts.json
           curl -sS --max-time 30 --fail "$BASE/api/social" -o docs/data/social.json
           # Har bir fayl haqiqatan ham to'g'ri JSON ekanini tekshiramiz —
           # aks holda buzilgan javob repo'ga yozilib qolmasin
-          for f in partners stats social; do
+          for f in partners stats cases posts social; do
             node -e "JSON.parse(require('fs').readFileSync('docs/data/$f.json','utf8'))"
           done
 
@@ -46,7 +48,7 @@ jobs:
         run: |
           git config user.name "EXON Data Sync Bot"
           git config user.email "actions@github.com"
-          git add docs/data/partners.json docs/data/stats.json docs/data/social.json
+          git add docs/data/partners.json docs/data/stats.json docs/data/cases.json docs/data/posts.json docs/data/social.json
           if git diff --cached --quiet; then
             echo "O'zgarish yo'q — commit qilinmadi"
           else

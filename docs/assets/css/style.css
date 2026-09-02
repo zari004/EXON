@@ -1052,6 +1052,8 @@ ol,ul{list-style:none}
 .case-card:hover{transform:translateY(-4px);border-color:var(--green-deep)}
 .case-card:hover::before{opacity:1}
 .case-card__tag{font-size:12px;color:var(--gray);font-weight:500}
+.case-card__tag{display:flex;align-items:center;gap:7px}
+.case-card__tag-icon{width:18px;height:18px;border-radius:5px;object-fit:contain}
 .case-card__title{font-size:18px;font-weight:600;margin:10px 0 18px}
 .case-card__stats{display:flex;gap:22px;margin-bottom:18px}
 .case-card__stats b{display:block;font-size:24px;font-weight:700;color:var(--green-hi)}
@@ -1060,6 +1062,8 @@ ol,ul{list-style:none}
   display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;
   padding:0;border:0;background:transparent;
 }
+.case-card__markets{display:flex;align-items:center;gap:6px;min-height:36px}
+.case-grid__empty{grid-column:1/-1;color:var(--gray);text-align:center;padding:36px 0}
 .case-card__market img{
   display:block;width:34px;height:34px;border-radius:10px;object-fit:contain;
   transition:transform .2s var(--ease),box-shadow .2s var(--ease);
@@ -1107,6 +1111,7 @@ ol,ul{list-style:none}
 .post-card:hover{transform:translateY(-4px);border-color:var(--green-deep)}
 .post-card:focus-visible{outline:2px solid var(--green);outline-offset:3px}
 .post-card__thumb{height:120px}
+.post-card__thumb-img{display:block;width:100%;object-fit:cover}
 .post-card__thumb--1{background:radial-gradient(circle at 30% 30%,rgba(11,209,108,.38),var(--bg-2) 70%)}
 .post-card__thumb--2{background:radial-gradient(circle at 70% 40%,rgba(53,193,133,.32),var(--bg-2) 70%)}
 .post-card__thumb--3{background:radial-gradient(circle at 50% 65%,rgba(76,247,156,.28),var(--bg-2) 70%)}
@@ -1116,6 +1121,7 @@ ol,ul{list-style:none}
 }
 .post-card__title{font-size:15px;font-weight:600;margin:8px 20px 14px;line-height:1.4}
 .post-card__meta{display:flex;gap:14px;margin:0 20px 18px;font-size:12px;color:var(--gray-dim)}
+.post-grid__empty{grid-column:1/-1;color:var(--gray);text-align:center;padding:36px 0}
 
 @media (max-width:880px){
   .tsec__head{flex-direction:column;align-items:flex-start}

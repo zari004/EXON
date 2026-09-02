@@ -309,7 +309,151 @@
       .then(loadLiveStats);
   })();
 
-  /* ── 8. Ariza formasi — bepul konsultatsiya sahifasidagi lid formasi. Yuborilganda
+  /* ── 8. Bosh sahifa keyslari — admin paneldagi ro'yxatning dastlabki
+     uchtasini ko'rsatadi. Statik nusxa sahifani darhol to'ldiradi, jonli
+     API esa fonda tekshirilib admin o'zgarishlarini deploysiz chiqaradi. ── */
+  (function () {
+    var grid = document.getElementById('homeCasesGrid');
+    if (!grid || !window.EXON_API_BASE) return;
+
+    var MARKET_INFO = {
+      uzum: { logo: 'assets/img/market-uzum.webp', label: 'Uzum Market', cls: 'case-card__market--uzum' },
+      wb: { logo: 'assets/img/market-wildberries.png', label: 'Wildberries', cls: 'case-card__market--wb' },
+      yandex: { logo: 'assets/img/market-yandex.png', label: 'Yandex Market', cls: 'case-card__market--yandex' }
+    };
+    var lastSignature = '';
+
+    function esc(value) {
+      return String(value == null ? '' : value).replace(/[<>&"]/g, function (c) {
+        return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c];
+      });
+    }
+
+    function renderCases(cases) {
+      var visible = cases.slice(0, 3);
+      var signature = JSON.stringify(visible);
+      if (signature === lastSignature) return;
+      lastSignature = signature;
+
+      if (!visible.length) {
+        grid.innerHTML = '<p class="case-grid__empty">Hozircha keyslar qo\'shilmagan.</p>';
+        return;
+      }
+
+      grid.innerHTML = visible.map(function (item) {
+        var metric1 = item.metric1 || {};
+        var metric2 = item.metric2 || {};
+        var metrics = [metric1, metric2].filter(function (metric) { return metric.value || metric.label; });
+        var markets = Array.isArray(item.markets) ? item.markets : [];
+        var icon = item.icon ? '<img class="case-card__tag-icon" src="' + esc(item.icon) + '" alt="" loading="lazy" decoding="async" />' : '';
+        var marketHtml = markets.map(function (market) {
+          var info = MARKET_INFO[market];
+          if (!info) return '';
+          return '<span class="case-card__market ' + info.cls + '"><img src="' + info.logo + '" alt="' + info.label + '" loading="lazy" decoding="async" /></span>';
+        }).join('');
+
+        return '<article class="case-card">' +
+          '<span class="case-card__tag">' + icon + esc(item.tag) + '</span>' +
+          '<h3 class="case-card__title">' + esc(item.title) + '</h3>' +
+          '<div class="case-card__stats">' + metrics.map(function (metric) {
+            return '<div><b>' + esc(metric.value) + '</b><span>' + esc(metric.label) + '</span></div>';
+          }).join('') + '</div>' +
+          '<div class="case-card__markets">' + marketHtml + '</div>' +
+          '</article>';
+      }).join('');
+    }
+
+    function loadLiveCases() {
+      var controller = 'AbortController' in window ? new AbortController() : null;
+      var timeout = setTimeout(function () { if (controller) controller.abort(); }, 12000);
+      return fetch(window.EXON_API_BASE + '/api/cases', {
+        cache: 'no-store',
+        signal: controller ? controller.signal : undefined
+      })
+        .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function (data) {
+          if (!data || !data.success || !Array.isArray(data.cases)) throw 0;
+          renderCases(data.cases);
+        })
+        .catch(function () { /* Statik nusxa ekranda qoladi. */ })
+        .then(function () { clearTimeout(timeout); });
+    }
+
+    fetch('data/cases.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (data) {
+        if (!data || !data.success || !Array.isArray(data.cases)) throw 0;
+        renderCases(data.cases);
+      })
+      .catch(function () { /* Jonli API pastda baribir tekshiriladi. */ })
+      .then(loadLiveCases);
+  })();
+
+  /* ── 9. Bosh sahifa maqolalari — admin paneldagi dastlabki uchta post. ── */
+  (function () {
+    var grid = document.getElementById('homePostsGrid');
+    if (!grid || !window.EXON_API_BASE) return;
+    var lastSignature = '';
+
+    function esc(value) {
+      return String(value == null ? '' : value).replace(/[<>&"]/g, function (c) {
+        return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c];
+      });
+    }
+
+    function renderPosts(posts) {
+      var visible = posts.slice(0, 3);
+      var signature = JSON.stringify(visible);
+      if (signature === lastSignature) return;
+      lastSignature = signature;
+
+      if (!visible.length) {
+        grid.innerHTML = '<p class="post-grid__empty">Hozircha maqolalar qo\'shilmagan.</p>';
+        return;
+      }
+
+      grid.innerHTML = visible.map(function (post, index) {
+        var thumb = post.image
+          ? '<img class="post-card__thumb post-card__thumb-img" src="' + esc(post.image) + '" alt="" loading="lazy" decoding="async" />'
+          : '<div class="post-card__thumb post-card__thumb--' + ((index % 3) + 1) + '" aria-hidden="true"></div>';
+        return '<a class="post-card" href="maqola.html?id=' + encodeURIComponent(post.id) + '">' +
+          thumb +
+          '<span class="post-card__tag">' + esc(post.tag) + '</span>' +
+          '<h3 class="post-card__title">' + esc(post.title) + '</h3>' +
+          '<div class="post-card__meta">' +
+          (post.date ? '<span>' + esc(post.date) + '</span>' : '') +
+          (post.readTime ? '<span>' + esc(post.readTime) + '</span>' : '') +
+          '</div></a>';
+      }).join('');
+    }
+
+    function loadLivePosts() {
+      var controller = 'AbortController' in window ? new AbortController() : null;
+      var timeout = setTimeout(function () { if (controller) controller.abort(); }, 12000);
+      return fetch(window.EXON_API_BASE + '/api/posts', {
+        cache: 'no-store',
+        signal: controller ? controller.signal : undefined
+      })
+        .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function (data) {
+          if (!data || !data.success || !Array.isArray(data.posts)) throw 0;
+          renderPosts(data.posts);
+        })
+        .catch(function () { /* Statik nusxa ekranda qoladi. */ })
+        .then(function () { clearTimeout(timeout); });
+    }
+
+    fetch('data/posts.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (data) {
+        if (!data || !data.success || !Array.isArray(data.posts)) throw 0;
+        renderPosts(data.posts);
+      })
+      .catch(function () { /* Jonli API pastda baribir tekshiriladi. */ })
+      .then(loadLivePosts);
+  })();
+
+  /* ── 10. Ariza formasi — bepul konsultatsiya sahifasidagi lid formasi. Yuborilganda
      backend'ga saqlanadi, so'ng tasdiqlash sahifasiga o'tkaziladi — Meta
      Pixel "Lead" hodisasi aynan o'sha sahifaga yetib kelgan foydalanuvchi
      uchun hisoblanadi (server Conversions API bilan bir xil event ID
@@ -404,7 +548,7 @@
     });
   })();
 
-  /* ── 9. Teaser bo'limlar — scroll'da paydo bo'lish ──────────────────── */
+  /* ── 11. Teaser bo'limlar — scroll'da paydo bo'lish ─────────────────── */
   var revealEls = document.querySelectorAll('.reveal');
   if (revealEls.length) {
     if ('IntersectionObserver' in window) {
