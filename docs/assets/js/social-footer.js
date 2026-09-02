@@ -57,6 +57,10 @@
     x: '<path d="M18.3 2h3.2l-7 8 8.2 12h-6.4l-5-6.5L4.6 22H1.4l7.5-8.6L1 2h6.6l4.5 6 6.2-6Zm-1.1 18h1.8L7 4H5.1l12.1 16Z"/>'
   };
   var LABELS = { instagram: 'Instagram', facebook: 'Facebook', telegram: 'Telegram', linkedin: 'LinkedIn', youtube: 'YouTube', tiktok: 'TikTok', x: 'X (Twitter)' };
+  var BRAND_IMAGES = {
+    instagram: 'assets/img/social-instagram.png',
+    telegram: 'assets/img/social-telegram.png'
+  };
   var FALLBACK_ICON = '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 15.5 15.5 8.5M9 8h6.5v6.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>';
 
   function esc(s) { return String(s || '').replace(/[<>&"]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]; }); }
@@ -65,8 +69,12 @@
     var html = links.map(function (l, i) {
       var icon = ICONS[l.platform] || FALLBACK_ICON;
       var label = LABELS[l.platform] || l.platform;
-      return '<a class="social-icon" href="' + esc(l.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(label) + '" style="--i:' + i + '">' +
-        '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' + icon + '</svg>' +
+      var brandImage = BRAND_IMAGES[l.platform];
+      var media = brandImage
+        ? '<img src="' + brandImage + '" alt="" aria-hidden="true" />'
+        : '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' + icon + '</svg>';
+      return '<a class="social-icon' + (brandImage ? ' social-icon--brand' : '') + '" href="' + esc(l.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(label) + '" style="--i:' + i + '">' +
+        media +
         '</a>';
     }).join('');
     iconsRows.forEach(function (row) {

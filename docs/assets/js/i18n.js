@@ -417,6 +417,34 @@
         en.setAttribute('aria-pressed', String(currentLang === 'en'));
         group.appendChild(en);
       }
+
+      var menu = group.querySelector('.lang__menu');
+      if (!menu) {
+        menu = document.createElement('div');
+        menu.className = 'lang__menu';
+        menu.setAttribute('role', 'menu');
+        Array.from(group.querySelectorAll('.lang__btn')).forEach(function (btn) {
+          btn.setAttribute('role', 'menuitemradio');
+          menu.appendChild(btn);
+        });
+        group.appendChild(menu);
+      }
+
+      var trigger = group.querySelector('.lang__trigger');
+      if (!trigger) {
+        trigger = document.createElement('button');
+        trigger.className = 'lang__trigger';
+        trigger.type = 'button';
+        trigger.setAttribute('aria-haspopup', 'menu');
+        trigger.setAttribute('aria-expanded', 'false');
+        group.insertBefore(trigger, menu);
+      }
+
+      trigger.innerHTML = '<span class="lang__flag lang__flag--' + currentLang + '" aria-hidden="true"></span>' +
+        '<span class="lang__code">' + currentLang.toUpperCase() + '</span>' +
+        '<svg viewBox="0 0 12 8" aria-hidden="true"><path d="m1 1 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      trigger.setAttribute('aria-expanded', String(group.classList.contains('is-open')));
+      group.classList.add('lang--dropdown');
     });
   }
 
@@ -429,13 +457,47 @@
   }
 
   document.addEventListener('click', function (event) {
+    var trigger = event.target.closest('.lang__trigger');
+    if (trigger) {
+      var triggerGroup = trigger.closest('.lang');
+      var willOpen = !triggerGroup.classList.contains('is-open');
+      document.querySelectorAll('.lang.is-open').forEach(function (group) {
+        group.classList.remove('is-open');
+        var groupTrigger = group.querySelector('.lang__trigger');
+        if (groupTrigger) groupTrigger.setAttribute('aria-expanded', 'false');
+      });
+      triggerGroup.classList.toggle('is-open', willOpen);
+      trigger.setAttribute('aria-expanded', String(willOpen));
+      return;
+    }
+
     var button = event.target.closest('.lang__btn[data-lang]');
-    if (!button) return;
+    if (!button) {
+      document.querySelectorAll('.lang.is-open').forEach(function (group) {
+        group.classList.remove('is-open');
+        var groupTrigger = group.querySelector('.lang__trigger');
+        if (groupTrigger) groupTrigger.setAttribute('aria-expanded', 'false');
+      });
+      return;
+    }
     var next = button.dataset.lang;
     if (next !== 'uz' && next !== 'ru' && next !== 'en') return;
     currentLang = next;
     try { localStorage.setItem(STORAGE_KEY, currentLang); } catch (e) {}
+    button.closest('.lang').classList.remove('is-open');
     applyLanguage();
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Escape') return;
+    document.querySelectorAll('.lang.is-open').forEach(function (group) {
+      group.classList.remove('is-open');
+      var trigger = group.querySelector('.lang__trigger');
+      if (trigger) {
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.focus();
+      }
+    });
   });
 
   document.addEventListener('DOMContentLoaded', function () {
