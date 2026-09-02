@@ -44,6 +44,8 @@
   add('Bepul konsultatsiya', 'Бесплатная консультация', 'Free consultation');
   add('Sahifalar', 'Страницы', 'Pages');
   add("Bog'lanish", 'Связаться', 'Contact');
+  add('Aloqa uchun', 'Контакты', 'Contact us');
+  add('Telefon raqam', 'Номер телефона', 'Phone number');
   add('Footer menyusi', 'Меню в подвале', 'Footer navigation');
   add('Barcha huquqlar himoyalangan.', 'Все права защищены.', 'All rights reserved.');
   add('Loyixalar', 'Проекты', 'Projects');

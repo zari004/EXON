@@ -28,6 +28,7 @@
         '</div>' +
         '<div class="site-footer__group site-footer__contact">' +
           '<h2>Bog\'lanish</h2>' +
+          '<a class="site-footer__phone" href="tel:+998781220134">+998 (78) 122-01-34</a>' +
           '<a class="site-footer__cta" href="konsultatsiya.html">Bepul konsultatsiya</a>' +
           '<div class="social-icons social-icons--footer" id="socialIconsFooter" style="display:none"></div>' +
         '</div>' +
@@ -44,7 +45,45 @@
   var year = footer.querySelector('[data-footer-year]');
   if (year) year.textContent = String(new Date().getFullYear());
 
-  var iconsRows = [document.getElementById('socialIconsNav'), document.getElementById('socialIconsFooter')].filter(Boolean);
+  var navMenu = document.querySelector('.nav__menu');
+  var contactSocial = null;
+  if (navMenu) {
+    var contact = document.createElement('div');
+    contact.className = 'nav-contact';
+    contact.innerHTML =
+      '<button class="nav-contact__trigger" type="button" aria-expanded="false">' +
+        '<span>Aloqa uchun</span>' +
+        '<svg viewBox="0 0 12 8" aria-hidden="true"><path d="m1 1 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+      '</button>' +
+      '<div class="nav-contact__panel">' +
+        '<span class="nav-contact__label">Telefon raqam</span>' +
+        '<a class="nav-contact__phone" href="tel:+998781220134">+998 (78) 122-01-34</a>' +
+        '<div class="social-icons social-icons--contact" id="socialIconsContact" style="display:none"></div>' +
+        '<a class="nav-contact__cta" href="konsultatsiya.html">Bepul konsultatsiya</a>' +
+      '</div>';
+    navMenu.appendChild(contact);
+    contactSocial = contact.querySelector('#socialIconsContact');
+
+    var contactTrigger = contact.querySelector('.nav-contact__trigger');
+    contactTrigger.addEventListener('click', function () {
+      var open = !contact.classList.contains('is-open');
+      contact.classList.toggle('is-open', open);
+      contactTrigger.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', function (event) {
+      if (contact.contains(event.target)) return;
+      contact.classList.remove('is-open');
+      contactTrigger.setAttribute('aria-expanded', 'false');
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Escape' || !contact.classList.contains('is-open')) return;
+      contact.classList.remove('is-open');
+      contactTrigger.setAttribute('aria-expanded', 'false');
+      contactTrigger.focus();
+    });
+  }
+
+  var iconsRows = [document.getElementById('socialIconsNav'), document.getElementById('socialIconsFooter'), contactSocial].filter(Boolean);
   if (!window.EXON_API_BASE) return;
 
   var ICONS = {
