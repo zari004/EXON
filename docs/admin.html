@@ -1689,6 +1689,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 .img-preview img{width:100%;height:100%;object-fit:cover}
 .img-preview--icon{width:96px;height:96px}
 .img-preview--icon img{object-fit:contain;padding:10px}
+#partnerImgPreview img{object-fit:contain;padding:10px}
+.partner-stroke-toggle{display:flex!important;align-items:center;gap:9px;cursor:pointer;color:var(--white)!important}
+.partner-stroke-toggle input{width:17px;height:17px;accent-color:var(--green);cursor:pointer}
+.partner-stroke-color{display:flex;align-items:center;gap:12px;margin-top:10px;padding:10px 12px;border:1px solid var(--line-2);border-radius:9px;background:var(--surface)}
+.partner-stroke-color[hidden]{display:none}
+.partner-stroke-color input[type=color]{width:44px;height:34px;padding:2px;border:1px solid var(--line-2);border-radius:7px;background:transparent;cursor:pointer}
+.partner-stroke-color span{font-size:12.5px;color:var(--gray)}
 .features-list{display:flex;flex-direction:column;gap:8px}
 .feature-row{display:flex;gap:8px}
 .feature-row input{flex:1}
@@ -2941,6 +2948,16 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         <div class="img-preview" id="partnerImgPreview" data-i18n="image.none">Rasm tanlanmagan</div>
         <input type="file" id="partnerImgFile" accept="image/*" />
       </div>
+      <div class="field">
+        <label class="partner-stroke-toggle">
+          <input type="checkbox" id="partnerStrokeEnabled" />
+          <span data-i18n="field.partnerStroke">Logotipga 2 px tashqi stroke qo'shish</span>
+        </label>
+        <div class="partner-stroke-color" id="partnerStrokeColorWrap" hidden>
+          <input type="color" id="partnerStrokeColor" value="#ffffff" />
+          <span data-i18n="field.partnerStrokeColor">Stroke rangini tanlang</span>
+        </div>
+      </div>
       <div class="form-msg" id="partnerFormMsg"></div>
       <div class="modal-actions">
         <button type="button" class="modal-cancel" onclick="closeModal('partnerModal')">Bekor qilish</button>
@@ -3528,6 +3545,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.featured': 'Eng mashhur sifatida belgilash',
       'field.partnerName': 'Kompaniya nomi',
       'field.partnerLogo': 'Logotip',
+      'field.partnerStroke': "Logotipga 2 px tashqi stroke qo'shish",
+      'field.partnerStrokeColor': 'Stroke rangini tanlang',
       'field.statValue': 'Raqam',
       'field.statSuffix': "Qo'shimcha belgi",
       'field.statLabel': 'Izoh (nomi)',
@@ -3921,6 +3940,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.featured': 'Отметить как популярный',
       'field.partnerName': 'Название компании',
       'field.partnerLogo': 'Логотип',
+      'field.partnerStroke': 'Добавить внешнюю обводку 2 px',
+      'field.partnerStrokeColor': 'Выберите цвет обводки',
       'field.statValue': 'Число',
       'field.statSuffix': 'Доп. символ',
       'field.statLabel': 'Подпись (название)',
@@ -4314,6 +4335,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.featured': 'Mark as most popular',
       'field.partnerName': 'Company name',
       'field.partnerLogo': 'Logo',
+      'field.partnerStroke': 'Add a 2 px outer stroke',
+      'field.partnerStrokeColor': 'Choose the stroke color',
       'field.statValue': 'Number',
       'field.statSuffix': 'Suffix',
       'field.statLabel': 'Label (name)',
@@ -5824,14 +5847,29 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   // HAMKORLAR
   // ══════════════════════════════════════════════════════════
   let partnersCache = [];
+  function partnerStrokeFilter(color) {
+    if (!/^#[0-9a-f]{6}$/i.test(color || '')) return '';
+    return 'drop-shadow(2px 0 0 ' + color + ') drop-shadow(-2px 0 0 ' + color + ') ' +
+      'drop-shadow(0 2px 0 ' + color + ') drop-shadow(0 -2px 0 ' + color + ')';
+  }
+
+  function updatePartnerStrokeUi() {
+    const enabled = document.getElementById('partnerStrokeEnabled').checked;
+    const color = document.getElementById('partnerStrokeColor').value;
+    document.getElementById('partnerStrokeColorWrap').hidden = !enabled;
+    const previewImg = document.querySelector('#partnerImgPreview img');
+    if (previewImg) previewImg.style.filter = enabled ? partnerStrokeFilter(color) : '';
+  }
+
   async function loadPartners() {
     try {
       const data = await apiFetch('/api/partners');
       partnersCache = data.partners;
       const list = document.getElementById('partnersList');
       list.innerHTML = partnersCache.length ? partnersCache.map(function (p) {
+        const strokeStyle = p.strokeColor ? 'filter:' + partnerStrokeFilter(p.strokeColor) + ';' : '';
         return '<div class="item-row">' +
-          '<img class="item-row__thumb" style="object-fit:contain;background:var(--panel-2, rgba(127,127,127,.08))" src="' + p.image + '" />' +
+          '<img class="item-row__thumb" style="object-fit:contain;background:var(--panel-2, rgba(127,127,127,.08));' + strokeStyle + '" src="' + p.image + '" />' +
           '<div class="item-row__body"><div class="item-row__title">' + esc(p.name) + '</div></div>' +
           '<div class="item-row__actions">' +
           '<button class="icon-btn" onclick="openPartnerForm(' + p.id + ')" title="' + T('item.edit') + '">✎</button>' +
@@ -5849,10 +5887,16 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     const preview = document.getElementById('partnerImgPreview');
     preview.innerHTML = existing && existing.image ? '<img src="' + existing.image + '" />' : T('image.none');
     preview.dataset.value = existing && existing.image ? existing.image : '';
+    document.getElementById('partnerStrokeEnabled').checked = Boolean(existing && existing.strokeColor);
+    document.getElementById('partnerStrokeColor').value = existing && existing.strokeColor ? existing.strokeColor : '#ffffff';
     document.getElementById('partnerImgFile').value = '';
     document.getElementById('partnerFormMsg').textContent = '';
+    updatePartnerStrokeUi();
     document.getElementById('partnerModal').classList.add('is-active');
   };
+
+  document.getElementById('partnerStrokeEnabled').addEventListener('change', updatePartnerStrokeUi);
+  document.getElementById('partnerStrokeColor').addEventListener('input', updatePartnerStrokeUi);
 
   document.getElementById('partnerImgFile').addEventListener('change', async function (e) {
     const file = e.target.files[0];
@@ -5861,6 +5905,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     const preview = document.getElementById('partnerImgPreview');
     preview.innerHTML = '<img src="' + base64 + '" />';
     preview.dataset.value = base64;
+    updatePartnerStrokeUi();
   });
 
   document.getElementById('partnerForm').addEventListener('submit', async function (e) {
@@ -5872,7 +5917,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     if (!image) { msg.textContent = T('partners.imageRequired'); msg.className = 'form-msg error'; return; }
     const body = {
       name: document.getElementById('partnerName').value,
-      image: image
+      image: image,
+      strokeColor: document.getElementById('partnerStrokeEnabled').checked
+        ? document.getElementById('partnerStrokeColor').value
+        : null
     };
     try {
       await apiFetch(id ? '/api/partners/' + id : '/api/partners', { method: id ? 'PUT' : 'POST', body: JSON.stringify(body) });

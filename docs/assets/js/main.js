@@ -165,7 +165,7 @@
     }
 
     function renderPartners(partners) {
-      var signature = JSON.stringify(partners.map(function (p) { return [p.id, p.name, p.image]; }));
+      var signature = JSON.stringify(partners.map(function (p) { return [p.id, p.name, p.image, p.strokeColor]; }));
       if (signature === renderedSignature) return;
       renderedSignature = signature;
       var count = partners.length;
@@ -181,8 +181,10 @@
 
       track.innerHTML = partners.map(function (p, i) {
         var a = (360 / count) * i;
+        var strokeColor = /^#[0-9a-f]{6}$/i.test(p.strokeColor || '') ? p.strokeColor : '';
+        var strokeAttrs = strokeColor ? ' class="has-logo-stroke" style="--logo-stroke:' + strokeColor + '"' : '';
         return '<div class="proof__carousel-item" style="transform:rotateY(' + a + 'deg) translateZ(' + radius + 'px)">' +
-          '<img src="' + p.image + '" alt="' + (p.name || '').replace(/"/g, '&quot;') + '" loading="lazy" decoding="async" />' +
+          '<img' + strokeAttrs + ' src="' + p.image + '" alt="' + (p.name || '').replace(/"/g, '&quot;') + '" loading="lazy" decoding="async" />' +
           '</div>';
       }).join('');
       autoRotate = count >= MIN_ROTATE_COUNT;

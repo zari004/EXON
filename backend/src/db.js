@@ -102,10 +102,12 @@ const init = async () => {
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       image TEXT NOT NULL,
+      stroke_color TEXT,
       sort_order INTEGER DEFAULT 0,
       created_at TIMESTAMP DEFAULT NOW()
     )
   `);
+  await pool.query(`ALTER TABLE partners ADD COLUMN IF NOT EXISTS stroke_color TEXT`);
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS social_links (
