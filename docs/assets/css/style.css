@@ -989,10 +989,15 @@ ol,ul{list-style:none}
 .tsec__link:hover{color:var(--green);border-color:var(--green);gap:10px}
 
 /* ── statistika qatori — admin panelda kiritilgan raqamlar, 0'dan animatsiya bilan ── */
+.tsec--stats{
+  padding:clamp(48px,7vh,82px) 0 clamp(28px,4vh,48px);
+  background:linear-gradient(180deg,transparent,rgba(11,209,108,.025));
+}
+.tsec--stats + #keyslar{padding-top:clamp(52px,7vh,84px)}
 .stats-row{
   display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(28px,4vw,52px);
-  padding:clamp(22px,3.4vw,36px) 0 clamp(30px,4.4vw,44px);margin-top:8px;
-  border-top:1px solid var(--line);
+  padding:clamp(30px,4vw,46px) 0;margin:0;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
 }
 .stat-item{text-align:center;min-width:0}
 .stat-item__value{

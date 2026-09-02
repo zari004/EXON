@@ -37,7 +37,7 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=52" />
+<link rel="stylesheet" href="assets/css/style.css?v=53" />
 <link rel="manifest" href="/manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -255,7 +255,15 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
   </div>
 </section>
 
-<!-- ══════════ KEYSLAR — statistik kartalar ══════════ -->
+<!-- ══════════ RAQAMLAR — keyslar bo'limidan alohida umumiy natijalar ══════════ -->
+<section class="tsec tsec--stats" aria-label="EXON raqamlarda">
+  <div class="tsec__inner">
+    <!-- statistika — admin panelda kiritilgan raqamlar, ko'rinishga kirganda 0'dan animatsiya bilan -->
+    <div class="stats-row reveal" id="statsRow" style="display:none"></div>
+  </div>
+</section>
+
+<!-- ══════════ KEYSLAR — keys kartalari ══════════ -->
 <section id="keyslar" class="tsec tsec--wash">
   <div class="tsec__inner">
     <div class="tsec__head reveal">
@@ -269,9 +277,6 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </div>
-
-    <!-- statistika — admin panelda kiritilgan raqamlar, ko'rinishga kirganda 0'dan animatsiya bilan -->
-    <div class="stats-row reveal" id="statsRow" style="display:none"></div>
 
     <div class="case-grid">
       <article class="case-card reveal" style="--rd:.05s">
