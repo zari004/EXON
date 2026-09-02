@@ -46,6 +46,7 @@
   add("Bog'lanish", 'Связаться', 'Contact');
   add('Aloqa uchun', 'Контакты', 'Contact us');
   add('Telefon raqam', 'Номер телефона', 'Phone number');
+  add('Ijtimoiy tarmoqlar', 'Социальные сети', 'Social networks');
   add('Footer menyusi', 'Меню в подвале', 'Footer navigation');
   add('Barcha huquqlar himoyalangan.', 'Все права защищены.', 'All rights reserved.');
   add('Loyixalar', 'Проекты', 'Projects');

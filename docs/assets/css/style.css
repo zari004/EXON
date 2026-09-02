@@ -163,14 +163,18 @@ ol,ul{list-style:none}
 .nav-contact__label{font-family:var(--font-mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--gray-dim)}
 .nav__menu .nav-contact__phone{
   padding:0;color:var(--white);font-size:19px;font-weight:650;letter-spacing:.01em;
+  display:flex;align-items:center;gap:8px;
 }
+.nav-contact__phone svg{width:20px;height:20px;flex:0 0 auto;color:var(--green-hi)}
 .nav__menu .nav-contact__phone::after,.nav__menu .nav-contact__cta::after,.nav__menu .social-icons--contact a::after{display:none}
 .nav__menu .nav-contact__cta{
   width:100%;min-height:40px;margin-top:3px;padding:0 14px;border-radius:999px;
   display:flex;align-items:center;justify-content:center;background:var(--green);
   color:var(--green-ink);font-size:13.5px;font-weight:650;
 }
-.social-icons--contact{margin:3px 0;justify-content:flex-start;gap:8px}
+.nav-contact__social-label,.site-footer__social-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--gray-dim)}
+.nav-contact__social-label{margin-top:5px}
+.social-icons--contact{margin:0 0 3px;justify-content:flex-start;gap:8px}
 .social-icons--contact .social-icon{width:36px;height:36px;padding:0}
 .social-icons--contact .social-icon img{width:26px;height:26px}
 
@@ -760,7 +764,8 @@ ol,ul{list-style:none}
 .site-footer__group nav a{font-size:14.5px;color:var(--gray);transition:color .2s var(--ease),transform .2s var(--ease)}
 .site-footer__group nav a:hover{color:var(--white);transform:translateX(3px)}
 .site-footer__contact{display:flex;flex-direction:column;align-items:flex-start}
-.site-footer__phone{margin:-3px 0 14px;color:var(--white);font-size:17px;font-weight:600;transition:color .2s var(--ease)}
+.site-footer__phone{margin:-3px 0 14px;color:var(--white);font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px;transition:color .2s var(--ease)}
+.site-footer__phone svg{width:19px;height:19px;flex:0 0 auto;color:var(--green-hi)}
 .site-footer__phone:hover{color:var(--green-hi)}
 .site-footer__cta{
   display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 18px;
@@ -768,7 +773,8 @@ ol,ul{list-style:none}
   transition:transform .2s var(--ease),box-shadow .2s var(--ease);
 }
 .site-footer__cta:hover{transform:translateY(-2px);box-shadow:0 9px 25px -8px rgba(var(--green-rgb),.65)}
-.social-icons--footer{margin-top:18px;justify-content:flex-start;gap:8px}
+.site-footer__social-label{margin-top:18px}
+.social-icons--footer{margin-top:8px;justify-content:flex-start;gap:8px}
 .social-icons--footer .social-icon{width:36px;height:36px;animation:none}
 .social-icons--footer .social-icon svg{width:16px;height:16px}
 .social-icons--footer .social-icon img{width:26px;height:26px}
