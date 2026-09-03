@@ -102,7 +102,7 @@
   add("To'liq marketpleys paketi", 'Полный пакет для маркетплейса', 'Complete marketplace package');
   add("Audit'dan boshlab, barqaror o'sishgacha — har bosqichni biz olamiz.", 'От аудита до стабильного роста — берём на себя каждый этап.', 'From audit to sustainable growth — we handle every stage.');
   add("Narxlarni ko'ring", 'Посмотреть тарифы', 'View pricing');
-  add("50+ do'konning natijalari", 'Результаты 50+ магазинов', 'Results from 50+ stores');
+  add("Ba'zi do'konlar natijalari", 'Результаты некоторых магазинов', 'Results from selected stores');
   add('Elektronika dan kosmetikagacha — 100 000+ buyurtmada tasdiqlangan.', 'От электроники до косметики — подтверждено на 100 000+ заказах.', 'From electronics to cosmetics — proven across 100,000+ orders.');
   add('Barcha keyslar', 'Все кейсы', 'All cases');
   add('📱 Elektronika', '📱 Электроника', '📱 Electronics');
