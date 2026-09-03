@@ -1292,6 +1292,7 @@ body{
 }
 .store-logo-pick:hover{border-color:var(--green-hi);color:var(--green-hi)}
 .store-logo-pick img{width:100%;height:100%;object-fit:cover}
+.store-logo-remove{width:32px;height:32px;padding:0;justify-content:center;flex-shrink:0}
 .store-add-cancel{
   flex-shrink:0;width:36px;height:36px;border-radius:8px;background:none;
   border:1px solid var(--line-2);color:var(--gray-dim);cursor:pointer;font-size:15px;
@@ -1690,6 +1691,15 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 .img-preview--icon{width:96px;height:96px}
 .img-preview--icon img{object-fit:contain;padding:10px}
 #partnerImgPreview img{object-fit:contain;padding:10px}
+.image-file-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.image-file-actions input[type=file]{min-width:0;max-width:100%}
+.image-remove-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:7px;
+  border:1px solid rgba(242,95,92,.45);background:rgba(242,95,92,.07);
+  color:#F2896F;font-size:12px;font-weight:600;cursor:pointer;
+}
+.image-remove-btn:hover{border-color:#F2896F;background:rgba(242,95,92,.13)}
+.image-remove-btn[hidden]{display:none}
 .partner-stroke-toggle{display:flex!important;align-items:center;gap:9px;cursor:pointer;color:var(--white)!important}
 .partner-stroke-toggle input{width:17px;height:17px;accent-color:var(--green);cursor:pointer}
 .partner-stroke-color{display:flex;align-items:center;gap:12px;margin-top:10px;padding:10px 12px;border:1px solid var(--line-2);border-radius:9px;background:var(--surface)}
@@ -2322,6 +2332,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       <button type="button" class="store-logo-pick" id="storeLogoPick" title="Logo tanlash">
         <span id="storeLogoPickIcon">🏬</span>
       </button>
+      <button type="button" class="image-remove-btn store-logo-remove" id="storeLogoRemoveBtn" aria-label="Logotipni o'chirish" title="Logotipni o'chirish" hidden>✕</button>
       <input type="file" id="storeLogoFile" accept="image/*" style="display:none" />
       <input type="text" id="storeNewNameInp" data-i18n-ph="stores.add.placeholder" placeholder="Yangi do'kon nomi..." maxlength="80" />
       <button class="store-add-btn" id="storeAddBtn" type="button" title="Qo'shish">
@@ -2513,6 +2524,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
             <div class="settings-row__control">
               <div class="settings-avatar" id="setAvatarPreview">—</div>
               <button type="button" class="settings-avatar-btn" id="setAvatarBtn" data-i18n="settings.profile.change">O'zgartirish</button>
+              <button type="button" class="settings-avatar-btn image-remove-btn" id="setAvatarRemoveBtn" data-i18n="image.remove" hidden>O'chirish</button>
               <input type="file" id="setAvatarFile" accept="image/*" style="display:none" />
             </div>
           </div>
@@ -2780,12 +2792,12 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       <div class="field">
         <label data-i18n="field.icon">Ikonka</label>
         <div class="img-preview img-preview--icon" id="caseIconPreview">Ikonka tanlanmagan</div>
-        <input type="file" id="caseIconFile" accept="image/*" />
+        <div class="image-file-actions"><input type="file" id="caseIconFile" accept="image/*" /><button type="button" class="image-remove-btn" id="caseIconRemoveBtn" data-i18n="image.remove" hidden>O'chirish</button></div>
       </div>
       <div class="field">
         <label data-i18n="field.image">Rasm</label>
         <div class="img-preview" id="caseImgPreview">Rasm tanlanmagan</div>
-        <input type="file" id="caseImgFile" accept="image/*" />
+        <div class="image-file-actions"><input type="file" id="caseImgFile" accept="image/*" /><button type="button" class="image-remove-btn" id="caseImgRemoveBtn" data-i18n="image.remove" hidden>O'chirish</button></div>
       </div>
       <div class="form-msg" id="caseFormMsg"></div>
       <div class="modal-actions">
@@ -2812,7 +2824,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       <div class="field">
         <label data-i18n="field.image">Rasm</label>
         <div class="img-preview" id="postImgPreview">Rasm tanlanmagan</div>
-        <input type="file" id="postImgFile" accept="image/*" />
+        <div class="image-file-actions"><input type="file" id="postImgFile" accept="image/*" /><button type="button" class="image-remove-btn" id="postImgRemoveBtn" data-i18n="image.remove" hidden>O'chirish</button></div>
       </div>
       <div class="form-msg" id="postFormMsg"></div>
       <div class="modal-actions">
@@ -2946,7 +2958,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       <div class="field">
         <label data-i18n="field.partnerLogo">Logotip</label>
         <div class="img-preview" id="partnerImgPreview" data-i18n="image.none">Rasm tanlanmagan</div>
-        <input type="file" id="partnerImgFile" accept="image/*" />
+        <div class="image-file-actions"><input type="file" id="partnerImgFile" accept="image/*" /><button type="button" class="image-remove-btn" id="partnerImgRemoveBtn" data-i18n="image.remove" hidden>O'chirish</button></div>
       </div>
       <div class="field">
         <label class="partner-stroke-toggle">
@@ -3516,6 +3528,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'item.edit': 'Tahrirlash',
       'item.delete': "O'chirish",
       'image.none': 'Rasm tanlanmagan',
+      'image.remove': "O'chirish",
       'icon.none': 'Ikonka tanlanmagan',
       'feature.placeholder': 'Xususiyat',
       'field.caseTag': 'Teg (masalan: 📱 Elektronika)',
@@ -3911,6 +3924,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'item.edit': 'Редактировать',
       'item.delete': 'Удалить',
       'image.none': 'Изображение не выбрано',
+      'image.remove': 'Удалить',
       'icon.none': 'Иконка не выбрана',
       'feature.placeholder': 'Характеристика',
       'field.caseTag': 'Тег (например: 📱 Электроника)',
@@ -4306,6 +4320,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'item.edit': 'Edit',
       'item.delete': 'Delete',
       'image.none': 'No image selected',
+      'image.remove': 'Remove',
       'icon.none': 'No icon selected',
       'feature.placeholder': 'Feature',
       'field.caseTag': 'Tag (for example: 📱 Electronics)',
@@ -5456,8 +5471,45 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     const preview = document.getElementById(previewId);
     preview.innerHTML = '<img src="' + base64 + '" />';
     preview.dataset.value = base64;
+    syncImageRemoveButton(previewId);
     return base64;
   }
+
+  // Rasm/ikonka maydonlarining barchasida mavjud faylni tozalash tugmasi.
+  // Tozalangan qiymat forma saqlanganda API'ga null (hamkor uchun bo'sh
+  // satr) sifatida yuboriladi va sayt eski rasmni boshqa ko'rsatmaydi.
+  const IMAGE_FIELD_CONFIG = [
+    { preview: 'caseIconPreview', input: 'caseIconFile', button: 'caseIconRemoveBtn', emptyKey: 'icon.none' },
+    { preview: 'caseImgPreview', input: 'caseImgFile', button: 'caseImgRemoveBtn', emptyKey: 'image.none' },
+    { preview: 'postImgPreview', input: 'postImgFile', button: 'postImgRemoveBtn', emptyKey: 'image.none' },
+    { preview: 'partnerImgPreview', input: 'partnerImgFile', button: 'partnerImgRemoveBtn', emptyKey: 'image.none' }
+  ];
+
+  function imageFieldConfig(previewId) {
+    return IMAGE_FIELD_CONFIG.find(function (item) { return item.preview === previewId; });
+  }
+
+  function syncImageRemoveButton(previewId) {
+    const config = imageFieldConfig(previewId);
+    if (!config) return;
+    const preview = document.getElementById(previewId);
+    document.getElementById(config.button).hidden = !preview.dataset.value;
+  }
+
+  function clearImageField(config) {
+    const preview = document.getElementById(config.preview);
+    preview.dataset.value = '';
+    preview.textContent = T(config.emptyKey);
+    document.getElementById(config.input).value = '';
+    syncImageRemoveButton(config.preview);
+    if (config.preview === 'partnerImgPreview') updatePartnerStrokeUi();
+  }
+
+  IMAGE_FIELD_CONFIG.forEach(function (config) {
+    document.getElementById(config.button).addEventListener('click', function () {
+      clearImageField(config);
+    });
+  });
 
   // ── Rasmni buferdan joylashtirish (Ctrl+V) — qaysi rasm maydoni
   // hozir ochiq/ko'rinib turgan bo'lsa, o'sha yerga qo'yiladi.
@@ -5474,6 +5526,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var storeBase64 = await fileToResizedBase64(file, 160);
       STORE_NEW_LOGO_B64 = storeBase64;
       document.getElementById('storeLogoPickIcon').outerHTML = '<img id="storeLogoPickIcon" src="' + storeBase64 + '" />';
+      syncStoreLogoRemoveButton();
     } else if (isVisible(document.getElementById('setAvatarBtn'))) {
       try {
         SET_AVATAR_B64 = await fileToResizedBase64(file, 256);
@@ -5599,9 +5652,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     const preview = document.getElementById('caseImgPreview');
     preview.innerHTML = existing && existing.image ? '<img src="' + existing.image + '" />' : T('image.none');
     preview.dataset.value = existing && existing.image ? existing.image : '';
+    syncImageRemoveButton('caseImgPreview');
     const iconPreview = document.getElementById('caseIconPreview');
     iconPreview.innerHTML = existing && existing.icon ? '<img src="' + existing.icon + '" />' : T('icon.none');
     iconPreview.dataset.value = existing && existing.icon ? existing.icon : '';
+    syncImageRemoveButton('caseIconPreview');
     document.getElementById('caseImgFile').value = '';
     document.getElementById('caseIconFile').value = '';
     document.getElementById('caseFormMsg').textContent = '';
@@ -5611,19 +5666,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   document.getElementById('caseImgFile').addEventListener('change', async function (e) {
     const file = e.target.files[0];
     if (!file) return;
-    const base64 = await fileToResizedBase64(file, 640);
-    const preview = document.getElementById('caseImgPreview');
-    preview.innerHTML = '<img src="' + base64 + '" />';
-    preview.dataset.value = base64;
+    await setImagePreview('caseImgPreview', file, 640);
   });
 
   document.getElementById('caseIconFile').addEventListener('change', async function (e) {
     const file = e.target.files[0];
     if (!file) return;
-    const base64 = await fileToResizedBase64(file, 160, 'png');
-    const preview = document.getElementById('caseIconPreview');
-    preview.innerHTML = '<img src="' + base64 + '" />';
-    preview.dataset.value = base64;
+    await setImagePreview('caseIconPreview', file, 160, 'png');
   });
 
   document.getElementById('caseForm').addEventListener('submit', async function (e) {
@@ -5688,6 +5737,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     const preview = document.getElementById('postImgPreview');
     preview.innerHTML = existing && existing.image ? '<img src="' + existing.image + '" />' : T('image.none');
     preview.dataset.value = existing && existing.image ? existing.image : '';
+    syncImageRemoveButton('postImgPreview');
     document.getElementById('postImgFile').value = '';
     document.getElementById('postFormMsg').textContent = '';
     document.getElementById('postModal').classList.add('is-active');
@@ -5696,10 +5746,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   document.getElementById('postImgFile').addEventListener('change', async function (e) {
     const file = e.target.files[0];
     if (!file) return;
-    const base64 = await fileToResizedBase64(file, 640);
-    const preview = document.getElementById('postImgPreview');
-    preview.innerHTML = '<img src="' + base64 + '" />';
-    preview.dataset.value = base64;
+    await setImagePreview('postImgPreview', file, 640);
   });
 
   document.getElementById('postForm').addEventListener('submit', async function (e) {
@@ -5869,7 +5916,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       list.innerHTML = partnersCache.length ? partnersCache.map(function (p) {
         const strokeStyle = p.strokeColor ? 'filter:' + partnerStrokeFilter(p.strokeColor) + ';' : '';
         return '<div class="item-row">' +
-          '<img class="item-row__thumb" style="object-fit:contain;background:var(--panel-2, rgba(127,127,127,.08));' + strokeStyle + '" src="' + p.image + '" />' +
+          (p.image ? '<img class="item-row__thumb" style="object-fit:contain;background:var(--panel-2, rgba(127,127,127,.08));' + strokeStyle + '" src="' + p.image + '" />' : '<div class="item-row__thumb">🏢</div>') +
           '<div class="item-row__body"><div class="item-row__title">' + esc(p.name) + '</div></div>' +
           '<div class="item-row__actions">' +
           '<button class="icon-btn" onclick="openPartnerForm(' + p.id + ')" title="' + T('item.edit') + '">✎</button>' +
@@ -5887,6 +5934,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     const preview = document.getElementById('partnerImgPreview');
     preview.innerHTML = existing && existing.image ? '<img src="' + existing.image + '" />' : T('image.none');
     preview.dataset.value = existing && existing.image ? existing.image : '';
+    syncImageRemoveButton('partnerImgPreview');
     document.getElementById('partnerStrokeEnabled').checked = Boolean(existing && existing.strokeColor);
     document.getElementById('partnerStrokeColor').value = existing && existing.strokeColor ? existing.strokeColor : '#ffffff';
     document.getElementById('partnerImgFile').value = '';
@@ -5901,10 +5949,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   document.getElementById('partnerImgFile').addEventListener('change', async function (e) {
     const file = e.target.files[0];
     if (!file) return;
-    const base64 = await fileToResizedBase64(file, 400, 'png');
-    const preview = document.getElementById('partnerImgPreview');
-    preview.innerHTML = '<img src="' + base64 + '" />';
-    preview.dataset.value = base64;
+    await setImagePreview('partnerImgPreview', file, 400, 'png');
     updatePartnerStrokeUi();
   });
 
@@ -5914,7 +5959,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     msg.textContent = ''; msg.className = 'form-msg';
     const id = document.getElementById('partnerId').value;
     const image = document.getElementById('partnerImgPreview').dataset.value || '';
-    if (!image) { msg.textContent = T('partners.imageRequired'); msg.className = 'form-msg error'; return; }
+    if (!image && !id) { msg.textContent = T('partners.imageRequired'); msg.className = 'form-msg error'; return; }
     const body = {
       name: document.getElementById('partnerName').value,
       image: image,
@@ -7484,12 +7529,17 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   var STORE_ICON_PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
   var STORE_ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
+  function syncStoreLogoRemoveButton() {
+    document.getElementById('storeLogoRemoveBtn').hidden = !STORE_NEW_LOGO_B64;
+  }
+
   function resetStoreAddForm() {
     STORE_EDIT_ID = null;
     STORE_NEW_LOGO_B64 = null;
     document.getElementById('storeNewNameInp').value = '';
     document.getElementById('storeLogoFile').value = '';
     document.getElementById('storeLogoPickIcon').outerHTML = '<span id="storeLogoPickIcon">🏬</span>';
+    syncStoreLogoRemoveButton();
     document.getElementById('storeAddBtn').innerHTML = STORE_ICON_PLUS;
     document.getElementById('storeEditCancelBtn').style.display = 'none';
   }
@@ -7555,6 +7605,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
           document.getElementById('storeLogoPickIcon').outerHTML = s.logo
             ? '<img id="storeLogoPickIcon" src="' + s.logo + '" />'
             : '<span id="storeLogoPickIcon">🏬</span>';
+          syncStoreLogoRemoveButton();
           document.getElementById('storeAddBtn').innerHTML = STORE_ICON_CHECK;
           document.getElementById('storeEditCancelBtn').style.display = '';
           document.getElementById('storeNewNameInp').focus();
@@ -7571,6 +7622,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     var base64 = await fileToResizedBase64(file, 160);
     STORE_NEW_LOGO_B64 = base64;
     document.getElementById('storeLogoPickIcon').outerHTML = '<img id="storeLogoPickIcon" src="' + base64 + '" />';
+    syncStoreLogoRemoveButton();
+  });
+  document.getElementById('storeLogoRemoveBtn').addEventListener('click', function () {
+    STORE_NEW_LOGO_B64 = null;
+    document.getElementById('storeLogoFile').value = '';
+    document.getElementById('storeLogoPickIcon').outerHTML = '<span id="storeLogoPickIcon">🏬</span>';
+    syncStoreLogoRemoveButton();
   });
   document.getElementById('storeEditCancelBtn').addEventListener('click', resetStoreAddForm);
   document.getElementById('storeAddBtn').addEventListener('click', async function () {
@@ -8350,6 +8408,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     } else {
       el.textContent = avaLetter(name || '?');
     }
+    document.getElementById('setAvatarRemoveBtn').hidden = !avatarUrl;
   }
 
   async function loadAccountSettings() {
@@ -8397,6 +8456,11 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       SET_AVATAR_B64 = await fileToResizedBase64(file, 256);
       setAvatarPreview(document.getElementById('setName').value, SET_AVATAR_B64);
     } catch (err) { customAlert(T('settings.avatar.error')); }
+  });
+  document.getElementById('setAvatarRemoveBtn').addEventListener('click', function () {
+    SET_AVATAR_B64 = null;
+    document.getElementById('setAvatarFile').value = '';
+    setAvatarPreview(document.getElementById('setName').value, null);
   });
 
   // ── Profilni saqlash ──

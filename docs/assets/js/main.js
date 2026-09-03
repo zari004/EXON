@@ -169,6 +169,13 @@
       if (signature === renderedSignature) return;
       renderedSignature = signature;
       var count = partners.length;
+      if (!count) {
+        track.innerHTML = '';
+        autoRotate = false;
+        stopAnimation();
+        section.style.display = 'none';
+        return;
+      }
       // To'liq 360 gradusga teng taqsimlanadi — shu bilan halqaning
       // "boshi" ham, "oxiri" ham bo'lmaydi, cheksiz aylanaveradi. Radius
       // qo'shni logotiplar orasida taxminan bir xil, yaqin bo'shliq
@@ -203,8 +210,8 @@
       })
         .then(function (r) { if (!r.ok) throw 0; return r.json(); })
         .then(function (data) {
-          var partners = (data && data.success && Array.isArray(data.partners)) ? data.partners : [];
-          if (partners.length) renderPartners(partners);
+          var partners = (data && data.success && Array.isArray(data.partners)) ? data.partners.filter(function (p) { return p && p.image; }) : [];
+          renderPartners(partners);
         })
         .catch(function () { /* Tezkor statik nusxa ekranda qoladi. */ })
         .then(function () { clearTimeout(timeout); });
@@ -216,7 +223,7 @@
     fetch('data/partners.json', { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw 0; return r.json(); })
       .then(function (data) {
-        var partners = (data && data.success && Array.isArray(data.partners)) ? data.partners : [];
+        var partners = (data && data.success && Array.isArray(data.partners)) ? data.partners.filter(function (p) { return p && p.image; }) : [];
         if (!partners.length) throw 0;
         renderPartners(partners);
       })
