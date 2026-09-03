@@ -23,6 +23,7 @@
             '<a href="keyslar.html">Keyslar</a>' +
             '<a href="narxlar.html">Narxlar</a>' +
             '<a href="jarayon.html">Jarayon</a>' +
+            '<a href="biz-haqimizda.html">Biz haqimizda</a>' +
             '<a href="blog.html">Blog</a>' +
           '</nav>' +
         '</div>' +

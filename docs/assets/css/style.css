@@ -719,6 +719,12 @@ ol,ul{list-style:none}
 .social-icons--nav .social-icon img{width:24px;height:24px}
 .social-icons--nav .social-icon:hover{animation:none}
 @media (min-width:881px) and (max-width:1120px){.social-icons--nav{display:none!important}}
+@media (min-width:881px) and (max-width:1120px){
+  .nav__inner{gap:14px}
+  .nav__menu{gap:14px}
+  .nav__menu a{font-size:13px}
+  .nav__right>.btn--pill{display:none}
+}
 @keyframes social-pop{
   0%{opacity:0;transform:translateY(14px) scale(.6)}
   60%{opacity:1;transform:translateY(-3px) scale(1.06)}
