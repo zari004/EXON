@@ -689,7 +689,7 @@ ol,ul{list-style:none}
    NAV — ijtimoiy tarmoq ikonkalari (admin panelda kiritiladi)
    ========================================================================== */
 .social-icons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-.social-icons--nav{display:flex!important;gap:8px;flex-wrap:nowrap;min-width:76px;min-height:34px;flex-shrink:0}
+.social-icons--nav{display:flex!important;gap:10px;flex-wrap:nowrap;min-width:126px;min-height:58px;flex-shrink:0}
 .social-icons--instant .social-icon{animation:none!important}
 .social-icon{
   width:42px;height:42px;border-radius:50%;flex-shrink:0;
@@ -710,11 +710,11 @@ ol,ul{list-style:none}
 .social-icon:active{transform:translateY(-1px) rotate(0deg) scale(.96)}
 /* Header'dagi kichikroq versiya — doimiy tepa-pastga "suzib" turadi + yashil porlash */
 .social-icons--nav .social-icon{
-  width:34px;height:34px;
+  width:58px;height:58px;
   animation:none;
 }
 .social-icons--nav .social-icon svg{width:16px;height:16px}
-.social-icons--nav .social-icon img{width:24px;height:24px}
+.social-icons--nav .social-icon img{width:46px;height:46px}
 .social-icons--nav .social-icon:hover{animation:none}
 @media (min-width:881px) and (max-width:1120px){.social-icons--nav{display:none!important}}
 @media (min-width:881px) and (max-width:1120px){
