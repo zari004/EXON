@@ -100,6 +100,9 @@ ol,ul{list-style:none}
 /* ==========================================================================
    NAV
    ========================================================================== */
+@view-transition{navigation:auto}
+.nav{view-transition-name:exon-header}
+::view-transition-old(exon-header),::view-transition-new(exon-header){animation:none;mix-blend-mode:normal}
 .nav{
   position:fixed;inset:0 0 auto 0;z-index:100;
   height:var(--nav-h);
