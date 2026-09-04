@@ -32,7 +32,7 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/css/style.css?v=59" />
+<link rel="stylesheet" href="assets/css/style.css?v=63" />
 <link rel="manifest" href="/manifest.json" />
 <link rel="icon" type="image/svg+xml" href="assets/img/favicon-target.svg" />
 <link rel="alternate icon" type="image/png" href="assets/img/favicon-target-32.png" />
@@ -357,9 +357,28 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
       <a href="jarayon.html">Jarayon</a>
       <a href="biz-haqimizda.html">Biz haqimizda</a>
       <a href="blog.html">Blog</a>
+          <div class="nav-contact" data-nav-contact>
+        <button class="nav-contact__trigger" type="button" aria-expanded="false">
+          <span>Aloqa uchun</span>
+          <svg viewBox="0 0 12 8" aria-hidden="true"><path d="m1 1 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="nav-contact__panel">
+          <span class="nav-contact__label">Telefon raqam</span>
+          <a class="nav-contact__phone" href="tel:+998781220134">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.2 3.5 9.5 8 7.7 9.8c1.1 2.4 3.1 4.4 5.5 5.5l1.8-1.8 4.5 2.3v2.7c0 1-1 2-2.1 2C9.7 20 4 14.3 3.5 6.6c0-1.1.9-2.1 2-2.1h1.7Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>+998 (78) 122-01-34</span>
+          </a>
+          <span class="nav-contact__social-label">Ijtimoiy tarmoqlar</span>
+          <div class="social-icons social-icons--contact" id="socialIconsContact"></div>
+          <a class="nav-contact__cta" href="konsultatsiya.html">Bepul konsultatsiya</a>
+        </div>
+      </div>
     </nav>
     <div class="nav__right">
-      <div class="social-icons social-icons--nav" id="socialIconsNav" style="display:none"></div>
+      <div class="social-icons social-icons--nav social-icons--instant" id="socialIconsNav">
+        <a class="social-icon social-icon--brand" href="https://www.instagram.com/exon.uz/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><img src="assets/img/social-instagram.png" width="24" height="24" alt="" aria-hidden="true" /></a>
+        <a class="social-icon social-icon--brand" href="https://t.me/exon_uzbekistan" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><img src="assets/img/social-telegram.png" width="24" height="24" alt="" aria-hidden="true" /></a>
+      </div>
       <button class="theme-toggle" type="button" aria-label="Mavzuni almashtirish">
         <svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2 12h2M20 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         <svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
@@ -368,10 +387,6 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
         <button class="lang__btn is-active" type="button" aria-pressed="true">UZ</button>
         <button class="lang__btn" type="button" aria-pressed="false">RU</button>
       </div>
-      <a class="btn btn--pill" href="index.html">
-        Bosh sahifa
-        <span class="btn__plus" aria-hidden="true">←</span>
-      </a>
       <button class="burger" id="burger" type="button" aria-label="Menyuni ochish" aria-expanded="false" aria-controls="navMenu">
         <span></span><span></span>
       </button>
@@ -431,7 +446,7 @@ src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1"
 </main>
 
 <script src="assets/js/api-base.js?v=3"></script>
-<script src="assets/js/social-footer.js?v=8"></script>
+<script src="assets/js/social-footer.js?v=12"></script>
 <script src="assets/js/pricing-visibility.js?v=1"></script>
 <script>
 // Nav scroll blur

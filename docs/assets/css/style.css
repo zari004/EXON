@@ -142,7 +142,7 @@ ol,ul{list-style:none}
 }
 .nav__menu a:hover{color:var(--white)}
 .nav__menu a:hover::after{transform:scaleX(1)}
-.nav-contact{position:relative;display:flex;align-items:center}
+.nav-contact{position:relative;display:flex;align-items:center;width:120px;height:34px;flex-shrink:0;overflow:hidden}
 .nav-contact__trigger{
   display:flex;align-items:center;gap:7px;padding:6px 0;
   border:0;background:none;color:var(--gray);font:inherit;font-size:14.5px;
@@ -178,7 +178,7 @@ ol,ul{list-style:none}
 .social-icons--contact .social-icon{width:36px;height:36px;padding:0}
 .social-icons--contact .social-icon img{width:26px;height:26px}
 
-.nav__right{display:flex;align-items:center;gap:12px}
+.nav__right{display:flex;align-items:center;gap:12px;flex-shrink:0}
 
 .pwa-install{
   display:none;align-items:center;gap:6px;
@@ -689,7 +689,8 @@ ol,ul{list-style:none}
    NAV — ijtimoiy tarmoq ikonkalari (admin panelda kiritiladi)
    ========================================================================== */
 .social-icons{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-.social-icons--nav{gap:8px;flex-wrap:nowrap}
+.social-icons--nav{display:flex!important;gap:8px;flex-wrap:nowrap;min-width:76px;min-height:34px;flex-shrink:0}
+.social-icons--instant .social-icon{animation:none!important}
 .social-icon{
   width:42px;height:42px;border-radius:50%;flex-shrink:0;
   display:grid;place-items:center;
@@ -710,10 +711,7 @@ ol,ul{list-style:none}
 /* Header'dagi kichikroq versiya — doimiy tepa-pastga "suzib" turadi + yashil porlash */
 .social-icons--nav .social-icon{
   width:34px;height:34px;
-  animation:social-pop .55s cubic-bezier(.34,1.56,.64,1) both,
-            social-bob 1.7s ease-in-out infinite,
-            social-breathe 2.6s ease-in-out infinite;
-  animation-delay:calc(var(--i,0) * .07s), calc(.6s + var(--i,0) * .28s), calc(.6s + var(--i,0) * .28s);
+  animation:none;
 }
 .social-icons--nav .social-icon svg{width:16px;height:16px}
 .social-icons--nav .social-icon img{width:24px;height:24px}

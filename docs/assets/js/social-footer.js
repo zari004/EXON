@@ -1,9 +1,8 @@
-/* EXON — umumiy footer va ijtimoiy tarmoq ikonkalari. Admin panelda
-   ("Ijtimoiy tarmoqlar") kiritilgan havolalarni /api/social'dan olib,
-   nav va footer'da ko'rsatadi. Hech qanday havola kiritilmagan bo'lsa yoki API ishlamasa
-   — ikonkalar qatori butunlay yashirin qoladi, hech qanday noto'g'ri/
-   o'ylab topilgan havola ko'rsatilmaydi. */
+/* EXON — umumiy footer va ijtimoiy tarmoq ikonkalari.
+   Nav-contact HTML endi har bir sahifada oldindan mavjud.
+   Faqat event listenerlar va social ikonka render qilinadi. */
 (function () {
+  /* ─── Footer yaratish ─── */
   var footer = document.createElement('footer');
   footer.className = 'site-footer';
   footer.innerHTML =
@@ -35,7 +34,7 @@
           '</a>' +
           '<a class="site-footer__cta" href="konsultatsiya.html">Bepul konsultatsiya</a>' +
           '<span class="site-footer__social-label">Ijtimoiy tarmoqlar</span>' +
-          '<div class="social-icons social-icons--footer" id="socialIconsFooter" style="display:none"></div>' +
+          '<div class="social-icons social-icons--footer" id="socialIconsFooter"></div>' +
         '</div>' +
       '</div>' +
       '<div class="site-footer__bottom">' +
@@ -50,50 +49,38 @@
   var year = footer.querySelector('[data-footer-year]');
   if (year) year.textContent = String(new Date().getFullYear());
 
-  var navMenu = document.querySelector('.nav__menu');
+  /* ─── Nav-contact: faqat event listenerlar (HTML oldindan mavjud) ─── */
   var contactSocial = null;
+  var navMenu = document.querySelector('.nav__menu');
   if (navMenu) {
-    var contact = document.createElement('div');
-    contact.className = 'nav-contact';
-    contact.innerHTML =
-      '<button class="nav-contact__trigger" type="button" aria-expanded="false">' +
-        '<span>Aloqa uchun</span>' +
-        '<svg viewBox="0 0 12 8" aria-hidden="true"><path d="m1 1 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
-      '</button>' +
-      '<div class="nav-contact__panel">' +
-        '<span class="nav-contact__label">Telefon raqam</span>' +
-        '<a class="nav-contact__phone" href="tel:+998781220134">' +
-          '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.2 3.5 9.5 8 7.7 9.8c1.1 2.4 3.1 4.4 5.5 5.5l1.8-1.8 4.5 2.3v2.7c0 1-1 2-2.1 2C9.7 20 4 14.3 3.5 6.6c0-1.1.9-2.1 2-2.1h1.7Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
-          '<span>+998 (78) 122-01-34</span>' +
-        '</a>' +
-        '<span class="nav-contact__social-label">Ijtimoiy tarmoqlar</span>' +
-        '<div class="social-icons social-icons--contact" id="socialIconsContact" style="display:none"></div>' +
-        '<a class="nav-contact__cta" href="konsultatsiya.html">Bepul konsultatsiya</a>' +
-      '</div>';
-    navMenu.appendChild(contact);
-    contactSocial = contact.querySelector('#socialIconsContact');
-
-    var contactTrigger = contact.querySelector('.nav-contact__trigger');
-    contactTrigger.addEventListener('click', function () {
-      var open = !contact.classList.contains('is-open');
-      contact.classList.toggle('is-open', open);
-      contactTrigger.setAttribute('aria-expanded', String(open));
-    });
-    document.addEventListener('click', function (event) {
-      if (contact.contains(event.target)) return;
-      contact.classList.remove('is-open');
-      contactTrigger.setAttribute('aria-expanded', 'false');
-    });
-    document.addEventListener('keydown', function (event) {
-      if (event.key !== 'Escape' || !contact.classList.contains('is-open')) return;
-      contact.classList.remove('is-open');
-      contactTrigger.setAttribute('aria-expanded', 'false');
-      contactTrigger.focus();
-    });
+    var contact = navMenu.querySelector('[data-nav-contact]');
+    if (contact) {
+      contactSocial = contact.querySelector('#socialIconsContact');
+      var contactTrigger = contact.querySelector('.nav-contact__trigger');
+      if (contactTrigger) {
+        contactTrigger.addEventListener('click', function () {
+          var open = !contact.classList.contains('is-open');
+          contact.classList.toggle('is-open', open);
+          contactTrigger.setAttribute('aria-expanded', String(open));
+        });
+        document.addEventListener('click', function (event) {
+          if (contact.contains(event.target)) return;
+          contact.classList.remove('is-open');
+          contactTrigger.setAttribute('aria-expanded', 'false');
+        });
+        document.addEventListener('keydown', function (event) {
+          if (event.key !== 'Escape' || !contact.classList.contains('is-open')) return;
+          contact.classList.remove('is-open');
+          contactTrigger.setAttribute('aria-expanded', 'false');
+          contactTrigger.focus();
+        });
+      }
+    }
   }
 
+  /* ─── Social ikonkalar ─── */
   var iconsRows = [document.getElementById('socialIconsNav'), document.getElementById('socialIconsFooter'), contactSocial].filter(Boolean);
-  if (!window.EXON_API_BASE) return;
+  if (!window.EXON_API_BASE || !iconsRows.length) return;
 
   var ICONS = {
     instagram: '<path d="M12 2c2.7 0 3.1 0 4.1.1 1.1.1 1.8.2 2.5.5.7.3 1.2.6 1.8 1.2.6.6.9 1.1 1.2 1.8.3.7.4 1.4.5 2.5.1 1 .1 1.4.1 4.1s0 3.1-.1 4.1c-.1 1.1-.2 1.8-.5 2.5-.3.7-.6 1.2-1.2 1.8-.6.6-1.1.9-1.8 1.2-.7.3-1.4.4-2.5.5-1 .1-1.4.1-4.1.1s-3.1 0-4.1-.1c-1.1-.1-1.8-.2-2.5-.5-.7-.3-1.2-.6-1.8-1.2-.6-.6-.9-1.1-1.2-1.8-.3-.7-.4-1.4-.5-2.5C2 15.1 2 14.7 2 12s0-3.1.1-4.1c.1-1.1.2-1.8.5-2.5.3-.7.6-1.2 1.2-1.8.6-.6 1.1-.9 1.8-1.2.7-.3 1.4-.4 2.5-.5C8.9 2 9.3 2 12 2Zm0 1.8c-2.7 0-3 0-4 .1-.9 0-1.5.2-1.8.3-.5.2-.8.4-1.1.7-.3.3-.5.6-.7 1.1-.1.3-.3.9-.3 1.8-.1 1-.1 1.3-.1 4s0 3 .1 4c0 .9.2 1.5.3 1.8.2.5.4.8.7 1.1.3.3.6.5 1.1.7.3.1.9.3 1.8.3 1 .1 1.3.1 4 .1s3 0 4-.1c.9 0 1.5-.2 1.8-.3.5-.2.8-.4 1.1-.7.3-.3.5-.6.7-1.1.1-.3.3-.9.3-1.8.1-1 .1-1.3.1-4s0-3-.1-4c0-.9-.2-1.5-.3-1.8-.2-.5-.4-.8-.7-1.1a2.9 2.9 0 0 0-1.1-.7c-.3-.1-.9-.3-1.8-.3-1-.1-1.3-.1-4-.1Zm0 3.5a4.7 4.7 0 1 1 0 9.4 4.7 4.7 0 0 1 0-9.4Zm0 1.8a2.9 2.9 0 1 0 0 5.8 2.9 2.9 0 0 0 0-5.8Zm5-2a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0Z"/>',
@@ -113,31 +100,64 @@
 
   function esc(s) { return String(s || '').replace(/[<>&"]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]; }); }
 
-  function renderLinks(links) {
-    var html = links.map(function (l, i) {
-      var icon = ICONS[l.platform] || FALLBACK_ICON;
-      var label = LABELS[l.platform] || l.platform;
-      var brandImage = BRAND_IMAGES[l.platform];
-      var media = brandImage
-        ? '<img src="' + brandImage + '" alt="" aria-hidden="true" />'
-        : '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' + icon + '</svg>';
-      return '<a class="social-icon' + (brandImage ? ' social-icon--brand' : '') + '" href="' + esc(l.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(label) + '" style="--i:' + i + '">' +
-        media +
-        '</a>';
-    }).join('');
+  function renderLinks(links, skipAnimation) {
     iconsRows.forEach(function (row) {
+      if (skipAnimation) row.classList.add('social-icons--instant');
+      var visibleLinks = row.classList.contains('social-icons--nav') ? links.slice(0, 2) : links;
+      var existing = Array.prototype.slice.call(row.querySelectorAll(':scope > .social-icon'));
+      var sameNavIcons = row.classList.contains('social-icons--nav') &&
+        existing.length === visibleLinks.length &&
+        existing.every(function (item, i) {
+          return (item.getAttribute('aria-label') || '').toLowerCase() === visibleLinks[i].platform;
+        });
+      if (sameNavIcons) {
+        existing.forEach(function (item, i) { item.href = visibleLinks[i].url; });
+        return;
+      }
+      var html = visibleLinks.map(function (l, i) {
+        var icon = ICONS[l.platform] || FALLBACK_ICON;
+        var label = LABELS[l.platform] || l.platform;
+        var brandImage = BRAND_IMAGES[l.platform];
+        var media = brandImage
+          ? '<img src="' + brandImage + '" alt="" aria-hidden="true" />'
+          : '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' + icon + '</svg>';
+        return '<a class="social-icon' + (brandImage ? ' social-icon--brand' : '') + '" href="' + esc(l.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(label) + '" style="--i:' + i + '">' + media + '</a>';
+      }).join('');
       row.innerHTML = html;
-      row.style.display = 'flex';
     });
+    setCache(links);
   }
 
-  // Avval statik nusxadan (tez, Render'ni kutmaydi), topilmasa jonli API'dan
+  /* ─── localStorage cache ─── */
+  var CACHE_KEY = 'exon_social_links';
+  var CACHE_TTL = 30 * 60 * 1000;
+  function getCached() {
+    try {
+      var raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      var obj = JSON.parse(raw);
+      if (Date.now() - obj.ts > CACHE_TTL) return null;
+      return obj.links;
+    } catch (e) { return null; }
+  }
+  function setCache(links) {
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), links: links })); } catch (e) { /* quota */ }
+  }
+
+  /* Cache'da mavjud bo'lsa — darhol render */
+  var cached = getCached();
+  if (cached && cached.length) {
+    renderLinks(cached, true);
+    return;
+  }
+
+  /* Birinchi marta — statik JSON yoki API'dan */
   fetch('data/social.json', { cache: 'no-store' })
     .then(function (r) { if (!r.ok) throw 0; return r.json(); })
     .then(function (data) {
       var links = (data && data.success && Array.isArray(data.links)) ? data.links : [];
       if (!links.length) throw 0;
-      renderLinks(links);
+      renderLinks(links, false);
     })
     .catch(function () {
       fetch(window.EXON_API_BASE + '/api/social')
@@ -145,8 +165,8 @@
         .then(function (data) {
           var links = (data && data.success && Array.isArray(data.links)) ? data.links : [];
           if (!links.length) return;
-          renderLinks(links);
+          renderLinks(links, false);
         })
-        .catch(function () { /* API ishlamasa yoki havola kiritilmagan bo'lsa — ikonkalar yashirin qoladi */ });
+        .catch(function () {});
     });
 })();
