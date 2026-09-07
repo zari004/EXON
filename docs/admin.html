@@ -5521,7 +5521,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     } else if (document.getElementById('postModal').classList.contains('is-active')) {
       await setImagePreview('postImgPreview', file, 640);
     } else if (document.getElementById('partnerModal').classList.contains('is-active')) {
-      await setImagePreview('partnerImgPreview', file, 400, 'png');
+      await setImagePreview('partnerImgPreview', file, 800, 'png');
     } else if (isVisible(document.getElementById('storeLogoPick'))) {
       var storeBase64 = await fileToResizedBase64(file, 160);
       STORE_NEW_LOGO_B64 = storeBase64;
@@ -5949,7 +5949,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   document.getElementById('partnerImgFile').addEventListener('change', async function (e) {
     const file = e.target.files[0];
     if (!file) return;
-    await setImagePreview('partnerImgPreview', file, 400, 'png');
+    await setImagePreview('partnerImgPreview', file, 800, 'png');
     updatePartnerStrokeUi();
   });
 

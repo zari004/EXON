@@ -181,8 +181,8 @@
       // qo'shni logotiplar orasida taxminan bir xil, yaqin bo'shliq
       // qolishi uchun hisoblanadi — shu sabab ko'proq logotip qo'shilgan
       // sayin halqa o'zi tabiiy ravishda kengayib boradi.
-      var itemWidth = 170;
-      var gap = 40;
+      var itemWidth = 240;
+      var gap = 56;
       var radius = count > 1 ? Math.round((itemWidth + gap) / (2 * Math.sin(Math.PI / count))) : 0;
       radius = Math.max(radius, 160);
 
