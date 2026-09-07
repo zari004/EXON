@@ -79,7 +79,10 @@
     // logotiplar soni qanday bo'lishidan qat'i nazar ishlaydi.
     var MIN_ROTATE_COUNT = 6;
     var AUTO_DEG_PER_SEC = 360 / 45; // "45 soniyada bir aylanish" — sekin, xotirjam harakat
-    var DRAG_SENSITIVITY = 0.35; // piksel siljish -> gradus
+    // Oldingi doimiy qiymat katta radiusda logolarni kursordan bir necha
+    // baravar tezroq yurgizardi. Bu qiymat render paytida radiusga qarab
+    // hisoblanadi: old tomondagi logo taxminan kursor masofasiga teng yuradi.
+    var dragDegreesPerPixel = 0.2;
 
     var angle = 0;
     var autoRotate = false;
@@ -137,7 +140,7 @@
     });
     window.addEventListener('pointermove', function (e) {
       if (!dragging) return;
-      angle = dragStartAngle + (e.clientX - dragStartX) * DRAG_SENSITIVITY;
+      angle = dragStartAngle + (e.clientX - dragStartX) * dragDegreesPerPixel;
       applyTransform();
     });
     function endDrag() {
@@ -181,10 +184,11 @@
       // qo'shni logotiplar orasida taxminan bir xil, yaqin bo'shliq
       // qolishi uchun hisoblanadi — shu sabab ko'proq logotip qo'shilgan
       // sayin halqa o'zi tabiiy ravishda kengayib boradi.
-      var itemWidth = 240;
-      var gap = 56;
+      var itemWidth = 200;
+      var gap = 48;
       var radius = count > 1 ? Math.round((itemWidth + gap) / (2 * Math.sin(Math.PI / count))) : 0;
       radius = Math.max(radius, 160);
+      dragDegreesPerPixel = 180 / (Math.PI * radius);
 
       track.innerHTML = partners.map(function (p, i) {
         var a = (360 / count) * i;

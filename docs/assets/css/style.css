@@ -561,8 +561,8 @@ ol,ul{list-style:none}
    qo'lda ham burashi mumkin. Faqat kamida 6 ta logotip bo'lsa avtomatik
    aylanadi (main.js), lekin sudrab boshqarish son qat'i nazar ishlaydi. */
 .proof__carousel{
-  width:100%;max-width:var(--wrap);height:230px;
-  perspective:2800px;perspective-origin:50% 50%;
+  width:100%;max-width:var(--wrap);height:200px;
+  perspective:2600px;perspective-origin:50% 50%;
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;
   cursor:grab;touch-action:pan-y;user-select:none;
@@ -575,12 +575,12 @@ ol,ul{list-style:none}
 }
 .proof__carousel-item{
   position:absolute;top:0;left:0;
-  width:240px;height:112px;margin:-56px 0 0 -120px;
+  width:200px;height:92px;margin:-46px 0 0 -100px;
   display:flex;align-items:center;justify-content:center;
   backface-visibility:hidden;
 }
 .proof__carousel-item img{
-  display:block;max-width:100%;max-height:84px;object-fit:contain;
+  display:block;max-width:100%;max-height:68px;object-fit:contain;
   image-rendering:auto;
   transition:filter .25s var(--ease),transform .25s var(--ease);
   pointer-events:none;
@@ -614,10 +614,10 @@ ol,ul{list-style:none}
     transform:none!important;transform-style:flat;will-change:auto;
   }
   .proof__carousel-item{
-    position:static;width:190px;height:96px;margin:0;flex:0 0 190px;
+    position:static;width:160px;height:82px;margin:0;flex:0 0 160px;
     transform:none!important;backface-visibility:visible;scroll-snap-align:center;
   }
-  .proof__carousel-item img{max-height:76px}
+  .proof__carousel-item img{max-height:60px}
 }
 
 /* ==========================================================================
