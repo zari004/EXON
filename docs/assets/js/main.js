@@ -95,6 +95,7 @@
     var frameId = 0;
     var dragStartX = 0;
     var dragStartAngle = 0;
+    var dragPointerId = null;
     var lastFrameTime = null;
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var compactMq = window.matchMedia && window.matchMedia('(max-width: 880px)');
@@ -134,26 +135,35 @@
     carousel.addEventListener('mouseleave', function () { hovering = false; syncAnimation(); });
 
     carousel.addEventListener('pointerdown', function (e) {
-      if (isCompact()) return;
+      if (isCompact() || (e.pointerType === 'mouse' && e.button !== 0)) return;
       dragging = true;
+      dragPointerId = e.pointerId;
+      if (carousel.setPointerCapture) carousel.setPointerCapture(e.pointerId);
       carousel.classList.add('is-dragging');
       dragStartX = e.clientX;
       dragStartAngle = angle;
       syncAnimation();
     });
-    window.addEventListener('pointermove', function (e) {
-      if (!dragging) return;
+    carousel.addEventListener('pointermove', function (e) {
+      if (!dragging || (dragPointerId !== null && e.pointerId !== dragPointerId)) return;
+      if (e.cancelable) e.preventDefault();
       angle = dragStartAngle + (e.clientX - dragStartX) * dragDegreesPerPixel;
       applyTransform();
     });
     function endDrag() {
       if (!dragging) return;
       dragging = false;
+      var pointerId = dragPointerId;
+      dragPointerId = null;
+      if (pointerId !== null && carousel.hasPointerCapture && carousel.hasPointerCapture(pointerId)) {
+        carousel.releasePointerCapture(pointerId);
+      }
       carousel.classList.remove('is-dragging');
       syncAnimation();
     }
-    window.addEventListener('pointerup', endDrag);
-    window.addEventListener('pointercancel', endDrag);
+    carousel.addEventListener('pointerup', endDrag);
+    carousel.addEventListener('pointercancel', endDrag);
+    carousel.addEventListener('lostpointercapture', endDrag);
 
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
@@ -191,7 +201,12 @@
       var gap = 48;
       var radius = count > 1 ? Math.round((itemWidth + gap) / (2 * Math.sin(Math.PI / count))) : 0;
       radius = Math.max(radius, 160);
-      dragDegreesPerPixel = 180 / (Math.PI * radius);
+      var perspective = parseFloat(window.getComputedStyle(carousel).perspective) || 2600;
+      // Perspektiva old tomondagi logoni kattalashtiradi. Shu koeffitsiyent
+      // 3D proyeksiyadagi kattalashishni ham qoplaydi va sudrashni 1:1 qiladi.
+      dragDegreesPerPixel = perspective > radius
+        ? (perspective - radius) * 180 / (Math.PI * perspective * radius)
+        : 180 / (Math.PI * radius);
       autoDegreesPerSec = AUTO_PIXELS_PER_SEC * dragDegreesPerPixel;
 
       track.innerHTML = partners.map(function (p, i) {

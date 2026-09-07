@@ -1,4 +1,4 @@
-const CACHE = 'exon-v77';
+const CACHE = 'exon-v78';
 const STATIC = [
   '/',
   '/index.html',
