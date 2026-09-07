@@ -1025,8 +1025,9 @@ ol,ul{list-style:none}
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease) var(--rd,0s),transform .7s var(--ease) var(--rd,0s)}
 .reveal.is-in{opacity:1;transform:translateY(0)}
 
-/* ── XIZMATLAR: ikonkali 4 ustunli grid ── */
-.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+/* ── XIZMATLAR: ikonkali 5 ustunli grid ── */
+.svc-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px}
+@media (max-width:1180px){.svc-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .svc-card{
   padding:28px 24px;border-radius:20px;
   background:var(--surface);border:1px solid var(--line);

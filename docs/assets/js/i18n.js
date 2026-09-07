@@ -92,6 +92,8 @@
   add('Jarayonlar, hisobotlar va jamoa ishini yagona tizimga birlashtiramiz.', 'Объединяем процессы, отчёты и работу команды в единую систему.', 'We unite processes, reporting and teamwork in one system.');
   // "Xizmatlar" bo'limidagi kartalar — bular hali ham eski nomlarda
   add('Audit', 'Аудит', 'Audit');
+  add('Strategiyalar', 'Стратегии', 'Strategies');
+  add("Bozor va raqobatchilar tahlili asosida maqsad, budjet va aniq o'sish rejasini tuzamiz.", 'На основе анализа рынка и конкурентов определяем цели, бюджет и конкретный план роста.', 'We define goals, a budget and a clear growth plan based on market and competitor analysis.');
   add("Do'koningizni 12 nuqta bo'yicha tekshiramiz va o'sish nuqtalarini topamiz.", 'Проверим магазин по 12 пунктам и найдём точки роста.', 'We audit your store across 12 points and identify growth opportunities.');
   add('Upakovka', 'Упаковка', 'Packaging');
   add('Kartochka, professional foto, infografika va ikki tilda SEO matn.', 'Карточка, профессиональные фото, инфографика и SEO-текст на двух языках.', 'Product cards, professional photos, infographics and bilingual SEO copy.');
