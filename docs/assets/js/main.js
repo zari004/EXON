@@ -78,7 +78,10 @@
     // aylanadi (admin panelda ham shu son ko'rsatiladi). Qo'lda sudrash esa
     // logotiplar soni qanday bo'lishidan qat'i nazar ishlaydi.
     var MIN_ROTATE_COUNT = 6;
-    var AUTO_DEG_PER_SEC = 360 / 45; // "45 soniyada bir aylanish" — sekin, xotirjam harakat
+    // Burchak tezligi emas, ekrandagi chiziqli tezlik bir xil qoladi. Aks
+    // holda ko'p logo sabab radius kattalashganda karusel juda tez ko'rinadi.
+    var AUTO_PIXELS_PER_SEC = 24;
+    var autoDegreesPerSec = 360 / 60;
     // Oldingi doimiy qiymat katta radiusda logolarni kursordan bir necha
     // baravar tezroq yurgizardi. Bu qiymat render paytida radiusga qarab
     // hisoblanadi: old tomondagi logo taxminan kursor masofasiga teng yuradi.
@@ -121,7 +124,7 @@
     function tick(now) {
       frameId = 0;
       if (!canAnimate()) { lastFrameTime = null; return; }
-      if (lastFrameTime !== null) angle += AUTO_DEG_PER_SEC * (now - lastFrameTime) / 1000;
+      if (lastFrameTime !== null) angle += autoDegreesPerSec * (now - lastFrameTime) / 1000;
       applyTransform();
       lastFrameTime = now;
       frameId = requestAnimationFrame(tick);
@@ -189,6 +192,7 @@
       var radius = count > 1 ? Math.round((itemWidth + gap) / (2 * Math.sin(Math.PI / count))) : 0;
       radius = Math.max(radius, 160);
       dragDegreesPerPixel = 180 / (Math.PI * radius);
+      autoDegreesPerSec = AUTO_PIXELS_PER_SEC * dragDegreesPerPixel;
 
       track.innerHTML = partners.map(function (p, i) {
         var a = (360 / count) * i;
