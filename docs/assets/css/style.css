@@ -142,7 +142,7 @@ ol,ul{list-style:none}
 }
 .nav__menu a:hover{color:var(--white)}
 .nav__menu a:hover::after{transform:scaleX(1)}
-.nav-contact{position:relative;display:flex;align-items:center;width:120px;height:34px;flex-shrink:0;overflow:hidden}
+.nav-contact{position:relative;display:flex;align-items:center;width:120px;height:34px;flex-shrink:0;overflow:visible}
 .nav-contact__trigger{
   display:flex;align-items:center;gap:7px;padding:6px 0;
   border:0;background:none;color:var(--gray);font:inherit;font-size:14.5px;
@@ -885,7 +885,8 @@ ol,ul{list-style:none}
   .nav__menu.is-open{transform:translateY(0);opacity:1;visibility:visible}
   .nav__menu a{padding:13px 0;font-size:16px;color:var(--white);border-bottom:1px solid var(--line)}
   .nav__menu a::after{display:none}
-  .nav-contact{display:block;width:100%}
+  .nav-contact{display:block;width:100%;height:auto}
+  .nav__menu{max-height:calc(100dvh - var(--nav-h));overflow-y:auto;overscroll-behavior:contain}
   .nav-contact__trigger{
     width:100%;justify-content:space-between;padding:13px 0;
     border-bottom:1px solid var(--line);font-size:16px;color:var(--white);
