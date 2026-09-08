@@ -601,24 +601,6 @@ ol,ul{list-style:none}
     drop-shadow(0 0 8px rgba(11,209,108,.6));
 }
 
-@media (max-width:880px){
-  .proof__carousel{
-    height:auto;min-height:100px;padding:4px 18px 12px;
-    justify-content:flex-start;overflow-x:auto;perspective:none;
-    cursor:default;touch-action:pan-x;scroll-snap-type:x proximity;
-    scrollbar-width:none;
-  }
-  .proof__carousel::-webkit-scrollbar{display:none}
-  .proof__carousel-track{
-    position:static;width:max-content;height:auto;display:flex;gap:24px;
-    transform:none!important;transform-style:flat;will-change:auto;
-  }
-  .proof__carousel-item{
-    position:static;width:160px;height:82px;margin:0;flex:0 0 160px;
-    transform:none!important;backface-visibility:visible;scroll-snap-align:center;
-  }
-  .proof__carousel-item img{max-height:60px}
-}
 
 /* ==========================================================================
    BEPUL KONSULTATSIYA
@@ -709,14 +691,15 @@ ol,ul{list-style:none}
   transform:translateY(-4px) rotate(-8deg) scale(1.08);
 }
 .social-icon:active{transform:translateY(-1px) rotate(0deg) scale(.96)}
-/* Header'dagi kichikroq versiya — doimiy tepa-pastga "suzib" turadi + yashil porlash */
+/* Header'dagi versiya — "meni bos" degandek yumshoq, sekin pulslab turadi */
 .social-icons--nav .social-icon{
   width:58px;height:58px;
-  animation:none;
+  animation:social-pulse 2.4s ease-in-out infinite!important;
 }
+.social-icons--nav .social-icon:nth-child(2){animation-delay:.3s}
 .social-icons--nav .social-icon svg{width:16px;height:16px}
 .social-icons--nav .social-icon img{width:46px;height:46px}
-.social-icons--nav .social-icon:hover{animation:none}
+.social-icons--nav .social-icon:hover{animation:none!important}
 @media (min-width:881px) and (max-width:1120px){.social-icons--nav{display:none!important}}
 @media (min-width:881px) and (max-width:1120px){
   .nav__inner{gap:14px}
@@ -729,13 +712,9 @@ ol,ul{list-style:none}
   60%{opacity:1;transform:translateY(-3px) scale(1.06)}
   100%{opacity:1;transform:translateY(0) scale(1)}
 }
-@keyframes social-bob{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-5px)}
-}
-@keyframes social-breathe{
-  0%,100%{box-shadow:0 0 0 0 rgba(var(--green-rgb),.45)}
-  50%{box-shadow:0 0 0 6px rgba(var(--green-rgb),0)}
+@keyframes social-pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.12)}
 }
 @media (max-width:880px){
   .social-icons--nav{display:none!important}

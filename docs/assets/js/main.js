@@ -98,16 +98,14 @@
     var dragPointerId = null;
     var lastFrameTime = null;
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var compactMq = window.matchMedia && window.matchMedia('(max-width: 880px)');
     var renderedSignature = '';
 
-    function isCompact() { return compactMq && compactMq.matches; }
     function applyTransform() {
-      track.style.transform = isCompact() ? '' : 'rotateY(' + angle + 'deg)';
+      track.style.transform = 'rotateY(' + angle + 'deg)';
     }
 
     function canAnimate() {
-      return autoRotate && !reduceMotion && !isCompact() && sectionVisible &&
+      return autoRotate && !reduceMotion && sectionVisible &&
         !document.hidden && !dragging && !hovering;
     }
 
@@ -135,7 +133,7 @@
     carousel.addEventListener('mouseleave', function () { hovering = false; syncAnimation(); });
 
     carousel.addEventListener('pointerdown', function (e) {
-      if (isCompact() || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
       dragging = true;
       dragPointerId = e.pointerId;
       if (carousel.setPointerCapture) carousel.setPointerCapture(e.pointerId);
@@ -174,11 +172,6 @@
       sectionVisible = true;
     }
     document.addEventListener('visibilitychange', syncAnimation);
-    if (compactMq) {
-      var onBreakpointChange = function () { applyTransform(); syncAnimation(); };
-      if (compactMq.addEventListener) compactMq.addEventListener('change', onBreakpointChange);
-      else compactMq.addListener(onBreakpointChange);
-    }
 
     function renderPartners(partners) {
       var signature = JSON.stringify(partners.map(function (p) { return [p.id, p.name, p.image, p.strokeColor]; }));
