@@ -204,7 +204,7 @@
   add("50+ DO'KON", '50+ МАГАЗИНОВ', '50+ STORES');
   add('Keyslarimiz', 'Наши кейсы', 'Our Cases');
   add("Elektronika dan kosmetikagacha — hamma nishada tajriba. 100 000+ buyurtmada ko'paytirish.", 'Опыт во всех нишах — от электроники до косметики. Рост на 100 000+ заказах.', 'Experience across every niche, from electronics to cosmetics. Growth proven on 100,000+ orders.');
-  add('Sizning hikoyangizni boshlang', 'Начните свою историю', 'Start your success story');
+  add('Oldin boshlaganlar allaqachon yutmoqda. Bugun boshlaganlar esa hali ularga yetib olish imkoniga ega.', 'Те, кто начал раньше, уже выигрывают. У тех, кто начинает сегодня, ещё есть шанс их догнать.', 'Those who started earlier are already winning. Those who start today still have a chance to catch up.');
   add('Bepul audit — 12 nuqtali tahlil. Keyingi qadam uchun plan 3 kunda.', 'Бесплатный аудит по 12 пунктам. План следующего шага за 3 дня.', 'Free 12-point audit. Get your next-step plan in 3 days.');
   add('Narxlar — EXON Xizmatlar va Paketlar', 'Тарифы — услуги и пакеты EXON', 'Pricing — EXON Services and Packages');
   add('SHAFFOF NARX', 'ПРОЗРАЧНЫЕ ЦЕНЫ', 'TRANSPARENT PRICING');
