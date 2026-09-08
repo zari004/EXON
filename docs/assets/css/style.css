@@ -202,11 +202,11 @@ ol,ul{list-style:none}
 .lang__trigger{
   min-width:86px;height:38px;padding:0 11px;border-radius:10px;
   display:flex;align-items:center;justify-content:center;gap:8px;
-  border:1px solid var(--line-2);background:var(--surface);color:var(--white);
+  border:0;background:var(--surface);color:var(--white);
   font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;
-  transition:border-color .2s var(--ease),background .2s var(--ease);
+  transition:background .2s var(--ease);
 }
-.lang__trigger:hover,.lang.is-open .lang__trigger{border-color:rgba(var(--green-rgb),.5);background:var(--surface-2)}
+.lang__trigger:hover,.lang.is-open .lang__trigger{background:var(--surface-2)}
 .lang__trigger svg{width:10px;height:7px;margin-left:1px;transition:transform .2s var(--ease)}
 .lang.is-open .lang__trigger svg{transform:rotate(180deg)}
 .lang__flag,.lang__menu .lang__btn::before{
