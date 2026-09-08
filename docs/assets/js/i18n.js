@@ -417,6 +417,13 @@
   add("Jarayonlar tartib, qoida va kelishilgan ko'rsatkichlar orqali ishlaydi.", 'Процессы работают через порядок, правила и согласованные показатели.', 'Processes run through order, rules and agreed metrics.');
   add('Sifat', 'Качество', 'Quality');
   add('Muddat yoki yuklama oshsa ham EXON standarti pasaymaydi.', 'Стандарт EXON не снижается даже при росте сроков или нагрузки.', 'The EXON standard does not drop when deadlines or workloads rise.');
+  add('Mijozlar fikri', 'Отзывы клиентов', 'Client feedback');
+  add('Natijalarimiz mijozlar tilidan.', 'Наши результаты — словами клиентов.', "Our results, in clients' words.");
+  add('«Professional kompaniya. Savdolar sezilarli darajada oshdi.»', '«Профессиональная компания. Продажи заметно выросли.»', '"A professional company. Sales grew noticeably."');
+  add('«Professional jamoa. Ishonch. Ekspertiza.»', '«Профессиональная команда. Доверие. Экспертиза.»', '"A professional team. Trust. Expertise."');
+  add("«O'zim qila oladigan ishni EXON yanada yaxshi va to'liq amalga oshiradi.»", '«То, что я мог бы сделать сам, EXON делает лучше и полнее.»', '"What I could do myself, EXON does better and more fully."');
+  add('«Professionallar ishi.»', '«Работа профессионалов.»', '"The work of professionals."');
+  add("«Natija. Tartib. Fokusim bo'shadi.»", '«Результат. Порядок. Мой фокус освобождается.»', '"Results. Order. It frees up my focus."');
   add('Rejalarimiz', 'Наши планы', 'Our plans');
   add("Ko'proq xizmat emas, kuchliroq tizim qurish.", 'Не больше услуг, а более сильная система.', 'Not more services, but a stronger system.');
   add('Boshqaruv standartini chuqurlashtirish', 'Углублять стандарт управления', 'Deepen the management standard');
