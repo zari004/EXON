@@ -13,6 +13,19 @@
   function add(uz, ru, en) { DICT[uz] = { ru: ru, en: en }; }
 
   /* Umumiy navigatsiya */
+  add("JAMOA TARKIBI", "СОСТАВ КОМАНДЫ", "OUR TEAM");
+  add("Loyihangiz ustida kimlar ishlaydi?", "Кто работает над вашим проектом?", "Who works on your project?");
+  add("Har bir mutaxassis o'z yo'nalishiga mas'ul. Jamoa esa yagona reja va umumiy maqsad asosida ishlaydi.", "Каждый специалист отвечает за своё направление. Команда работает по единому плану ради общей цели.", "Each specialist owns their area of work. The team follows one plan toward a shared goal.");
+  add("Marketolog", "Маркетолог", "Marketer");
+  add("Bozor va auditoriyani o'rganadi, marketing strategiyasi va reklama rejasini ishlab chiqadi.", "Изучает рынок и аудиторию, разрабатывает маркетинговую стратегию и рекламный план.", "Researches the market and audience, develops the marketing strategy and advertising plan.");
+  add("PR menejer", "PR-менеджер", "PR manager");
+  add("Brendning tanilishi va obro'si ustida ishlaydi, tashqi kommunikatsiya va hamkorliklarni muvofiqlashtiradi.", "Работает над узнаваемостью и репутацией бренда, координирует внешние коммуникации и партнёрства.", "Builds brand awareness and reputation, coordinates external communications and partnerships.");
+  add("Akkaunt menejer", "Аккаунт-менеджер", "Account manager");
+  add("Siz bilan doimiy aloqada bo'ladi, vazifalar, muddatlar va jamoa ishini muvofiqlashtiradi.", "Поддерживает связь с вами, координирует задачи, сроки и работу команды.", "Stays in touch with you and coordinates tasks, deadlines and the team's work.");
+  add("Analitik", "Аналитик", "Analyst");
+  add("Sotuv, xarajat va reklama natijalarini tahlil qiladi, o'sish imkoniyatlarini raqamlar bilan aniqlaydi.", "Анализирует продажи, расходы и результаты рекламы, находит возможности роста на основе данных.", "Analyzes sales, costs and advertising results to identify data-backed growth opportunities.");
+  add("Dizayner", "Дизайнер", "Designer");
+  add("Mahsulot kartochkalari, infografika va reklama vizuallarini brend uslubiga mos tayyorlaydi.", "Создаёт карточки товаров, инфографику и рекламные материалы в стиле бренда.", "Creates product cards, infographics and advertising visuals in the brand's style.");
   add("Asosiy kontentga o'tish", 'Перейти к основному содержанию', 'Skip to main content');
   add("Forma maydoniga o'tish", 'Перейти к форме', 'Skip to the form');
   add("Blog maqolalariga o'tish", 'Перейти к статьям блога', 'Skip to blog articles');
