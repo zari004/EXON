@@ -21,7 +21,7 @@ fbq('track', 'PageView');
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=4291431417787119&ev=PageView&noscript=1" /></noscript>
 <!-- End Meta Pixel Code -->
 <script src="assets/js/theme.js?v=3"></script>
-<script src="assets/js/i18n.js?v=15" defer></script>
+<script src="assets/js/i18n.js?v=19" defer></script>
 <title>Biz haqimizda — EXON marketpleys ekspertlari</title>
 <meta name="description" content="EXON — Uzum va Yandex Marketda strategiya, tizim va boshqaruv orqali brendlarni o'stiradigan professional jamoa." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -53,15 +53,20 @@ fbq('track', 'PageView');
 .market-proof__text{margin-top:18px;color:var(--white);font-size:15px;line-height:1.55}
 .market-proof__source{display:inline-block;margin-top:22px;color:var(--gray-dim);font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;border-bottom:1px solid var(--line-2)}
 .about-section{padding:clamp(72px,10vw,124px) 0;border-bottom:1px solid var(--line)}
+.about-stats-section{padding:clamp(48px,7vw,80px) 0}
+.about-stats-section .stats-row{border-top:0;padding-top:6px;margin-top:0}
 .section-head{display:grid;grid-template-columns:minmax(220px,.55fr) minmax(0,1fr);gap:clamp(36px,8vw,110px);align-items:start;margin-bottom:clamp(44px,6vw,74px)}
 .section-title{font-size:clamp(2rem,4.3vw,4rem);line-height:1.02;letter-spacing:-.035em;max-width:780px}
 .section-copy{color:var(--gray);font-size:clamp(16px,1.7vw,19px);line-height:1.68;max-width:720px}
 .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.roles-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(192px,1fr));gap:14px}
 .team-card,.benefit-card,.value-card{padding:clamp(24px,3vw,34px);background:rgba(var(--surface-rgb),.66);border:1px solid var(--line-2);border-radius:14px;transition:transform .24s var(--ease),border-color .24s var(--ease)}
 .team-card:hover,.benefit-card:hover,.value-card:hover{transform:translateY(-4px);border-color:rgba(var(--green-rgb),.5)}
 .card-num{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--green);margin-bottom:34px}
+.role-card .card-num{margin-bottom:16px}
 .card-title{font-size:19px;font-weight:600;line-height:1.25;margin-bottom:10px}
 .card-text{font-size:14px;color:var(--gray);line-height:1.58}
+.value-card .svc-card__icon,.role-card .svc-card__icon{margin-bottom:20px}
 .philosophy{padding:clamp(64px,9vw,108px) 0;background:linear-gradient(110deg,rgba(var(--green-rgb),.12),transparent 62%)}
 .philosophy__text{max-width:1050px;font-size:clamp(2.1rem,5.1vw,5rem);font-weight:600;line-height:1.08;letter-spacing:-.035em}
 .philosophy__text span{color:var(--green-hi)}
@@ -172,6 +177,13 @@ fbq('track', 'PageView');
     </div>
   </section>
 
+  <section class="about-section about-stats-section" aria-label="Raqamlarda EXON">
+    <div class="about-wrap">
+      <div class="about-kicker">Raqamlarda EXON</div>
+      <div class="stats-row" id="statsRow" style="display:none"></div>
+    </div>
+  </section>
+
   <section class="about-section">
     <div class="about-wrap">
       <div class="section-head">
@@ -186,6 +198,50 @@ fbq('track', 'PageView');
         <article class="team-card"><div class="card-num">02</div><h3 class="card-title">Kartochka va kontent</h3><p class="card-text">Mahsulotni tushunarli, ishonchli va sotuvga tayyor ko'rinishga olib kelamiz.</p></article>
         <article class="team-card"><div class="card-num">03</div><h3 class="card-title">Reklama va analitika</h3><p class="card-text">Trafikni shunchaki oshirmaymiz — xarajat, konversiya va foydani birga kuzatamiz.</p></article>
         <article class="team-card"><div class="card-num">04</div><h3 class="card-title">Operatsion boshqaruv</h3><p class="card-text">Narx, qoldiq, logistika va kundalik vazifalarni tartibli tizimda boshqaramiz.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-section" aria-labelledby="team-roles-title">
+    <div class="about-wrap">
+      <div class="section-head">
+        <div class="about-kicker">Jamoa tarkibi</div>
+        <div>
+          <h2 class="section-title" id="team-roles-title">Loyihangiz ustida kimlar ishlaydi?</h2>
+          <p class="section-copy">Har bir mutaxassis o'z yo'nalishiga mas'ul. Jamoa esa yagona reja va umumiy maqsad asosida ishlaydi.</p>
+        </div>
+      </div>
+      <div class="roles-grid">
+        <article class="team-card role-card">
+          <div class="svc-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="M20 20l-4.8-4.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div class="card-num">01</div>
+          <h3 class="card-title">Marketolog</h3>
+          <p class="card-text">Bozor va auditoriyani o'rganadi, marketing strategiyasi va reklama rejasini ishlab chiqadi.</p>
+        </article>
+        <article class="team-card role-card">
+          <div class="svc-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 15V9a2 2 0 0 1 2-2h2l6-4v18l-6-4H6a2 2 0 0 1-2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M18.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div class="card-num">02</div>
+          <h3 class="card-title">PR menejer</h3>
+          <p class="card-text">Brendning tanilishi va obro'si ustida ishlaydi, tashqi kommunikatsiya va hamkorliklarni muvofiqlashtiradi.</p>
+        </article>
+        <article class="team-card role-card">
+          <div class="svc-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="7.5" r="4" stroke="currentColor" stroke-width="1.8"/></svg></div>
+          <div class="card-num">03</div>
+          <h3 class="card-title">Akkaunt menejer</h3>
+          <p class="card-text">Siz bilan doimiy aloqada bo'ladi, vazifalar, muddatlar va jamoa ishini muvofiqlashtiradi.</p>
+        </article>
+        <article class="team-card role-card">
+          <div class="svc-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20V11M10 20V6M16 20v-7M22 20H2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="card-num">04</div>
+          <h3 class="card-title">Analitik</h3>
+          <p class="card-text">Sotuv, xarajat va reklama natijalarini tahlil qiladi, o'sish imkoniyatlarini raqamlar bilan aniqlaydi.</p>
+        </article>
+        <article class="team-card role-card">
+          <div class="svc-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M15.5 4.5 19.5 8.5 8 20H4v-4L15.5 4.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+          <div class="card-num">05</div>
+          <h3 class="card-title">Dizayner</h3>
+          <p class="card-text">Mahsulot kartochkalari, infografika va reklama vizuallarini brend uslubiga mos tayyorlaydi.</p>
+        </article>
       </div>
     </div>
   </section>
@@ -235,10 +291,22 @@ fbq('track', 'PageView');
         <h2 class="section-title">Natija ishonchdan, ishonch esa standartdan boshlanadi.</h2>
       </div>
       <div class="values-grid">
-        <article class="value-card"><div class="card-num">01</div><h3 class="card-title">Mas'uliyat</h3><p class="card-text">Ishning mezoni — bajarilgan vazifa emas, o'lchanadigan natija.</p></article>
-        <article class="value-card"><div class="card-num">02</div><h3 class="card-title">Halollik</h3><p class="card-text">Muammoni yashirmaymiz. Uni tez ko'rsatamiz, tushuntiramiz va hal qilamiz.</p></article>
-        <article class="value-card"><div class="card-num">03</div><h3 class="card-title">Intizom</h3><p class="card-text">Jarayonlar tartib, qoida va kelishilgan ko'rsatkichlar orqali ishlaydi.</p></article>
-        <article class="value-card"><div class="card-num">04</div><h3 class="card-title">Sifat</h3><p class="card-text">Muddat yoki yuklama oshsa ham EXON standarti pasaymaydi.</p></article>
+        <article class="value-card">
+          <div class="svc-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6l7-3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="card-num">01</div><h3 class="card-title">Mas'uliyat</h3><p class="card-text">Ishning mezoni — bajarilgan vazifa emas, o'lchanadigan natija.</p>
+        </article>
+        <article class="value-card">
+          <div class="svc-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.8"/></svg></div>
+          <div class="card-num">02</div><h3 class="card-title">Halollik</h3><p class="card-text">Muammoni yashirmaymiz. Uni tez ko'rsatamiz, tushuntiramiz va hal qilamiz.</p>
+        </article>
+        <article class="value-card">
+          <div class="svc-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="card-num">03</div><h3 class="card-title">Intizom</h3><p class="card-text">Jarayonlar tartib, qoida va kelishilgan ko'rsatkichlar orqali ishlaydi.</p>
+        </article>
+        <article class="value-card">
+          <div class="svc-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3.5 14.5 9l6 .9-4.3 4.2 1 6-5.2-2.7L7 20.1l1-6-4.3-4.2 6-.9L12 3.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+          <div class="card-num">04</div><h3 class="card-title">Sifat</h3><p class="card-text">Muddat yoki yuklama oshsa ham EXON standarti pasaymaydi.</p>
+        </article>
       </div>
     </div>
   </section>
@@ -277,6 +345,78 @@ fbq('track', 'PageView');
 <script src="assets/js/api-base.js?v=3"></script>
 <script src="assets/js/social-footer.js?v=12"></script>
 <script src="assets/js/pricing-visibility.js?v=1"></script>
+<script>
+/* Raqamlarda EXON — admin paneldagi statistikani (homepage bilan bir xil
+   manba) 0'dan hisoblab ko'rsatish. API/statik fayl bo'sh bo'lsa qator
+   butunlay yashirin qoladi. */
+(function () {
+  var row = document.getElementById('statsRow');
+  if (!row || !window.EXON_API_BASE) return;
+
+  function esc(s) { return String(s || '').replace(/[<>&"]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]; }); }
+
+  function animateValue(el, target, duration) {
+    var startTime = null;
+    function step(now) {
+      if (startTime === null) startTime = now;
+      var progress = Math.min((now - startTime) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(target * eased).toLocaleString('en-US');
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target.toLocaleString('en-US');
+    }
+    requestAnimationFrame(step);
+  }
+
+  var started = false;
+  var statsIo = null;
+  function startCountUp() {
+    if (started) return;
+    started = true;
+    row.querySelectorAll('.stat-item__num').forEach(function (el) {
+      animateValue(el, Number(el.dataset.target) || 0, 1600);
+    });
+  }
+
+  function renderStats(stats) {
+    row.innerHTML = stats.map(function (s) {
+      return '<div class="stat-item">' +
+        '<div class="stat-item__value"><span class="stat-item__num" data-target="' + Number(s.value) + '">0</span>' + esc(s.suffix) + '</div>' +
+        '<div class="stat-item__label">' + esc(s.label) + '</div>' +
+        '</div>';
+    }).join('');
+    row.style.display = '';
+
+    if ('IntersectionObserver' in window) {
+      statsIo = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) { startCountUp(); statsIo.disconnect(); }
+        });
+      }, { threshold: .3 });
+      statsIo.observe(row);
+    } else {
+      startCountUp();
+    }
+  }
+
+  fetch('data/stats.json', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    .then(function (data) {
+      var stats = (data && data.success && Array.isArray(data.stats)) ? data.stats : [];
+      if (!stats.length) throw 0;
+      renderStats(stats);
+    })
+    .catch(function () {
+      fetch(window.EXON_API_BASE + '/api/stats', { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function (data) {
+          var stats = (data && data.success && Array.isArray(data.stats)) ? data.stats : [];
+          if (stats.length) renderStats(stats);
+        })
+        .catch(function () { /* API ishlamasa qator yashirin qoladi */ });
+    });
+})();
+</script>
 <script>
 (function(){
   const nav=document.getElementById('nav');

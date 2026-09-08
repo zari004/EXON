@@ -401,6 +401,8 @@
   add("O'SISH", 'РОСТ', 'GROWTH');
   add('Tayyor tizim ustiga masshtab', 'Масштабирование на готовой системе', 'Scale on top of a working system');
   add('Avval jarayonni barqaror qilamiz, keyin ishlayotgan yechimlarni xavfsiz kengaytiramiz.', 'Сначала стабилизируем процесс, затем безопасно масштабируем работающие решения.', 'First we stabilize the process, then safely scale what works.');
+  add('Raqamlarda EXON', 'EXON в цифрах', 'EXON in numbers');
+  add('Jamoa tarkibi', 'Состав команды', 'Team composition');
   add('Ishlash modeli', 'Модель работы', 'How we work');
   add("Har bir loyiha besh bosqichli tizimdan o'tadi.", 'Каждый проект проходит через систему из пяти этапов.', 'Every project follows a five-stage system.');
   add("Tasodifiy harakatlar o'rniga ketma-ketlik: avval tushunamiz, keyin ishga tushiramiz, boshqaramiz, tizimlashtiramiz va shundan so'ng masshtablaymiz.", 'Вместо случайных действий — последовательность: сначала разбираемся, затем запускаем, управляем, систематизируем и только после этого масштабируем.', 'Instead of random actions, we follow a sequence: understand, launch, manage, systemize and only then scale.');
