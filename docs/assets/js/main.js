@@ -190,13 +190,19 @@
       // qo'shni logotiplar orasida taxminan bir xil, yaqin bo'shliq
       // qolishi uchun hisoblanadi — shu sabab ko'proq logotip qo'shilgan
       // sayin halqa o'zi tabiiy ravishda kengayib boradi.
-      var itemWidth = 200;
-      var gap = 48;
+      var isNarrow = window.innerWidth < 640;
+      var itemWidth = isNarrow ? 150 : 260;
+      var gap = isNarrow ? 34 : 56;
       var radius = count > 1 ? Math.round((itemWidth + gap) / (2 * Math.sin(Math.PI / count))) : 0;
-      radius = Math.max(radius, 160);
-      var perspective = parseFloat(window.getComputedStyle(carousel).perspective) || 2600;
-      // Perspektiva old tomondagi logoni kattalashtiradi. Shu koeffitsiyent
-      // 3D proyeksiyadagi kattalashishni ham qoplaydi va sudrashni 1:1 qiladi.
+      radius = Math.max(radius, isNarrow ? 110 : 160);
+      // Perspektiva radiusga mutanosib hisoblanadi — shu bilan old tomondagi
+      // logo doim bir xil nisbatda kattalashib ko'rinadi (hamkorlar soni
+      // ko'payib, halqa kengaygan sayin front-logo cheksiz kattalashib
+      // ketmaydi va tor ekranlarda tashqariga chiqib qolmaydi).
+      var FRONT_SCALE = 1.32;
+      var perspective = Math.round(radius * FRONT_SCALE / (FRONT_SCALE - 1));
+      carousel.style.perspective = perspective + 'px';
+      // Shu koeffitsiyent 3D proyeksiyadagi kattalashishni ham qoplaydi va sudrashni 1:1 qiladi.
       dragDegreesPerPixel = perspective > radius
         ? (perspective - radius) * 180 / (Math.PI * perspective * radius)
         : 180 / (Math.PI * radius);
