@@ -4,15 +4,18 @@
   var STORAGE_KEY = 'exon_theme';
   var theme = 'dark';
 
-  try {
-    // Tizim mavzusidan qat'i nazar sayt har doim qorong'i mavzuda ochiladi —
-    // foydalanuvchi tugma orqali yorug' mavzuni tanlasa, o'sha keyingi
-    // tashriflarda saqlanadi.
-    var saved = localStorage.getItem(STORAGE_KEY);
-    if (saved === 'dark' || saved === 'light') {
-      theme = saved;
-    }
-  } catch (e) {}
+  // Yorug' mavzu faqat buni ochiq ruxsat bergan sahifalarda (admin panel)
+  // ishlaydi — ommaviy saytda yorug' mavzu umuman bo'lmasligi kerak, hatto
+  // localStorage bir xil domenda admin panel bilan ulashilgan bo'lsa ham.
+  var allowLight = window.EXON_ALLOW_LIGHT === true;
+  if (allowLight) {
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (saved === 'dark' || saved === 'light') {
+        theme = saved;
+      }
+    } catch (e) {}
+  }
 
   document.documentElement.setAttribute('data-theme', theme);
 
