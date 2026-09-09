@@ -5,11 +5,12 @@
   var theme = 'dark';
 
   try {
+    // Tizim mavzusidan qat'i nazar sayt har doim qorong'i mavzuda ochiladi —
+    // foydalanuvchi tugma orqali yorug' mavzuni tanlasa, o'sha keyingi
+    // tashriflarda saqlanadi.
     var saved = localStorage.getItem(STORAGE_KEY);
     if (saved === 'dark' || saved === 'light') {
       theme = saved;
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-      theme = 'light';
     }
   } catch (e) {}
 
