@@ -80,7 +80,7 @@
     var MIN_ROTATE_COUNT = 6;
     // Burchak tezligi emas, ekrandagi chiziqli tezlik bir xil qoladi. Aks
     // holda ko'p logo sabab radius kattalashganda karusel juda tez ko'rinadi.
-    var AUTO_PIXELS_PER_SEC = 42;
+    var AUTO_PIXELS_PER_SEC = 72;
     var autoDegreesPerSec = 360 / 60;
     // Oldingi doimiy qiymat katta radiusda logolarni kursordan bir necha
     // baravar tezroq yurgizardi. Bu qiymat render paytida radiusga qarab
@@ -191,10 +191,10 @@
       // qolishi uchun hisoblanadi — shu sabab ko'proq logotip qo'shilgan
       // sayin halqa o'zi tabiiy ravishda kengayib boradi.
       var isNarrow = window.innerWidth < 640;
-      var itemWidth = isNarrow ? 150 : 260;
-      var gap = isNarrow ? 34 : 56;
+      var itemWidth = isNarrow ? 110 : 170;
+      var gap = isNarrow ? 22 : 38;
       var radius = count > 1 ? Math.round((itemWidth + gap) / (2 * Math.sin(Math.PI / count))) : 0;
-      radius = Math.max(radius, isNarrow ? 110 : 160);
+      radius = Math.max(radius, isNarrow ? 85 : 120);
       // Perspektiva radiusga mutanosib hisoblanadi — shu bilan old tomondagi
       // logo doim bir xil nisbatda kattalashib ko'rinadi (hamkorlar soni
       // ko'payib, halqa kengaygan sayin front-logo cheksiz kattalashib
