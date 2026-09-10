@@ -18,7 +18,7 @@ const toPublic = (row) => ({
 // GET /api/posts — ommaviy
 router.get('/', async (req, res) => {
   try {
-    const rows = await db.all('SELECT * FROM posts ORDER BY sort_order ASC, id ASC');
+    const rows = await db.all('SELECT * FROM posts ORDER BY sort_order DESC, id DESC');
     res.json({ success: true, posts: rows.map(toPublic) });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to fetch posts' });
