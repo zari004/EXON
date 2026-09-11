@@ -78,10 +78,10 @@
     // aylanadi (admin panelda ham shu son ko'rsatiladi). Qo'lda sudrash esa
     // logotiplar soni qanday bo'lishidan qat'i nazar ishlaydi.
     var MIN_ROTATE_COUNT = 6;
-    // Burchak tezligi emas, ekrandagi chiziqli tezlik bir xil qoladi. Aks
-    // holda ko'p logo sabab radius kattalashganda karusel juda tez ko'rinadi.
-    var AUTO_PIXELS_PER_SEC = 72;
-    var autoDegreesPerSec = 360 / 60;
+    // Qat'iy burchak tezligi — hamkorlar soni/radius qancha bo'lishidan
+    // qat'i nazar aylanish doim bir xil (to'liq bir aylanish ~22 soniya).
+    var AUTO_DEG_PER_SEC = 16;
+    var autoDegreesPerSec = AUTO_DEG_PER_SEC;
     // Oldingi doimiy qiymat katta radiusda logolarni kursordan bir necha
     // baravar tezroq yurgizardi. Bu qiymat render paytida radiusga qarab
     // hisoblanadi: old tomondagi logo taxminan kursor masofasiga teng yuradi.
@@ -201,14 +201,18 @@
       // saqlanadi, lekin front-logo hech qachon tashqariga chiqib ketmaydi.
       var radius = count > 1 ? Math.round((itemWidth + gap) / (2 * Math.sin(Math.PI / count))) : 0;
       radius = Math.max(radius, isNarrow ? 85 : 120);
-      var FRONT_SCALE = 2;
+      var FRONT_SCALE = 1.55;
       var perspective = Math.round(radius * FRONT_SCALE / (FRONT_SCALE - 1));
       carousel.style.perspective = perspective + 'px';
-      // Shu koeffitsiyent 3D proyeksiyadagi kattalashishni ham qoplaydi va sudrashni 1:1 qiladi.
+      // Sudrash tezligi radius/perspektivaga qarab (3D proyeksiyani qoplab,
+      // kursor bilan 1:1 harakat qilishi uchun) hisoblanadi.
       dragDegreesPerPixel = perspective > radius
         ? (perspective - radius) * 180 / (Math.PI * perspective * radius)
         : 180 / (Math.PI * radius);
-      autoDegreesPerSec = AUTO_PIXELS_PER_SEC * dragDegreesPerPixel;
+      // Avtomatik aylanish esa radiusga BOG'LIQ EMAS — qat'iy burchak
+      // tezligi (AUTO_DEG_PER_SEC), shu bilan hamkorlar soni yoki radius
+      // qancha o'zgarmasin aylanish doim bir xil tezlikda ko'rinadi.
+      autoDegreesPerSec = AUTO_DEG_PER_SEC;
 
       track.innerHTML = partners.map(function (p, i) {
         var a = (360 / count) * i;
