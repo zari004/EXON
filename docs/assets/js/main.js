@@ -193,14 +193,16 @@
       var isNarrow = window.innerWidth < 640;
       var itemWidth = isNarrow ? 110 : 170;
       var gap = isNarrow ? 22 : 38;
-      // Perspektiva qat'iy (silindr "vaybi" — aniq chuqurlik/egrilik hissi —
-      // shundan kelib chiqadi). Radius esa hamkorlar soni ko'paysa ham
-      // maksimal chegaradan oshmaydi — aks holda old tomondagi logo
-      // cheksiz kattalashib, tor ekranlarda tashqariga chiqib ketardi.
-      var perspective = isNarrow ? 1400 : 2200;
-      var maxRadius = isNarrow ? 380 : 650;
+      // Radius CHEGARALANMAYDI — hamkorlar soni qancha ko'p bo'lsa, halqa
+      // shuncha tabiiy kengayadi (aks holda logotiplar ustma-ust tushib
+      // qolardi). Buning o'rniga perspektiva radiusga mutanosib hisoblanadi
+      // — shu bilan old tomondagi logo hamkorlar soniga qaramay doim bir
+      // xil (FRONT_SCALE marta) kattaroq ko'rinadi: aniq silindr chuqurligi
+      // saqlanadi, lekin front-logo hech qachon tashqariga chiqib ketmaydi.
       var radius = count > 1 ? Math.round((itemWidth + gap) / (2 * Math.sin(Math.PI / count))) : 0;
-      radius = Math.min(Math.max(radius, isNarrow ? 85 : 120), maxRadius);
+      radius = Math.max(radius, isNarrow ? 85 : 120);
+      var FRONT_SCALE = 2;
+      var perspective = Math.round(radius * FRONT_SCALE / (FRONT_SCALE - 1));
       carousel.style.perspective = perspective + 'px';
       // Shu koeffitsiyent 3D proyeksiyadagi kattalashishni ham qoplaydi va sudrashni 1:1 qiladi.
       dragDegreesPerPixel = perspective > radius
