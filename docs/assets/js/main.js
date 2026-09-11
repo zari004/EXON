@@ -80,7 +80,7 @@
     var MIN_ROTATE_COUNT = 6;
     // Qat'iy burchak tezligi — hamkorlar soni/radius qancha bo'lishidan
     // qat'i nazar aylanish doim bir xil (to'liq bir aylanish ~22 soniya).
-    var AUTO_DEG_PER_SEC = 9;
+    var AUTO_DEG_PER_SEC = 6;
     var autoDegreesPerSec = AUTO_DEG_PER_SEC;
     // Oldingi doimiy qiymat katta radiusda logolarni kursordan bir necha
     // baravar tezroq yurgizardi. Bu qiymat render paytida radiusga qarab
