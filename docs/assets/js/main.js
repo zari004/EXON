@@ -80,7 +80,7 @@
     var MIN_ROTATE_COUNT = 6;
     // Qat'iy burchak tezligi — hamkorlar soni/radius qancha bo'lishidan
     // qat'i nazar aylanish doim bir xil (to'liq bir aylanish ~22 soniya).
-    var AUTO_DEG_PER_SEC = 16;
+    var AUTO_DEG_PER_SEC = 9;
     var autoDegreesPerSec = AUTO_DEG_PER_SEC;
     // Oldingi doimiy qiymat katta radiusda logolarni kursordan bir necha
     // baravar tezroq yurgizardi. Bu qiymat render paytida radiusga qarab
@@ -191,8 +191,8 @@
       // qolishi uchun hisoblanadi — shu sabab ko'proq logotip qo'shilgan
       // sayin halqa o'zi tabiiy ravishda kengayib boradi.
       var isNarrow = window.innerWidth < 640;
-      var itemWidth = isNarrow ? 110 : 170;
-      var gap = isNarrow ? 22 : 38;
+      var itemWidth = isNarrow ? 80 : 125;
+      var gap = isNarrow ? 16 : 28;
       // Radius CHEGARALANMAYDI — hamkorlar soni qancha ko'p bo'lsa, halqa
       // shuncha tabiiy kengayadi (aks holda logotiplar ustma-ust tushib
       // qolardi). Buning o'rniga perspektiva radiusga mutanosib hisoblanadi
@@ -200,7 +200,7 @@
       // xil (FRONT_SCALE marta) kattaroq ko'rinadi: aniq silindr chuqurligi
       // saqlanadi, lekin front-logo hech qachon tashqariga chiqib ketmaydi.
       var radius = count > 1 ? Math.round((itemWidth + gap) / (2 * Math.sin(Math.PI / count))) : 0;
-      radius = Math.max(radius, isNarrow ? 85 : 120);
+      radius = Math.max(radius, isNarrow ? 65 : 90);
       var FRONT_SCALE = 1.55;
       var perspective = Math.round(radius * FRONT_SCALE / (FRONT_SCALE - 1));
       carousel.style.perspective = perspective + 'px';
