@@ -1,4 +1,4 @@
-const CACHE = 'exon-v85';
+const CACHE = 'exon-v86';
 const STATIC = [
   '/',
   '/index.html',
@@ -58,9 +58,14 @@ self.addEventListener('fetch', (e) => {
   // API so'rovlari keshlanmaydi — har doim tarmoqdan
   if (url.includes('/api/') || e.request.method !== 'GET') return;
 
-  // Always prefer the deployed HTML for navigations so a release is not
-  // hidden behind an older service-worker cache.
-  if (e.request.mode === 'navigate') {
+  // Always prefer the deployed HTML/JS/CSS (navigatsiya + kod fayllari) tarmoqdan —
+  // aks holda karusel kabi xatti-harakat tuzatilgan skript versiyasi eski
+  // SW keshi ortida "yashiringan" holda qolib, ba'zi qurilmalarda hech qachon
+  // yangilanmasdi (CACHE versiyasini har safar qo'lda oshirishga tayanish
+  // ishonchsiz chiqdi). Rasmlar/JSON esa tezlik uchun keshdan darhol beriladi.
+  var pathname = new URL(url).pathname;
+  var isCodeFile = e.request.mode === 'navigate' || /\.(js|css)$/.test(pathname);
+  if (isCodeFile) {
     e.respondWith(
       fetch(e.request)
         .then((res) => {
