@@ -2041,6 +2041,10 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
         <svg viewBox="0 0 24 24" fill="none"><circle cx="6" cy="12" r="2.6" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="5.5" r="2.6" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="18.5" r="2.6" stroke="currentColor" stroke-width="1.7"/><path d="M8.3 10.7l7.4-4.4M8.3 13.3l7.4 4.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
         <span data-i18n="tab.social">Ijtimoiy tarmoqlar</span>
       </button>
+      <button class="sidebar-item" data-tab="testimonials">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M7.5 15H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-3 3v-3H7.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M15 6h3a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-1v3l-3-3" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        <span data-i18n="tab.testimonials">Mijozlar fikri</span>
+      </button>
 
       <div class="sidebar-divider" id="sidebarDividerSite"></div>
       <div class="sidebar-section-label" data-i18n="more.section.manage">Boshqaruv</div>
@@ -2183,6 +2187,16 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       </div>
     </div>
     <div class="item-list" id="pricingList"></div>
+  </section>
+
+  <!-- MIJOZLAR FIKRI -->
+  <section class="admin-panel" id="panel-testimonials">
+    <div class="panel-head">
+      <h2 data-i18n="testimonials.title">Mijozlar fikri</h2>
+      <button class="btn-add" onclick="openTestimonialForm()" data-i18n="testimonials.add">+ Yangi fikr</button>
+    </div>
+    <p style="color:var(--gray);font-size:13.5px;margin:-10px 0 20px" data-i18n="testimonials.desc">Bu yerga qo'shilgan fikrlar "Biz haqimizda" sahifasidagi "Mijozlar fikri" bo'limida ko'rinadi. Rasm ixtiyoriy.</p>
+    <div class="item-list" id="testimonialsList"></div>
   </section>
 
   <!-- HAMKORLAR -->
@@ -2949,6 +2963,27 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
 </div>
 
 <!-- ══════════ MODAL: HAMKOR FORM ══════════ -->
+<div class="modal-overlay" id="testimonialModal">
+  <div class="modal-box">
+    <h3 id="testimonialModalTitle" data-i18n="testimonials.new">Yangi fikr</h3>
+    <form id="testimonialForm">
+      <input type="hidden" id="testimonialId" />
+      <div class="field"><label data-i18n="field.testimonialQuote">Fikr matni</label><textarea id="testimonialQuote" required rows="3" placeholder="Professional jamoa. Ishonch. Ekspertiza."></textarea></div>
+      <div class="field"><label data-i18n="field.testimonialName">Ism</label><input type="text" id="testimonialName" required placeholder="Bahrom" /></div>
+      <div class="field">
+        <label data-i18n="field.testimonialImage">Surat (ixtiyoriy)</label>
+        <div class="img-preview" id="testimonialImgPreview" data-i18n="image.none">Rasm tanlanmagan</div>
+        <div class="image-file-actions"><input type="file" id="testimonialImgFile" accept="image/*" /><button type="button" class="image-remove-btn" id="testimonialImgRemoveBtn" data-i18n="image.remove" hidden>O'chirish</button></div>
+      </div>
+      <div class="form-msg" id="testimonialFormMsg"></div>
+      <div class="modal-actions">
+        <button type="button" class="modal-cancel" onclick="closeModal('testimonialModal')">Bekor qilish</button>
+        <button type="submit" class="modal-save">Saqlash</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="modal-overlay" id="partnerModal">
   <div class="modal-box">
     <h3 id="partnerModalTitle" data-i18n="partners.new">Yangi hamkor</h3>
@@ -3503,6 +3538,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'partners.new': 'Yangi hamkor',
       'partners.edit': 'Hamkorni tahrirlash',
       'partners.imageRequired': 'Logotip yuklash majburiy',
+      'tab.testimonials': 'Mijozlar fikri',
+      'testimonials.title': 'Mijozlar fikri',
+      'testimonials.add': '+ Yangi fikr',
+      'testimonials.desc': 'Bu yerga qo\'shilgan fikrlar "Biz haqimizda" sahifasidagi "Mijozlar fikri" bo\'limida ko\'rinadi. Rasm ixtiyoriy.',
+      'testimonials.empty': "Hali fikrlar yo'q",
+      'testimonials.new': 'Yangi fikr',
+      'testimonials.edit': 'Fikrni tahrirlash',
       'stats.title': 'Statistika',
       'stats.add': '+ Yangi statistika',
       'stats.desc': 'Bu raqamlar sayt bosh sahifasidagi "Keyslar" bo\'limida 0\'dan ko\'payib boruvchi animatsiya bilan ko\'rsatiladi.',
@@ -3561,6 +3603,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.partnerLogo': 'Logotip',
       'field.partnerStroke': "Logotipga 2 px tashqi stroke qo'shish",
       'field.partnerStrokeColor': 'Stroke rangini tanlang',
+      'field.testimonialQuote': 'Fikr matni',
+      'field.testimonialName': 'Ism',
+      'field.testimonialImage': 'Surat (ixtiyoriy)',
       'field.statValue': 'Raqam',
       'field.statSuffix': "Qo'shimcha belgi",
       'field.statLabel': 'Izoh (nomi)',
@@ -3575,6 +3620,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.post': "Bu maqolani o'chirishni tasdiqlaysizmi?",
       'confirm.del.price': "Bu paketni o'chirishni tasdiqlaysizmi?",
       'confirm.del.partner': "Bu hamkorni o'chirishni tasdiqlaysizmi?",
+      'confirm.del.testimonial': "Bu fikrni o'chirishni tasdiqlaysizmi?",
       'confirm.del.stat': "Bu statistikani o'chirishni tasdiqlaysizmi?",
       'confirm.del.social': "Bu havolani o'chirishni tasdiqlaysizmi?",
       'role.superadmin': 'Superadmin',
@@ -3899,6 +3945,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'partners.new': 'Новый партнёр',
       'partners.edit': 'Редактировать партнёра',
       'partners.imageRequired': 'Необходимо загрузить логотип',
+      'tab.testimonials': 'Отзывы клиентов',
+      'testimonials.title': 'Отзывы клиентов',
+      'testimonials.add': '+ Новый отзыв',
+      'testimonials.desc': 'Добавленные здесь отзывы отображаются в разделе "Отзывы клиентов" на странице "О нас". Фото необязательно.',
+      'testimonials.empty': 'Пока нет отзывов',
+      'testimonials.new': 'Новый отзыв',
+      'testimonials.edit': 'Редактировать отзыв',
       'stats.title': 'Статистика',
       'stats.add': '+ Новая статистика',
       'stats.desc': 'Эти цифры показываются в разделе "Кейсы" на главной странице с анимацией увеличения от 0.',
@@ -3957,6 +4010,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.partnerLogo': 'Логотип',
       'field.partnerStroke': 'Добавить внешнюю обводку 2 px',
       'field.partnerStrokeColor': 'Выберите цвет обводки',
+      'field.testimonialQuote': 'Текст отзыва',
+      'field.testimonialName': 'Имя',
+      'field.testimonialImage': 'Фото (необязательно)',
       'field.statValue': 'Число',
       'field.statSuffix': 'Доп. символ',
       'field.statLabel': 'Подпись (название)',
@@ -3971,6 +4027,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.post': 'Удалить эту статью?',
       'confirm.del.price': 'Удалить этот пакет?',
       'confirm.del.partner': 'Удалить этого партнёра?',
+      'confirm.del.testimonial': 'Удалить этот отзыв?',
       'confirm.del.stat': 'Удалить эту статистику?',
       'confirm.del.social': 'Удалить эту ссылку?',
       'role.superadmin': 'Суперадмин',
@@ -4295,6 +4352,13 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'partners.new': 'New partner',
       'partners.edit': 'Edit partner',
       'partners.imageRequired': 'A logo upload is required',
+      'tab.testimonials': 'Client feedback',
+      'testimonials.title': 'Client feedback',
+      'testimonials.add': '+ New testimonial',
+      'testimonials.desc': 'Testimonials added here appear in the "Client feedback" section on the "About us" page. Photo is optional.',
+      'testimonials.empty': 'No testimonials yet',
+      'testimonials.new': 'New testimonial',
+      'testimonials.edit': 'Edit testimonial',
       'stats.title': 'Stats',
       'stats.add': '+ New stat',
       'stats.desc': 'These numbers appear in the "Cases" section on the homepage with a count-up animation from 0.',
@@ -4353,6 +4417,9 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'field.partnerLogo': 'Logo',
       'field.partnerStroke': 'Add a 2 px outer stroke',
       'field.partnerStrokeColor': 'Choose the stroke color',
+      'field.testimonialQuote': 'Testimonial text',
+      'field.testimonialName': 'Name',
+      'field.testimonialImage': 'Photo (optional)',
       'field.statValue': 'Number',
       'field.statSuffix': 'Suffix',
       'field.statLabel': 'Label (name)',
@@ -4367,6 +4434,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       'confirm.del.post': 'Delete this article?',
       'confirm.del.price': 'Delete this package?',
       'confirm.del.partner': 'Delete this partner?',
+      'confirm.del.testimonial': 'Delete this testimonial?',
       'confirm.del.stat': 'Delete this stat?',
       'confirm.del.social': 'Delete this link?',
       'role.superadmin': 'Superadmin',
@@ -4681,7 +4749,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       if (sidebarRoleEl) sidebarRoleEl.textContent = roleLabel;
       var moreRoleEl = document.getElementById('moreProfileRole');
       if (moreRoleEl) moreRoleEl.textContent = roleLabel;
-      loadDashboard(); loadContactLeads(); loadCases(); loadPosts(); loadPricing(); loadPricingVisibility(); loadPartners(); loadStats(); loadSocial();
+      loadDashboard(); loadContactLeads(); loadCases(); loadPosts(); loadPricing(); loadPricingVisibility(); loadPartners(); loadStats(); loadSocial(); loadTestimonials();
       if (USER_ROLE === 'superadmin' || USER_ROLE === 'it_bolimi') { loadUsers(); loadPermissions(); }
       // Hozir ochiq bo'lgan bo'limning dinamik (JS orqali chizilgan) kontenti
       // ham yangi tilda qayta chiziladi
@@ -4744,7 +4812,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     // Admin/it_bolimi har doim "Sayt boshqaruvi" bo'limini to'liq ko'radi —
     // oldingi (oddiy foydalanuvchi) sessiyasidan qolgan "yashirin" holatni tozalaydi
     if (isSuperLevel) {
-      ['dashboard', 'contactLeads', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social'].forEach(function (tab) {
+      ['dashboard', 'contactLeads', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social', 'testimonials'].forEach(function (tab) {
         var btn = document.querySelector('.sidebar-item[data-tab="' + tab + '"]');
         if (btn) btn.style.display = '';
       });
@@ -4796,7 +4864,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     try {
       var data = await apiFetch('/api/admin/my-permissions');
       var allowed = data.tabs || ['dashboard'];
-      var siteTabs = ['dashboard', 'contactLeads', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social'];
+      var siteTabs = ['dashboard', 'contactLeads', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social', 'testimonials'];
       var boshqaruvTabs = ['tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
       var anySiteVisible = false;
       siteTabs.concat(boshqaruvTabs).forEach(function (tab) {
@@ -5308,7 +5376,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       var target = document.querySelector('.sidebar-item[data-tab="' + btn.dataset.tab + '"]');
       var visible = !!(target && target.style.display !== 'none');
       btn.style.display = visible ? '' : 'none';
-      if (visible && ['cases', 'posts', 'pricing', 'partners', 'stats', 'social'].indexOf(btn.dataset.tab) !== -1) anySiteVisible = true;
+      if (visible && ['cases', 'posts', 'pricing', 'partners', 'stats', 'social', 'testimonials'].indexOf(btn.dataset.tab) !== -1) anySiteVisible = true;
     });
     var siteLabel = document.getElementById('moreSectionSite');
     var siteList = document.getElementById('moreListSite');
@@ -5483,7 +5551,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
     { preview: 'caseIconPreview', input: 'caseIconFile', button: 'caseIconRemoveBtn', emptyKey: 'icon.none' },
     { preview: 'caseImgPreview', input: 'caseImgFile', button: 'caseImgRemoveBtn', emptyKey: 'image.none' },
     { preview: 'postImgPreview', input: 'postImgFile', button: 'postImgRemoveBtn', emptyKey: 'image.none' },
-    { preview: 'partnerImgPreview', input: 'partnerImgFile', button: 'partnerImgRemoveBtn', emptyKey: 'image.none' }
+    { preview: 'partnerImgPreview', input: 'partnerImgFile', button: 'partnerImgRemoveBtn', emptyKey: 'image.none' },
+    { preview: 'testimonialImgPreview', input: 'testimonialImgFile', button: 'testimonialImgRemoveBtn', emptyKey: 'image.none' }
   ];
 
   function imageFieldConfig(previewId) {
@@ -5523,6 +5592,8 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
       await setImagePreview('postImgPreview', file, 640);
     } else if (document.getElementById('partnerModal').classList.contains('is-active')) {
       await setImagePreview('partnerImgPreview', file, 800, 'png');
+    } else if (document.getElementById('testimonialModal').classList.contains('is-active')) {
+      await setImagePreview('testimonialImgPreview', file, 300, 'png');
     } else if (isVisible(document.getElementById('storeLogoPick'))) {
       var storeBase64 = await fileToResizedBase64(file, 160);
       STORE_NEW_LOGO_B64 = storeBase64;
@@ -5981,6 +6052,71 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   };
 
   // ══════════════════════════════════════════════════════════
+  // MIJOZLAR FIKRI
+  // ══════════════════════════════════════════════════════════
+  let testimonialsCache = [];
+  async function loadTestimonials() {
+    try {
+      const data = await apiFetch('/api/testimonials');
+      testimonialsCache = data.testimonials;
+      const list = document.getElementById('testimonialsList');
+      list.innerHTML = testimonialsCache.length ? testimonialsCache.map(function (t) {
+        return '<div class="item-row">' +
+          (t.image ? '<img class="item-row__thumb" style="object-fit:cover;border-radius:50%" src="' + t.image + '" />' : '<div class="item-row__thumb">💬</div>') +
+          '<div class="item-row__body"><div class="item-row__title">' + esc(t.name) + '</div>' +
+          '<div class="item-row__meta">' + esc(t.quote) + '</div></div>' +
+          '<div class="item-row__actions">' +
+          '<button class="icon-btn" onclick="openTestimonialForm(' + t.id + ')" title="' + T('item.edit') + '">✎</button>' +
+          '<button class="icon-btn danger" onclick="deleteTestimonial(' + t.id + ')" title="' + T('item.delete') + '">✕</button>' +
+          '</div></div>';
+      }).join('') : '<div class="empty-state">' + T('testimonials.empty') + '</div>';
+    } catch (err) { console.error(err); }
+  }
+
+  window.openTestimonialForm = function (id) {
+    const existing = id ? testimonialsCache.find(function (t) { return t.id === id; }) : null;
+    document.getElementById('testimonialModalTitle').textContent = existing ? T('testimonials.edit') : T('testimonials.new');
+    document.getElementById('testimonialId').value = existing ? existing.id : '';
+    document.getElementById('testimonialQuote').value = existing ? existing.quote : '';
+    document.getElementById('testimonialName').value = existing ? existing.name : '';
+    const preview = document.getElementById('testimonialImgPreview');
+    preview.innerHTML = existing && existing.image ? '<img src="' + existing.image + '" />' : T('image.none');
+    preview.dataset.value = existing && existing.image ? existing.image : '';
+    syncImageRemoveButton('testimonialImgPreview');
+    document.getElementById('testimonialImgFile').value = '';
+    document.getElementById('testimonialFormMsg').textContent = '';
+    document.getElementById('testimonialModal').classList.add('is-active');
+  };
+
+  document.getElementById('testimonialImgFile').addEventListener('change', async function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    await setImagePreview('testimonialImgPreview', file, 300, 'png');
+  });
+
+  document.getElementById('testimonialForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const msg = document.getElementById('testimonialFormMsg');
+    msg.textContent = ''; msg.className = 'form-msg';
+    const id = document.getElementById('testimonialId').value;
+    const body = {
+      quote: document.getElementById('testimonialQuote').value,
+      name: document.getElementById('testimonialName').value,
+      image: document.getElementById('testimonialImgPreview').dataset.value || null
+    };
+    try {
+      await apiFetch(id ? '/api/testimonials/' + id : '/api/testimonials', { method: id ? 'PUT' : 'POST', body: JSON.stringify(body) });
+      closeModal('testimonialModal'); loadTestimonials();
+    } catch (err) { msg.textContent = err.message; msg.className = 'form-msg error'; }
+  });
+
+  window.deleteTestimonial = async function (id) {
+    if (!(await confirmDialog(T('confirm.del.testimonial')))) return;
+    try { await apiFetch('/api/testimonials/' + id, { method: 'DELETE' }); loadTestimonials(); }
+    catch (err) { customAlert(err.message); }
+  };
+
+  // ══════════════════════════════════════════════════════════
   // STATISTIKA
   // ══════════════════════════════════════════════════════════
   let statsCache = [];
@@ -6141,7 +6277,7 @@ html.att-photo-viewer-open,html.att-photo-viewer-open body{overflow:hidden}
   // ══════════════════════════════════════════════════════════
   // RUXSATLAR (IT bo'limi)
   // ══════════════════════════════════════════════════════════
-  var PERM_TABS = ['dashboard', 'contactLeads', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social', 'tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
+  var PERM_TABS = ['dashboard', 'contactLeads', 'cases', 'posts', 'pricing', 'partners', 'stats', 'social', 'testimonials', 'tasks', 'stores', 'calendar', 'kpi', 'salary', 'productivity', 'attendance', 'settings'];
   var PERM_ROLES = ['seo', 'menejer_bosh', 'menejer_oddiy', 'dizayner_bosh', 'dizayner_oddiy'];
 
   async function loadPermissions() {

@@ -66,8 +66,10 @@ fbq('track', 'PageView');
 .card-title{font-size:19px;font-weight:600;line-height:1.25;margin-bottom:10px}
 .card-text{font-size:14px;color:var(--gray);line-height:1.58}
 .testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
-.testi-card{padding:clamp(22px,2.6vw,28px);background:rgba(var(--surface-rgb),.66);border:1px solid var(--line-2);border-radius:14px;margin:0}
-.testi-card p{font-size:15.5px;line-height:1.55;color:var(--white);margin-bottom:16px}
+.testi-card{padding:clamp(22px,2.6vw,28px);background:rgba(var(--surface-rgb),.66);border:1px solid var(--line-2);border-radius:14px;margin:0;display:flex;flex-direction:column}
+.testi-card p{font-size:15.5px;line-height:1.55;color:var(--white);margin:0 0 16px;flex:1 0 auto}
+.testi-card__foot{display:flex;align-items:center;gap:10px;margin-top:auto}
+.testi-card__avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0}
 .testi-card cite{font-size:13px;color:var(--green);font-style:normal;font-weight:600}
 .about-cta{padding:clamp(74px,11vw,132px) 0;text-align:center}
 .about-cta__title{max-width:850px;margin:0 auto;font-size:clamp(2.2rem,5vw,4.7rem);line-height:1.04;letter-spacing:-.035em}
@@ -186,19 +188,13 @@ fbq('track', 'PageView');
     </div>
   </section>
 
-  <section class="about-section" style="border-bottom:0">
+  <section class="about-section" style="border-bottom:0" id="testimonialsSection">
     <div class="about-wrap">
       <div class="section-head">
         <div class="about-kicker">Mijozlar fikri</div>
         <h2 class="section-title">Natijalarimiz mijozlar tilidan.</h2>
       </div>
-      <div class="testi-grid">
-        <blockquote class="testi-card"><p>«Professional kompaniya. Savdolar sezilarli darajada oshdi.»</p><cite>— Bobur</cite></blockquote>
-        <blockquote class="testi-card"><p>«Professional jamoa. Ishonch. Ekspertiza.»</p><cite>— Bahrom</cite></blockquote>
-        <blockquote class="testi-card"><p>«O'zim qila oladigan ishni EXON yanada yaxshi va to'liq amalga oshiradi.»</p><cite>— Abdulaziz</cite></blockquote>
-        <blockquote class="testi-card"><p>«Professionallar ishi.»</p><cite>— Parviz</cite></blockquote>
-        <blockquote class="testi-card"><p>«Natija. Tartib. Fokusim bo'shadi.»</p><cite>— Sindor</cite></blockquote>
-      </div>
+      <div class="testi-grid" id="testiGrid"></div>
     </div>
   </section>
 
@@ -215,6 +211,52 @@ fbq('track', 'PageView');
 <script src="assets/js/api-base.js?v=3"></script>
 <script src="assets/js/social-footer.js?v=12"></script>
 <script src="assets/js/pricing-visibility.js?v=1"></script>
+<script>
+/* Mijozlar fikri — admin panelda kiritilgan fikrlarni ko'rsatadi. Statik
+   fayl darhol yuklaydi, so'ng jonli API fon rejimida tekshiriladi. Hech
+   qanday fikr bo'lmasa — bo'lim butunlay yashirin qoladi. */
+(function () {
+  var grid = document.getElementById('testiGrid');
+  var section = document.getElementById('testimonialsSection');
+  if (!grid || !window.EXON_API_BASE) return;
+  var renderedSignature = '';
+
+  function esc(s) { return String(s || '').replace(/[<>&"]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]; }); }
+
+  function renderTestimonials(list) {
+    var signature = JSON.stringify(list.map(function (t) { return [t.id, t.quote, t.name, t.image]; }));
+    if (signature === renderedSignature) return;
+    renderedSignature = signature;
+    if (!list.length) { section.style.display = 'none'; return; }
+    grid.innerHTML = list.map(function (t) {
+      var avatar = t.image ? '<img class="testi-card__avatar" src="' + esc(t.image) + '" alt="" loading="lazy" decoding="async" />' : '';
+      return '<blockquote class="testi-card"><p>«' + esc(t.quote) + '»</p>' +
+        '<div class="testi-card__foot">' + avatar + '<cite>— ' + esc(t.name) + '</cite></div></blockquote>';
+    }).join('');
+    section.style.display = '';
+  }
+
+  function loadLive() {
+    fetch(window.EXON_API_BASE + '/api/testimonials', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (data) {
+        var list = (data && data.success && Array.isArray(data.testimonials)) ? data.testimonials : [];
+        if (list.length) renderTestimonials(list);
+      })
+      .catch(function () { /* Statik nusxa ekranda qoladi */ });
+  }
+
+  fetch('data/testimonials.json', { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+    .then(function (data) {
+      var list = (data && data.success && Array.isArray(data.testimonials)) ? data.testimonials : [];
+      if (!list.length) throw 0;
+      renderTestimonials(list);
+    })
+    .catch(function () { /* Jonli API pastda baribir tekshiriladi */ })
+    .then(loadLive);
+})();
+</script>
 <script>
 (function(){
   const nav=document.getElementById('nav');

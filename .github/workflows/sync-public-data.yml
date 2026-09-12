@@ -38,9 +38,10 @@ jobs:
           curl -sS --max-time 30 --fail "$BASE/api/cases" -o docs/data/cases.json
           curl -sS --max-time 30 --fail "$BASE/api/posts" -o docs/data/posts.json
           curl -sS --max-time 30 --fail "$BASE/api/social" -o docs/data/social.json
+          curl -sS --max-time 30 --fail "$BASE/api/testimonials" -o docs/data/testimonials.json
           # Har bir fayl haqiqatan ham to'g'ri JSON ekanini tekshiramiz —
           # aks holda buzilgan javob repo'ga yozilib qolmasin
-          for f in partners stats cases posts social; do
+          for f in partners stats cases posts social testimonials; do
             node -e "JSON.parse(require('fs').readFileSync('docs/data/$f.json','utf8'))"
           done
 
@@ -48,7 +49,7 @@ jobs:
         run: |
           git config user.name "EXON Data Sync Bot"
           git config user.email "actions@github.com"
-          git add docs/data/partners.json docs/data/stats.json docs/data/cases.json docs/data/posts.json docs/data/social.json
+          git add docs/data/partners.json docs/data/stats.json docs/data/cases.json docs/data/posts.json docs/data/social.json docs/data/testimonials.json
           if git diff --cached --quiet; then
             echo "O'zgarish yo'q — commit qilinmadi"
           else

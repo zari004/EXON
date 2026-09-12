@@ -110,6 +110,28 @@ const init = async () => {
   await pool.query(`ALTER TABLE partners ADD COLUMN IF NOT EXISTS stroke_color TEXT`);
 
   await pool.query(`
+    CREATE TABLE IF NOT EXISTS testimonials (
+      id SERIAL PRIMARY KEY,
+      quote TEXT NOT NULL,
+      name TEXT NOT NULL,
+      image TEXT,
+      sort_order INTEGER DEFAULT 0,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `);
+  const testimonialsCount = await pool.query('SELECT COUNT(*) FROM testimonials');
+  if (Number(testimonialsCount.rows[0].count) === 0) {
+    await pool.query(
+      `INSERT INTO testimonials (quote, name, sort_order) VALUES
+       ('Professional kompaniya. Savdolar sezilarli darajada oshdi.', 'Bobur', 0),
+       ('Professional jamoa. Ishonch. Ekspertiza.', 'Bahrom', 1),
+       ('O''zim qila oladigan ishni EXON yanada yaxshi va to''liq amalga oshiradi.', 'Abdulaziz', 2),
+       ('Professionallar ishi.', 'Parviz', 3),
+       ('Natija. Tartib. Fokusim bo''shadi.', 'Sindor', 4)`
+    );
+  }
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS social_links (
       id SERIAL PRIMARY KEY,
       platform TEXT NOT NULL,
