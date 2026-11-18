@@ -56,6 +56,7 @@
 
   /* Bosh sahifadagi konsultatsiya formasi */
   add('Bepul konsultatsiya', 'Бесплатная консультация', 'Free consultation');
+  add('Ro‘yxatdan o‘tish', 'Регистрация', 'Registration');
   add('Sahifalar', 'Страницы', 'Pages');
   add("Bog'lanish", 'Связаться', 'Contact');
   add('Aloqa uchun', 'Контакты', 'Contact us');

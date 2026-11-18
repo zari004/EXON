@@ -32,7 +32,7 @@
             '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.2 3.5 9.5 8 7.7 9.8c1.1 2.4 3.1 4.4 5.5 5.5l1.8-1.8 4.5 2.3v2.7c0 1-1 2-2.1 2C9.7 20 4 14.3 3.5 6.6c0-1.1.9-2.1 2-2.1h1.7Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
             '<span>+998 (78) 122-01-34</span>' +
           '</a>' +
-          '<a class="site-footer__cta" href="konsultatsiya.html">Bepul konsultatsiya</a>' +
+          '<a class="site-footer__cta" href="konsultatsiya.html">Ro‘yxatdan o‘tish</a>' +
           '<span class="site-footer__social-label">Ijtimoiy tarmoqlar</span>' +
           '<div class="social-icons social-icons--footer" id="socialIconsFooter"></div>' +
         '</div>' +
